@@ -182,8 +182,12 @@ fun OnboardingContent(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
                 horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (pagerState.currentPage < onboardingPages.size - 1) {
                     TextButton(
