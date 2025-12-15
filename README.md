@@ -1,4 +1,4 @@
-# KidsMathTutor
+# Kids Math Pup Tutor 🐶
 
 An Android app built with:
 - ⚡️ [Circuit](https://github.com/slackhq/circuit) for UI architecture
