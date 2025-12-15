@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlinter)
+    // Apply Google Services plugin to process google-services.json
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -108,6 +110,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.ui.tooling.preview)
+
+    // Firebase BoM (Bill of Materials) - manages all Firebase library versions
+    implementation(platform(libs.firebase.bom))
+    // Firebase libraries (versions managed by BoM)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

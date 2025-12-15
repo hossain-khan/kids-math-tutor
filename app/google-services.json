@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "72867313148",
+    "project_id": "kids-math-adventure-go",
+    "storage_bucket": "kids-math-adventure-go.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72867313148:android:463bce008c997798e2ae79",
+        "android_client_info": {
+          "package_name": "dev.hossain.mathtutor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmVAj9SIyONcVwYhOjvbX6sYAqOmzRagU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

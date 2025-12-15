@@ -34,4 +34,9 @@ plugins {
     // Applies the Kotlinter plugin for Kotlin code formatting and linting.
     // Project: https://github.com/jeremymailen/kotlinter-gradle
     alias(libs.plugins.kotlinter) apply false
+
+    // Applies the Google Services plugin for Firebase integration.
+    // This plugin processes the google-services.json file and generates Firebase configuration.
+    // Project: https://developers.google.com/android/guides/google-services-plugin
+    alias(libs.plugins.google.services) apply false
 }
