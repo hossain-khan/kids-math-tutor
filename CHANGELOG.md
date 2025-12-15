@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - UserPreferencesRepository for storing user preferences (onboarding completion status)
 - First-time user experience that shows onboarding once and remembers completion
 - DynaPuff Google Font as the primary app font for playful, kid-friendly typography
+- Dev container support for consistent development environment
+  - Java 21 base image with Android SDK setup
+  - Automatic installation of Android Command Line Tools (version 11076708)
+  - Pre-configured VS Code extensions (Kotlin, Gradle, Java, GitHub Copilot, IntelliJ IDEA keybindings)
+  - Post-create script that installs Android Platform 35 and Build Tools 35.0.0
+  - ADB support with privileged mode for physical device connection
+  - Environment variables for ANDROID_HOME and ANDROID_SDK_ROOT
 
 ### Changed
 - Onboarding screen now uses vibrant color palettes extracted from each page's image
