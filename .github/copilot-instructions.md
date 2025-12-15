@@ -141,6 +141,87 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 ./gradlew assembleDebug
 ```
 
+### Changelog Maintenance
+
+**REQUIRED**: Always update `CHANGELOG.md` when making changes following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) guidelines:
+
+1. **Format**: Follow Keep a Changelog format
+2. **Versioning**: Use [Semantic Versioning](https://semver.org/spec/v2.0.0.html) (MAJOR.MINOR.PATCH)
+   - MAJOR: Incompatible API changes
+   - MINOR: Add functionality in a backward compatible manner
+   - PATCH: Backward compatible bug fixes
+3. **Sections**: Use appropriate change types:
+   - `Added` for new features
+   - `Changed` for changes in existing functionality
+   - `Deprecated` for soon-to-be removed features
+   - `Removed` for now removed features
+   - `Fixed` for any bug fixes
+   - `Security` in case of vulnerabilities
+4. **Unreleased Section**: Add all changes to `[Unreleased]` section first
+5. **Avoid Duplicate Section Headers**: 
+   - **CRITICAL**: Before adding a new section header (e.g., `### Added`, `### Changed`, `### Fixed`), **always check if that section already exists** in the `[Unreleased]` section
+   - If the section header already exists, **add your entry to the existing section** rather than creating a duplicate header
+   - Only create a new section header if it doesn't already exist in `[Unreleased]`
+   - Example of CORRECT approach:
+     ```markdown
+     ## [Unreleased]
+     
+     ### Added
+     - Existing feature A
+     - NEW: Your new feature B  ← Add here, don't create another ### Added
+     
+     ### Fixed
+     - Existing bug fix
+     ```
+   - Example of INCORRECT approach (DO NOT DO THIS):
+     ```markdown
+     ## [Unreleased]
+     
+     ### Added
+     - Existing feature A
+     
+     ### Added  ← WRONG: Duplicate header
+     - Your new feature B
+     ```
+6. **Release Process**: When releasing, move `[Unreleased]` changes to a new version section with date
+7. **Format Example**:
+   ```markdown
+   ## [Unreleased]
+   
+   ### Added
+   - New feature description
+   
+   ### Fixed
+   - Bug fix description
+   
+   ## [1.0.1] - 2025-10-03
+   
+   ### Fixed
+   - Previous bug fix
+   ```
+8. **Guidelines**:
+   - Write for humans, not machines
+   - Each version should have an entry
+   - Group similar types of changes together
+   - Use ISO 8601 date format (YYYY-MM-DD)
+   - Link versions at bottom of file
+   - Keep entries concise but descriptive
+   - Don't dump git commit logs
+
+**Example Workflow**:
+```bash
+# 1. Make code changes
+# 2. Update CHANGELOG.md under [Unreleased] section
+# 3. Format code
+./gradlew formatKotlin
+# 4. Run tests
+./gradlew test
+# 5. Commit with descriptive message
+git commit -m "Add feature X
+
+- Updated CHANGELOG.md with new feature"
+```
+
 ### Common Gradle Tasks
 
 ```bash
@@ -157,6 +238,75 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 ./gradlew :app:formatKotlin
 ./gradlew :app:assembleDebug
 ```
+
+### Release Process
+
+**IMPORTANT**: The `main` branch is protected. All changes must be made in new git branch via pull requests.
+
+Follow this workflow for creating a new release:
+
+1. **Create Release Branch**:
+   ```bash
+   git checkout main
+   git pull
+   git checkout -b release/X.Y.Z
+   ```
+
+2. **Update Version Numbers**:
+   - Update `versionCode` and `versionName` in `app/build.gradle.kts`
+   - Example: `versionCode = 4` and `versionName = "1.0.3"`
+
+3. **Update CHANGELOG.md**:
+   - Move all `[Unreleased]` changes to new version section `[X.Y.Z] - YYYY-MM-DD`
+   - Add empty `[Unreleased]` section at top
+   - Update version comparison links at bottom:
+     ```markdown
+     [unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/X.Y.Z...HEAD
+     [X.Y.Z]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/X.Y.Z-1...X.Y.Z
+     ```
+
+4. **Commit and Push Release Branch**:
+   ```bash
+   git add app/build.gradle.kts CHANGELOG.md
+   git commit -m "chore: Prepare release X.Y.Z"
+   git push -u origin release/X.Y.Z
+   ```
+
+5. **Create Release Pull Request**:
+   - Create PR from `release/X.Y.Z` to `main`
+   - Title: "Release X.Y.Z"
+   - Include changelog summary in PR description
+   - Request review and merge
+
+6. **Create and Push Tag** (after PR is merged):
+   ```bash
+   git checkout main
+   git pull
+   git tag -a X.Y.Z -m "Release X.Y.Z - Brief Description
+
+   - Major change 1
+   - Major change 2
+   - Major change 3"
+   git push origin X.Y.Z
+   ```
+
+7. **Create GitHub Release**:
+   - Go to GitHub Releases page
+   - Click "Draft a new release"
+   - Select tag `X.Y.Z`
+   - Title: "Release X.Y.Z"
+   - Copy relevant section from CHANGELOG.md
+   - Publish release
+
+**Version Numbering** (Semantic Versioning):
+- `MAJOR.MINOR.PATCH` (e.g., 1.0.3)
+- MAJOR: Breaking changes or major new features
+- MINOR: New features, backward compatible
+- PATCH: Bug fixes, backward compatible
+- **Default**: Always increment MINOR version for regular releases (e.g., 1.2.0 → 1.3.0)
+- Only use PATCH for critical hotfixes between regular releases
+
+**Tag Format**: Use plain version number (e.g., `1.0.3`), not `v1.0.3`
 
 ## Testing Guidelines
 
