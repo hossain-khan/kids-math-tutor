@@ -20,3 +20,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Onboarding screen now uses vibrant color palettes extracted from each page's image
 - Enhanced onboarding UI with rounded cards, colorful backgrounds, and themed buttons
 - Page indicators now match each page's accent color for better visual cohesion
+- Updated onboarding page 2 background to softer rose beige (#E7D5CA) for better contrast

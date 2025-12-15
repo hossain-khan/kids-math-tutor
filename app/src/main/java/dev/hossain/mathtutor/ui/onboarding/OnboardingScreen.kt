@@ -95,7 +95,7 @@ private val onboardingPages =
             imageRes = R.drawable.onboarding_2_creative_math_red_theme,
             title = "Creative Learning",
             description = "Explore math concepts through interactive and creative exercises.",
-            backgroundColor = Color(0xFFBA6D30),
+            backgroundColor = Color(0xFFE7D5CA),
             accentColor = Color(0xFF991F36),
         ),
         OnboardingPage(
