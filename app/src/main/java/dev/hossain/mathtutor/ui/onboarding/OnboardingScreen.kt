@@ -82,7 +82,6 @@ private data class OnboardingPage(
     val title: String,
     val description: String,
     val backgroundColor: Color,
-    val cardBackgroundColor: Color,
     val accentColor: Color,
 )
 
@@ -93,7 +92,6 @@ private val onboardingPages =
             title = "Welcome to Math Pup Tutor!",
             description = "Let's make learning math fun and exciting together!",
             backgroundColor = Color(0xFFFBF4D1),
-            cardBackgroundColor = Color(0xFFD9E8EB),
             accentColor = Color(0xFF9E5626),
         ),
         OnboardingPage(
@@ -101,7 +99,6 @@ private val onboardingPages =
             title = "Creative Learning",
             description = "Explore math concepts through interactive and creative exercises.",
             backgroundColor = Color(0xFFE7D5CA),
-            cardBackgroundColor = Color(0xFFBA6D30),
             accentColor = Color(0xFF991F36),
         ),
         OnboardingPage(
@@ -109,7 +106,6 @@ private val onboardingPages =
             title = "Discover Numbers",
             description = "Build confidence with numbers through engaging practice sessions.",
             backgroundColor = Color(0xFFCFB06A),
-            cardBackgroundColor = Color(0xFFA06634),
             accentColor = Color(0xFF244426),
         ),
         OnboardingPage(
@@ -117,7 +113,6 @@ private val onboardingPages =
             title = "Master Math Skills",
             description = "Track your progress and become a math champion!",
             backgroundColor = Color(0xFFC1DCE7),
-            cardBackgroundColor = Color(0xFF7DC2E5),
             accentColor = Color(0xFF226095),
         ),
     )
@@ -322,7 +317,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
             shape = RoundedCornerShape(24.dp),
             colors =
                 CardDefaults.cardColors(
-                    containerColor = page.cardBackgroundColor,
+                    containerColor = Color.White.copy(alpha = 0.9f),
                 ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
