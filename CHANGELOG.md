@@ -9,3 +9,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Material Icons Extended library for access to extended Material Design icons
+- Onboarding screen drawable resources (4 images)
