@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
@@ -16,7 +18,9 @@ import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.hossain.mathtutor.circuit.InboxScreen
+import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ActivityKey
+import dev.hossain.mathtutor.ui.onboarding.OnboardingScreen
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -47,6 +51,7 @@ import dev.zacsweers.metro.binding
 class MainActivity
     constructor(
         private val circuit: Circuit,
+        private val userPreferencesRepository: UserPreferencesRepository,
     ) : ComponentActivity() {
         @OptIn(ExperimentalSharedTransitionApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +60,19 @@ class MainActivity
 
             setContent {
                 KidsMathTutorAppTheme {
+                    val isOnboardingCompleted by userPreferencesRepository.isOnboardingCompleted.collectAsState(
+                        initial = false,
+                    )
+
+                    val initialScreen =
+                        if (isOnboardingCompleted) {
+                            InboxScreen
+                        } else {
+                            OnboardingScreen
+                        }
+
                     // See https://slackhq.github.io/circuit/navigation/
-                    val backStack = rememberSaveableBackStack(root = InboxScreen)
+                    val backStack = rememberSaveableBackStack(root = initialScreen)
                     val navigator = rememberCircuitNavigator(backStack)
 
                     // See https://slackhq.github.io/circuit/circuit-content/

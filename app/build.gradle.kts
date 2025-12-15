@@ -133,6 +133,7 @@ dependencies {
     implementation(libs.javax.inject)
 
     implementation(libs.androidx.work)
+    implementation(libs.androidx.datastore.preferences)
 
     // Timber logging library
     implementation(libs.timber)
