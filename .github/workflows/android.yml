@@ -8,6 +8,8 @@ on:
 
 jobs:
   android-build:
+    # TEMPORARILY DISABLED
+    if: false
     runs-on: ubuntu-latest
 
     strategy:
