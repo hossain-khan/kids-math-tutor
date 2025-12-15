@@ -8,7 +8,7 @@ coreKtx = "1.17.0"
 espressoCore = "3.7.0"
 # Firebase BoM (Bill of Materials) - manages all Firebase library versions
 # https://firebase.google.com/docs/android/setup#available-libraries
-firebaseBom = "33.9.0"
+firebaseBom = "33.16.0"
 # Google Services plugin for processing google-services.json
 # https://developers.google.com/android/guides/google-services-plugin
 googleServices = "4.4.2"
