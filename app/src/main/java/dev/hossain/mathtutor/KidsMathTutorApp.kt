@@ -11,6 +11,7 @@ import androidx.work.workDataOf
 import dev.hossain.mathtutor.di.AppGraph
 import dev.hossain.mathtutor.work.SampleWorker
 import dev.zacsweers.metro.createGraphFactory
+import timber.log.Timber
 
 /**
  * Application class for the app with key initializations.
@@ -42,6 +43,13 @@ class KidsMathTutorApp :
 
     override fun onCreate() {
         super.onCreate()
+
+        // Initialize Timber for logging
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+        Timber.d("App initialized")
+
         scheduleBackgroundWork()
     }
 

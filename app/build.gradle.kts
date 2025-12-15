@@ -133,6 +133,9 @@ dependencies {
 
     implementation(libs.androidx.work)
 
+    // Timber logging library
+    implementation(libs.timber)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
