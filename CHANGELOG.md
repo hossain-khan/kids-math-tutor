@@ -25,3 +25,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Reserved space for skip button on all onboarding pages for consistent layout positioning
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
+- Fixed onboarding navigation to properly navigate to InboxScreen after completion
