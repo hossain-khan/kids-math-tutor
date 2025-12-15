@@ -15,3 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - UserPreferencesRepository for storing user preferences (onboarding completion status)
 - First-time user experience that shows onboarding once and remembers completion
 - DynaPuff Google Font as the primary app font for playful, kid-friendly typography
+
+### Changed
+- Onboarding screen now uses vibrant color palettes extracted from each page's image
+- Enhanced onboarding UI with rounded cards, colorful backgrounds, and themed buttons
+- Page indicators now match each page's accent color for better visual cohesion

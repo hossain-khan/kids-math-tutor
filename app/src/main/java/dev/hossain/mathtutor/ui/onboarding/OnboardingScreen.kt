@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.onboarding
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -29,8 +32,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -73,6 +78,8 @@ private data class OnboardingPage(
     val imageRes: Int,
     val title: String,
     val description: String,
+    val backgroundColor: Color,
+    val accentColor: Color,
 )
 
 private val onboardingPages =
@@ -81,21 +88,29 @@ private val onboardingPages =
             imageRes = R.drawable.onboarding_1_app_name_welcome,
             title = "Welcome to Math Pup Tutor!",
             description = "Let's make learning math fun and exciting together!",
+            backgroundColor = Color(0xFFFBF4D1),
+            accentColor = Color(0xFF9E5626),
         ),
         OnboardingPage(
             imageRes = R.drawable.onboarding_2_creative_math_red_theme,
             title = "Creative Learning",
             description = "Explore math concepts through interactive and creative exercises.",
+            backgroundColor = Color(0xFFBA6D30),
+            accentColor = Color(0xFF991F36),
         ),
         OnboardingPage(
             imageRes = R.drawable.onboarding_3_explore_numbers_green_theme,
             title = "Discover Numbers",
             description = "Build confidence with numbers through engaging practice sessions.",
+            backgroundColor = Color(0xFFCFB06A),
+            accentColor = Color(0xFF244426),
         ),
         OnboardingPage(
             imageRes = R.drawable.onboarding_4_master_math_blue_theme,
             title = "Master Math Skills",
             description = "Track your progress and become a math champion!",
+            backgroundColor = Color(0xFFC1DCE7),
+            accentColor = Color(0xFF226095),
         ),
     )
 
@@ -150,14 +165,19 @@ fun OnboardingContent(
 ) {
     val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
     val coroutineScope = rememberCoroutineScope()
+    val currentPage = onboardingPages[pagerState.currentPage]
 
-    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+    Box(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(currentPage.backgroundColor),
+    ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp),
+                    .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -166,8 +186,18 @@ fun OnboardingContent(
                 horizontalArrangement = Arrangement.End,
             ) {
                 if (pagerState.currentPage < onboardingPages.size - 1) {
-                    TextButton(onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) }) {
-                        Text("Skip")
+                    TextButton(
+                        onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) },
+                        colors =
+                            ButtonDefaults.textButtonColors(
+                                contentColor = currentPage.accentColor,
+                            ),
+                    ) {
+                        Text(
+                            text = "Skip",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
                     }
                 }
             }
@@ -180,32 +210,31 @@ fun OnboardingContent(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 repeat(onboardingPages.size) { index ->
                     val isSelected = pagerState.currentPage == index
-                    Card(
+                    Box(
                         modifier =
                             Modifier
-                                .padding(4.dp)
-                                .size(if (isSelected) 12.dp else 8.dp)
-                                .clip(CircleShape),
-                        colors =
-                            CardDefaults.cardColors(
-                                containerColor =
+                                .padding(horizontal = 6.dp)
+                                .size(if (isSelected) 14.dp else 10.dp)
+                                .clip(CircleShape)
+                                .background(
                                     if (isSelected) {
-                                        MaterialTheme.colorScheme.primary
+                                        currentPage.accentColor
                                     } else {
-                                        MaterialTheme.colorScheme.surfaceVariant
+                                        currentPage.accentColor.copy(alpha = 0.3f)
                                     },
-                            ),
-                    ) {}
+                                ),
+                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             if (pagerState.currentPage < onboardingPages.size - 1) {
                 Button(
@@ -214,9 +243,22 @@ fun OnboardingContent(
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = currentPage.accentColor,
+                            contentColor = Color.White,
+                        ),
+                    shape = RoundedCornerShape(28.dp),
                 ) {
-                    Text("Next")
+                    Text(
+                        text = "Next",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
@@ -226,9 +268,22 @@ fun OnboardingContent(
             } else {
                 Button(
                     onClick = { state.eventSink(OnboardingScreen.Event.GetStartedClicked) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = currentPage.accentColor,
+                            contentColor = Color.White,
+                        ),
+                    shape = RoundedCornerShape(28.dp),
                 ) {
-                    Text("Get Started")
+                    Text(
+                        text = "Get Started! 🎉",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
             }
         }
@@ -241,27 +296,41 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Image(
-            painter = painterResource(id = page.imageRes),
-            contentDescription = page.title,
+        Card(
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .weight(1f),
-            contentScale = ContentScale.Fit,
-        )
+            shape = RoundedCornerShape(24.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = Color.White.copy(alpha = 0.9f),
+                ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        ) {
+            Image(
+                painter = painterResource(id = page.imageRes),
+                contentDescription = page.title,
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                contentScale = ContentScale.Fit,
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
             text = page.title,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.headlineLarge,
+            color = page.accentColor,
             textAlign = TextAlign.Center,
+            fontWeight = FontWeight.ExtraBold,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -269,8 +338,9 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         Text(
             text = page.description,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = page.accentColor.copy(alpha = 0.8f),
             textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Medium,
         )
     }
 }
