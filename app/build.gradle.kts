@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "app.example"
+    namespace = "dev.hossain.mathtutor"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "app.example"
+        applicationId = "dev.hossain.mathtutor"
         minSdk = 28
         targetSdk = 36
         versionCode = 1
