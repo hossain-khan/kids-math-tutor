@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced onboarding UI with rounded cards, colorful backgrounds, and themed buttons
 - Page indicators now match each page's accent color for better visual cohesion
 - Updated onboarding page 2 background to softer rose beige (#E7D5CA) for better contrast
+- Card backgrounds now use darker palette colors instead of white for better image blending
 
 ### Fixed
 - Reserved space for skip button on all onboarding pages for consistent layout positioning
