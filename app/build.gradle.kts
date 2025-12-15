@@ -10,6 +10,8 @@ plugins {
     alias(libs.plugins.kotlinter)
     // Apply Google Services plugin to process google-services.json
     alias(libs.plugins.google.services)
+    // Apply Firebase Crashlytics plugin for crash reporting
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -116,6 +118,7 @@ dependencies {
     // Firebase libraries (versions managed by BoM)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics)
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

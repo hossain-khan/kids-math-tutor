@@ -35,6 +35,10 @@ plugins {
     // Project: https://github.com/jeremymailen/kotlinter-gradle
     alias(libs.plugins.kotlinter) apply false
 
+    // Applies the Firebase Crashlytics plugin for crash reporting.
+    // Project: https://firebase.google.com/docs/crashlytics
+    alias(libs.plugins.firebase.crashlytics) apply false
+
     // Applies the Google Services plugin for Firebase integration.
     // This plugin processes the google-services.json file and generates Firebase configuration.
     // Project: https://developers.google.com/android/guides/google-services-plugin
