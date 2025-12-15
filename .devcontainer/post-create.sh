@@ -52,8 +52,8 @@ echo "📚 Downloading Gradle dependencies..."
 ./gradlew --version
 
 # Install additional development tools
-echo "🔧 Installing additional tools (bashtop)..."
-sudo apt-get update -qq && sudo apt-get install -y bashtop > /dev/null 2>&1 || true
+echo "🔧 Installing additional tools (bashtop, btop)..."
+sudo apt-get update -qq && sudo apt-get install -y bashtop btop > /dev/null 2>&1 || true
 
 echo "✅ Android development environment setup complete!"
 echo "📱 You can now build the project with: ./gradlew build"
