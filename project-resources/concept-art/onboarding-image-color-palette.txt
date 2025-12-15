@@ -1,0 +1,137 @@
+# Onboarding 1 Color Palette
+
+- CSV
+
+793D22,FBF4D1,42343D,D9E8EB,9E5626
+
+- With #
+
+#793D22, #FBF4D1, #42343D, #D9E8EB, #9E5626
+
+- Array
+
+["793D22","FBF4D1","42343D","D9E8EB","9E5626"]
+
+- Object
+
+{"Saddle Brown":"793D22","Cornsilk":"FBF4D1","Deep Mocha":"42343D","Azure Mist":"D9E8EB","Chocolate Brown":"9E5626"}
+
+- Extended Array
+
+[{"name":"Saddle Brown","hex":"793D22","rgb":[121,61,34],"cmyk":[0,50,72,53],"hsb":[19,72,47],"hsl":[19,56,30],"lab":[33,24,28]},{"name":"Cornsilk","hex":"FBF4D1","rgb":[251,244,209],"cmyk":[0,3,17,2],"hsb":[50,17,98],"hsl":[50,84,90],"lab":[96,-3,18]},{"name":"Deep Mocha","hex":"42343D","rgb":[66,52,61],"cmyk":[0,21,8,74],"hsb":[321,21,26],"hsl":[321,12,23],"lab":[24,8,-3]},{"name":"Azure Mist","hex":"D9E8EB","rgb":[217,232,235],"cmyk":[8,1,0,8],"hsb":[190,8,92],"hsl":[190,31,89],"lab":[91,-4,-3]},{"name":"Chocolate Brown","hex":"9E5626","rgb":[158,86,38],"cmyk":[0,46,76,38],"hsb":[24,76,62],"hsl":[24,61,38],"lab":[44,26,40]}]
+
+- XML
+
+<palette>
+  <color name="Saddle Brown" hex="793D22" r="121" g="61" b="34" />
+  <color name="Cornsilk" hex="FBF4D1" r="251" g="244" b="209" />
+  <color name="Deep Mocha" hex="42343D" r="66" g="52" b="61" />
+  <color name="Azure Mist" hex="D9E8EB" r="217" g="232" b="235" />
+  <color name="Chocolate Brown" hex="9E5626" r="158" g="86" b="38" />
+</palette>
+
+------------------------------------------
+
+# Onboarding 2 Color Palette
+
+- CSV
+
+991F36,7E1E2D,5C1D1F,7A635A,BA6D30
+
+- With #
+
+#991F36, #7E1E2D, #5C1D1F, #7A635A, #BA6D30
+
+- Array
+
+["991F36","7E1E2D","5C1D1F","7A635A","BA6D30"]
+
+- Object
+
+{"Ruby Red":"991F36","Dark Amaranth":"7E1E2D","Night Bordeaux":"5C1D1F","Taupe Grey":"7A635A","Copper":"BA6D30"}
+
+- Extended Array
+
+[{"name":"Ruby Red","hex":"991F36","rgb":[153,31,54],"cmyk":[0,80,65,40],"hsb":[349,80,60],"hsl":[349,66,36],"lab":[34,50,18]},{"name":"Dark Amaranth","hex":"7E1E2D","rgb":[126,30,45],"cmyk":[0,76,64,51],"hsb":[351,76,49],"hsl":[351,62,31],"lab":[28,42,16]},{"name":"Night Bordeaux","hex":"5C1D1F","rgb":[92,29,31],"cmyk":[0,68,66,64],"hsb":[358,68,36],"hsl":[358,52,24],"lab":[21,29,14]},{"name":"Taupe Grey","hex":"7A635A","rgb":[122,99,90],"cmyk":[0,19,26,52],"hsb":[17,26,48],"hsl":[17,15,42],"lab":[44,8,9]},{"name":"Copper","hex":"BA6D30","rgb":[186,109,48],"cmyk":[0,41,74,27],"hsb":[27,74,73],"hsl":[27,59,46],"lab":[54,26,46]}]
+
+- XML
+
+<palette>
+  <color name="Ruby Red" hex="991F36" r="153" g="31" b="54" />
+  <color name="Dark Amaranth" hex="7E1E2D" r="126" g="30" b="45" />
+  <color name="Night Bordeaux" hex="5C1D1F" r="92" g="29" b="31" />
+  <color name="Taupe Grey" hex="7A635A" r="122" g="99" b="90" />
+  <color name="Copper" hex="BA6D30" r="186" g="109" b="48" />
+</palette>
+
+
+------------------------------------------
+
+
+# Onboarding 3 Color Palette
+
+- CSV
+
+244426,CFB06A,613523,32452B,A06634
+
+- With #
+
+#244426, #CFB06A, #613523, #32452B, #A06634
+
+- Array
+
+["244426","CFB06A","613523","32452B","A06634"]
+
+- Object
+
+{"Dark Spruce":"244426","Soft Fawn":"CFB06A","Dark Walnut":"613523","Dark Spruce 2":"32452B","Toffee Brown":"A06634"}
+
+- Extended Array
+
+[{"name":"Dark Spruce","hex":"244426","rgb":[36,68,38],"cmyk":[47,0,44,73],"hsb":[124,47,27],"hsl":[124,31,20],"lab":[26,-19,15]},{"name":"Soft Fawn","hex":"CFB06A","rgb":[207,176,106],"cmyk":[0,15,49,19],"hsb":[42,49,81],"hsl":[42,51,61],"lab":[73,2,40]},{"name":"Dark Walnut","hex":"613523","rgb":[97,53,35],"cmyk":[0,45,64,62],"hsb":[17,64,38],"hsl":[17,47,26],"lab":[27,18,20]},{"name":"Dark Spruce","hex":"32452B","rgb":[50,69,43],"cmyk":[28,0,38,73],"hsb":[104,38,27],"hsl":[104,23,22],"lab":[27,-13,13]},{"name":"Toffee Brown","hex":"A06634","rgb":[160,102,52],"cmyk":[0,36,68,37],"hsb":[28,68,63],"hsl":[28,51,42],"lab":[49,19,37]}]
+
+- XML
+
+<palette>
+  <color name="Dark Spruce" hex="244426" r="36" g="68" b="38" />
+  <color name="Soft Fawn" hex="CFB06A" r="207" g="176" b="106" />
+  <color name="Dark Walnut" hex="613523" r="97" g="53" b="35" />
+  <color name="Dark Spruce" hex="32452B" r="50" g="69" b="43" />
+  <color name="Toffee Brown" hex="A06634" r="160" g="102" b="52" />
+</palette>
+
+------------------------------------------
+
+# Onboarding 4 Color Palette
+
+- CSV
+
+226095,C1DCE7,5A281B,63382F,7DC2E5
+
+- With #
+
+#226095, #C1DCE7, #5A281B, #63382F, #7DC2E5
+
+- Array
+
+["226095","C1DCE7","5A281B","63382F","7DC2E5"]
+
+- Object
+
+{"Baltic Blue":"226095","Pale Sky":"C1DCE7","Espresso":"5A281B","Espresso 2":"63382F","Baby Blue":"7DC2E5"}
+
+- Extended Array
+
+[{"name":"Baltic Blue","hex":"226095","rgb":[34,96,149],"cmyk":[77,36,0,42],"hsb":[208,77,58],"hsl":[208,63,36],"lab":[39,-1,-35]},{"name":"Pale Sky","hex":"C1DCE7","rgb":[193,220,231],"cmyk":[16,5,0,9],"hsb":[197,16,91],"hsl":[197,44,83],"lab":[86,-7,-8]},{"name":"Espresso","hex":"5A281B","rgb":[90,40,27],"cmyk":[0,56,70,65],"hsb":[12,70,35],"hsl":[12,54,23],"lab":[23,22,19]},{"name":"Espresso","hex":"63382F","rgb":[99,56,47],"cmyk":[0,43,53,61],"hsb":[10,53,39],"hsl":[10,36,29],"lab":[29,18,14]},{"name":"Baby Blue","hex":"7DC2E5","rgb":[125,194,229],"cmyk":[45,15,0,10],"hsb":[200,45,90],"hsl":[200,67,69],"lab":[75,-13,-24]}]
+
+- XML
+
+<palette>
+  <color name="Baltic Blue" hex="226095" r="34" g="96" b="149" />
+  <color name="Pale Sky" hex="C1DCE7" r="193" g="220" b="231" />
+  <color name="Espresso" hex="5A281B" r="90" g="40" b="27" />
+  <color name="Espresso" hex="63382F" r="99" g="56" b="47" />
+  <color name="Baby Blue" hex="7DC2E5" r="125" g="194" b="229" />
+</palette>
+
+------------------------------------------
