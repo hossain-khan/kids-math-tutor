@@ -4,6 +4,11 @@ set -e
 
 echo "🚀 Setting up Android development environment..."
 
+# Install Git LFS first (required for this repository)
+echo "📦 Installing Git LFS..."
+sudo apt-get update -qq && sudo apt-get install -y git-lfs > /dev/null 2>&1 || true
+git lfs install
+
 # Define Android SDK paths
 export ANDROID_HOME="/usr/local/lib/android/sdk"
 export ANDROID_SDK_ROOT="${ANDROID_HOME}"
