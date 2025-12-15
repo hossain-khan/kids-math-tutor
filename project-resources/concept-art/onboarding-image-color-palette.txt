@@ -33,37 +33,35 @@
 ------------------------------------------
 
 # Onboarding 2 Color Palette
-
 - CSV
 
-991F36,7E1E2D,5C1D1F,7A635A,BA6D30
+E7D5CA,CEAD96,5C1D1F,C37556,85AF5E
 
 - With #
 
-#991F36, #7E1E2D, #5C1D1F, #7A635A, #BA6D30
+#E7D5CA, #CEAD96, #5C1D1F, #C37556, #85AF5E
 
 - Array
 
-["991F36","7E1E2D","5C1D1F","7A635A","BA6D30"]
+["E7D5CA","CEAD96","5C1D1F","C37556","85AF5E"]
 
 - Object
 
-{"Ruby Red":"991F36","Dark Amaranth":"7E1E2D","Night Bordeaux":"5C1D1F","Taupe Grey":"7A635A","Copper":"BA6D30"}
+{"Powder Petal":"E7D5CA","Tan":"CEAD96","Night Bordeaux":"5C1D1F","Cinnamon Wood":"C37556","Muted Olive":"85AF5E"}
 
 - Extended Array
 
-[{"name":"Ruby Red","hex":"991F36","rgb":[153,31,54],"cmyk":[0,80,65,40],"hsb":[349,80,60],"hsl":[349,66,36],"lab":[34,50,18]},{"name":"Dark Amaranth","hex":"7E1E2D","rgb":[126,30,45],"cmyk":[0,76,64,51],"hsb":[351,76,49],"hsl":[351,62,31],"lab":[28,42,16]},{"name":"Night Bordeaux","hex":"5C1D1F","rgb":[92,29,31],"cmyk":[0,68,66,64],"hsb":[358,68,36],"hsl":[358,52,24],"lab":[21,29,14]},{"name":"Taupe Grey","hex":"7A635A","rgb":[122,99,90],"cmyk":[0,19,26,52],"hsb":[17,26,48],"hsl":[17,15,42],"lab":[44,8,9]},{"name":"Copper","hex":"BA6D30","rgb":[186,109,48],"cmyk":[0,41,74,27],"hsb":[27,74,73],"hsl":[27,59,46],"lab":[54,26,46]}]
+[{"name":"Powder Petal","hex":"E7D5CA","rgb":[231,213,202],"cmyk":[0,8,13,9],"hsb":[23,13,91],"hsl":[23,38,85],"lab":[86,4,8]},{"name":"Tan","hex":"CEAD96","rgb":[206,173,150],"cmyk":[0,16,27,19],"hsb":[25,27,81],"hsl":[25,36,70],"lab":[73,9,16]},{"name":"Night Bordeaux","hex":"5C1D1F","rgb":[92,29,31],"cmyk":[0,68,66,64],"hsb":[358,68,36],"hsl":[358,52,24],"lab":[21,29,14]},{"name":"Cinnamon Wood","hex":"C37556","rgb":[195,117,86],"cmyk":[0,40,56,24],"hsb":[17,56,76],"hsl":[17,48,55],"lab":[57,28,30]},{"name":"Muted Olive","hex":"85AF5E","rgb":[133,175,94],"cmyk":[24,0,46,31],"hsb":[91,46,69],"hsl":[91,34,53],"lab":[67,-28,37]}]
 
 - XML
 
 <palette>
-  <color name="Ruby Red" hex="991F36" r="153" g="31" b="54" />
-  <color name="Dark Amaranth" hex="7E1E2D" r="126" g="30" b="45" />
+  <color name="Powder Petal" hex="E7D5CA" r="231" g="213" b="202" />
+  <color name="Tan" hex="CEAD96" r="206" g="173" b="150" />
   <color name="Night Bordeaux" hex="5C1D1F" r="92" g="29" b="31" />
-  <color name="Taupe Grey" hex="7A635A" r="122" g="99" b="90" />
-  <color name="Copper" hex="BA6D30" r="186" g="109" b="48" />
+  <color name="Cinnamon Wood" hex="C37556" r="195" g="117" b="86" />
+  <color name="Muted Olive" hex="85AF5E" r="133" g="175" b="94" />
 </palette>
-
 
 ------------------------------------------
 
