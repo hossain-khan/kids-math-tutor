@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Phase 1 MVP: Domain models for math practice system
+  - `MathOperation` enum with ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION support
+  - `MathProblem` data class with problem generation and answer validation
+  - `PracticeSession` data class with progress tracking and accuracy calculation
+  - `SessionAnswer` data class for storing user answers with metadata
+  - Comprehensive unit tests for all domain models (>80% coverage)
 - Material Icons Extended library for access to extended Material Design icons
 - Onboarding screen drawable resources (4 images)
 - Onboarding screen with Circuit UDF architecture showing 4-page welcome flow
