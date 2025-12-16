@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Phase 1 MVP: Math Practice Screen with Circuit UDF architecture
+  - `MathPracticeScreen` Circuit screen for interactive math practice sessions
+  - `MathPracticePresenter` managing state with problem progression and answer validation
+  - `MathPracticeUi` integrating NumberPad and AnswerField components
+  - Progress indicator showing current problem number and visual progress bar
+  - Real-time feedback with ✓ Correct! and ✗ Try again messages
+  - Action buttons (Clear and Check/Next) with conditional enabling
+  - Auto-advance logic after correct answers
+  - Comprehensive unit tests (13 test cases) for presenter logic
+  - Compose preview functions for different states (initial, correct, incorrect)
 - Phase 1 MVP: Reusable UI components for math practice interface
   - `NumberPad` composable with 0-9 buttons in 2x5 grid layout
   - Child-friendly 64dp button size with Material 3 theming
@@ -38,6 +48,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DynaPuff Google Font as the primary app font for playful, kid-friendly typography
 - Dev container support for consistent development environment
   - Java 21 base image with Android SDK setup
+
+### Changed
+- Updated landing screen from example InboxScreen to MathPracticeScreen
+- OnboardingScreen now navigates to MathPracticeScreen after completion
+- Improved code clarity in MathPracticePresenter with explicit number-to-string conversion
+- Enhanced button spacing in MathPracticeUi following Material 3 design guidelines (8dp between icon and text)
+
+### Removed
+- Example Circuit screens (ExampleInboxScreen, ExampleEmailDetailsScreen)
+- Example data classes (ExampleEmailRepository, ExampleAppVersionService, ExampleEmailValidator)
   - Automatic installation of Android Command Line Tools (version 11076708)
   - Pre-configured VS Code extensions (Kotlin, Gradle, Java, GitHub Copilot, IntelliJ IDEA keybindings)
   - Post-create script that installs Android Platform 35 and Build Tools 35.0.0
