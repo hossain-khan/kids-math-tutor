@@ -32,6 +32,9 @@ fun AnswerField(
         onValueChange = {}, // Read-only, no direct text input
         modifier = modifier.fillMaxWidth(),
         readOnly = true,
+        label = {
+            Text("Your Answer")
+        },
         textStyle =
             MaterialTheme.typography.displayLarge.copy(
                 textAlign = TextAlign.Center,

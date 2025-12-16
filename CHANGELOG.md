@@ -11,9 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Phase 1 MVP: Reusable UI components for math practice interface
   - `NumberPad` composable with 0-9 buttons in 2x5 grid layout
   - Child-friendly 64dp button size with Material 3 theming
+  - Accessibility support with content descriptions for screen readers (e.g., "Number 1", "Number 2")
   - `AnswerField` composable as read-only text field for displaying user input
   - Centered text with "?" placeholder and large typography for visibility
+  - Accessibility label "Your Answer" for screen reader users
   - Compose preview functions for both light and dark themes
+  - Instrumented UI tests (13 test cases) for both components covering rendering, interaction, and accessibility
 - Phase 1 MVP: Problem generator for creating math exercises
   - `ProblemGenerator` interface for generating math problems
   - `SimpleProblemGenerator` implementation with Metro DI integration
