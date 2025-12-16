@@ -1,26 +1,32 @@
 # Project Overview
 
-This is a template for an Android app using Jetpack Compose, designed to help you quickly set up a new project with best practices in mind. It includes features like dependency injection, Circuit UDF (Unidirectional Data Flow) architecture, and optional WorkManager integration.
+**Kids Math Pup Tutor** 🐶 is an educational Android app for K-2 children to practice basic math skills. Built with Jetpack Compose, it features a clean, child-friendly interface with instant feedback and encouraging results.
 
-The template is pre-configured with Circuit, a Compose-driven architecture for Kotlin and Android applications that provides a clean, unidirectional data flow pattern for building robust Android apps.
+The app follows Circuit UDF (Unidirectional Data Flow) architecture for predictable state management and Metro for dependency injection, providing a robust foundation for the math practice experience.
 
 ## Project Structure
 
 ```
-android-compose-app-template/
+kids-math-tutor/
 ├── app/
 │   └── src/
-│       └── main/java/app/example/
-│           ├── CircuitApp.kt           # Main Application class
+│       └── main/java/dev/hossain/mathtutor/
+│           ├── KidsMathTutorApp.kt     # Main Application class
 │           ├── MainActivity.kt         # Main Activity with Circuit
-│           ├── circuit/                # Circuit screens and presenters
-│           │   ├── ExampleInboxScreen.kt
-│           │   ├── ExampleEmailDetailsScreen.kt
-│           │   └── overlay/            # Circuit overlays
-│           ├── data/                   # Repositories and data sources
+│           ├── domain/                 # Domain layer
+│           │   ├── model/              # Domain models (MathProblem, MathOperation, etc.)
+│           │   └── generator/          # Problem generators
+│           ├── ui/                     # Feature-based UI organization
+│           │   ├── onboarding/         # Onboarding screen
+│           │   ├── mathpractice/       # Math practice screen (Screen, Presenter, UI)
+│           │   ├── practiceresults/    # Results screen (Screen, Presenter, UI)
+│           │   ├── component/          # Reusable UI components (NumberPad, AnswerField)
+│           │   └── theme/              # Compose theme configuration
+│           ├── circuit/                # Legacy - being migrated to ui/
+│           │   └── overlay/            # Circuit overlays (AppInfo)
+│           ├── data/                   # Data layer (UserPreferences)
 │           ├── di/                     # Metro dependency injection
-│           ├── work/                   # WorkManager workers
-│           └── ui/theme/               # Compose theme configuration
+│           └── work/                   # WorkManager workers (sample)
 └── gradle/
     └── libs.versions.toml              # Centralized dependency versions
 ```
@@ -36,16 +42,42 @@ android-compose-app-template/
 
 Example:
 ```kotlin
-@CircuitInject(HomeScreen::class, AppScope::class)
-@Composable
-fun HomePresenter(): HomeScreen.State {
-    // Presenter logic - handle state and events
+// Screen definition with State and Events
+@Parcelize
+data class MathPracticeScreen(
+    val problemCount: Int = 10
+) : Screen {
+    data class State(
+        val currentProblem: MathProblem?,
+        val currentAnswer: String,
+        val eventSink: (Event) -> Unit
+    ) : CircuitUiState
+    
+    sealed interface Event : CircuitUiEvent {
+        data class NumberClicked(val number: Int) : Event
+        data object CheckAnswer : Event
+    }
 }
 
-@CircuitInject(HomeScreen::class, AppScope::class)
+// Presenter with business logic
+@CircuitInject(MathPracticeScreen::class, AppScope::class)
 @Composable
-fun HomeContent(state: HomeScreen.State, modifier: Modifier = Modifier) {
-    // UI composition - display state and emit events
+fun MathPracticePresenter(
+    @Assisted screen: MathPracticeScreen,
+    @Assisted navigator: Navigator,
+    problemGenerator: ProblemGenerator
+): MathPracticeScreen.State {
+    // State management and event handling
+}
+
+// UI composition
+@CircuitInject(MathPracticeScreen::class, AppScope::class)
+@Composable
+fun MathPracticeUi(
+    state: MathPracticeScreen.State,
+    modifier: Modifier = Modifier
+) {
+    // UI rendering based on state
 }
 ```
 
@@ -59,17 +91,27 @@ fun HomeContent(state: HomeScreen.State, modifier: Modifier = Modifier) {
 Example:
 ```kotlin
 // Define interface
-interface EmailRepository {
-    fun getEmails(): List<Email>
+interface ProblemGenerator {
+    fun generateProblems(count: Int, operation: MathOperation): List<MathProblem>
 }
 
 // Implementation with Metro DI
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
-class EmailRepositoryImpl constructor() : EmailRepository {
-    override fun getEmails() = listOf(/* emails */)
+class SimpleProblemGenerator constructor() : ProblemGenerator {
+    override fun generateProblems(count: Int, operation: MathOperation): List<MathProblem> {
+        // Generate random math problems
+    }
 }
+
+// Usage with @AssistedInject for presenters
+@AssistedInject
+class MathPracticePresenter constructor(
+    @Assisted private val screen: MathPracticeScreen,
+    @Assisted private val navigator: Navigator,
+    private val problemGenerator: ProblemGenerator // Injected dependency
+) : Presenter<MathPracticeScreen.State>
 ```
 
 ## Code Style
@@ -322,18 +364,41 @@ All dependency versions are centralized in `gradle/libs.versions.toml`:
 **Major Dependencies**:
 - Kotlin: 2.2.21
 - Circuit: 0.31.0
-- Metro: 0.7.7
-- Compose BOM: 2025.11.01
+- Metro: 0.9.0
+- Compose BOM: 2025.12.00
 - WorkManager: 2.11.0
+- DataStore Preferences: 1.2.0
+- Firebase BOM: 34.7.0
+- Timber: 5.0.1
 
 ## Common Patterns
 
 ### Adding a New Circuit Screen
 
-1. Create a `Screen` data class that implements `Screen` interface
-2. Create a `@CircuitInject` presenter function
-3. Create a `@CircuitInject` composable UI function
-4. Navigate using `Navigator.goTo(screen)`
+1. **Create feature package** under `ui/` (e.g., `ui/newfeature/`)
+2. **Create Screen definition** with State and Event sealed classes:
+   ```kotlin
+   @Parcelize
+   data class NewFeatureScreen() : Screen {
+       data class State(..., val eventSink: (Event) -> Unit) : CircuitUiState
+       sealed interface Event : CircuitUiEvent { ... }
+   }
+   ```
+3. **Create Presenter** with `@AssistedInject` and `@CircuitInject`:
+   ```kotlin
+   @AssistedInject
+   class NewFeaturePresenter constructor(
+       @Assisted private val screen: NewFeatureScreen,
+       @Assisted private val navigator: Navigator
+   ) : Presenter<NewFeatureScreen.State>
+   ```
+4. **Create UI composable** with `@CircuitInject`:
+   ```kotlin
+   @CircuitInject(NewFeatureScreen::class, AppScope::class)
+   @Composable
+   fun NewFeatureUi(state: NewFeatureScreen.State, modifier: Modifier = Modifier)
+   ```
+5. **Navigate** using `Navigator.goTo(NewFeatureScreen())` or `Navigator.resetRoot(NewFeatureScreen())`
 
 ### Adding a WorkManager Worker
 
