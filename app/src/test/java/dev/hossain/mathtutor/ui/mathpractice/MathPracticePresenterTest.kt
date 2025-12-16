@@ -42,10 +42,7 @@ class MathPracticePresenterTest {
 
     @Test
     fun presenter_initialState_isCorrect() {
-        // Given
-        val presenter = MathPracticePresenter(screen, problemGenerator)
-
-        // When - Getting initial state (simulated)
+        // Given - Getting initial state (simulated)
         val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION)
 
         // Then - Initial state should be set correctly
@@ -57,7 +54,6 @@ class MathPracticePresenterTest {
     @Test
     fun numberClicked_appendsToAnswer() {
         // Given
-        val presenter = MathPracticePresenter(screen, problemGenerator)
         var currentAnswer = ""
 
         // When - Number clicked events
@@ -173,8 +169,6 @@ class MathPracticePresenterTest {
     fun problemGeneration_generatesCorrectCount() {
         // Given
         val problemCount = 10
-        val screen = MathPracticeScreen(problemCount = problemCount)
-        val presenter = MathPracticePresenter(screen, problemGenerator)
 
         // When
         val problems = problemGenerator.generateProblems(problemCount, MathOperation.ADDITION)
@@ -185,9 +179,6 @@ class MathPracticePresenterTest {
 
     @Test
     fun problemGeneration_usesAdditionOperation() {
-        // Given
-        val presenter = MathPracticePresenter(screen, problemGenerator)
-
         // When
         val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION)
 
