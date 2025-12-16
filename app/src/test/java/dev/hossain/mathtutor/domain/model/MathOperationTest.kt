@@ -1,0 +1,38 @@
+package dev.hossain.mathtutor.domain.model
+
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class MathOperationTest {
+    @Test
+    fun `calculate addition returns correct sum`() {
+        val result = MathOperation.ADDITION.calculate(3, 5)
+        assertEquals(8, result)
+    }
+
+    @Test
+    fun `calculate subtraction returns correct difference`() {
+        val result = MathOperation.SUBTRACTION.calculate(10, 4)
+        assertEquals(6, result)
+    }
+
+    @Test
+    fun `calculate multiplication returns correct product`() {
+        val result = MathOperation.MULTIPLICATION.calculate(7, 3)
+        assertEquals(21, result)
+    }
+
+    @Test
+    fun `calculate division returns correct quotient`() {
+        val result = MathOperation.DIVISION.calculate(20, 5)
+        assertEquals(4, result)
+    }
+
+    @Test
+    fun `operation symbols are correct`() {
+        assertEquals("+", MathOperation.ADDITION.symbol)
+        assertEquals("-", MathOperation.SUBTRACTION.symbol)
+        assertEquals("×", MathOperation.MULTIPLICATION.symbol)
+        assertEquals("÷", MathOperation.DIVISION.symbol)
+    }
+}
