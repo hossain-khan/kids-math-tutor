@@ -48,6 +48,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DynaPuff Google Font as the primary app font for playful, kid-friendly typography
 - Dev container support for consistent development environment
   - Java 21 base image with Android SDK setup
+
+### Changed
+- Updated landing screen from example InboxScreen to MathPracticeScreen
+- OnboardingScreen now navigates to MathPracticeScreen after completion
+
+### Removed
+- Example Circuit screens (ExampleInboxScreen, ExampleEmailDetailsScreen)
+- Example data classes (ExampleEmailRepository, ExampleAppVersionService, ExampleEmailValidator)
   - Automatic installation of Android Command Line Tools (version 11076708)
   - Pre-configured VS Code extensions (Kotlin, Gradle, Java, GitHub Copilot, IntelliJ IDEA keybindings)
   - Post-create script that installs Android Platform 35 and Build Tools 35.0.0

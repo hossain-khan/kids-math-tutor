@@ -17,7 +17,7 @@ import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
-import dev.hossain.mathtutor.circuit.InboxScreen
+import dev.hossain.mathtutor.circuit.MathPracticeScreen
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ActivityKey
 import dev.hossain.mathtutor.ui.onboarding.OnboardingScreen
@@ -66,7 +66,7 @@ class MainActivity
 
                     val initialScreen =
                         if (isOnboardingCompleted) {
-                            InboxScreen
+                            MathPracticeScreen()
                         } else {
                             OnboardingScreen
                         }
