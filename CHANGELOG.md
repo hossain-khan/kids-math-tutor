@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Phase 1 MVP: Problem generator for creating math exercises
+  - `ProblemGenerator` interface for generating math problems
+  - `SimpleProblemGenerator` implementation with Metro DI integration
+  - Addition problem generation with numbers in range 1-10
+  - Comprehensive unit tests with 13 test cases covering edge cases
+  - Validation for unsupported operations (throws clear exceptions)
 - Phase 1 MVP: Domain models for math practice system
   - `MathOperation` enum with ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION support
   - `MathProblem` data class with problem generation and answer validation
