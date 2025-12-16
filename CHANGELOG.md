@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Phase 1 MVP: Complete navigation integration with Circuit Navigator
+  - Full navigation flow: Onboarding → Math Practice → Results → Try Again
+  - Circuit Navigator `resetRoot()` for replacing navigation stack (Onboarding → Practice, Results → Practice)
+  - Circuit Navigator `goTo()` for forward navigation with data passing (Practice → Results with problems and answers)
+  - Circuit Navigator `pop()` for back navigation in all screens
+  - Back button functionality in MathPracticeScreen and ResultsScreen top app bars
+  - Gesture navigation support via GestureNavigationDecorationFactory
+  - All navigation flows verified and documented
 - Phase 1 MVP: Results Screen with session summary and review
   - `ResultsScreen` Circuit screen for displaying practice session results
   - `ResultsPresenter` calculating accuracy percentage and managing navigation events
