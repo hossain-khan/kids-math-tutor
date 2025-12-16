@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-12-16
+
 ### Added
 - **Phase 1 MVP: Complete! 🎉** All 8 phases completed
   - User testing completed with manual verification on device
@@ -113,4 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Reserved space for skip button on all onboarding pages for consistent layout positioning
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
-- Fixed onboarding navigation to properly navigate to InboxScreen after completion
+- Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
+
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/hossain-khan/kids-math-pup-tutor/releases/tag/1.0.0
