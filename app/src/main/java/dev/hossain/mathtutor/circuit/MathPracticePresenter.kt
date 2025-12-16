@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.MathOperation
@@ -24,12 +25,16 @@ class MathPracticePresenter
     @AssistedInject
     constructor(
         @Assisted private val screen: MathPracticeScreen,
+        @Assisted private val navigator: Navigator,
         private val problemGenerator: ProblemGenerator,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {
-            fun create(screen: MathPracticeScreen): MathPracticePresenter
+            fun create(
+                screen: MathPracticeScreen,
+                navigator: Navigator,
+            ): MathPracticePresenter
         }
 
         @Composable
@@ -45,6 +50,7 @@ class MathPracticePresenter
             var currentProblemIndex by remember { mutableStateOf(0) }
             var currentAnswer by remember { mutableStateOf("") }
             var isCorrect by remember { mutableStateOf<Boolean?>(null) }
+            var userAnswers by remember { mutableStateOf<List<Int?>>(emptyList()) }
 
             val currentProblem = problems.getOrNull(currentProblemIndex)
 
@@ -70,6 +76,14 @@ class MathPracticePresenter
                         if (currentProblem != null) {
                             val userAnswer = currentAnswer.toIntOrNull()
                             isCorrect = userAnswer?.let { currentProblem.checkAnswer(it) }
+
+                            // Store the user's answer
+                            val updatedAnswers = userAnswers.toMutableList()
+                            while (updatedAnswers.size <= currentProblemIndex) {
+                                updatedAnswers.add(null)
+                            }
+                            updatedAnswers[currentProblemIndex] = userAnswer
+                            userAnswers = updatedAnswers
                         }
                     }
 
@@ -78,11 +92,19 @@ class MathPracticePresenter
                             currentProblemIndex++
                             currentAnswer = ""
                             isCorrect = null
+                        } else {
+                            // All problems completed, navigate to results
+                            navigator.goTo(
+                                ResultsScreen(
+                                    problems = problems,
+                                    userAnswers = userAnswers,
+                                ),
+                            )
                         }
                     }
 
                     is MathPracticeScreen.Event.NavigateBack -> {
-                        // Navigation will be handled in Phase 1-6
+                        navigator.pop()
                     }
                 }
             }

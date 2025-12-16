@@ -1,5 +1,7 @@
 package dev.hossain.mathtutor.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.UUID
 
 /**
@@ -11,13 +13,14 @@ import java.util.UUID
  * @property operation The mathematical operation to perform
  * @property correctAnswer The correct answer to the problem
  */
+@Parcelize
 data class MathProblem(
     val id: String = UUID.randomUUID().toString(),
     val num1: Int,
     val num2: Int,
     val operation: MathOperation,
     val correctAnswer: Int,
-) {
+) : Parcelable {
     /**
      * Returns a human-readable string representation of the problem.
      * Example: "3 + 5 = ?"
