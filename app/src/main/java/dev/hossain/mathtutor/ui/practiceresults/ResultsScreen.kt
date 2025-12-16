@@ -1,4 +1,4 @@
-package dev.hossain.mathtutor.circuit
+package dev.hossain.mathtutor.ui.practiceresults
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState

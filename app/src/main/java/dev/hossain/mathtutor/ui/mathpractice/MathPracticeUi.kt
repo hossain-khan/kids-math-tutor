@@ -1,4 +1,4 @@
-package dev.hossain.mathtutor.circuit
+package dev.hossain.mathtutor.ui.mathpractice
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

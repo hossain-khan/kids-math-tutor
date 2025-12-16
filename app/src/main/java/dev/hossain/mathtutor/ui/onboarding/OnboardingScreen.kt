@@ -147,7 +147,7 @@ class OnboardingPresenter
                         coroutineScope.launch {
                             userPreferencesRepository.setOnboardingCompleted(true)
                             navigator.resetRoot(
-                                dev.hossain.mathtutor.circuit
+                                dev.hossain.mathtutor.ui.mathpractice
                                     .MathPracticeScreen(),
                             )
                         }

@@ -1,9 +1,10 @@
-package dev.hossain.mathtutor.circuit
+package dev.hossain.mathtutor.ui.practiceresults
 
 import androidx.compose.runtime.Composable
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory

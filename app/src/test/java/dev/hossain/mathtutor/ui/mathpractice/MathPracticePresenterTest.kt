@@ -1,4 +1,4 @@
-package dev.hossain.mathtutor.circuit
+package dev.hossain.mathtutor.ui.mathpractice
 
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.MathOperation

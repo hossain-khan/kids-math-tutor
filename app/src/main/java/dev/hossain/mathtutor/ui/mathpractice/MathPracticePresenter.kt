@@ -1,4 +1,4 @@
-package dev.hossain.mathtutor.circuit
+package dev.hossain.mathtutor.ui.mathpractice
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,6 +11,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
