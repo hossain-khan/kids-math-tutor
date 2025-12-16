@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Phase 1 MVP: Testing & Polish
+  - Comprehensive test suite with 66 unit tests passing (domain models, generator, presenters)
+  - 13 instrumented UI tests for components (NumberPad, AnswerField)
+  - Removed example test file (ExampleUnitTest.kt)
+  - Zero lint warnings - clean code quality
+  - Material 3 compliance verified: all screens use MaterialTheme colors (no hardcoded colors except intentional onboarding palette)
+  - Accessibility compliance: all touch targets meet 48dp minimum (NumberPad 64dp, buttons 48-56dp)
+  - Dark mode support: screens use theme-aware colors
+  - Code formatted with ktlint
 - Phase 1 MVP: Complete navigation integration with Circuit Navigator
   - Full navigation flow: Onboarding → Math Practice → Results → Try Again
   - Circuit Navigator `resetRoot()` for replacing navigation stack (Onboarding → Practice, Results → Practice)
