@@ -28,6 +28,11 @@ class MathOperationTest {
         assertEquals(4, result)
     }
 
+    @Test(expected = IllegalArgumentException::class)
+    fun `calculate division by zero throws exception`() {
+        MathOperation.DIVISION.calculate(10, 0)
+    }
+
     @Test
     fun `operation symbols are correct`() {
         assertEquals("+", MathOperation.ADDITION.symbol)

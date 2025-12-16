@@ -33,6 +33,32 @@ class MathProblemTest {
     }
 
     @Test
+    fun `getDisplayString returns correct format for multiplication`() {
+        val problem =
+            MathProblem(
+                num1 = 7,
+                num2 = 3,
+                operation = MathOperation.MULTIPLICATION,
+                correctAnswer = 21,
+            )
+
+        assertEquals("7 × 3 = ?", problem.getDisplayString())
+    }
+
+    @Test
+    fun `getDisplayString returns correct format for division`() {
+        val problem =
+            MathProblem(
+                num1 = 20,
+                num2 = 5,
+                operation = MathOperation.DIVISION,
+                correctAnswer = 4,
+            )
+
+        assertEquals("20 ÷ 5 = ?", problem.getDisplayString())
+    }
+
+    @Test
     fun `checkAnswer returns true for correct answer`() {
         val problem =
             MathProblem(
