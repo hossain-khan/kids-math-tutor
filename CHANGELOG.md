@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Phase 1 MVP: Math Practice Screen with Circuit UDF architecture
+  - `MathPracticeScreen` Circuit screen for interactive math practice sessions
+  - `MathPracticePresenter` managing state with problem progression and answer validation
+  - `MathPracticeUi` integrating NumberPad and AnswerField components
+  - Progress indicator showing current problem number and visual progress bar
+  - Real-time feedback with ✓ Correct! and ✗ Try again messages
+  - Action buttons (Clear and Check/Next) with conditional enabling
+  - Auto-advance logic after correct answers
+  - Comprehensive unit tests (13 test cases) for presenter logic
+  - Compose preview functions for different states (initial, correct, incorrect)
 - Phase 1 MVP: Reusable UI components for math practice interface
   - `NumberPad` composable with 0-9 buttons in 2x5 grid layout
   - Child-friendly 64dp button size with Material 3 theming
