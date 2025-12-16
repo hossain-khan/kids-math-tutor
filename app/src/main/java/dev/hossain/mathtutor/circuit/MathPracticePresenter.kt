@@ -58,7 +58,7 @@ class MathPracticePresenter
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
                         // Append number to current answer
-                        currentAnswer += event.number
+                        currentAnswer += event.number.toString()
                     }
 
                     is MathPracticeScreen.Event.ClearAnswer -> {
@@ -80,6 +80,7 @@ class MathPracticePresenter
                             isCorrect = null
                         }
                     }
+
                     is MathPracticeScreen.Event.NavigateBack -> {
                         // Navigation will be handled in Phase 1-6
                     }

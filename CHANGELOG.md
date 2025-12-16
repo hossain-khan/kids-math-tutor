@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated landing screen from example InboxScreen to MathPracticeScreen
 - OnboardingScreen now navigates to MathPracticeScreen after completion
+- Improved code clarity in MathPracticePresenter with explicit number-to-string conversion
+- Enhanced button spacing in MathPracticeUi following Material 3 design guidelines (8dp between icon and text)
 
 ### Removed
 - Example Circuit screens (ExampleInboxScreen, ExampleEmailDetailsScreen)
