@@ -11,11 +11,18 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.domain.model.PracticeSession
+import dev.hossain.mathtutor.domain.model.SessionAnswer
+import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.Instant
 
 /**
  * Presenter for [MathPracticeScreen].
@@ -28,6 +35,7 @@ class MathPracticePresenter
         @Assisted private val screen: MathPracticeScreen,
         @Assisted private val navigator: Navigator,
         private val problemGenerator: ProblemGenerator,
+        private val sessionRepository: SessionRepository,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -40,6 +48,9 @@ class MathPracticePresenter
 
         @Composable
         override fun present(): MathPracticeScreen.State {
+            // Track session start time
+            val sessionStartTime = remember { Instant.now() }
+
             var problems by remember {
                 mutableStateOf(
                     problemGenerator.generateProblems(
@@ -94,7 +105,47 @@ class MathPracticePresenter
                             currentAnswer = ""
                             isCorrect = null
                         } else {
-                            // All problems completed, navigate to results
+                            // All problems completed, save session and navigate to results
+                            val sessionEndTime = Instant.now()
+                            val durationSeconds =
+                                java.time.Duration
+                                    .between(sessionStartTime, sessionEndTime)
+                                    .seconds
+
+                            // Create PracticeSession with answers
+                            val sessionAnswers = mutableMapOf<String, SessionAnswer>()
+                            problems.forEachIndexed { index, problem ->
+                                val userAnswer = userAnswers.getOrNull(index)
+                                if (userAnswer != null) {
+                                    sessionAnswers[problem.id] =
+                                        SessionAnswer(
+                                            problemId = problem.id,
+                                            userAnswer = userAnswer,
+                                            isCorrect = problem.checkAnswer(userAnswer),
+                                        )
+                                }
+                            }
+
+                            val practiceSession =
+                                PracticeSession(
+                                    totalProblems = problems.size,
+                                    problems = problems,
+                                    answers = sessionAnswers,
+                                    operation = screen.operation,
+                                    durationSeconds = durationSeconds,
+                                    completedAt = sessionEndTime,
+                                )
+
+                            // Save session to database asynchronously
+                            CoroutineScope(Dispatchers.IO).launch {
+                                sessionRepository.saveSession(
+                                    session = practiceSession,
+                                    operation = screen.operation,
+                                    durationSeconds = durationSeconds,
+                                )
+                            }
+
+                            // Navigate to results
                             navigator.goTo(
                                 ResultsScreen(
                                     problems = problems,

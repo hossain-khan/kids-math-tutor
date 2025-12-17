@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 2-7: Math Practice Screen with Persistence** - Practice sessions now save to database with duration tracking
+  - Updated `PracticeSession.kt` domain model with new fields:
+    - Added `operation: MathOperation?` field to track the practiced operation
+    - Added `durationSeconds: Long?` field to track session duration
+    - Added `completedAt: Instant?` field to record completion timestamp
+    - Added `isComplete()` method to check if session is finished
+  - Updated `MathPracticePresenter.kt` with session persistence:
+    - Injected `SessionRepository` dependency via constructor
+    - Track session start time when presenter initializes
+    - Calculate session duration on completion (end time - start time)
+    - Create `PracticeSession` from problems and user answers
+    - Save completed session to database asynchronously via repository
+  - Updated test suite:
+    - Added 5 new unit tests to `PracticeSessionTest` for new fields and `isComplete()` method
+    - All tests passing with new domain model changes
+  - Verified animations integration from Phase 2-6:
+    - Success animation plays on correct answers with confetti effect
+    - Shake animation plays on incorrect answers with answer field oscillation
+    - Animations work smoothly without blocking user interaction
 - **Phase 2-6: Success & Error Animations** - Visual feedback animations for correct and incorrect answers
   - Created `ui/animation/` package for reusable animation components
   - Implemented `SuccessAnimation.kt` with confetti celebration effect

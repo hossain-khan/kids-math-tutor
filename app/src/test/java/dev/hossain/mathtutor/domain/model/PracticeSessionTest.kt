@@ -1,7 +1,10 @@
 package dev.hossain.mathtutor.domain.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Instant
 
 class PracticeSessionTest {
     private fun createMockProblem(id: String): MathProblem =
@@ -119,5 +122,71 @@ class PracticeSessionTest {
 
         assertEquals(3, session.problems.size)
         assertEquals(3, session.totalProblems)
+    }
+
+    @Test
+    fun `isComplete returns false when completedAt is null`() {
+        val session =
+            PracticeSession(
+                totalProblems = 5,
+                problems = emptyList(),
+                completedAt = null,
+            )
+
+        assertFalse(session.isComplete())
+    }
+
+    @Test
+    fun `isComplete returns true when completedAt is set`() {
+        val session =
+            PracticeSession(
+                totalProblems = 5,
+                problems = emptyList(),
+                completedAt = Instant.now(),
+            )
+
+        assertTrue(session.isComplete())
+    }
+
+    @Test
+    fun `session stores operation correctly`() {
+        val session =
+            PracticeSession(
+                totalProblems = 5,
+                problems = emptyList(),
+                operation = MathOperation.ADDITION,
+            )
+
+        assertEquals(MathOperation.ADDITION, session.operation)
+    }
+
+    @Test
+    fun `session stores durationSeconds correctly`() {
+        val session =
+            PracticeSession(
+                totalProblems = 5,
+                problems = emptyList(),
+                durationSeconds = 120L,
+            )
+
+        assertEquals(120L, session.durationSeconds)
+    }
+
+    @Test
+    fun `session can be created with all new fields`() {
+        val completedAt = Instant.now()
+        val session =
+            PracticeSession(
+                totalProblems = 10,
+                problems = emptyList(),
+                operation = MathOperation.SUBTRACTION,
+                durationSeconds = 180L,
+                completedAt = completedAt,
+            )
+
+        assertEquals(MathOperation.SUBTRACTION, session.operation)
+        assertEquals(180L, session.durationSeconds)
+        assertEquals(completedAt, session.completedAt)
+        assertTrue(session.isComplete())
     }
 }
