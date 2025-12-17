@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Operation Selector Screen (Phase 2-4)
+  - Created `OperationSelectorScreen` Circuit screen with State and Events
+  - Created `OperationSelectorPresenter` with SessionRepository integration
+  - Created `OperationSelectorUi` with Material 3 design
+  - Created reusable `OperationCard` component for displaying operation options
+  - Three operation cards: Addition, Subtraction, and Mix It Up
+  - Stats button enabled/disabled based on session history
+  - Integration with Circuit architecture using @CircuitInject annotations
+  - Updated MainActivity to use OperationSelectorScreen as initial screen after onboarding
+  - Updated OnboardingScreen to navigate to OperationSelectorScreen
 - Repository Layer implementation for session data management (Phase 2-2)
   - Created `SessionRepository` interface with all data operation methods
   - Created `SessionStats` domain model with star rating calculation (1-5 stars based on accuracy)
@@ -33,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Database operations: insert, query by operation, aggregate stats, date filtering
 
 ### Changed
+- Updated `MathPracticeScreen` to accept `operation` parameter for flexible operation selection
+- Updated `MathPracticePresenter` to use operation parameter from screen
 - Upgraded Room from 2.6.1 to 2.7.1 to fix KSP "unexpected jvm signature V" error with Kotlin 2.2
 - Updated KSP version from 2.3.3 to 2.2.21-2.0.4 to align with Kotlin 2.2.21
 - Simplified DatabaseModule to use direct @Provides methods instead of provider interfaces
