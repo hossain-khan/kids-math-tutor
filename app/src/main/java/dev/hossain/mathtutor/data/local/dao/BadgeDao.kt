@@ -44,6 +44,14 @@ interface BadgeDao {
     fun getBadgesByCategory(category: BadgeCategory): Flow<List<BadgeEntity>>
 
     /**
+     * Retrieves all unlocked badges.
+     *
+     * @return Flow of unlocked badges ordered by category and id
+     */
+    @Query("SELECT * FROM badges WHERE unlockedAt IS NOT NULL ORDER BY category, id")
+    fun getUnlockedBadges(): Flow<List<BadgeEntity>>
+
+    /**
      * Counts the number of unlocked badges.
      *
      * @return Flow of unlocked badge count

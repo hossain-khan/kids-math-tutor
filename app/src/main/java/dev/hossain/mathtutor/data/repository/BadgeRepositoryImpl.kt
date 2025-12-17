@@ -43,7 +43,10 @@ class BadgeRepositoryImpl
                 .getBadgesByCategory(category)
                 .map { entities -> entities.map { BadgeMapper.toDomain(it) } }
 
-        override fun getUnlockedBadges(): Flow<List<Badge>> = getAllBadges().map { badges -> badges.filter { it.isUnlocked() } }
+        override fun getUnlockedBadges(): Flow<List<Badge>> =
+            badgeDao
+                .getUnlockedBadges()
+                .map { entities -> entities.map { BadgeMapper.toDomain(it) } }
 
         override fun getProgressSummary(): Flow<BadgeProgress> =
             combine(

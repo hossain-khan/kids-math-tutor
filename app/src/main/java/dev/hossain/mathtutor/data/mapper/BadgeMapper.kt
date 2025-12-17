@@ -93,37 +93,63 @@ object BadgeMapper {
 
         return when (type) {
             "ProblemCount" -> {
-                BadgeRequirement.ProblemCount(count = params["count"]!!.toInt())
+                val count =
+                    params["count"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'count' parameter in requirement data")
+                BadgeRequirement.ProblemCount(count = count)
             }
 
             "OperationCount" -> {
-                BadgeRequirement.OperationCount(
-                    operation = MathOperation.valueOf(params["operation"]!!),
-                    count = params["count"]!!.toInt(),
-                )
+                val operation =
+                    params["operation"]?.let {
+                        try {
+                            MathOperation.valueOf(it)
+                        } catch (e: IllegalArgumentException) {
+                            throw IllegalArgumentException("Invalid operation value: $it", e)
+                        }
+                    } ?: throw IllegalArgumentException("Missing 'operation' parameter in requirement data")
+                val count =
+                    params["count"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'count' parameter in requirement data")
+                BadgeRequirement.OperationCount(operation = operation, count = count)
             }
 
             "ConsecutiveCorrect" -> {
-                BadgeRequirement.ConsecutiveCorrect(count = params["count"]!!.toInt())
+                val count =
+                    params["count"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'count' parameter in requirement data")
+                BadgeRequirement.ConsecutiveCorrect(count = count)
             }
 
             "SessionAccuracy" -> {
-                BadgeRequirement.SessionAccuracy(
-                    percentage = params["percentage"]!!.toFloat(),
-                    sessionCount = params["sessionCount"]!!.toInt(),
-                )
+                val percentage =
+                    params["percentage"]?.toFloatOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'percentage' parameter in requirement data")
+                val sessionCount =
+                    params["sessionCount"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'sessionCount' parameter in requirement data")
+                BadgeRequirement.SessionAccuracy(percentage = percentage, sessionCount = sessionCount)
             }
 
             "DailyStreak" -> {
-                BadgeRequirement.DailyStreak(days = params["days"]!!.toInt())
+                val days =
+                    params["days"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'days' parameter in requirement data")
+                BadgeRequirement.DailyStreak(days = days)
             }
 
             "ProblemSpeed" -> {
-                BadgeRequirement.ProblemSpeed(maxSeconds = params["maxSeconds"]!!.toInt())
+                val maxSeconds =
+                    params["maxSeconds"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'maxSeconds' parameter in requirement data")
+                BadgeRequirement.ProblemSpeed(maxSeconds = maxSeconds)
             }
 
             "MixedSessions" -> {
-                BadgeRequirement.MixedSessions(count = params["count"]!!.toInt())
+                val count =
+                    params["count"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'count' parameter in requirement data")
+                BadgeRequirement.MixedSessions(count = count)
             }
 
             else -> {

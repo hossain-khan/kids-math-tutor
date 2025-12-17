@@ -88,7 +88,7 @@ class BadgeRepositoryImplTest {
             val now = Instant.now()
             val unlockedEntity = createBadgeEntity("unlocked", "Unlocked Badge", unlockedAt = now)
             val lockedEntity = createBadgeEntity("locked", "Locked Badge", unlockedAt = null)
-            fakeDao.allBadges.value = listOf(unlockedEntity, lockedEntity)
+            fakeDao.unlockedBadges.value = listOf(unlockedEntity)
 
             val badges = repository.getUnlockedBadges().first()
 
@@ -102,7 +102,7 @@ class BadgeRepositoryImplTest {
         runTest {
             val lockedEntity1 = createBadgeEntity("locked1", "Locked Badge 1", unlockedAt = null)
             val lockedEntity2 = createBadgeEntity("locked2", "Locked Badge 2", unlockedAt = null)
-            fakeDao.allBadges.value = listOf(lockedEntity1, lockedEntity2)
+            fakeDao.unlockedBadges.value = emptyList()
 
             val badges = repository.getUnlockedBadges().first()
 
@@ -207,6 +207,7 @@ class BadgeRepositoryImplTest {
         val allBadges = MutableStateFlow<List<BadgeEntity>>(emptyList())
         val recentUnlockedBadges = MutableStateFlow<List<BadgeEntity>>(emptyList())
         val badgesByCategory = mutableMapOf<BadgeCategory, MutableStateFlow<List<BadgeEntity>>>()
+        val unlockedBadges = MutableStateFlow<List<BadgeEntity>>(emptyList())
         val unlockedCount = MutableStateFlow(0)
         val totalCount = MutableStateFlow(0)
 
@@ -220,6 +221,8 @@ class BadgeRepositoryImplTest {
 
         override fun getBadgesByCategory(category: BadgeCategory): Flow<List<BadgeEntity>> =
             badgesByCategory.getOrPut(category) { MutableStateFlow(emptyList()) }
+
+        override fun getUnlockedBadges(): Flow<List<BadgeEntity>> = unlockedBadges
 
         override fun getUnlockedCount(): Flow<Int> = unlockedCount
 

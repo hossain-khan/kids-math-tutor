@@ -244,7 +244,7 @@ class BadgeMapperTest {
         val entity = BadgeMapper.toEntity(badge)
 
         assertEquals("SessionAccuracy", entity.requirementType)
-        assert(entity.requirementData.contains("percentage=90"))
+        assert(entity.requirementData.contains("percentage=90.0"))
         assert(entity.requirementData.contains("sessionCount=3"))
     }
 
