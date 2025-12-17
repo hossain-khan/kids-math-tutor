@@ -207,7 +207,7 @@ class SessionDaoTest {
             val zonedNow = now.atZone(java.time.ZoneId.systemDefault())
             val startOfDay = zonedNow.toLocalDate().atStartOfDay(zonedNow.zone)
             val endOfDay = startOfDay.plusDays(1)
-            
+
             val startOfDayMillis = startOfDay.toInstant().toEpochMilli()
             val endOfDayMillis = endOfDay.toInstant().toEpochMilli()
 
