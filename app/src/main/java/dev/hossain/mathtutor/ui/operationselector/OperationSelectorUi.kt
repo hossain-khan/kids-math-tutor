@@ -118,13 +118,14 @@ fun OperationSelectorUi(
             )
 
             // Mix It Up Card
+            // TODO: Implement MathOperation.MIXED type and mixed problem generation
+            // For now, using ADDITION as placeholder until mixed operation mode is implemented
             OperationCard(
                 title = "Mix It Up!",
                 icon = Icons.Default.Shuffle,
                 examples = listOf("Random problems"),
                 onClick = {
-                    // For now, we'll use ADDITION as the operation type
-                    // TODO: Implement mixed operation mode in future phase
+                    // Temporary: Using ADDITION until MathOperation.MIXED is implemented
                     state.eventSink(
                         OperationSelectorScreen.Event.OperationSelected(
                             MathOperation.ADDITION,
