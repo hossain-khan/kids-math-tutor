@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 3-2: Badge Repository & Use Case** - Implemented badge repository and unlock logic
+  - Created `BadgeRepository` interface with 7 methods (getAllBadges, getRecentlyUnlockedBadges, getBadgesByCategory, getUnlockedBadges, getProgressSummary, unlockBadge, initializeBadges)
+  - Created `BadgeRepositoryImpl` with Flow-based reactive data streams and Metro DI
+  - Created `BadgeMapper` for Badge ↔ BadgeEntity conversion using simple key=value serialization
+  - Created `CheckBadgeUnlocksUseCase` for automated badge checking and unlocking
+  - Implemented badge unlock logic for 4 requirement types:
+    - ProblemCount: Track total problems solved
+    - OperationCount: Track problems solved per operation
+    - SessionAccuracy: Verify session accuracy requirements
+    - MixedSessions: Track mixed mode sessions
+  - Added TODO markers for 3 unimplemented requirements (ConsecutiveCorrect, DailyStreak, ProblemSpeed)
+  - Comprehensive unit tests:
+    - BadgeMapperTest (14 tests) - All requirement type conversions
+    - BadgeRepositoryImplTest (17 tests) - All repository operations
+    - CheckBadgeUnlocksUseCaseTest (13 tests) - Badge unlock logic for each requirement
+  - All 222 unit tests passing with >85% coverage for badge components
 - **Phase 3-1: Badge System Database Setup** - Implemented badge system database schema and models
   - Created domain models:
     - `Badge.kt` data class with `isUnlocked()` method
