@@ -57,12 +57,16 @@ fun MathPracticeUi(
     state: MathPracticeScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    // Track shake animation state
+    // Track shake animation state and previous isCorrect value
     var shouldShake by remember { mutableStateOf(false) }
+    var previousIsCorrect by remember { mutableStateOf<Boolean?>(null) }
 
-    // Trigger shake when answer is incorrect
-    if (state.isCorrect == false && !shouldShake) {
+    // Trigger shake only on transition to incorrect state
+    if (state.isCorrect == false && previousIsCorrect != false) {
         shouldShake = true
+        previousIsCorrect = false
+    } else if (state.isCorrect != false) {
+        previousIsCorrect = state.isCorrect
     }
 
     Scaffold(

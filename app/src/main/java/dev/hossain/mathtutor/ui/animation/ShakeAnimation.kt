@@ -43,8 +43,7 @@ fun Modifier.shake(
                     )
                 }
 
-                // Reset and notify completion
-                offsetX.snapTo(0f)
+                // Notify completion (animation naturally returns to 0f via last keyframe)
                 onAnimationComplete()
             }
         }

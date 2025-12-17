@@ -1,9 +1,11 @@
 package dev.hossain.mathtutor.ui.animation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -14,18 +16,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
-import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -105,44 +103,34 @@ private fun ConfettiEffect(isVisible: Boolean) {
     val secondaryColor = MaterialTheme.colorScheme.secondary
     val tertiaryColor = MaterialTheme.colorScheme.tertiary
 
-    // Generate confetti particles when visible
+    // Generate confetti particles only once, not on every visibility change
     val particles =
-        remember(isVisible) {
-            if (isVisible) {
-                List(30) { index ->
-                    ConfettiParticle(
-                        color =
-                            when (index % 3) {
-                                0 -> primaryColor
-                                1 -> secondaryColor
-                                else -> tertiaryColor
-                            },
-                        startAngle = Random.nextFloat() * 360f,
-                        speed = Random.nextFloat() * 2f + 1f,
-                        size = Random.nextFloat() * 8f + 4f,
-                    )
-                }
-            } else {
-                emptyList()
+        remember {
+            List(30) { index ->
+                ConfettiParticle(
+                    color =
+                        when (index % 3) {
+                            0 -> primaryColor
+                            1 -> secondaryColor
+                            else -> tertiaryColor
+                        },
+                    startAngle = Random.nextFloat() * 360f,
+                    speed = Random.nextFloat() * 2f + 1f,
+                    size = Random.nextFloat() * 8f + 4f,
+                )
             }
         }
 
-    // Animation progress from 0f to 1f
-    var animationProgress by remember { mutableStateOf(0f) }
-
-    LaunchedEffect(isVisible) {
-        if (isVisible) {
-            animationProgress = 0f
-            val startTime = System.currentTimeMillis()
-            val duration = 1000L // 1 second animation
-
-            while (animationProgress < 1f) {
-                val elapsed = System.currentTimeMillis() - startTime
-                animationProgress = (elapsed.toFloat() / duration).coerceAtMost(1f)
-                delay(16L) // ~60 FPS
-            }
-        }
-    }
+    // Use Compose animation API for smoother performance
+    val animationProgress by animateFloatAsState(
+        targetValue = if (isVisible) 1f else 0f,
+        animationSpec =
+            tween(
+                durationMillis = 1000,
+                easing = LinearEasing,
+            ),
+        label = "confettiProgress",
+    )
 
     if (isVisible && particles.isNotEmpty()) {
         Canvas(modifier = Modifier.fillMaxSize()) {
