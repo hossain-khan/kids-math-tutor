@@ -20,8 +20,8 @@ import dev.zacsweers.metro.AssistedInject
  * Manages the state and business logic for displaying practice statistics.
  * Collects data from the session repository and formats it for display.
  */
+@AssistedInject
 class StatsPresenter
-    @AssistedInject
     constructor(
         @Assisted private val navigator: Navigator,
         private val sessionRepository: SessionRepository,

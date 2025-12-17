@@ -30,8 +30,8 @@ import java.time.Instant
  *
  * Manages the state and business logic for the math practice session.
  */
+@AssistedInject
 class MathPracticePresenter
-    @AssistedInject
     constructor(
         @Assisted private val screen: MathPracticeScreen,
         @Assisted private val navigator: Navigator,

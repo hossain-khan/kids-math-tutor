@@ -15,8 +15,8 @@ import dev.zacsweers.metro.AssistedInject
  *
  * Calculates session statistics and handles navigation events.
  */
+@AssistedInject
 class ResultsPresenter
-    @AssistedInject
     constructor(
         @Assisted private val screen: ResultsScreen,
         @Assisted private val navigator: Navigator,

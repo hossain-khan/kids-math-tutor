@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Phase 2-9: Code Quality Improvements** - Fixed all Kotlin compiler warnings
+  - Moved `@AssistedInject` annotation to class level for cleaner DI code in 4 presenters:
+    - `MathPracticePresenter`, `OperationSelectorPresenter`, `ResultsPresenter`, `StatsPresenter`
+  - Fixed deprecated Room API: `fallbackToDestructiveMigration()` now includes `dropAllTables` parameter
+  - Fixed annotation target warning in `UserPreferencesRepository` by using `@param:` target
+  - All 147 unit tests still passing after fixes
+  - Zero Kotlin lint warnings (lintKotlin passes cleanly)
+  - Code formatted with formatKotlin
+
 ### Changed
 - **Phase 2-8: Navigation Flow Updates** - Updated app navigation for improved user flow
   - Updated `ResultsPresenter.kt` to navigate to `OperationSelectorScreen` on "Try Again"

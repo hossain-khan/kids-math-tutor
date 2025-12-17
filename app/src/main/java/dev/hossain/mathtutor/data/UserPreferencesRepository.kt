@@ -27,7 +27,7 @@ interface UserPreferencesRepository {
 @Inject
 class UserPreferencesRepositoryImpl
     constructor(
-        @ApplicationContext private val context: Context,
+        @param:ApplicationContext private val context: Context,
     ) : UserPreferencesRepository {
         private object PreferencesKeys {
             val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")

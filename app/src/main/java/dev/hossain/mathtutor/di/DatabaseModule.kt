@@ -26,7 +26,7 @@ interface DatabaseModule {
                 context,
                 MathDatabase::class.java,
                 MathDatabase.DATABASE_NAME,
-            ).fallbackToDestructiveMigration()
+            ).fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
     @Provides
