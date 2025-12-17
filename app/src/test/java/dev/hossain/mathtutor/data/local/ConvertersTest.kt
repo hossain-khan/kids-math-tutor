@@ -91,7 +91,9 @@ class ConvertersTest {
 
     @Test
     fun `round trip conversion preserves Instant`() {
-        val original = Instant.now()
+        // Use ofEpochMilli to create an Instant with only millisecond precision
+        // to match the precision preserved by the converters
+        val original = Instant.ofEpochMilli(Instant.now().toEpochMilli())
         val converted = converters.toInstant(converters.fromInstant(original))
         assertEquals(original, converted)
     }
