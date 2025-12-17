@@ -99,13 +99,15 @@ fun SuccessAnimation(
  */
 @Composable
 private fun ConfettiEffect(isVisible: Boolean) {
+    // Get current theme colors
     val primaryColor = MaterialTheme.colorScheme.primary
     val secondaryColor = MaterialTheme.colorScheme.secondary
     val tertiaryColor = MaterialTheme.colorScheme.tertiary
 
-    // Generate confetti particles only once, not on every visibility change
+    // Generate confetti particles once per unique color combination
+    // This ensures particles are recreated only when theme changes
     val particles =
-        remember {
+        remember(primaryColor, secondaryColor, tertiaryColor) {
             List(30) { index ->
                 ConfettiParticle(
                     color =
