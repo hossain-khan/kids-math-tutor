@@ -44,7 +44,7 @@ class MathPracticePresenter
                 mutableStateOf(
                     problemGenerator.generateProblems(
                         count = screen.problemCount,
-                        operation = MathOperation.ADDITION,
+                        operation = screen.operation,
                     ),
                 )
             }

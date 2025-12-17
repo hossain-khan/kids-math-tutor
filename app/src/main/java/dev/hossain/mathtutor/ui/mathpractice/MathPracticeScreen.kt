@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.mathpractice
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import kotlinx.parcelize.Parcelize
 
@@ -12,10 +13,12 @@ import kotlinx.parcelize.Parcelize
  * This screen presents a series of math problems for the user to solve,
  * tracking progress and providing immediate feedback.
  *
+ * @param operation The math operation type for this practice session
  * @param problemCount Number of problems in this practice session
  */
 @Parcelize
 data class MathPracticeScreen(
+    val operation: MathOperation = MathOperation.ADDITION,
     val problemCount: Int = 10,
 ) : Screen {
     /**
