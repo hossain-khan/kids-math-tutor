@@ -19,7 +19,7 @@ data class DailyStreak(
 ) {
     /**
      * Updates the streak based on today's practice.
-     * Handles three scenarios:
+     * Handles four scenarios:
      * 1. First practice ever: Initialize streak to 1
      * 2. Same day practice: No change to streak
      * 3. Next consecutive day: Increment streak
