@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
+import dev.hossain.mathtutor.ui.operationselector.OperationSelectorScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -62,8 +62,8 @@ class ResultsPresenter
             ) { event ->
                 when (event) {
                     is ResultsScreen.Event.TryAgain -> {
-                        // Navigate back to a new practice session
-                        navigator.resetRoot(MathPracticeScreen())
+                        // Navigate back to operation selector to choose a new practice session
+                        navigator.resetRoot(OperationSelectorScreen)
                     }
 
                     is ResultsScreen.Event.NavigateBack -> {

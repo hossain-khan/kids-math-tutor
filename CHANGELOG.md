@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Phase 2-8: Navigation Flow Updates** - Updated app navigation for improved user flow
+  - Updated `ResultsPresenter.kt` to navigate to `OperationSelectorScreen` on "Try Again"
+    - Changed from `navigator.resetRoot(MathPracticeScreen())` to `navigator.resetRoot(OperationSelectorScreen)`
+    - Users can now select a new operation after viewing results
+  - Verified complete navigation flow:
+    - Onboarding → Operation Selector → Practice → Results → (Try Again) → Operation Selector
+    - Operation Selector → Stats → Back to Selector (using `navigator.pop()`)
+    - Practice → Back to Selector (using `navigator.pop()`)
+    - Results → Back to Practice (using `navigator.pop()`)
+  - All navigation uses appropriate Circuit Navigator methods:
+    - `navigator.resetRoot()` for replacing navigation stack (Onboarding → Selector, Results → Selector)
+    - `navigator.goTo()` for forward navigation with data (Selector → Practice, Practice → Results)
+    - `navigator.pop()` for back navigation (all back buttons)
+
 ### Added
 - **Phase 2-7: Math Practice Screen with Persistence** - Practice sessions now save to database with duration tracking
   - Updated `SessionAnswer.kt` domain model:
