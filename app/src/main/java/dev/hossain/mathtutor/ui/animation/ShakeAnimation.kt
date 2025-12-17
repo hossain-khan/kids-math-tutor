@@ -2,8 +2,6 @@ package dev.hossain.mathtutor.ui.animation
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,7 +28,7 @@ fun Modifier.shake(
         LaunchedEffect(shouldShake) {
             if (shouldShake) {
                 // Shake animation: oscillate left and right
-                // Duration: 500ms total (5 cycles * 100ms each)
+                // Duration: 490ms total (7 keyframes * 70ms each)
                 // Amplitude: 10dp horizontal movement
                 val shakeKeyframes = listOf(10f, -10f, 8f, -8f, 5f, -5f, 0f)
 
