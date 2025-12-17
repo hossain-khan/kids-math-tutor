@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented `SuccessAnimation.kt` with confetti celebration effect
     - Physics-based particle animation with gravity effect
     - Spring-driven scale animation for success message
-    - Uses MaterialTheme colors (primary, secondary, tertiary) for theme consistency
+    - Uses vibrant colors (6 colors) optimized to look good in both light and dark modes
     - Optimized for 60 FPS performance with Canvas API
     - Automatic show/hide with AnimatedVisibility
   - Implemented `ShakeAnimation.kt` for error feedback

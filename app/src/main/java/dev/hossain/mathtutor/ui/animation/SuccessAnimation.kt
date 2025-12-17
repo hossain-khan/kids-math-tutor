@@ -95,27 +95,29 @@ fun SuccessAnimation(
 /**
  * Confetti effect composable that displays animated particles.
  *
- * Uses Canvas for efficient particle rendering with theme colors.
+ * Uses Canvas for efficient particle rendering with vibrant colors.
+ * Colors are selected to look good in both light and dark modes.
  */
 @Composable
 private fun ConfettiEffect(isVisible: Boolean) {
-    // Get current theme colors
-    val primaryColor = MaterialTheme.colorScheme.primary
-    val secondaryColor = MaterialTheme.colorScheme.secondary
-    val tertiaryColor = MaterialTheme.colorScheme.tertiary
+    // Use vibrant colors that look good in both light and dark modes
+    // These colors are intentionally hardcoded for consistent visual appeal
+    val vibrantColors =
+        listOf(
+            Color(0xFFFF6B6B), // Vibrant Red
+            Color(0xFF4ECDC4), // Vibrant Teal
+            Color(0xFFFFD93D), // Vibrant Yellow
+            Color(0xFF95E1D3), // Vibrant Mint
+            Color(0xFFF38181), // Vibrant Pink
+            Color(0xFFAA96DA), // Vibrant Purple
+        )
 
-    // Generate confetti particles once per unique color combination
-    // This ensures particles are recreated only when theme changes
+    // Generate confetti particles once
     val particles =
-        remember(primaryColor, secondaryColor, tertiaryColor) {
+        remember {
             List(30) { index ->
                 ConfettiParticle(
-                    color =
-                        when (index % 3) {
-                            0 -> primaryColor
-                            1 -> secondaryColor
-                            else -> tertiaryColor
-                        },
+                    color = vibrantColors[index % vibrantColors.size],
                     startAngle = Random.nextFloat() * 360f,
                     speed = Random.nextFloat() * 2f + 1f,
                     size = Random.nextFloat() * 8f + 4f,
