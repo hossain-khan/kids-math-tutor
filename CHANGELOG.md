@@ -29,6 +29,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration with Circuit architecture using @CircuitInject annotations
   - Updated MainActivity to use OperationSelectorScreen as initial screen after onboarding
   - Updated OnboardingScreen to navigate to OperationSelectorScreen
+- Stats Screen for displaying practice session statistics and history (Phase 2-5)
+  - Created `StatsScreen` Circuit screen with State and Events
+  - Created `StatsPresenter` with SessionRepository integration
+  - Created `StatsUi` with Material 3 design and comprehensive statistics display
+  - Overall Progress section showing total problems solved and accuracy with star rating
+  - By Operation section displaying stats for each practiced operation (Addition, Subtraction)
+  - Recent Sessions section showing last 10 sessions with relative timestamps
+  - Empty state view for users with no practice history
+  - Created `TimeFormatter` utility for relative timestamp formatting ("Today, 2:45 PM", "Yesterday, 10:30 AM", "2 days ago", etc.)
+  - Integrated with OperationSelectorPresenter to enable stats navigation
+  - Star rating visualization (1-5 stars) based on accuracy percentage
+  - Comprehensive unit tests for StatsScreen (6 test cases)
+  - Comprehensive unit tests for TimeFormatter (7 test cases covering all time ranges)
 - Repository Layer implementation for session data management (Phase 2-2)
   - Created `SessionRepository` interface with all data operation methods
   - Created `SessionStats` domain model with star rating calculation (1-5 stars based on accuracy)

@@ -1,0 +1,526 @@
+package dev.hossain.mathtutor.ui.stats
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarOutline
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
+import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.util.TimeFormatter
+import dev.zacsweers.metro.AppScope
+import java.time.Instant
+
+/**
+ * UI for [StatsScreen].
+ *
+ * Displays practice statistics including overall progress, per-operation breakdown,
+ * and recent session history with Material 3 design.
+ */
+@CircuitInject(StatsScreen::class, AppScope::class)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StatsUi(
+    state: StatsScreen.State,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("My Stats")
+                },
+                navigationIcon = {
+                    IconButton(onClick = { state.eventSink(StatsScreen.Event.BackPressed) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                        )
+                    }
+                },
+            )
+        },
+        modifier = modifier.fillMaxSize(),
+    ) { paddingValues ->
+        if (state.overallStats.sessionCount == 0) {
+            // Empty state
+            EmptyStatsView(
+                onStartPractice = { state.eventSink(StatsScreen.Event.BackPressed) },
+                modifier = Modifier.padding(paddingValues),
+            )
+        } else {
+            // Stats content
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                // Overall Progress Section
+                item {
+                    Text(
+                        text = "Overall Progress",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+
+                item {
+                    OverallProgressCards(stats = state.overallStats)
+                }
+
+                // By Operation Section
+                if (state.operationStats.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "By Operation",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+
+                    items(state.operationStats.entries.toList()) { (operation, stats) ->
+                        OperationStatsCard(
+                            operation = operation,
+                            stats = stats,
+                        )
+                    }
+                }
+
+                // Recent Sessions Section
+                if (state.recentSessions.isNotEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Recent Sessions",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+
+                    items(state.recentSessions) { session ->
+                        RecentSessionItem(session = session)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Displays overall progress cards showing total problems and accuracy.
+ */
+@Composable
+private fun OverallProgressCards(
+    stats: SessionStats,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // Total Problems Card
+        Card(
+            modifier = Modifier.weight(1f),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                ),
+        ) {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "Total Problems",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stats.totalProblems.toString(),
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+        }
+
+        // Overall Accuracy Card
+        Card(
+            modifier = Modifier.weight(1f),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+        ) {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "Accuracy",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "${stats.accuracy.toInt()}%",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                StarRating(rating = stats.getStarRating())
+            }
+        }
+    }
+}
+
+/**
+ * Displays star rating visualization.
+ */
+@Composable
+private fun StarRating(
+    rating: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        repeat(5) { index ->
+            Icon(
+                imageVector =
+                    if (index < rating) {
+                        Icons.Filled.Star
+                    } else {
+                        Icons.Outlined.StarOutline
+                    },
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint =
+                    if (index < rating) {
+                        MaterialTheme.colorScheme.tertiary
+                    } else {
+                        MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.3f)
+                    },
+            )
+        }
+    }
+}
+
+/**
+ * Displays statistics card for a specific operation.
+ */
+@Composable
+private fun OperationStatsCard(
+    operation: MathOperation,
+    stats: SessionStats,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Operation Icon
+            Icon(
+                imageVector =
+                    when (operation) {
+                        MathOperation.ADDITION -> Icons.Default.Add
+                        MathOperation.SUBTRACTION -> Icons.Default.Remove
+                        else -> Icons.Default.Add
+                    },
+                contentDescription = operation.displayName,
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.primary,
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Stats
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = operation.displayName,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${stats.totalProblems} problems • ${stats.accuracy.toInt()}% accuracy",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            // Star Rating
+            StarRating(rating = stats.getStarRating())
+        }
+    }
+}
+
+/**
+ * Displays a single recent session item.
+ */
+@Composable
+private fun RecentSessionItem(
+    session: PracticeSessionEntity,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+        ) {
+            // Timestamp
+            Text(
+                text = TimeFormatter.formatRelativeTime(session.timestamp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Operation and Score
+                Column {
+                    Text(
+                        text = session.operation.displayName,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = "${session.correctAnswers}/${session.totalProblems} correct",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                // Accuracy Badge
+                Text(
+                    text = "${session.accuracy.toInt()}%",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Empty state view when no sessions exist.
+ */
+@Composable
+private fun EmptyStatsView(
+    onStartPractice: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        // Dog emoji represents the app's "pup tutor" theme
+        Text(
+            text = "🐕",
+            style = MaterialTheme.typography.displayLarge,
+            fontSize = MaterialTheme.typography.displayLarge.fontSize * 2, // Make emoji larger for visual emphasis
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "No practice sessions yet!",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Start practicing to see your stats here",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+// Preview functions
+@Preview(showBackground = true)
+@Composable
+private fun StatsUiPreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 50,
+                            correctCount = 45,
+                            accuracy = 90f,
+                            sessionCount = 5,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 30,
+                                    correctCount = 27,
+                                    accuracy = 90f,
+                                    sessionCount = 3,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 20,
+                                    correctCount = 18,
+                                    accuracy = 90f,
+                                    sessionCount = 2,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 9,
+                                incorrectAnswers = 1,
+                                accuracy = 90f,
+                                durationSeconds = 120,
+                                timestamp = Instant.now(),
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 8,
+                                incorrectAnswers = 2,
+                                accuracy = 80f,
+                                durationSeconds = 150,
+                                timestamp = Instant.now().minusSeconds(86400),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EmptyStatsUiPreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    overallStats = SessionStats.EMPTY,
+                    operationStats = emptyMap(),
+                    recentSessions = emptyList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StatsUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 50,
+                            correctCount = 45,
+                            accuracy = 90f,
+                            sessionCount = 5,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 30,
+                                    correctCount = 27,
+                                    accuracy = 90f,
+                                    sessionCount = 3,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 9,
+                                incorrectAnswers = 1,
+                                accuracy = 90f,
+                                durationSeconds = 120,
+                                timestamp = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}

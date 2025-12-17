@@ -9,6 +9,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
+import dev.hossain.mathtutor.ui.stats.StatsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -55,8 +56,7 @@ class OperationSelectorPresenter
                     }
 
                     is OperationSelectorScreen.Event.ViewStatsClicked -> {
-                        // TODO: Navigate to StatsScreen once implemented
-                        // navigator.goTo(StatsScreen())
+                        navigator.goTo(StatsScreen)
                     }
                 }
             }
