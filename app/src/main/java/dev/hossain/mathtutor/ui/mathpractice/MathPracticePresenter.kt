@@ -155,8 +155,8 @@ class MathPracticePresenter
                                     Timber.d("Saving session to database...")
                                     sessionRepository.saveSession(
                                         session = practiceSession,
-                                        operation = practiceSession.operation ?: screen.operation,
-                                        durationSeconds = practiceSession.durationSeconds ?: durationSeconds,
+                                        operation = practiceSession.operation!!,
+                                        durationSeconds = practiceSession.durationSeconds!!,
                                     )
                                     Timber.d("Session saved successfully")
                                 } catch (e: Exception) {

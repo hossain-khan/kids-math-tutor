@@ -3,6 +3,8 @@ package dev.hossain.mathtutor.ui.mathpractice
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.domain.model.PracticeSession
+import dev.hossain.mathtutor.domain.model.SessionAnswer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -227,11 +229,11 @@ class MathPracticePresenterTest {
         val userAnswers = listOf(2, null, 6) // First answered, second skipped, third answered
 
         // When - Create session answers for all problems
-        val sessionAnswers = mutableMapOf<String, dev.hossain.mathtutor.domain.model.SessionAnswer>()
+        val sessionAnswers = mutableMapOf<String, SessionAnswer>()
         problems.forEachIndexed { index, problem ->
             val userAnswer = userAnswers.getOrNull(index)
             sessionAnswers[problem.id] =
-                dev.hossain.mathtutor.domain.model.SessionAnswer(
+                SessionAnswer(
                     problemId = problem.id,
                     userAnswer = userAnswer,
                     isCorrect =
@@ -262,7 +264,7 @@ class MathPracticePresenterTest {
 
         // When - Create session answer for unanswered problem
         val sessionAnswer =
-            dev.hossain.mathtutor.domain.model.SessionAnswer(
+            SessionAnswer(
                 problemId = problem.id,
                 userAnswer = userAnswer,
                 isCorrect =
@@ -296,10 +298,10 @@ class MathPracticePresenterTest {
     fun practiceSession_createdWithCorrectFields() {
         // Given
         val problems = problemGenerator.generateProblems(3, MathOperation.ADDITION)
-        val sessionAnswers = mutableMapOf<String, dev.hossain.mathtutor.domain.model.SessionAnswer>()
+        val sessionAnswers = mutableMapOf<String, SessionAnswer>()
         problems.forEach { problem ->
             sessionAnswers[problem.id] =
-                dev.hossain.mathtutor.domain.model.SessionAnswer(
+                SessionAnswer(
                     problemId = problem.id,
                     userAnswer = problem.correctAnswer,
                     isCorrect = true,
@@ -310,7 +312,7 @@ class MathPracticePresenterTest {
 
         // When - Create practice session
         val practiceSession =
-            dev.hossain.mathtutor.domain.model.PracticeSession(
+            PracticeSession(
                 totalProblems = problems.size,
                 problems = problems,
                 answers = sessionAnswers,
@@ -335,11 +337,11 @@ class MathPracticePresenterTest {
         val userAnswers = listOf(2, null, 6, null, 10) // 3 answered, 2 skipped
 
         // When - Create session answers
-        val sessionAnswers = mutableMapOf<String, dev.hossain.mathtutor.domain.model.SessionAnswer>()
+        val sessionAnswers = mutableMapOf<String, SessionAnswer>()
         problems.forEachIndexed { index, problem ->
             val userAnswer = userAnswers.getOrNull(index)
             sessionAnswers[problem.id] =
-                dev.hossain.mathtutor.domain.model.SessionAnswer(
+                SessionAnswer(
                     problemId = problem.id,
                     userAnswer = userAnswer,
                     isCorrect =
