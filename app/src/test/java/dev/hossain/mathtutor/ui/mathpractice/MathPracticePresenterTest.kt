@@ -219,4 +219,142 @@ class MathPracticePresenterTest {
         // Then
         assertEquals("123", currentAnswer)
     }
+
+    @Test
+    fun sessionAnswers_includesAllProblems_evenUnanswered() {
+        // Given
+        val problems = problemGenerator.generateProblems(3, MathOperation.ADDITION)
+        val userAnswers = listOf(2, null, 6) // First answered, second skipped, third answered
+
+        // When - Create session answers for all problems
+        val sessionAnswers = mutableMapOf<String, dev.hossain.mathtutor.domain.model.SessionAnswer>()
+        problems.forEachIndexed { index, problem ->
+            val userAnswer = userAnswers.getOrNull(index)
+            sessionAnswers[problem.id] =
+                dev.hossain.mathtutor.domain.model.SessionAnswer(
+                    problemId = problem.id,
+                    userAnswer = userAnswer,
+                    isCorrect =
+                        userAnswer?.let { answer ->
+                            problem.checkAnswer(answer)
+                        } ?: false,
+                )
+        }
+
+        // Then - All problems should be recorded
+        assertEquals(3, sessionAnswers.size)
+        // First problem (1+1=2): answered correctly
+        assertTrue(sessionAnswers[problems[0].id]?.isCorrect == true)
+        assertEquals(2, sessionAnswers[problems[0].id]?.userAnswer)
+        // Second problem (2+2=4): skipped
+        assertFalse(sessionAnswers[problems[1].id]?.isCorrect ?: true)
+        assertNull(sessionAnswers[problems[1].id]?.userAnswer)
+        // Third problem (3+3=6): answered correctly
+        assertTrue(sessionAnswers[problems[2].id]?.isCorrect == true)
+        assertEquals(6, sessionAnswers[problems[2].id]?.userAnswer)
+    }
+
+    @Test
+    fun sessionAnswers_correctlyMarksSkippedProblems() {
+        // Given
+        val problem = MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8)
+        val userAnswer: Int? = null
+
+        // When - Create session answer for unanswered problem
+        val sessionAnswer =
+            dev.hossain.mathtutor.domain.model.SessionAnswer(
+                problemId = problem.id,
+                userAnswer = userAnswer,
+                isCorrect =
+                    userAnswer?.let { answer ->
+                        problem.checkAnswer(answer)
+                    } ?: false,
+            )
+
+        // Then - Should be marked as incorrect with null answer
+        assertFalse(sessionAnswer.isCorrect)
+        assertNull(sessionAnswer.userAnswer)
+    }
+
+    @Test
+    fun sessionDuration_calculatesCorrectly() {
+        // Given
+        val startTime = java.time.Instant.parse("2025-01-01T10:00:00Z")
+        val endTime = java.time.Instant.parse("2025-01-01T10:02:30Z")
+
+        // When - Calculate duration
+        val durationSeconds =
+            java.time.Duration
+                .between(startTime, endTime)
+                .seconds
+
+        // Then - Should be 150 seconds (2 minutes 30 seconds)
+        assertEquals(150L, durationSeconds)
+    }
+
+    @Test
+    fun practiceSession_createdWithCorrectFields() {
+        // Given
+        val problems = problemGenerator.generateProblems(3, MathOperation.ADDITION)
+        val sessionAnswers = mutableMapOf<String, dev.hossain.mathtutor.domain.model.SessionAnswer>()
+        problems.forEach { problem ->
+            sessionAnswers[problem.id] =
+                dev.hossain.mathtutor.domain.model.SessionAnswer(
+                    problemId = problem.id,
+                    userAnswer = problem.correctAnswer,
+                    isCorrect = true,
+                )
+        }
+        val completedAt = java.time.Instant.now()
+        val durationSeconds = 120L
+
+        // When - Create practice session
+        val practiceSession =
+            dev.hossain.mathtutor.domain.model.PracticeSession(
+                totalProblems = problems.size,
+                problems = problems,
+                answers = sessionAnswers,
+                operation = MathOperation.ADDITION,
+                durationSeconds = durationSeconds,
+                completedAt = completedAt,
+            )
+
+        // Then - All fields should be set correctly
+        assertEquals(3, practiceSession.totalProblems)
+        assertEquals(MathOperation.ADDITION, practiceSession.operation)
+        assertEquals(120L, practiceSession.durationSeconds)
+        assertEquals(completedAt, practiceSession.completedAt)
+        assertTrue(practiceSession.isComplete())
+        assertEquals(3, practiceSession.getCorrectCount())
+    }
+
+    @Test
+    fun sessionStats_countsAnsweredAndUnanswered() {
+        // Given
+        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION)
+        val userAnswers = listOf(2, null, 6, null, 10) // 3 answered, 2 skipped
+
+        // When - Create session answers
+        val sessionAnswers = mutableMapOf<String, dev.hossain.mathtutor.domain.model.SessionAnswer>()
+        problems.forEachIndexed { index, problem ->
+            val userAnswer = userAnswers.getOrNull(index)
+            sessionAnswers[problem.id] =
+                dev.hossain.mathtutor.domain.model.SessionAnswer(
+                    problemId = problem.id,
+                    userAnswer = userAnswer,
+                    isCorrect =
+                        userAnswer?.let { answer ->
+                            problem.checkAnswer(answer)
+                        } ?: false,
+                )
+        }
+
+        // Then - Should track answered vs unanswered
+        val answeredCount = sessionAnswers.count { it.value.userAnswer != null }
+        val correctCount = sessionAnswers.values.count { it.isCorrect }
+
+        assertEquals(5, sessionAnswers.size) // All problems recorded
+        assertEquals(3, answeredCount) // 3 answered
+        assertEquals(3, correctCount) // All answered were correct
+    }
 }

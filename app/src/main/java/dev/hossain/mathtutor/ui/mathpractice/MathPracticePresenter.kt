@@ -22,6 +22,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -114,19 +115,29 @@ class MathPracticePresenter
                                     .between(sessionStartTime, sessionEndTime)
                                     .seconds
 
-                            // Create PracticeSession with answers
+                            Timber.d("Session completed: duration=${durationSeconds}s, operation=${screen.operation}")
+
+                            // Create PracticeSession with answers for ALL problems (including unanswered)
                             val sessionAnswers = mutableMapOf<String, SessionAnswer>()
                             problems.forEachIndexed { index, problem ->
                                 val userAnswer = userAnswers.getOrNull(index)
-                                if (userAnswer != null) {
-                                    sessionAnswers[problem.id] =
-                                        SessionAnswer(
-                                            problemId = problem.id,
-                                            userAnswer = userAnswer,
-                                            isCorrect = problem.checkAnswer(userAnswer),
-                                        )
-                                }
+                                // Save all problems, including unanswered ones
+                                sessionAnswers[problem.id] =
+                                    SessionAnswer(
+                                        problemId = problem.id,
+                                        userAnswer = userAnswer,
+                                        isCorrect =
+                                            userAnswer?.let { answer ->
+                                                problem.checkAnswer(answer)
+                                            } ?: false,
+                                    )
                             }
+
+                            val correctCount = sessionAnswers.values.count { it.isCorrect }
+                            Timber.d(
+                                "Session stats: answered=${sessionAnswers.count { it.value.userAnswer != null }}/${problems.size}, " +
+                                    "correct=$correctCount",
+                            )
 
                             val practiceSession =
                                 PracticeSession(
@@ -140,11 +151,17 @@ class MathPracticePresenter
 
                             // Save session to database asynchronously
                             coroutineScope.launch(Dispatchers.IO) {
-                                sessionRepository.saveSession(
-                                    session = practiceSession,
-                                    operation = screen.operation,
-                                    durationSeconds = durationSeconds,
-                                )
+                                try {
+                                    Timber.d("Saving session to database...")
+                                    sessionRepository.saveSession(
+                                        session = practiceSession,
+                                        operation = practiceSession.operation ?: screen.operation,
+                                        durationSeconds = practiceSession.durationSeconds ?: durationSeconds,
+                                    )
+                                    Timber.d("Session saved successfully")
+                                } catch (e: Exception) {
+                                    Timber.e(e, "Failed to save session")
+                                }
                             }
 
                             // Navigate to results
