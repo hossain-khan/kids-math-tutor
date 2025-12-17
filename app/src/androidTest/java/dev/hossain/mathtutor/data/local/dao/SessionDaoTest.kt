@@ -35,7 +35,7 @@ class SessionDaoTest {
                 .inMemoryDatabaseBuilder(
                     ApplicationProvider.getApplicationContext(),
                     MathDatabase::class.java,
-                ).allowMainThreadQueries() // Only for testing
+                ).allowMainThreadQueries() // For testing only - allows synchronous queries on main thread. Never use in production!
                 .build()
         sessionDao = database.sessionDao()
     }
@@ -202,21 +202,32 @@ class SessionDaoTest {
     @Test
     fun getTodaySessions_filtersCurrentDay() =
         runTest {
+            // Calculate start and end of today in local timezone
+            val now = Instant.now()
+            val zonedNow = now.atZone(java.time.ZoneId.systemDefault())
+            val startOfDay = zonedNow.toLocalDate().atStartOfDay(zonedNow.zone)
+            val endOfDay = startOfDay.plusDays(1)
+            
+            val startOfDayMillis = startOfDay.toInstant().toEpochMilli()
+            val endOfDayMillis = endOfDay.toInstant().toEpochMilli()
+
             // Insert session with today's timestamp
             val today = Instant.now()
             sessionDao.insertSession(createTestSession(timestamp = today))
 
-            // Insert session from yesterday (24 hours ago)
-            val yesterday = Instant.now().minusSeconds(24 * 60 * 60)
+            // Insert session from yesterday (30 hours ago to be safe across timezone boundaries)
+            val yesterday = Instant.now().minusSeconds(30 * 60 * 60)
             sessionDao.insertSession(createTestSession(timestamp = yesterday))
 
-            val todaySessions = sessionDao.getTodaySessions().first()
+            val todaySessions = sessionDao.getTodaySessions(startOfDayMillis, endOfDayMillis).first()
 
             // Should only get today's session
             assertEquals(1, todaySessions.size)
-            // Verify it's actually today's session by checking timestamp is recent
-            val sessionAge = Instant.now().epochSecond - todaySessions[0].timestamp.epochSecond
-            assertTrue("Session should be from today", sessionAge < 24 * 60 * 60)
+            // Verify it's the today session by checking it's not the yesterday one
+            assertTrue(
+                "Session should be from today",
+                todaySessions[0].timestamp.toEpochMilli() >= startOfDayMillis,
+            )
         }
 
     @Test

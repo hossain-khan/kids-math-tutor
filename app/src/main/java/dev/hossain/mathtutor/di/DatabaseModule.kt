@@ -7,23 +7,19 @@ import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
 /**
- * Provides Room database instance for the application.
- * Uses Metro DI to provide database as a singleton scoped to the application lifecycle.
+ * Provides Room database and DAO for the application.
+ * Uses Metro DI to provide database and DAO as singletons scoped to the application lifecycle.
  */
-interface DatabaseProvider {
-    fun provideDatabase(): MathDatabase
-}
-
 @SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
 @Inject
-class DatabaseProviderImpl
+class DatabaseModule
     constructor(
         @ApplicationContext private val context: Context,
-    ) : DatabaseProvider {
+    ) {
         private val database: MathDatabase by lazy {
             Room
                 .databaseBuilder(
@@ -34,23 +30,11 @@ class DatabaseProviderImpl
                 .build()
         }
 
-        override fun provideDatabase(): MathDatabase = database
-    }
+        @Provides
+        @SingleIn(AppScope::class)
+        fun provideMathDatabase(): MathDatabase = database
 
-/**
- * Provides SessionDao for database operations on practice sessions.
- * Depends on DatabaseProvider to get the database instance.
- */
-interface SessionDaoProvider {
-    fun provideSessionDao(): SessionDao
-}
-
-@SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
-@Inject
-class SessionDaoProviderImpl
-    constructor(
-        private val databaseProvider: DatabaseProvider,
-    ) : SessionDaoProvider {
-        override fun provideSessionDao(): SessionDao = databaseProvider.provideDatabase().sessionDao()
+        @Provides
+        @SingleIn(AppScope::class)
+        fun provideSessionDao(): SessionDao = database.sessionDao()
     }

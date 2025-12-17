@@ -80,17 +80,22 @@ interface SessionDao {
     suspend fun deleteAllSessions()
 
     /**
-     * Retrieves all sessions completed today.
-     * Uses SQLite date functions to compare timestamps.
+     * Retrieves all sessions completed today in the user's local timezone.
+     * Takes start and end of day timestamps as parameters to account for timezone differences.
      *
+     * @param startOfDayMillis Start of today in milliseconds since epoch (user's timezone)
+     * @param endOfDayMillis End of today in milliseconds since epoch (user's timezone)
      * @return Flow of today's sessions
      */
     @Query(
         """
         SELECT * FROM practice_sessions 
-        WHERE date(timestamp / 1000, 'unixepoch') = date('now')
+        WHERE timestamp >= :startOfDayMillis AND timestamp < :endOfDayMillis
         ORDER BY timestamp DESC
     """,
     )
-    fun getTodaySessions(): Flow<List<PracticeSessionEntity>>
+    fun getTodaySessions(
+        startOfDayMillis: Long,
+        endOfDayMillis: Long,
+    ): Flow<List<PracticeSessionEntity>>
 }

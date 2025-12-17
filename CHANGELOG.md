@@ -14,11 +14,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Created `SessionDao` with Flow-based query methods for reactive data access
   - Created `Converters` for Room type conversion (MathOperation enum and Instant timestamp)
   - Created `MathDatabase` with version 1 schema
-  - Implemented Metro DI providers for database and DAO (DatabaseModule.kt)
+  - Implemented Metro DI module for database and DAO provision
   - Comprehensive unit tests for Converters (11 test cases)
   - Comprehensive instrumented tests for SessionDao (16 test cases)
   - All DAO methods support Flow returns for reactive updates
   - Database operations: insert, query by operation, aggregate stats, date filtering
+
+### Changed
+- Simplified DatabaseModule to use direct @Provides methods instead of provider interfaces
+- Updated `getTodaySessions()` to accept timezone-aware timestamp parameters for correct date filtering
+- Enhanced test comment for `allowMainThreadQueries()` to emphasize production prohibition
+
+### Fixed
+- Removed incorrect `testImplementation` dependency for Room testing (only works with androidTest)
+- Fixed timezone issues in `getTodaySessions()` query and test to work correctly across timezones
+- Added Room schema export location configuration to build.gradle.kts
 
 ## [1.0.0] - 2025-12-16
 

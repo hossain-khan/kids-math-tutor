@@ -153,7 +153,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.androidx.ui.tooling)
     testImplementation(libs.junit)
-    testImplementation(libs.androidx.room.testing)
     testImplementation(libs.kotlinx.coroutines.test)
 }
 
@@ -161,6 +160,10 @@ ksp {
     // Circuit-KSP configuration for Metro DI integration
     // See https://slackhq.github.io/circuit/code-gen/
     arg("circuit.codegen.mode", "metro")
+    
+    // Room schema export location for database migrations
+    // See https://developer.android.com/training/data-storage/room/migrating-db-versions
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 metro {
