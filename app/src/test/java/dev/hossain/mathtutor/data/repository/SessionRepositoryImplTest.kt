@@ -30,12 +30,15 @@ class SessionRepositoryImplTest {
     @Test
     fun `saveSession inserts entity correctly`() =
         runTest {
-            val problems = listOf(MathProblem(1, 2, MathOperation.ADDITION, 3))
+            val problems = listOf(MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3))
             val session =
                 PracticeSession(
                     totalProblems = 1,
                     problems = problems,
-                    answers = mutableMapOf(problems[0].id to SessionAnswer(3, true, 1)),
+                    answers =
+                        mutableMapOf(
+                            problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 3, isCorrect = true, attemptCount = 1),
+                        ),
                 )
 
             val id = repository.saveSession(session, MathOperation.ADDITION, 60L, 1)
@@ -164,12 +167,15 @@ class SessionRepositoryImplTest {
     @Test
     fun `saveSession with different operations`() =
         runTest {
-            val problems = listOf(MathProblem(5, 3, MathOperation.SUBTRACTION, 2))
+            val problems = listOf(MathProblem(num1 = 5, num2 = 3, operation = MathOperation.SUBTRACTION, correctAnswer = 2))
             val session =
                 PracticeSession(
                     totalProblems = 1,
                     problems = problems,
-                    answers = mutableMapOf(problems[0].id to SessionAnswer(2, true, 1)),
+                    answers =
+                        mutableMapOf(
+                            problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 2, isCorrect = true, attemptCount = 1),
+                        ),
                 )
 
             repository.saveSession(session, MathOperation.SUBTRACTION, 45L, 2)
@@ -181,12 +187,15 @@ class SessionRepositoryImplTest {
     @Test
     fun `saveSession increments ID on multiple inserts`() =
         runTest {
-            val problems = listOf(MathProblem(1, 2, MathOperation.ADDITION, 3))
+            val problems = listOf(MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3))
             val session =
                 PracticeSession(
                     totalProblems = 1,
                     problems = problems,
-                    answers = mutableMapOf(problems[0].id to SessionAnswer(3, true, 1)),
+                    answers =
+                        mutableMapOf(
+                            problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 3, isCorrect = true, attemptCount = 1),
+                        ),
                 )
 
             val id1 = repository.saveSession(session, MathOperation.ADDITION, 60L)

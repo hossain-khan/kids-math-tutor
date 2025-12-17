@@ -14,8 +14,8 @@ class SessionMapperTest {
     fun `toEntity converts PracticeSession with all correct answers`() {
         val problems =
             listOf(
-                MathProblem(1, 2, MathOperation.ADDITION, 3),
-                MathProblem(3, 4, MathOperation.ADDITION, 7),
+                MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3),
+                MathProblem(num1 = 3, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 7),
             )
         val session =
             PracticeSession(
@@ -23,8 +23,8 @@ class SessionMapperTest {
                 problems = problems,
                 answers =
                     mutableMapOf(
-                        problems[0].id to SessionAnswer(3, true, 1),
-                        problems[1].id to SessionAnswer(7, true, 1),
+                        problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 3, isCorrect = true, attemptCount = 1),
+                        problems[1].id to SessionAnswer(problemId = problems[1].id, userAnswer = 7, isCorrect = true, attemptCount = 1),
                     ),
             )
 
@@ -44,9 +44,9 @@ class SessionMapperTest {
     fun `toEntity converts PracticeSession with mixed answers`() {
         val problems =
             listOf(
-                MathProblem(1, 2, MathOperation.ADDITION, 3),
-                MathProblem(3, 4, MathOperation.ADDITION, 7),
-                MathProblem(5, 6, MathOperation.ADDITION, 11),
+                MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3),
+                MathProblem(num1 = 3, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 7),
+                MathProblem(num1 = 5, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 11),
             )
         val session =
             PracticeSession(
@@ -54,9 +54,9 @@ class SessionMapperTest {
                 problems = problems,
                 answers =
                     mutableMapOf(
-                        problems[0].id to SessionAnswer(3, true, 1),
-                        problems[1].id to SessionAnswer(8, false, 2),
-                        problems[2].id to SessionAnswer(11, true, 1),
+                        problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 3, isCorrect = true, attemptCount = 1),
+                        problems[1].id to SessionAnswer(problemId = problems[1].id, userAnswer = 8, isCorrect = false, attemptCount = 2),
+                        problems[2].id to SessionAnswer(problemId = problems[2].id, userAnswer = 11, isCorrect = true, attemptCount = 1),
                     ),
             )
 
@@ -75,8 +75,8 @@ class SessionMapperTest {
     fun `toEntity converts PracticeSession with all incorrect answers`() {
         val problems =
             listOf(
-                MathProblem(1, 2, MathOperation.ADDITION, 3),
-                MathProblem(3, 4, MathOperation.ADDITION, 7),
+                MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3),
+                MathProblem(num1 = 3, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 7),
             )
         val session =
             PracticeSession(
@@ -84,8 +84,8 @@ class SessionMapperTest {
                 problems = problems,
                 answers =
                     mutableMapOf(
-                        problems[0].id to SessionAnswer(5, false, 2),
-                        problems[1].id to SessionAnswer(9, false, 3),
+                        problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 5, isCorrect = false, attemptCount = 2),
+                        problems[1].id to SessionAnswer(problemId = problems[1].id, userAnswer = 9, isCorrect = false, attemptCount = 3),
                     ),
             )
 
@@ -102,12 +102,15 @@ class SessionMapperTest {
 
     @Test
     fun `toEntity handles different operations`() {
-        val problems = listOf(MathProblem(5, 3, MathOperation.SUBTRACTION, 2))
+        val problems = listOf(MathProblem(num1 = 5, num2 = 3, operation = MathOperation.SUBTRACTION, correctAnswer = 2))
         val session =
             PracticeSession(
                 totalProblems = 1,
                 problems = problems,
-                answers = mutableMapOf(problems[0].id to SessionAnswer(2, true, 1)),
+                answers =
+                    mutableMapOf(
+                        problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 2, isCorrect = true, attemptCount = 1),
+                    ),
             )
 
         val entity = SessionMapper.toEntity(session, MathOperation.SUBTRACTION, 60L)
@@ -122,12 +125,18 @@ class SessionMapperTest {
     fun `toEntity handles large session with 10 problems`() {
         val problems =
             (1..10).map { i ->
-                MathProblem(i, i + 1, MathOperation.ADDITION, i + i + 1)
+                MathProblem(num1 = i, num2 = i + 1, operation = MathOperation.ADDITION, correctAnswer = i + i + 1)
             }
         val answers =
             problems
                 .mapIndexed { index, problem ->
-                    problem.id to SessionAnswer(problem.correctAnswer, index % 2 == 0, 1)
+                    problem.id to
+                        SessionAnswer(
+                            problemId = problem.id,
+                            userAnswer = problem.correctAnswer,
+                            isCorrect = index % 2 == 0,
+                            attemptCount = 1,
+                        )
                 }.toMap()
                 .toMutableMap()
 
