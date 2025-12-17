@@ -99,7 +99,12 @@ class CheckBadgeUnlocksUseCase
 
         /**
          * Checks if the session accuracy requirement is met.
-         * Verifies that N sessions meet or exceed the required accuracy percentage.
+         * Verifies that the most recent N sessions all meet or exceed the required accuracy percentage.
+         *
+         * Example: To unlock a badge requiring 90%+ accuracy in 3 sessions:
+         * - Requires: At least 3 sessions completed
+         * - Checks: The 3 most recent sessions
+         * - Unlocks: Only if all 3 sessions have >=90% accuracy
          */
         private suspend fun checkSessionAccuracy(requirement: BadgeRequirement.SessionAccuracy): Boolean {
             val recentSessions = sessionRepository.getRecentSessions(requirement.sessionCount).first()
@@ -107,13 +112,10 @@ class CheckBadgeUnlocksUseCase
                 return false
             }
 
-            // Check if the required number of most recent sessions meet the accuracy threshold
-            val sessionsWithRequiredAccuracy =
-                recentSessions
-                    .take(requirement.sessionCount)
-                    .count { it.accuracy >= requirement.percentage }
-
-            return sessionsWithRequiredAccuracy >= requirement.sessionCount
+            // Check if all of the N most recent sessions meet the accuracy threshold
+            return recentSessions
+                .take(requirement.sessionCount)
+                .all { it.accuracy >= requirement.percentage }
         }
 
         /**
