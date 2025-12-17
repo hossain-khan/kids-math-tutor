@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 2-7: Math Practice Screen with Persistence** - Practice sessions now save to database with duration tracking
+  - Updated `SessionAnswer.kt` domain model:
+    - Changed `userAnswer` from `Int` to `Int?` to support unanswered/skipped problems
+    - Updated documentation to reflect nullable userAnswer for tracking completeness
+  - Updated `PracticeSession.kt` domain model with new fields:
+    - Added `operation: MathOperation?` field to track the practiced operation
+    - Added `durationSeconds: Long?` field to track session duration
+    - Added `completedAt: Instant?` field to record completion timestamp
+    - Added `isComplete()` method to check if session is finished
+  - Updated `MathPracticePresenter.kt` with session persistence:
+    - Injected `SessionRepository` dependency via constructor
+    - Track session start time when presenter initializes
+    - Calculate session duration on completion (end time - start time)
+    - Create `PracticeSession` from ALL problems including unanswered ones (addresses data completeness)
+    - Save completed session to database asynchronously via repository
+    - Added Timber logging around key operations (session completion, saving, stats)
+    - Use values from PracticeSession object when calling saveSession (reduces duplication)
+    - Added error handling with try-catch around database save operation
+  - Updated test suite:
+    - Added 5 new unit tests to `PracticeSessionTest` for new fields and `isComplete()` method
+    - Added 6 new unit tests to `MathPracticePresenterTest` for session persistence logic:
+      - Session answers include all problems (even unanswered)
+      - Skipped problems correctly marked as incorrect with null answer
+      - Session duration calculation accuracy
+      - PracticeSession creation with correct fields
+      - Session stats counting for answered vs unanswered problems
+    - All tests passing with new domain model changes
+  - Verified animations integration from Phase 2-6:
+    - Success animation plays on correct answers with confetti effect
+    - Shake animation plays on incorrect answers with answer field oscillation
+    - Animations work smoothly without blocking user interaction
 - **Phase 2-6: Success & Error Animations** - Visual feedback animations for correct and incorrect answers
   - Created `ui/animation/` package for reusable animation components
   - Implemented `SuccessAnimation.kt` with confetti celebration effect
