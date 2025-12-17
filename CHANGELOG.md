@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 3-4: Daily Streak Tracking System** - Implemented daily streak tracking with database persistence
+  - Created domain models:
+    - `DailyStreak.kt` data class with 4 fields (currentStreak, longestStreak, lastPracticeDate, totalDaysPracticed)
+    - `updateStreak(today)` method to handle consecutive days, same day, and missed days
+    - `isStreakAlive(today)` method to check if streak is still active
+    - `EMPTY` constant for initial state
+  - Created data layer:
+    - `StreakEntity.kt` Room entity (singleton table with id=1)
+    - `StreakDao.kt` with 3 database operations (getStreak, insertStreak, deleteStreak)
+    - `StreakMapper.kt` for DailyStreak ↔ StreakEntity conversion
+    - `StreakRepositoryImpl.kt` with Flow-based reactive streams and Metro DI
+    - Added LocalDate type converter to `Converters.kt` (epoch day storage)
+  - Updated `MathDatabase.kt` to version 3:
+    - Added StreakEntity to database
+    - Created MIGRATION_2_3 migration script for streak table
+    - Added streakDao() accessor method
+  - Updated `DatabaseModule.kt` to provide StreakDao and apply new migration
+  - Created `StreakRepository.kt` interface with getStreak/saveStreak methods
+  - Created `UpdateStreakUseCase.kt` for streak business logic:
+    - Handles 4 scenarios: first practice, same day, consecutive day, missed day(s)
+    - Updates current streak and longest streak automatically
+    - Includes getCurrentStreak() method for read-only access
+  - Updated `CheckBadgeUnlocksUseCase.kt` to use StreakRepository for DailyStreak badge requirements
+  - Comprehensive unit tests (48 new tests):
+    - DailyStreakTest (16 tests) - All update and validation scenarios
+    - StreakMapperTest (6 tests) - Entity-domain conversion with null handling
+    - StreakRepositoryImplTest (6 tests) - Repository operations and Flow emissions
+    - UpdateStreakUseCaseTest (10 tests) - Use case logic and edge cases
+    - CheckBadgeUnlocksUseCaseTest (3 new tests) - DailyStreak badge requirement checking
+    - FakeStreakRepository added for testing
+  - All 263 unit tests passing with streak system fully covered
 - **Phase 3-2: Badge Repository & Use Case** - Implemented badge repository and unlock logic
   - Created `BadgeRepository` interface with 7 methods (getAllBadges, getRecentlyUnlockedBadges, getBadgesByCategory, getUnlockedBadges, getProgressSummary, unlockBadge, initializeBadges)
   - Created `BadgeRepositoryImpl` with Flow-based reactive data streams and Metro DI

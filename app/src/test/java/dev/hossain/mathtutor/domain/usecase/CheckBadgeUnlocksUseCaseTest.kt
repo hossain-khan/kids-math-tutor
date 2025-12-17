@@ -4,12 +4,14 @@ import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
+import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.repository.StreakRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -22,13 +24,15 @@ import java.time.Instant
 class CheckBadgeUnlocksUseCaseTest {
     private lateinit var fakeBadgeRepository: FakeBadgeRepository
     private lateinit var fakeSessionRepository: FakeSessionRepository
+    private lateinit var fakeStreakRepository: FakeStreakRepository
     private lateinit var useCase: CheckBadgeUnlocksUseCase
 
     @Before
     fun setup() {
         fakeBadgeRepository = FakeBadgeRepository()
         fakeSessionRepository = FakeSessionRepository()
-        useCase = CheckBadgeUnlocksUseCase(fakeBadgeRepository, fakeSessionRepository)
+        fakeStreakRepository = FakeStreakRepository()
+        useCase = CheckBadgeUnlocksUseCase(fakeBadgeRepository, fakeSessionRepository, fakeStreakRepository)
     }
 
     @Test
@@ -201,6 +205,55 @@ class CheckBadgeUnlocksUseCaseTest {
         }
 
     @Test
+    fun `checkAndUnlockBadges unlocks badge when DailyStreak requirement is met`() =
+        runTest {
+            val lockedBadge = createBadge("streak_badge", requirement = BadgeRequirement.DailyStreak(7))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            fakeStreakRepository.currentStreak =
+                DailyStreak(
+                    currentStreak = 7,
+                    longestStreak = 7,
+                    lastPracticeDate = java.time.LocalDate.now(),
+                    totalDaysPracticed = 7,
+                )
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertEquals(1, newlyUnlocked.size)
+            assertEquals("streak_badge", newlyUnlocked[0].id)
+        }
+
+    @Test
+    fun `checkAndUnlockBadges does not unlock badge when DailyStreak requirement not met`() =
+        runTest {
+            val lockedBadge = createBadge("streak_badge", requirement = BadgeRequirement.DailyStreak(7))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            fakeStreakRepository.currentStreak =
+                DailyStreak(
+                    currentStreak = 5,
+                    longestStreak = 10,
+                    lastPracticeDate = java.time.LocalDate.now(),
+                    totalDaysPracticed = 15,
+                )
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertTrue(newlyUnlocked.isEmpty())
+        }
+
+    @Test
+    fun `checkAndUnlockBadges does not unlock badge when no streak data exists`() =
+        runTest {
+            val lockedBadge = createBadge("streak_badge", requirement = BadgeRequirement.DailyStreak(3))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            fakeStreakRepository.currentStreak = null
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertTrue(newlyUnlocked.isEmpty())
+        }
+
+    @Test
     fun `checkAndUnlockBadges unlocks multiple badges when multiple requirements are met`() =
         runTest {
             val badge1 = createBadge("badge1", requirement = BadgeRequirement.ProblemCount(10))
@@ -308,6 +361,19 @@ class CheckBadgeUnlocksUseCaseTest {
 
         override suspend fun clearAllSessions() {
             // Not needed for these tests
+        }
+    }
+
+    /**
+     * Fake implementation of StreakRepository for testing.
+     */
+    private class FakeStreakRepository : StreakRepository {
+        var currentStreak: DailyStreak? = null
+
+        override fun getStreak(): Flow<DailyStreak?> = flowOf(currentStreak)
+
+        override suspend fun saveStreak(streak: DailyStreak) {
+            currentStreak = streak
         }
     }
 }

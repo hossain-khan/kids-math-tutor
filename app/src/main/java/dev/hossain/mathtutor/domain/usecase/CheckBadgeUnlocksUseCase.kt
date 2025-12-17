@@ -5,6 +5,7 @@ import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.repository.StreakRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
@@ -22,6 +23,7 @@ class CheckBadgeUnlocksUseCase
     constructor(
         private val badgeRepository: BadgeRepository,
         private val sessionRepository: SessionRepository,
+        private val streakRepository: StreakRepository,
     ) {
         /**
          * Checks all locked badges and unlocks any that meet their requirements.
@@ -120,14 +122,17 @@ class CheckBadgeUnlocksUseCase
 
         /**
          * Checks if the daily streak requirement is met.
-         * Note: This requires streak tracking, which is not yet implemented.
-         * Returns false until streak system is available.
          */
         private suspend fun checkDailyStreak(requirement: BadgeRequirement.DailyStreak): Boolean {
-            // TODO: Implement when StreakRepository is added
-            // Need to check current streak against requirement.days
-            Timber.d("DailyStreak check not yet implemented - requires streak tracking")
-            return false
+            val streak = streakRepository.getStreak().first()
+            if (streak == null) {
+                Timber.d("No streak data found")
+                return false
+            }
+
+            val meetsRequirement = streak.currentStreak >= requirement.days
+            Timber.d("DailyStreak check - Current: ${streak.currentStreak}, Required: ${requirement.days}, Met: $meetsRequirement")
+            return meetsRequirement
         }
 
         /**

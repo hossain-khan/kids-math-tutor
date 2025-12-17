@@ -4,10 +4,11 @@ import androidx.room.TypeConverter
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.MathOperation
 import java.time.Instant
+import java.time.LocalDate
 
 /**
  * Room type converters for custom types that need to be stored in the database.
- * Converts between Room-supported types (String, Long) and domain types (MathOperation, BadgeCategory, Instant).
+ * Converts between Room-supported types (String, Long) and domain types (MathOperation, BadgeCategory, Instant, LocalDate).
  */
 class Converters {
     /**
@@ -63,4 +64,22 @@ class Converters {
      */
     @TypeConverter
     fun toInstant(value: Long?): Instant? = value?.let { Instant.ofEpochMilli(it) }
+
+    /**
+     * Converts LocalDate to Long (epoch days) for database storage.
+     *
+     * @param date The LocalDate to convert
+     * @return Long representation as epoch days, or null if input is null
+     */
+    @TypeConverter
+    fun fromLocalDate(date: LocalDate?): Long? = date?.toEpochDay()
+
+    /**
+     * Converts Long (epoch days) from database back to LocalDate.
+     *
+     * @param value Long representation as epoch days
+     * @return LocalDate, or null if input is null
+     */
+    @TypeConverter
+    fun toLocalDate(value: Long?): LocalDate? = value?.let { LocalDate.ofEpochDay(it) }
 }
