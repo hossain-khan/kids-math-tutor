@@ -382,10 +382,11 @@ private fun EmptyStatsView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        // Dog emoji represents the app's "pup tutor" theme
         Text(
             text = "🐕",
             style = MaterialTheme.typography.displayLarge,
-            fontSize = MaterialTheme.typography.displayLarge.fontSize * 2,
+            fontSize = MaterialTheme.typography.displayLarge.fontSize * 2, // Make emoji larger for visual emphasis
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
