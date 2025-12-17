@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 2-3: Subtraction & Mixed Mode Problem Generation** - Problem generator now supports subtraction and mixed operations
+  - Added `MIXED` operation enum value to `MathOperation` with symbol "?" and displayName "Mix It Up"
+  - Implemented `generateSubtraction()` method ensuring larger number first (no negative results)
+  - Implemented `generateMixedProblem()` method with 50/50 addition/subtraction split
+  - Updated `generateSingleProblem()` to handle SUBTRACTION and MIXED operations
+  - Added `displayName` property to all `MathOperation` enum values for UI display
+  - Comprehensive test suite with 18 new test cases (total 31 tests for SimpleProblemGenerator)
+    - Subtraction tests verify: count, range (1-10), no negatives, larger-number-first, correct answers, operation type
+    - Mixed mode tests verify: count, both operations present, 50/50 distribution (60-140 out of 200), no negatives, correct answers
+    - High iteration testing (100-200 problems) to verify randomness and edge cases
+  - Added tests for MIXED operation in MathOperationTest: symbol, displayName, calculate() throws IllegalStateException
 - Operation Selector Screen (Phase 2-4)
   - Created `OperationSelectorScreen` Circuit screen with State and Events
   - Created `OperationSelectorPresenter` with SessionRepository integration
@@ -43,6 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Database operations: insert, query by operation, aggregate stats, date filtering
 
 ### Changed
+- Updated `MathOperation.calculate()` to throw `IllegalStateException` for MIXED operation (not directly calculable)
+- Updated `SimpleProblemGenerator` class documentation to reflect Phase 1-2 support (addition, subtraction, mixed)
 - Updated `MathPracticeScreen` to accept `operation` parameter for flexible operation selection
 - Updated `MathPracticePresenter` to use operation parameter from screen
 - Upgraded Room from 2.6.1 to 2.7.1 to fix KSP "unexpected jvm signature V" error with Kotlin 2.2

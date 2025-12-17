@@ -9,10 +9,12 @@ import dev.zacsweers.metro.SingleIn
 import kotlin.random.Random
 
 /**
- * Simple implementation of [ProblemGenerator] for Phase 1 MVP.
+ * Simple implementation of [ProblemGenerator] for Phase 1-2 MVP.
  *
  * Currently supports:
  * - Addition problems with numbers in range 1-10
+ * - Subtraction problems with numbers in range 1-10 (no negative results)
+ * - Mixed mode (random addition or subtraction)
  *
  * Future phases will expand to support more operations and difficulty levels.
  */
@@ -35,8 +37,12 @@ class SimpleProblemGenerator constructor() : ProblemGenerator {
         when (operation) {
             MathOperation.ADDITION -> generateAddition()
 
+            MathOperation.SUBTRACTION -> generateSubtraction()
+
+            MathOperation.MIXED -> generateMixedProblem()
+
             else -> throw IllegalArgumentException(
-                "Only ADDITION is supported in Phase 1. Requested: $operation",
+                "Only ADDITION, SUBTRACTION, and MIXED are supported. Requested: $operation",
             )
         }
 
@@ -56,5 +62,45 @@ class SimpleProblemGenerator constructor() : ProblemGenerator {
             operation = MathOperation.ADDITION,
             correctAnswer = answer,
         )
+    }
+
+    /**
+     * Generates a subtraction problem with numbers in range 1-10.
+     * Ensures the larger number is always first to prevent negative results.
+     *
+     * @return A math problem with random numbers between 1 and 10, no negative answers
+     */
+    private fun generateSubtraction(): MathProblem {
+        val num1 = Random.nextInt(1, 11) // 1-10 inclusive
+        val num2 = Random.nextInt(1, num1 + 1) // Ensure num2 <= num1 to avoid negatives
+        val answer = num1 - num2
+
+        return MathProblem(
+            num1 = num1,
+            num2 = num2,
+            operation = MathOperation.SUBTRACTION,
+            correctAnswer = answer,
+        )
+    }
+
+    /**
+     * Generates a mixed problem (randomly chooses between addition or subtraction).
+     * Uses a 50/50 split between operations.
+     *
+     * @return A math problem that is either addition or subtraction
+     */
+    private fun generateMixedProblem(): MathProblem {
+        val operation =
+            if (Random.nextBoolean()) {
+                MathOperation.ADDITION
+            } else {
+                MathOperation.SUBTRACTION
+            }
+
+        return when (operation) {
+            MathOperation.ADDITION -> generateAddition()
+            MathOperation.SUBTRACTION -> generateSubtraction()
+            else -> throw IllegalStateException("Mixed only supports ADD/SUB")
+        }
     }
 }
