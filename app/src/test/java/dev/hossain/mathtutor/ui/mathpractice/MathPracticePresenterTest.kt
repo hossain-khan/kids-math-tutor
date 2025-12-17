@@ -37,7 +37,7 @@ class MathPracticePresenterTest {
                     }
             }
 
-        screen = MathPracticeScreen(problemCount = 5)
+        screen = MathPracticeScreen(operation = MathOperation.ADDITION, problemCount = 5)
     }
 
     @Test
