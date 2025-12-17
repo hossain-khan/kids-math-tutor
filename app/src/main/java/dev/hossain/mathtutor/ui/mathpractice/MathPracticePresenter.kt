@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
@@ -19,7 +20,6 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -50,6 +50,8 @@ class MathPracticePresenter
         override fun present(): MathPracticeScreen.State {
             // Track session start time
             val sessionStartTime = remember { Instant.now() }
+            // Use lifecycle-aware coroutine scope
+            val coroutineScope = rememberCoroutineScope()
 
             var problems by remember {
                 mutableStateOf(
@@ -137,7 +139,7 @@ class MathPracticePresenter
                                 )
 
                             // Save session to database asynchronously
-                            CoroutineScope(Dispatchers.IO).launch {
+                            coroutineScope.launch(Dispatchers.IO) {
                                 sessionRepository.saveSession(
                                     session = practiceSession,
                                     operation = screen.operation,
