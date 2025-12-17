@@ -26,6 +26,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.ui.animation.SuccessAnimation
+import dev.hossain.mathtutor.ui.animation.shake
 import dev.hossain.mathtutor.ui.component.AnswerField
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
@@ -51,6 +57,14 @@ fun MathPracticeUi(
     state: MathPracticeScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // Track shake animation state
+    var shouldShake by remember { mutableStateOf(false) }
+
+    // Trigger shake when answer is incorrect
+    if (state.isCorrect == false && !shouldShake) {
+        shouldShake = true
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,13 +103,21 @@ fun MathPracticeUi(
                 ProblemCard(problem = problem)
             }
 
-            // Answer field
+            // Answer field with shake animation on incorrect answer
             AnswerField(
                 answer = state.currentAnswer,
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .shake(
+                            shouldShake = shouldShake,
+                            onAnimationComplete = {
+                                shouldShake = false
+                            },
+                        ),
             )
 
-            // Feedback display
+            // Feedback display with success animation
             FeedbackSection(isCorrect = state.isCorrect)
 
             Spacer(modifier = Modifier.weight(1f))
@@ -183,10 +205,16 @@ private fun FeedbackSection(
     ) {
         when (isCorrect) {
             true -> {
-                Text(
-                    text = "✓ Correct!",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                // Success animation for correct answer
+                SuccessAnimation(
+                    isVisible = true,
+                    content = {
+                        Text(
+                            text = "✓ Correct!",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    },
                 )
             }
 

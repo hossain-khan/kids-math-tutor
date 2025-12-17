@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 2-6: Success & Error Animations** - Visual feedback animations for correct and incorrect answers
+  - Created `ui/animation/` package for reusable animation components
+  - Implemented `SuccessAnimation.kt` with confetti celebration effect
+    - Physics-based particle animation with gravity effect
+    - Spring-driven scale animation for success message
+    - Uses MaterialTheme colors (primary, secondary, tertiary) for theme consistency
+    - Optimized for 60 FPS performance with Canvas API
+    - Automatic show/hide with AnimatedVisibility
+  - Implemented `ShakeAnimation.kt` for error feedback
+    - Horizontal shake modifier using graphicsLayer for optimal performance
+    - Left-right oscillation animation (7 keyframes over 490ms)
+    - Callback support for animation completion
+  - Integrated animations into `MathPracticeUi`
+    - Success animation displays on correct answers with confetti effect
+    - Shake animation triggers on answer field for incorrect answers
+    - Animations don't block user input or affect interaction
 - **Phase 2-3: Subtraction & Mixed Mode Problem Generation** - Problem generator now supports subtraction and mixed operations
   - Added `MIXED` operation enum value to `MathOperation` with symbol "?" and displayName "Mix It Up"
   - Implemented `generateSubtraction()` method ensuring larger number first (no negative results)
