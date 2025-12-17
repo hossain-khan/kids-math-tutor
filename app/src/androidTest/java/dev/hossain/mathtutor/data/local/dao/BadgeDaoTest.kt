@@ -102,7 +102,7 @@ class BadgeDaoTest {
                 ),
             )
 
-            val recentlyUnlocked = badgeDao.getRecentlyUnlockedBadges().first()
+            val recentlyUnlocked = badgeDao.getRecentlyUnlockedBadges(limit = 3).first()
 
             assertEquals(2, recentlyUnlocked.size)
             // Should be ordered by unlockedAt DESC (most recent first)

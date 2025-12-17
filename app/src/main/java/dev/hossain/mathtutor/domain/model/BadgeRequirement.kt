@@ -37,7 +37,7 @@ sealed class BadgeRequirement {
     /**
      * Badge requirement based on session accuracy percentage.
      *
-     * @property percentage The accuracy percentage required (0-100)
+     * @property percentage The accuracy percentage required (0.0-100.0, where 100.0 = perfect score)
      * @property sessionCount The number of sessions that must meet the accuracy requirement
      */
     data class SessionAccuracy(

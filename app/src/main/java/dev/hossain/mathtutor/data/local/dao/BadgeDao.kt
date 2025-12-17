@@ -26,12 +26,13 @@ interface BadgeDao {
 
     /**
      * Retrieves the most recently unlocked badges.
+     * Default limit of 3 badges should be applied at the repository layer.
      *
-     * @param limit Maximum number of badges to retrieve (default: 3)
+     * @param limit Maximum number of badges to retrieve
      * @return Flow of recently unlocked badges ordered by unlock date descending
      */
     @Query("SELECT * FROM badges WHERE unlockedAt IS NOT NULL ORDER BY unlockedAt DESC LIMIT :limit")
-    fun getRecentlyUnlockedBadges(limit: Int = 3): Flow<List<BadgeEntity>>
+    fun getRecentlyUnlockedBadges(limit: Int): Flow<List<BadgeEntity>>
 
     /**
      * Retrieves all badges for a specific category.
