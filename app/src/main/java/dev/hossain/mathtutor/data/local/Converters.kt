@@ -1,12 +1,13 @@
 package dev.hossain.mathtutor.data.local
 
 import androidx.room.TypeConverter
+import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.MathOperation
 import java.time.Instant
 
 /**
  * Room type converters for custom types that need to be stored in the database.
- * Converts between Room-supported types (String, Long) and domain types (MathOperation, Instant).
+ * Converts between Room-supported types (String, Long) and domain types (MathOperation, BadgeCategory, Instant).
  */
 class Converters {
     /**
@@ -26,6 +27,24 @@ class Converters {
      */
     @TypeConverter
     fun toMathOperation(value: String): MathOperation = MathOperation.valueOf(value)
+
+    /**
+     * Converts BadgeCategory enum to String for database storage.
+     *
+     * @param category The BadgeCategory enum value
+     * @return String representation of the category name
+     */
+    @TypeConverter
+    fun fromBadgeCategory(category: BadgeCategory): String = category.name
+
+    /**
+     * Converts String from database back to BadgeCategory enum.
+     *
+     * @param value String representation of the category name
+     * @return BadgeCategory enum value
+     */
+    @TypeConverter
+    fun toBadgeCategory(value: String): BadgeCategory = BadgeCategory.valueOf(value)
 
     /**
      * Converts Instant timestamp to Long (epoch milliseconds) for database storage.
