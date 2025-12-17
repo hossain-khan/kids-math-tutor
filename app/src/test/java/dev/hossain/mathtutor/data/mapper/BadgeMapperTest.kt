@@ -312,4 +312,21 @@ class BadgeMapperTest {
 
         BadgeMapper.toDomain(entity)
     }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `toDomain throws exception for malformed requirement data`() {
+        val entity =
+            BadgeEntity(
+                id = "malformed_badge",
+                name = "Malformed Badge",
+                description = "Malformed requirement data",
+                icon = "❌",
+                category = BadgeCategory.GETTING_STARTED,
+                requirementType = "ProblemCount",
+                requirementData = "invalid_data_without_equals_sign",
+                unlockedAt = null,
+            )
+
+        BadgeMapper.toDomain(entity)
+    }
 }

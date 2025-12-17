@@ -76,7 +76,7 @@ object BadgeMapper {
      * @param type The requirement type name
      * @param data String containing requirement parameters in key=value format
      * @return Deserialized badge requirement
-     * @throws IllegalArgumentException if the requirement type is unknown
+     * @throws IllegalArgumentException if the requirement type is unknown or data is malformed
      */
     private fun deserializeRequirement(
         type: String,
@@ -84,8 +84,11 @@ object BadgeMapper {
     ): BadgeRequirement {
         val params =
             data.split(",").associate {
-                val (key, value) = it.split("=")
-                key to value
+                val parts = it.split("=")
+                if (parts.size != 2) {
+                    throw IllegalArgumentException("Malformed requirement data: $it")
+                }
+                parts[0] to parts[1]
             }
 
         return when (type) {
