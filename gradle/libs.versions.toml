@@ -35,6 +35,10 @@ metro = "0.9.0"
 timber = "5.0.1"
 androidxWork = "2.11.0"
 datastorePreferences = "1.2.0"
+# Room Database - https://developer.android.com/jetpack/androidx/releases/room
+room = "2.6.1"
+# Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
+coroutines = "1.9.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -88,6 +92,15 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 # Timber - A logger with a small, extensible API
 # https://github.com/JakeWharton/timber
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# Room Database - https://developer.android.com/training/data-storage/room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
+
+# Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

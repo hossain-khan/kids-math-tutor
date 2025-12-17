@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Room Database integration for local data persistence (Phase 2-1)
+  - Room dependencies added to gradle/libs.versions.toml (Room 2.6.1, Coroutines Test 1.9.0)
+  - Created `PracticeSessionEntity` for storing practice session statistics
+  - Created `SessionDao` with Flow-based query methods for reactive data access
+  - Created `Converters` for Room type conversion (MathOperation enum and Instant timestamp)
+  - Created `MathDatabase` with version 1 schema
+  - Implemented Metro DI providers for database and DAO (DatabaseModule.kt)
+  - Comprehensive unit tests for Converters (11 test cases)
+  - Comprehensive instrumented tests for SessionDao (16 test cases)
+  - All DAO methods support Flow returns for reactive updates
+  - Database operations: insert, query by operation, aggregate stats, date filtering
+
 ## [1.0.0] - 2025-12-16
 
 ### Added
