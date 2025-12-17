@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Repository Layer implementation for session data management (Phase 2-2)
+  - Created `SessionRepository` interface with all data operation methods
+  - Created `SessionStats` domain model with star rating calculation (1-5 stars based on accuracy)
+  - Created `SessionMapper` for converting between domain and data layer objects
+  - Created `SessionRepositoryImpl` with Metro DI integration using `@ContributesBinding`
+  - Implemented Flow-based reactive data streams for all repository methods
+  - Combined stats calculation using Flow.combine for overall statistics
+  - Operation-specific stats grouping for detailed analytics
+  - Comprehensive unit tests for SessionStats (7 test cases)
+  - Comprehensive unit tests for SessionMapper (5 test cases covering all scenarios)
+  - Comprehensive unit tests for SessionRepositoryImpl (13 test cases, >85% coverage)
+  - All repository methods tested: saveSession, stats calculations, Flow emissions, operation grouping
 - Room Database integration for local data persistence (Phase 2-1)
   - Room dependencies added to gradle/libs.versions.toml (Room 2.6.1, Coroutines Test 1.9.0)
   - Created `PracticeSessionEntity` for storing practice session statistics
@@ -21,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Database operations: insert, query by operation, aggregate stats, date filtering
 
 ### Changed
+- Upgraded Room from 2.6.1 to 2.7.1 to fix KSP "unexpected jvm signature V" error with Kotlin 2.2
+- Updated KSP version from 2.3.3 to 2.2.21-2.0.4 to align with Kotlin 2.2.21
 - Simplified DatabaseModule to use direct @Provides methods instead of provider interfaces
 - Updated `getTodaySessions()` to accept timezone-aware timestamp parameters for correct date filtering
 - Enhanced test comment for `allowMainThreadQueries()` to emphasize production prohibition
@@ -29,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed incorrect `testImplementation` dependency for Room testing (only works with androidTest)
 - Fixed timezone issues in `getTodaySessions()` query and test to work correctly across timezones
 - Added Room schema export location configuration to build.gradle.kts
+- Fixed Room 2.6.1 KSP compatibility issue by upgrading to Room 2.7.1 (resolves JVM signature V error)
 
 ## [1.0.0] - 2025-12-16
 
