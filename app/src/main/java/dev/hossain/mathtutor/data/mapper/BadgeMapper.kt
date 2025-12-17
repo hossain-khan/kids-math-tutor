@@ -4,11 +4,10 @@ import dev.hossain.mathtutor.data.local.entity.BadgeEntity
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.MathOperation
-import org.json.JSONObject
 
 /**
  * Mapper for converting between Badge domain model and BadgeEntity database model.
- * Handles serialization and deserialization of badge requirements.
+ * Handles serialization and deserialization of badge requirements using simple string formatting.
  */
 object BadgeMapper {
     /**
@@ -51,74 +50,31 @@ object BadgeMapper {
     }
 
     /**
-     * Serializes a badge requirement to type and JSON data strings.
+     * Serializes a badge requirement to type and data strings using simple key=value format.
      *
      * @param requirement The badge requirement to serialize
-     * @return Pair of requirement type name and JSON data string
+     * @return Pair of requirement type name and data string
      */
     private fun serializeRequirement(requirement: BadgeRequirement): Pair<String, String> {
         val type = requirement::class.simpleName ?: "Unknown"
         val data =
             when (requirement) {
-                is BadgeRequirement.ProblemCount -> {
-                    JSONObject()
-                        .apply {
-                            put("count", requirement.count)
-                        }.toString()
-                }
-
-                is BadgeRequirement.OperationCount -> {
-                    JSONObject()
-                        .apply {
-                            put("operation", requirement.operation.name)
-                            put("count", requirement.count)
-                        }.toString()
-                }
-
-                is BadgeRequirement.ConsecutiveCorrect -> {
-                    JSONObject()
-                        .apply {
-                            put("count", requirement.count)
-                        }.toString()
-                }
-
-                is BadgeRequirement.SessionAccuracy -> {
-                    JSONObject()
-                        .apply {
-                            put("percentage", requirement.percentage)
-                            put("sessionCount", requirement.sessionCount)
-                        }.toString()
-                }
-
-                is BadgeRequirement.DailyStreak -> {
-                    JSONObject()
-                        .apply {
-                            put("days", requirement.days)
-                        }.toString()
-                }
-
-                is BadgeRequirement.ProblemSpeed -> {
-                    JSONObject()
-                        .apply {
-                            put("maxSeconds", requirement.maxSeconds)
-                        }.toString()
-                }
-
-                is BadgeRequirement.MixedSessions -> {
-                    JSONObject()
-                        .apply {
-                            put("count", requirement.count)
-                        }.toString()
-                }
+                is BadgeRequirement.ProblemCount -> "count=${requirement.count}"
+                is BadgeRequirement.OperationCount -> "operation=${requirement.operation.name},count=${requirement.count}"
+                is BadgeRequirement.ConsecutiveCorrect -> "count=${requirement.count}"
+                is BadgeRequirement.SessionAccuracy -> "percentage=${requirement.percentage},sessionCount=${requirement.sessionCount}"
+                is BadgeRequirement.DailyStreak -> "days=${requirement.days}"
+                is BadgeRequirement.ProblemSpeed -> "maxSeconds=${requirement.maxSeconds}"
+                is BadgeRequirement.MixedSessions -> "count=${requirement.count}"
             }
         return Pair(type, data)
     }
 
     /**
-     * Deserializes a badge requirement from type and JSON data strings.
+     * Deserializes a badge requirement from type and data strings.
      *
      * @param type The requirement type name
-     * @param data JSON string containing requirement parameters
+     * @param data String containing requirement parameters in key=value format
      * @return Deserialized badge requirement
      * @throws IllegalArgumentException if the requirement type is unknown
      */
@@ -126,40 +82,45 @@ object BadgeMapper {
         type: String,
         data: String,
     ): BadgeRequirement {
-        val json = JSONObject(data)
+        val params =
+            data.split(",").associate {
+                val (key, value) = it.split("=")
+                key to value
+            }
+
         return when (type) {
             "ProblemCount" -> {
-                BadgeRequirement.ProblemCount(count = json.getInt("count"))
+                BadgeRequirement.ProblemCount(count = params["count"]!!.toInt())
             }
 
             "OperationCount" -> {
                 BadgeRequirement.OperationCount(
-                    operation = MathOperation.valueOf(json.getString("operation")),
-                    count = json.getInt("count"),
+                    operation = MathOperation.valueOf(params["operation"]!!),
+                    count = params["count"]!!.toInt(),
                 )
             }
 
             "ConsecutiveCorrect" -> {
-                BadgeRequirement.ConsecutiveCorrect(count = json.getInt("count"))
+                BadgeRequirement.ConsecutiveCorrect(count = params["count"]!!.toInt())
             }
 
             "SessionAccuracy" -> {
                 BadgeRequirement.SessionAccuracy(
-                    percentage = json.getDouble("percentage").toFloat(),
-                    sessionCount = json.getInt("sessionCount"),
+                    percentage = params["percentage"]!!.toFloat(),
+                    sessionCount = params["sessionCount"]!!.toInt(),
                 )
             }
 
             "DailyStreak" -> {
-                BadgeRequirement.DailyStreak(days = json.getInt("days"))
+                BadgeRequirement.DailyStreak(days = params["days"]!!.toInt())
             }
 
             "ProblemSpeed" -> {
-                BadgeRequirement.ProblemSpeed(maxSeconds = json.getInt("maxSeconds"))
+                BadgeRequirement.ProblemSpeed(maxSeconds = params["maxSeconds"]!!.toInt())
             }
 
             "MixedSessions" -> {
-                BadgeRequirement.MixedSessions(count = json.getInt("count"))
+                BadgeRequirement.MixedSessions(count = params["count"]!!.toInt())
             }
 
             else -> {
