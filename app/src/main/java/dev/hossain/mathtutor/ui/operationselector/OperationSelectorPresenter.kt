@@ -21,8 +21,8 @@ import dev.zacsweers.metro.AssistedInject
  * Manages the state and business logic for operation selection.
  * Checks for session history to enable/disable stats button.
  */
+@AssistedInject
 class OperationSelectorPresenter
-    @AssistedInject
     constructor(
         @Assisted private val navigator: Navigator,
         private val sessionRepository: SessionRepository,
