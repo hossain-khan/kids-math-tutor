@@ -38,7 +38,7 @@ datastorePreferences = "1.2.0"
 # Room Database - https://developer.android.com/jetpack/androidx/releases/room
 room = "2.6.1"
 # Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
-coroutines = "1.9.0"
+coroutines = "1.10.2"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
