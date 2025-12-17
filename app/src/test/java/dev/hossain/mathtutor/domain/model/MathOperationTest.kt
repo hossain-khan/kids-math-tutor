@@ -39,5 +39,20 @@ class MathOperationTest {
         assertEquals("-", MathOperation.SUBTRACTION.symbol)
         assertEquals("×", MathOperation.MULTIPLICATION.symbol)
         assertEquals("÷", MathOperation.DIVISION.symbol)
+        assertEquals("?", MathOperation.MIXED.symbol)
+    }
+
+    @Test
+    fun `operation display names are correct`() {
+        assertEquals("Addition", MathOperation.ADDITION.displayName)
+        assertEquals("Subtraction", MathOperation.SUBTRACTION.displayName)
+        assertEquals("Multiplication", MathOperation.MULTIPLICATION.displayName)
+        assertEquals("Division", MathOperation.DIVISION.displayName)
+        assertEquals("Mix It Up", MathOperation.MIXED.displayName)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `calculate mixed operation throws exception`() {
+        MathOperation.MIXED.calculate(5, 3)
     }
 }
