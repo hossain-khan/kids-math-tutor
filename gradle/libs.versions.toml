@@ -36,7 +36,7 @@ timber = "5.0.1"
 androidxWork = "2.11.0"
 datastorePreferences = "1.2.0"
 # Room Database - https://developer.android.com/jetpack/androidx/releases/room
-room = "2.6.1"
+room = "2.8.4"
 # Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
 coroutines = "1.9.0"
 
