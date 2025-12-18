@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Enhanced GitHub Actions workflow to support manual triggering via `workflow_dispatch` for Android CI workflow
+
 ### Added
 - **Phase 3-5: Home Dashboard Screen (Circuit)** - Implemented home dashboard as new app entry point
   - Created `ui/home/` package with full Circuit implementation:
