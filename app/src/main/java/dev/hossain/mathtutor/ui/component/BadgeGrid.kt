@@ -22,8 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeRequirement
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import java.time.Instant
 
 /**
  * A grid component for displaying a list of badges.
@@ -56,6 +61,97 @@ fun BadgeGrid(
                 modifier = Modifier.weight(1f),
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgeGridPreview() {
+    KidsMathTutorAppTheme {
+        BadgeGrid(
+            badges =
+                listOf(
+                    Badge(
+                        id = "first_steps",
+                        name = "First Steps",
+                        description = "Solved first problem",
+                        icon = "🎯",
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.ProblemCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "quick_learner",
+                        name = "Quick Learner",
+                        description = "Solved 10 problems",
+                        icon = "🚀",
+                        category = BadgeCategory.VOLUME,
+                        requirement = BadgeRequirement.ProblemCount(10),
+                        unlockedAt = null,
+                    ),
+                    Badge(
+                        id = "math_master",
+                        name = "Math Master",
+                        description = "Solved 100 problems",
+                        icon = "🏆",
+                        category = BadgeCategory.VOLUME,
+                        requirement = BadgeRequirement.ProblemCount(100),
+                        unlockedAt = null,
+                    ),
+                    Badge(
+                        id = "speed_demon",
+                        name = "Speed Demon",
+                        description = "Solved a problem in 5 seconds",
+                        icon = "⚡",
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ProblemSpeed(5),
+                        unlockedAt = Instant.now(),
+                    ),
+                ),
+            onBadgeClick = {},
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgeGridDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        BadgeGrid(
+            badges =
+                listOf(
+                    Badge(
+                        id = "first_steps",
+                        name = "First Steps",
+                        description = "Solved first problem",
+                        icon = "🎯",
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.ProblemCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "quick_learner",
+                        name = "Quick Learner",
+                        description = "Solved 10 problems",
+                        icon = "🚀",
+                        category = BadgeCategory.VOLUME,
+                        requirement = BadgeRequirement.ProblemCount(10),
+                        unlockedAt = null,
+                    ),
+                    Badge(
+                        id = "math_master",
+                        name = "Math Master",
+                        description = "Solved 100 problems",
+                        icon = "🏆",
+                        category = BadgeCategory.VOLUME,
+                        requirement = BadgeRequirement.ProblemCount(100),
+                        unlockedAt = null,
+                    ),
+                ),
+            onBadgeClick = {},
+            modifier = Modifier.padding(16.dp),
+        )
     }
 }
 

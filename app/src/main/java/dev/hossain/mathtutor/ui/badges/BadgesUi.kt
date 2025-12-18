@@ -22,12 +22,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeRequirement
+import dev.hossain.mathtutor.domain.repository.BadgeProgress
 import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.component.BadgeGrid
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
+import java.time.Instant
 
 /**
  * UI for [BadgesScreen].
@@ -169,3 +175,116 @@ private fun formatCategoryName(category: BadgeCategory): String =
         BadgeCategory.SPEED_ACCURACY -> "Speed & Accuracy"
         BadgeCategory.STREAK -> "Streak"
     }
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgesUiPreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 3,
+                            totalCount = 10,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = "🎯",
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.VOLUME to
+                                listOf(
+                                    Badge(
+                                        id = "quick_learner",
+                                        name = "Quick Learner",
+                                        description = "Solved 10 problems",
+                                        icon = "🚀",
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(10),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "math_master",
+                                        name = "Math Master",
+                                        description = "Solved 100 problems",
+                                        icon = "🏆",
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(100),
+                                        unlockedAt = null,
+                                    ),
+                                ),
+                            BadgeCategory.STREAK to
+                                listOf(
+                                    Badge(
+                                        id = "streak_starter",
+                                        name = "Streak Starter",
+                                        description = "Practice 3 days in a row",
+                                        icon = "🔥",
+                                        category = BadgeCategory.STREAK,
+                                        requirement = BadgeRequirement.DailyStreak(3),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgesUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 2,
+                            totalCount = 8,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = "🎯",
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.VOLUME to
+                                listOf(
+                                    Badge(
+                                        id = "quick_learner",
+                                        name = "Quick Learner",
+                                        description = "Solved 10 problems",
+                                        icon = "🚀",
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(10),
+                                        unlockedAt = null,
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
