@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 4-1: User Profile System** - Foundational user profile system with DataStore persistence
+  - Created `GradeLevel` enum with three levels (KINDERGARTEN, GRADE_1, GRADE_2)
+    - Grade-specific number ranges for each math operation
+    - Display names: "Kindergarten", "Grade 1", "Grade 2"
+  - Created `UserProfile` data class with name, gradeLevel, createdAt, and adaptiveDifficultyEnabled
+  - Implemented `UserProfileRepository` interface with Flow-based methods
+  - Implemented `UserProfileRepositoryImpl` with DataStore for persistence
+    - Profile save and load functionality
+    - Grade level and name update methods
+    - Proper null handling for optional name field
+    - Metro DI integration with @ContributesBinding
+  - Comprehensive unit tests:
+    - 16 GradeLevel tests covering all operations and grade levels
+    - 9 UserProfileRepository tests with >85% coverage
+    - All 25 new tests passing
 - **Phase 3-9: Polish & Documentation** - Final polish and documentation for Phase 3 completion
   - Code quality verification:
     - ✅ All code formatted with `./gradlew formatKotlin` (zero changes needed)
