@@ -13,7 +13,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
-import dev.hossain.mathtutor.ui.operationselector.OperationSelectorScreen
+import dev.hossain.mathtutor.ui.home.HomeScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -121,7 +121,7 @@ class ResultsPresenter
                 when (event) {
                     is ResultsScreen.Event.TryAgain -> {
                         // Navigate back to home screen
-                        navigator.resetRoot(dev.hossain.mathtutor.ui.home.HomeScreen)
+                        navigator.resetRoot(HomeScreen)
                     }
 
                     is ResultsScreen.Event.NavigateBack -> {
