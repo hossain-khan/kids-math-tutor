@@ -1,0 +1,83 @@
+package dev.hossain.mathtutor.ui.badges
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.Navigator
+import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.repository.BadgeProgress
+import dev.hossain.mathtutor.domain.repository.BadgeRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import timber.log.Timber
+
+/**
+ * Presenter for [BadgesScreen].
+ *
+ * Manages the state and business logic for displaying badges organized by category.
+ * Collects badge data from the repository and handles user interactions.
+ */
+@AssistedInject
+class BadgesPresenter
+    constructor(
+        @Assisted private val navigator: Navigator,
+        private val badgeRepository: BadgeRepository,
+    ) : Presenter<BadgesScreen.State> {
+        @CircuitInject(BadgesScreen::class, AppScope::class)
+        @AssistedFactory
+        interface Factory {
+            fun create(navigator: Navigator): BadgesPresenter
+        }
+
+        @Composable
+        override fun present(): BadgesScreen.State {
+            // Track selected badge for detail dialog
+            var selectedBadge by remember { mutableStateOf<Badge?>(null) }
+
+            // Collect all badges from repository
+            val allBadges by badgeRepository.getAllBadges().collectAsState(initial = emptyList())
+
+            // Collect progress summary
+            val progressSummary by badgeRepository.getProgressSummary().collectAsState(
+                initial = BadgeProgress(unlockedCount = 0, totalCount = 0),
+            )
+
+            // Group badges by category
+            val badgesByCategory =
+                remember(allBadges) {
+                    Timber.d("Grouping ${allBadges.size} badges by category")
+                    allBadges.groupBy { it.category }
+                }
+
+            return BadgesScreen.State(
+                badgesByCategory = badgesByCategory,
+                progressSummary = progressSummary,
+                selectedBadge = selectedBadge,
+            ) { event ->
+                when (event) {
+                    is BadgesScreen.Event.BadgeClicked -> {
+                        Timber.d("Badge clicked: ${event.badge.name} (${event.badge.id})")
+                        selectedBadge = event.badge
+                    }
+
+                    is BadgesScreen.Event.CloseDialog -> {
+                        Timber.d("Badge detail dialog closed")
+                        selectedBadge = null
+                    }
+
+                    is BadgesScreen.Event.BackPressed -> {
+                        Timber.d("Back pressed from badges screen")
+                        navigator.pop()
+                    }
+                }
+            }
+        }
+    }
