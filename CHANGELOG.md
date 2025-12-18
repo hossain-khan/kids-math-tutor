@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 3-3: Badges Screen (Circuit)** - Implemented Badges screen with Circuit UDF architecture
+  - Created `ui/badges/` package with full Circuit implementation:
+    - `BadgesScreen.kt` - Screen definition with State (badgesByCategory, progressSummary, selectedBadge) and Events (BadgeClicked, CloseDialog, BackPressed)
+    - `BadgesPresenter.kt` - Presenter with BadgeRepository injection, reactive badge collection grouped by category
+    - `BadgesUi.kt` - Material 3 UI with LazyColumn, category sections, and progress summary header
+  - Created reusable UI components:
+    - `BadgeGrid.kt` - FlowRow grid layout displaying 3-4 badges per row
+    - `BadgeDetailDialog.kt` - Modal dialog with animated badge icon (spring bounce), badge details, and requirement/unlock status
+  - Badge card features:
+    - Unlocked badges: Primary container background, full color icon, checkmark indicator
+    - Locked badges: Surface variant background, dimmed icon (40% alpha), lock icon
+  - Badge detail dialog features:
+    - Animated scale/bounce effect on icon
+    - Displays badge name, description, and category
+    - Shows unlock date for unlocked badges
+    - Shows requirement for locked badges with formatted description
+  - Added `formatDate()` method to `TimeFormatter.kt` for "MMM d, yyyy" format
+  - All Material 3 design guidelines followed (no hardcoded colors)
+  - Wire up with `@CircuitInject` annotations for Circuit DI
+  - Comprehensive unit tests:
+    - BadgesScreenTest (11 tests) - All state scenarios, events, and progress calculations
+  - All 274 unit tests passing
 - **Phase 3-4: Daily Streak Tracking System** - Implemented daily streak tracking with database persistence
   - Created domain models:
     - `DailyStreak.kt` data class with 4 fields (currentStreak, longestStreak, lastPracticeDate, totalDaysPracticed)
