@@ -8,6 +8,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 3-5: Home Dashboard Screen (Circuit)** - Implemented home dashboard as new app entry point
+  - Created `ui/home/` package with full Circuit implementation:
+    - `HomeScreen.kt` - Screen definition with State (userName, streakData, overallStats, recentBadges) and Events (StartPracticeClicked, ViewStatsClicked, ViewBadgesClicked)
+    - `HomePresenter.kt` - Presenter with StreakRepository, SessionRepository, and BadgeRepository injection, reactive data collection from multiple sources
+    - `HomeUi.kt` - Material 3 UI with scrollable dashboard layout, personalized welcome, and primary action button
+  - Created `ui/component/StreakCard.kt` component:
+    - Fire emoji 🔥 display for active streaks
+    - Large streak count with day/days label
+    - Weekly calendar view with checkmarks for practice days
+    - Dynamic encouraging messages based on streak status (active, at-risk, or no streak)
+    - Urgent warning message when streak is at risk (practiced yesterday but not today)
+  - Dashboard features:
+    - Personalized welcome message (supports optional userName, defaults to generic greeting)
+    - Streak card with weekly calendar visualization
+    - Quick stats card showing total problems solved and accuracy percentage
+    - Latest badges section displaying 3 most recently unlocked badges
+    - Start Practice button navigates to OperationSelectorScreen
+    - View Full Stats link (only shown when user has session history)
+    - View All Badges link (only shown when user has unlocked badges)
+  - Updated `MainActivity.kt` to use HomeScreen as entry point after onboarding (replaced OperationSelectorScreen)
+  - Navigation flows:
+    - Start Practice → OperationSelectorScreen
+    - View Stats → StatsScreen
+    - View Badges → BadgesScreen
+  - All Material 3 design guidelines followed (no hardcoded colors, theme-aware components)
+  - Comprehensive unit tests:
+    - HomeScreenTest (15 tests) - All state scenarios, events, streak states, and edge cases
+  - All 289 unit tests passing
 - **Phase 3-3: Badges Screen (Circuit)** - Implemented Badges screen with Circuit UDF architecture
   - Created `ui/badges/` package with full Circuit implementation:
     - `BadgesScreen.kt` - Screen definition with State (badgesByCategory, progressSummary, selectedBadge) and Events (BadgeClicked, CloseDialog, BackPressed)
