@@ -3,6 +3,10 @@ package dev.hossain.mathtutor.domain.generator
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import timber.log.Timber
 import kotlin.random.Random
 
@@ -24,7 +28,10 @@ import kotlin.random.Random
  *   - Multiplication: Tables 2-10 (operand 1-12)
  *   - Division: Derived from multiplication facts (always divides evenly)
  */
-class GradeAwareProblemGenerator : ProblemGenerator {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class GradeAwareProblemGenerator constructor() : ProblemGenerator {
     override fun generateProblems(
         count: Int,
         operation: MathOperation,
