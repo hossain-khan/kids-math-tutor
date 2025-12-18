@@ -311,16 +311,6 @@ private fun LatestBadgesSection(
                     BadgeItem(badge = badge)
                 }
             }
-
-            if (badges.isEmpty()) {
-                Text(
-                    text = "Complete challenges to earn badges! 🏆",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
         }
     }
 }

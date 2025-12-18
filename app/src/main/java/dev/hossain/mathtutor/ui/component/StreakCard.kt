@@ -177,12 +177,15 @@ private fun WeeklyCalendar(
 
             // Check if this day was practiced
             val isPracticed =
-                if (streakData?.lastPracticeDate == null) {
+                if (streakData?.lastPracticeDate == null || streakData.currentStreak <= 0) {
                     false
                 } else {
-                    // Simple check: if within streak and within range
-                    val daysSinceLastPractice = date.until(streakData.lastPracticeDate).days
-                    daysSinceLastPractice >= 0 && daysSinceLastPractice < streakData.currentStreak
+                    val lastPracticeDate = streakData.lastPracticeDate
+                    val streakLength = streakData.currentStreak.toLong()
+                    val streakStartDate = lastPracticeDate.minusDays(streakLength - 1)
+
+                    // Mark as practiced if the date falls within the consecutive streak period
+                    !date.isBefore(streakStartDate) && !date.isAfter(lastPracticeDate)
                 }
 
             Column(
