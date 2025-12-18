@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 
@@ -110,6 +111,14 @@ fun ResultsUi(
                     onTryAgain = { state.eventSink(ResultsScreen.Event.TryAgain) },
                 )
             }
+        }
+
+        // Badge unlock dialog - shown if badges were unlocked
+        if (state.showBadgeUnlock && state.unlockedBadges.isNotEmpty()) {
+            BadgeDetailDialog(
+                badge = state.unlockedBadges.first(),
+                onDismiss = { state.eventSink(ResultsScreen.Event.DismissBadgeDialog) },
+            )
         }
     }
 }
