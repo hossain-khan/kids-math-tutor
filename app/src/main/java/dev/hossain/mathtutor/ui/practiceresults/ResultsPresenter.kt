@@ -120,8 +120,8 @@ class ResultsPresenter
             ) { event ->
                 when (event) {
                     is ResultsScreen.Event.TryAgain -> {
-                        // Navigate back to operation selector to choose a new practice session
-                        navigator.resetRoot(OperationSelectorScreen)
+                        // Navigate back to home screen
+                        navigator.resetRoot(dev.hossain.mathtutor.ui.home.HomeScreen)
                     }
 
                     is ResultsScreen.Event.NavigateBack -> {
