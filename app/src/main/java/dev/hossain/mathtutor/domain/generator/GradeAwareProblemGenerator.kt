@@ -32,6 +32,14 @@ import kotlin.random.Random
 @ContributesBinding(AppScope::class)
 @Inject
 class GradeAwareProblemGenerator constructor() : ProblemGenerator {
+    companion object {
+        /**
+         * Maximum allowed sum for Kindergarten addition problems.
+         * This ensures results stay within an appropriate range for young learners.
+         */
+        private const val KINDERGARTEN_MAX_ADDITION_RESULT = 18
+    }
+
     override fun generateProblems(
         count: Int,
         operation: MathOperation,
@@ -71,12 +79,12 @@ class GradeAwareProblemGenerator constructor() : ProblemGenerator {
                 GradeLevel.GRADE_2 -> 1 to 100
             }
 
-        // For Kindergarten, constrain the sum to not exceed 18
+        // For Kindergarten, constrain the sum to not exceed KINDERGARTEN_MAX_ADDITION_RESULT
         val num1 = Random.nextInt(min, max + 1)
         val num2 =
             if (gradeLevel == GradeLevel.KINDERGARTEN) {
-                // Ensure num1 + num2 <= 18
-                val maxNum2 = minOf(max, 18 - num1)
+                // Ensure num1 + num2 <= KINDERGARTEN_MAX_ADDITION_RESULT
+                val maxNum2 = minOf(max, KINDERGARTEN_MAX_ADDITION_RESULT - num1)
                 Random.nextInt(min, maxNum2 + 1)
             } else {
                 Random.nextInt(min, max + 1)

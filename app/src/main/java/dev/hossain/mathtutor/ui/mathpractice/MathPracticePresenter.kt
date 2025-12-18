@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.mathpractice
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,16 +68,12 @@ class MathPracticePresenter
             // Get user's grade level - default to GRADE_1 if no profile exists
             var userGrade by remember { mutableStateOf<GradeLevel?>(null) }
 
-            // Fetch user profile once when presenter is created
-            if (userGrade == null) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    val profile = userProfileRepository.getProfile().firstOrNull()
-                    val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1
-                    Timber.d("Fetched user grade: $grade (profile exists: ${profile != null})")
-                    withContext(Dispatchers.Main) {
-                        userGrade = grade
-                    }
-                }
+            // Fetch user profile once when presenter is created using LaunchedEffect
+            LaunchedEffect(Unit) {
+                val profile = userProfileRepository.getProfile().firstOrNull()
+                val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1
+                Timber.d("Fetched user grade: $grade (profile exists: ${profile != null})")
+                userGrade = grade
             }
 
             var problems by remember {
@@ -84,14 +81,16 @@ class MathPracticePresenter
             }
 
             // Generate problems once we have the grade level
-            if (problems.isEmpty() && userGrade != null) {
-                problems =
-                    problemGenerator.generateProblems(
-                        count = screen.problemCount,
-                        operation = screen.operation,
-                        gradeLevel = userGrade!!,
-                    )
-                Timber.d("Generated ${problems.size} problems for grade $userGrade and operation ${screen.operation}")
+            if (problems.isEmpty()) {
+                userGrade?.let { grade ->
+                    problems =
+                        problemGenerator.generateProblems(
+                            count = screen.problemCount,
+                            operation = screen.operation,
+                            gradeLevel = grade,
+                        )
+                    Timber.d("Generated ${problems.size} problems for grade $grade and operation ${screen.operation}")
+                }
             }
             var currentProblemIndex by remember { mutableStateOf(0) }
             var currentAnswer by remember { mutableStateOf("") }
