@@ -368,11 +368,18 @@ class Phase3EdgeCasesTest {
             )
 
         assertEquals(5, categories.size)
-        assertTrue(categories.contains(BadgeCategory.GETTING_STARTED))
-        assertTrue(categories.contains(BadgeCategory.VOLUME))
-        assertTrue(categories.contains(BadgeCategory.OPERATION_MASTERY))
-        assertTrue(categories.contains(BadgeCategory.SPEED_ACCURACY))
-        assertTrue(categories.contains(BadgeCategory.STREAK))
+        assertTrue(
+            "All badge categories should be present",
+            categories.containsAll(
+                setOf(
+                    BadgeCategory.GETTING_STARTED,
+                    BadgeCategory.VOLUME,
+                    BadgeCategory.OPERATION_MASTERY,
+                    BadgeCategory.SPEED_ACCURACY,
+                    BadgeCategory.STREAK,
+                ),
+            ),
+        )
     }
 
     @Test
