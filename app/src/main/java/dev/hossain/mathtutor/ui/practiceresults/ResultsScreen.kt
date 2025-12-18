@@ -16,6 +16,7 @@ import kotlinx.parcelize.Parcelize
 data class ResultsScreen(
     val problems: List<MathProblem>,
     val userAnswers: List<Int?>,
+    val badgesAlreadyChecked: Boolean = false,
 ) : Screen {
     /**
      * State for the Results screen.

@@ -54,7 +54,5 @@ data class MathPracticeScreen(
         data object NavigateBack : Event
 
         data object DismissBadgeDialog : Event
-
-        data object ShowNextBadge : Event
     }
 }

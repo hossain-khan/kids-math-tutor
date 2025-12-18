@@ -20,6 +20,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -53,26 +54,36 @@ class ResultsPresenter
 
             // Backup: Check for badges and update streak on results screen load
             // This serves as a fallback if the practice screen doesn't handle it
+            // Skip if badges were already checked to avoid duplicate processing
             LaunchedEffect(Unit) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    try {
-                        // Update streak as backup
-                        Timber.d("[ResultsPresenter] Updating streak as backup...")
-                        val updatedStreak = updateStreakUseCase.updateStreak()
-                        Timber.d("[ResultsPresenter] Streak updated: current=${updatedStreak.currentStreak}")
+                if (!screen.badgesAlreadyChecked) {
+                    Timber.d("[ResultsPresenter] Running backup badge/streak check")
+                    coroutineScope.launch(Dispatchers.IO) {
+                        try {
+                            // Update streak as backup
+                            Timber.d("[ResultsPresenter] Updating streak as backup...")
+                            val updatedStreak = updateStreakUseCase.updateStreak()
+                            Timber.d("[ResultsPresenter] Streak updated: current=${updatedStreak.currentStreak}")
 
-                        // Check for badge unlocks as backup
-                        Timber.d("[ResultsPresenter] Checking for badge unlocks as backup...")
-                        val newlyUnlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
-                        if (newlyUnlocked.isNotEmpty()) {
-                            Timber.d("[ResultsPresenter] Unlocked ${newlyUnlocked.size} badges in results screen")
-                            unlockedBadges = newlyUnlocked
-                            showBadgeUnlock = true
-                            currentBadgeIndex = 0
+                            // Check for badge unlocks as backup
+                            Timber.d("[ResultsPresenter] Checking for badge unlocks as backup...")
+                            val newlyUnlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
+
+                            // Switch to Main dispatcher for state updates
+                            withContext(Dispatchers.Main) {
+                                if (newlyUnlocked.isNotEmpty()) {
+                                    Timber.d("[ResultsPresenter] Unlocked ${newlyUnlocked.size} badges in results screen")
+                                    unlockedBadges = newlyUnlocked
+                                    showBadgeUnlock = true
+                                    currentBadgeIndex = 0
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Timber.e(e, "[ResultsPresenter] Failed to check achievements")
                         }
-                    } catch (e: Exception) {
-                        Timber.e(e, "[ResultsPresenter] Failed to check achievements")
                     }
+                } else {
+                    Timber.d("[ResultsPresenter] Skipping backup check - badges already processed in practice screen")
                 }
             }
 

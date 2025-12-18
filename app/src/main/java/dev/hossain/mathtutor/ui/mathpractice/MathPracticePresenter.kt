@@ -25,6 +25,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.time.Instant
 
@@ -181,30 +182,38 @@ class MathPracticePresenter
                                     // Check for badge unlocks
                                     Timber.d("Checking for badge unlocks...")
                                     val newlyUnlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
-                                    if (newlyUnlocked.isNotEmpty()) {
-                                        Timber.d("Unlocked ${newlyUnlocked.size} badges: ${newlyUnlocked.map { it.name }}")
-                                        unlockedBadges = newlyUnlocked
-                                        showBadgeUnlock = true
-                                        currentBadgeIndex = 0
-                                    } else {
-                                        Timber.d("No new badges unlocked")
-                                        // Navigate to results immediately if no badges
+
+                                    // Switch to Main dispatcher for state updates and navigation
+                                    withContext(Dispatchers.Main) {
+                                        if (newlyUnlocked.isNotEmpty()) {
+                                            Timber.d("Unlocked ${newlyUnlocked.size} badges: ${newlyUnlocked.map { it.name }}")
+                                            unlockedBadges = newlyUnlocked
+                                            showBadgeUnlock = true
+                                            currentBadgeIndex = 0
+                                        } else {
+                                            Timber.d("No new badges unlocked")
+                                            // Navigate to results immediately if no badges
+                                            navigator.goTo(
+                                                ResultsScreen(
+                                                    problems = problems,
+                                                    userAnswers = userAnswers,
+                                                    badgesAlreadyChecked = true,
+                                                ),
+                                            )
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    Timber.e(e, "Failed to save session or check achievements")
+                                    // Navigate to results even on error - use Main dispatcher
+                                    withContext(Dispatchers.Main) {
                                         navigator.goTo(
                                             ResultsScreen(
                                                 problems = problems,
                                                 userAnswers = userAnswers,
+                                                badgesAlreadyChecked = true,
                                             ),
                                         )
                                     }
-                                } catch (e: Exception) {
-                                    Timber.e(e, "Failed to save session or check achievements")
-                                    // Navigate to results even on error
-                                    navigator.goTo(
-                                        ResultsScreen(
-                                            problems = problems,
-                                            userAnswers = userAnswers,
-                                        ),
-                                    )
                                 }
                             }
                         }
@@ -225,14 +234,9 @@ class MathPracticePresenter
                                 ResultsScreen(
                                     problems = problems,
                                     userAnswers = userAnswers,
+                                    badgesAlreadyChecked = true,
                                 ),
                             )
-                        }
-                    }
-
-                    is MathPracticeScreen.Event.ShowNextBadge -> {
-                        if (currentBadgeIndex < unlockedBadges.size - 1) {
-                            currentBadgeIndex++
                         }
                     }
                 }

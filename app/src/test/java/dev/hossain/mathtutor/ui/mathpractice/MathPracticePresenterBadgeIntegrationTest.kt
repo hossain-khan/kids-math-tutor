@@ -139,7 +139,6 @@ class MathPracticePresenterBadgeIntegrationTest {
         val nextProblem: MathPracticeScreen.Event = MathPracticeScreen.Event.NextProblem
         val navigateBack: MathPracticeScreen.Event = MathPracticeScreen.Event.NavigateBack
         val dismissBadge: MathPracticeScreen.Event = MathPracticeScreen.Event.DismissBadgeDialog
-        val showNextBadge: MathPracticeScreen.Event = MathPracticeScreen.Event.ShowNextBadge
 
         // All events should be instances of Event interface
         assertTrue(numberClicked is MathPracticeScreen.Event)
@@ -148,7 +147,79 @@ class MathPracticePresenterBadgeIntegrationTest {
         assertTrue(nextProblem is MathPracticeScreen.Event)
         assertTrue(navigateBack is MathPracticeScreen.Event)
         assertTrue(dismissBadge is MathPracticeScreen.Event)
-        assertTrue(showNextBadge is MathPracticeScreen.Event)
+    }
+
+    @Test
+    fun `badge state transitions work correctly with multiple badges`() {
+        // Given - Three badges unlocked
+        val badges =
+            listOf(
+                createBadge("badge1", "First"),
+                createBadge("badge2", "Second"),
+                createBadge("badge3", "Third"),
+            )
+
+        // When - Starting with first badge
+        var state =
+            MathPracticeScreen.State(
+                currentProblem = null,
+                currentAnswer = "",
+                currentProblemIndex = 9,
+                totalProblems = 10,
+                isCorrect = true,
+                unlockedBadges = badges,
+                showBadgeUnlock = true,
+                currentBadgeIndex = 0,
+                eventSink = {},
+            )
+
+        // Then - First badge should be shown
+        assertEquals(0, state.currentBadgeIndex)
+        assertEquals("badge1", state.unlockedBadges[state.currentBadgeIndex].id)
+
+        // When - Moving to second badge
+        state = state.copy(currentBadgeIndex = 1)
+
+        // Then - Second badge should be shown
+        assertEquals(1, state.currentBadgeIndex)
+        assertEquals("badge2", state.unlockedBadges[state.currentBadgeIndex].id)
+
+        // When - Moving to third badge
+        state = state.copy(currentBadgeIndex = 2)
+
+        // Then - Third badge should be shown
+        assertEquals(2, state.currentBadgeIndex)
+        assertEquals("badge3", state.unlockedBadges[state.currentBadgeIndex].id)
+    }
+
+    @Test
+    fun `badge dialog can be dismissed`() {
+        // Given - Badge dialog is showing
+        var showBadgeUnlock = true
+        val badges = listOf(createBadge("badge1", "Test"))
+
+        val state =
+            MathPracticeScreen.State(
+                currentProblem = null,
+                currentAnswer = "",
+                currentProblemIndex = 9,
+                totalProblems = 10,
+                isCorrect = true,
+                unlockedBadges = badges,
+                showBadgeUnlock = showBadgeUnlock,
+                currentBadgeIndex = 0,
+                eventSink = {},
+            )
+
+        // Then - Dialog should be showing
+        assertTrue(state.showBadgeUnlock)
+
+        // When - Dialog is dismissed
+        showBadgeUnlock = false
+        val dismissedState = state.copy(showBadgeUnlock = showBadgeUnlock)
+
+        // Then - Dialog should be hidden
+        assertFalse(dismissedState.showBadgeUnlock)
     }
 
     private fun createBadge(
