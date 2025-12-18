@@ -147,10 +147,13 @@ fun MathPracticeUi(
 
         // Badge unlock dialog - shown after session completion
         if (state.showBadgeUnlock && state.unlockedBadges.isNotEmpty()) {
-            BadgeDetailDialog(
-                badge = state.unlockedBadges.first(),
-                onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissBadgeDialog) },
-            )
+            val currentBadge = state.unlockedBadges.getOrNull(state.currentBadgeIndex)
+            if (currentBadge != null) {
+                BadgeDetailDialog(
+                    badge = currentBadge,
+                    onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissBadgeDialog) },
+                )
+            }
         }
     }
 }

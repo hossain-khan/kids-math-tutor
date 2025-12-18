@@ -33,6 +33,7 @@ data class MathPracticeScreen(
         val isCorrect: Boolean?,
         val unlockedBadges: List<Badge> = emptyList(),
         val showBadgeUnlock: Boolean = false,
+        val currentBadgeIndex: Int = 0,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

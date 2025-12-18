@@ -8,6 +8,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 3-6: Badge & Streak Integration** - Integrated badge checking and streak updates after practice sessions
+  - Updated `MathPracticeScreen.kt`:
+    - Added `unlockedBadges: List<Badge>` to State for tracking newly unlocked badges
+    - Added `showBadgeUnlock: Boolean` to State for controlling badge dialog display
+    - Added `currentBadgeIndex: Int` to State for sequential badge display
+    - Added `DismissBadgeDialog` event for badge dialog dismissal
+    - Added `ShowNextBadge` event for showing next badge in sequence
+  - Updated `MathPracticePresenter.kt`:
+    - Injected `CheckBadgeUnlocksUseCase` for badge checking after session completion
+    - Injected `UpdateStreakUseCase` for streak updates after session completion
+    - After session completion (in NextProblem Event):
+      - Calls `UpdateStreakUseCase.updateStreak()` to update daily practice streak
+      - Calls `CheckBadgeUnlocksUseCase.checkAndUnlockBadges()` to check for newly unlocked badges
+      - Sets `unlockedBadges` and `showBadgeUnlock` state if badges were earned
+      - Navigates to results immediately if no badges unlocked
+    - Handles `DismissBadgeDialog` event to show next badge or navigate to results
+    - Supports sequential display of multiple badges unlocked in one session
+  - Updated `MathPracticeUi.kt`:
+    - Shows `BadgeDetailDialog` when `showBadgeUnlock` is true
+    - Displays current badge from `unlockedBadges` list using `currentBadgeIndex`
+    - Uses existing celebratory animation from `BadgeDetailDialog` component
+  - Updated `ResultsScreen.kt`:
+    - Added `unlockedBadges: List<Badge>` to State (backup check)
+    - Added `showBadgeUnlock: Boolean` to State
+    - Added `currentBadgeIndex: Int` to State
+    - Added `DismissBadgeDialog` event for badge dialog dismissal
+  - Updated `ResultsPresenter.kt`:
+    - Injected `CheckBadgeUnlocksUseCase` and `UpdateStreakUseCase` as backup
+    - Uses `LaunchedEffect` to trigger streak update and badge check on screen load
+    - Serves as fallback if MathPracticePresenter doesn't handle achievements
+    - Logs badge checks with "[ResultsPresenter]" prefix for debugging
+  - Updated `ResultsUi.kt`:
+    - Shows `BadgeDetailDialog` when badges unlocked (backup display)
+    - Supports sequential display of multiple badges
+  - Badge unlock flow:
+    - Badges are checked and unlocked immediately after session completion
+    - Badge unlock dialog displays with animated icon and celebration message
+    - Multiple badges can be shown sequentially (one at a time)
+    - After all badges shown, user navigates to results screen
+    - Results screen also checks for badges as backup (logged separately)
+  - Streak update flow:
+    - Streak updates automatically after each practice session
+    - Handles consecutive days, same day practice, and streak resets
+    - Streak data is immediately available for home screen display
+  - All Material 3 design guidelines followed (no hardcoded colors, theme-aware components)
+  - All 289 unit tests passing (no regressions)
 - **Phase 3-5: Home Dashboard Screen (Circuit)** - Implemented home dashboard as new app entry point
   - Created `ui/home/` package with full Circuit implementation:
     - `HomeScreen.kt` - Screen definition with State (userName, streakData, overallStats, recentBadges) and Events (StartPracticeClicked, ViewStatsClicked, ViewBadgesClicked)

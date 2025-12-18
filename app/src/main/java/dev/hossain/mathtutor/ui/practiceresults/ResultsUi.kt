@@ -115,10 +115,13 @@ fun ResultsUi(
 
         // Badge unlock dialog - shown if badges were unlocked
         if (state.showBadgeUnlock && state.unlockedBadges.isNotEmpty()) {
-            BadgeDetailDialog(
-                badge = state.unlockedBadges.first(),
-                onDismiss = { state.eventSink(ResultsScreen.Event.DismissBadgeDialog) },
-            )
+            val currentBadge = state.unlockedBadges.getOrNull(state.currentBadgeIndex)
+            if (currentBadge != null) {
+                BadgeDetailDialog(
+                    badge = currentBadge,
+                    onDismiss = { state.eventSink(ResultsScreen.Event.DismissBadgeDialog) },
+                )
+            }
         }
     }
 }

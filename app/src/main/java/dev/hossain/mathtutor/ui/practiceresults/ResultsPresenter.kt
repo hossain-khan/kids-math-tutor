@@ -105,6 +105,7 @@ class ResultsPresenter
                 problemResults = problemResults,
                 unlockedBadges = unlockedBadges,
                 showBadgeUnlock = showBadgeUnlock,
+                currentBadgeIndex = currentBadgeIndex,
             ) { event ->
                 when (event) {
                     is ResultsScreen.Event.TryAgain -> {

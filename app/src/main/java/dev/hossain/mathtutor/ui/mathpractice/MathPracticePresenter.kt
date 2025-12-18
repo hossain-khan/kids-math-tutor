@@ -85,6 +85,7 @@ class MathPracticePresenter
                 isCorrect = isCorrect,
                 unlockedBadges = unlockedBadges,
                 showBadgeUnlock = showBadgeUnlock,
+                currentBadgeIndex = currentBadgeIndex,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {

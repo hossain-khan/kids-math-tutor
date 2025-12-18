@@ -26,6 +26,7 @@ data class ResultsScreen(
      * @property problemResults List of problems with their user answers
      * @property unlockedBadges List of badges unlocked during this session
      * @property showBadgeUnlock Whether to show badge unlock dialog
+     * @property currentBadgeIndex Index of current badge being shown
      * @property eventSink Handler for user events
      */
     data class State(
@@ -35,6 +36,7 @@ data class ResultsScreen(
         val problemResults: List<ProblemResult>,
         val unlockedBadges: List<Badge> = emptyList(),
         val showBadgeUnlock: Boolean = false,
+        val currentBadgeIndex: Int = 0,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
