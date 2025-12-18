@@ -11,11 +11,13 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionAnswer
 import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
@@ -24,6 +26,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -41,6 +44,7 @@ class MathPracticePresenter
         @Assisted private val navigator: Navigator,
         private val problemGenerator: ProblemGenerator,
         private val sessionRepository: SessionRepository,
+        private val userProfileRepository: UserProfileRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val updateStreakUseCase: UpdateStreakUseCase,
     ) : Presenter<MathPracticeScreen.State> {
@@ -60,13 +64,34 @@ class MathPracticePresenter
             // Use lifecycle-aware coroutine scope
             val coroutineScope = rememberCoroutineScope()
 
+            // Get user's grade level - default to GRADE_1 if no profile exists
+            var userGrade by remember { mutableStateOf<GradeLevel?>(null) }
+
+            // Fetch user profile once when presenter is created
+            if (userGrade == null) {
+                coroutineScope.launch(Dispatchers.IO) {
+                    val profile = userProfileRepository.getProfile().firstOrNull()
+                    val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1
+                    Timber.d("Fetched user grade: $grade (profile exists: ${profile != null})")
+                    withContext(Dispatchers.Main) {
+                        userGrade = grade
+                    }
+                }
+            }
+
             var problems by remember {
-                mutableStateOf(
+                mutableStateOf<List<MathProblem>>(emptyList())
+            }
+
+            // Generate problems once we have the grade level
+            if (problems.isEmpty() && userGrade != null) {
+                problems =
                     problemGenerator.generateProblems(
                         count = screen.problemCount,
                         operation = screen.operation,
-                    ),
-                )
+                        gradeLevel = userGrade!!,
+                    )
+                Timber.d("Generated ${problems.size} problems for grade $userGrade and operation ${screen.operation}")
             }
             var currentProblemIndex by remember { mutableStateOf(0) }
             var currentAnswer by remember { mutableStateOf("") }

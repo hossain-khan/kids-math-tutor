@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.mathpractice
 
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PracticeSession
@@ -30,6 +31,7 @@ class MathPracticePresenterTest {
                 override fun generateProblems(
                     count: Int,
                     operation: MathOperation,
+                    gradeLevel: GradeLevel,
                 ): List<MathProblem> =
                     List(count) { index ->
                         // Generate simple problems: 1+1=2, 2+2=4, 3+3=6, etc.
@@ -45,7 +47,7 @@ class MathPracticePresenterTest {
     @Test
     fun presenter_initialState_isCorrect() {
         // Given - Getting initial state (simulated)
-        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION)
+        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION, GradeLevel.GRADE_1)
 
         // Then - Initial state should be set correctly
         assertEquals(5, problems.size)
@@ -173,7 +175,7 @@ class MathPracticePresenterTest {
         val problemCount = 10
 
         // When
-        val problems = problemGenerator.generateProblems(problemCount, MathOperation.ADDITION)
+        val problems = problemGenerator.generateProblems(problemCount, MathOperation.ADDITION, GradeLevel.GRADE_1)
 
         // Then
         assertEquals(problemCount, problems.size)
@@ -182,7 +184,7 @@ class MathPracticePresenterTest {
     @Test
     fun problemGeneration_usesAdditionOperation() {
         // When
-        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION)
+        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION, GradeLevel.GRADE_1)
 
         // Then - All problems should be addition
         problems.forEach { problem ->
@@ -225,7 +227,7 @@ class MathPracticePresenterTest {
     @Test
     fun sessionAnswers_includesAllProblems_evenUnanswered() {
         // Given
-        val problems = problemGenerator.generateProblems(3, MathOperation.ADDITION)
+        val problems = problemGenerator.generateProblems(3, MathOperation.ADDITION, GradeLevel.GRADE_1)
         val userAnswers = listOf(2, null, 6) // First answered, second skipped, third answered
 
         // When - Create session answers for all problems
@@ -297,7 +299,7 @@ class MathPracticePresenterTest {
     @Test
     fun practiceSession_createdWithCorrectFields() {
         // Given
-        val problems = problemGenerator.generateProblems(3, MathOperation.ADDITION)
+        val problems = problemGenerator.generateProblems(3, MathOperation.ADDITION, GradeLevel.GRADE_1)
         val sessionAnswers = mutableMapOf<String, SessionAnswer>()
         problems.forEach { problem ->
             sessionAnswers[problem.id] =
@@ -333,7 +335,7 @@ class MathPracticePresenterTest {
     @Test
     fun sessionStats_countsAnsweredAndUnanswered() {
         // Given
-        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION)
+        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION, GradeLevel.GRADE_1)
         val userAnswers = listOf(2, null, 6, null, 10) // 3 answered, 2 skipped
 
         // When - Create session answers

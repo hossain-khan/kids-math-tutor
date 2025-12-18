@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.domain.generator
 
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.zacsweers.metro.AppScope
@@ -16,7 +17,8 @@ import kotlin.random.Random
  * - Subtraction problems with numbers in range 1-10 (no negative results)
  * - Mixed mode (random addition or subtraction)
  *
- * Future phases will expand to support more operations and difficulty levels.
+ * Note: This implementation ignores the gradeLevel parameter and always generates
+ * problems with 1-10 range. Use GradeAwareProblemGenerator for grade-specific problems.
  */
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
@@ -25,6 +27,7 @@ class SimpleProblemGenerator constructor() : ProblemGenerator {
     override fun generateProblems(
         count: Int,
         operation: MathOperation,
+        gradeLevel: GradeLevel,
     ): List<MathProblem> {
         require(count > 0) { "Count must be positive, got: $count" }
 
