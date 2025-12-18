@@ -88,61 +88,86 @@ fun MathPracticeUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-        ) {
-            // Progress indicator
-            ProgressSection(
-                currentIndex = state.currentProblemIndex,
-                totalProblems = state.totalProblems,
-            )
-
-            // Problem display
-            state.currentProblem?.let { problem ->
-                ProblemCard(problem = problem)
-            }
-
-            // Answer field with shake animation on incorrect answer
-            AnswerField(
-                answer = state.currentAnswer,
+        if (state.isLoading) {
+            // Show loading state while fetching profile and generating problems
+            Box(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .shake(
-                            shouldShake = shouldShake,
-                            onAnimationComplete = {
-                                shouldShake = false
-                            },
-                        ),
-            )
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    androidx.compose.material3.CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = "Preparing problems...",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+            ) {
+                // Progress indicator
+                ProgressSection(
+                    currentIndex = state.currentProblemIndex,
+                    totalProblems = state.totalProblems,
+                )
 
-            // Feedback display with success animation
-            FeedbackSection(isCorrect = state.isCorrect)
+                // Problem display
+                state.currentProblem?.let { problem ->
+                    ProblemCard(problem = problem)
+                }
 
-            Spacer(modifier = Modifier.weight(1f))
+                // Answer field with shake animation on incorrect answer
+                AnswerField(
+                    answer = state.currentAnswer,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .shake(
+                                shouldShake = shouldShake,
+                                onAnimationComplete = {
+                                    shouldShake = false
+                                },
+                            ),
+                )
 
-            // Number pad
-            NumberPad(
-                onNumberClick = { number ->
-                    state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
+                // Feedback display with success animation
+                FeedbackSection(isCorrect = state.isCorrect)
 
-            // Action buttons
-            ActionButtons(
-                hasAnswer = state.currentAnswer.isNotEmpty(),
-                isCorrect = state.isCorrect,
-                onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
-                onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
-                onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
-            )
+                Spacer(modifier = Modifier.weight(1f))
+
+                // Number pad
+                NumberPad(
+                    onNumberClick = { number ->
+                        state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                // Action buttons
+                ActionButtons(
+                    hasAnswer = state.currentAnswer.isNotEmpty(),
+                    isCorrect = state.isCorrect,
+                    onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
+                    onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
+                    onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
+                )
+            }
         }
 
         // Badge unlock dialog - shown after session completion

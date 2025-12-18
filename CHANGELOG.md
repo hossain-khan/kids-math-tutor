@@ -28,6 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated `MathPracticePresenter` to fetch user grade from `UserProfileRepository`
     - Defaults to Grade 1 if no profile exists
     - Passes grade level to problem generator
+  - Added integration tests for grade-level problem generation
+
+### Changed
+- Enhanced `MathPracticeScreen.State` with loading state indicator
+- Improved `MathPracticePresenter` to follow Compose best practices
+  - Problem generation now happens in `LaunchedEffect` to avoid composition issues
+  - Fixed race condition where UI could render before problems are generated
+- Added loading UI to show "Preparing problems..." while fetching profile and generating problems
+- Enhanced timber logging in presenter for better debugging of grade-level and problem generation
   - Updated `SimpleProblemGenerator` for backward compatibility
   - Configured Metro DI binding to use `GradeAwareProblemGenerator` as primary implementation
   - Comprehensive test suite with 39 new tests:

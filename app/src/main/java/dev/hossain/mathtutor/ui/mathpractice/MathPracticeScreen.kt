@@ -31,6 +31,7 @@ data class MathPracticeScreen(
         val currentProblemIndex: Int,
         val totalProblems: Int,
         val isCorrect: Boolean?,
+        val isLoading: Boolean = false,
         val unlockedBadges: List<Badge> = emptyList(),
         val showBadgeUnlock: Boolean = false,
         val currentBadgeIndex: Int = 0,

@@ -65,33 +65,8 @@ class MathPracticePresenter
             // Use lifecycle-aware coroutine scope
             val coroutineScope = rememberCoroutineScope()
 
-            // Get user's grade level - default to GRADE_1 if no profile exists
-            var userGrade by remember { mutableStateOf<GradeLevel?>(null) }
-
-            // Fetch user profile once when presenter is created using LaunchedEffect
-            LaunchedEffect(Unit) {
-                val profile = userProfileRepository.getProfile().firstOrNull()
-                val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1
-                Timber.d("Fetched user grade: $grade (profile exists: ${profile != null})")
-                userGrade = grade
-            }
-
-            var problems by remember {
-                mutableStateOf<List<MathProblem>>(emptyList())
-            }
-
-            // Generate problems once we have the grade level
-            if (problems.isEmpty()) {
-                userGrade?.let { grade ->
-                    problems =
-                        problemGenerator.generateProblems(
-                            count = screen.problemCount,
-                            operation = screen.operation,
-                            gradeLevel = grade,
-                        )
-                    Timber.d("Generated ${problems.size} problems for grade $grade and operation ${screen.operation}")
-                }
-            }
+            var problems by remember { mutableStateOf<List<MathProblem>>(emptyList()) }
+            var isLoading by remember { mutableStateOf(true) }
             var currentProblemIndex by remember { mutableStateOf(0) }
             var currentAnswer by remember { mutableStateOf("") }
             var isCorrect by remember { mutableStateOf<Boolean?>(null) }
@@ -99,6 +74,24 @@ class MathPracticePresenter
             var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var showBadgeUnlock by remember { mutableStateOf(false) }
             var currentBadgeIndex by remember { mutableStateOf(0) }
+
+            // Fetch user profile and generate problems in a single LaunchedEffect
+            LaunchedEffect(Unit) {
+                Timber.d("Starting problem generation for operation ${screen.operation}")
+                val profile = userProfileRepository.getProfile().firstOrNull()
+                val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1
+                Timber.d("Fetched user grade: $grade (profile exists: ${profile != null})")
+
+                // Generate problems with the fetched grade level
+                problems =
+                    problemGenerator.generateProblems(
+                        count = screen.problemCount,
+                        operation = screen.operation,
+                        gradeLevel = grade,
+                    )
+                Timber.d("Generated ${problems.size} problems for grade $grade and operation ${screen.operation}")
+                isLoading = false
+            }
 
             val currentProblem = problems.getOrNull(currentProblemIndex)
 
@@ -108,6 +101,7 @@ class MathPracticePresenter
                 currentProblemIndex = currentProblemIndex,
                 totalProblems = problems.size,
                 isCorrect = isCorrect,
+                isLoading = isLoading,
                 unlockedBadges = unlockedBadges,
                 showBadgeUnlock = showBadgeUnlock,
                 currentBadgeIndex = currentBadgeIndex,
