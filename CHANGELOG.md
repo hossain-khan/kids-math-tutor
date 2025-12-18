@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Enhanced GitHub Actions workflow to support manual triggering via `workflow_dispatch` for Android CI workflow
+
 ### Added
 - **Phase 3-6: Badge & Streak Integration** - Integrated badge checking and streak updates after practice sessions
   - Updated `MathPracticeScreen.kt`:
