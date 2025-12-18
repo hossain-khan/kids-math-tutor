@@ -17,6 +17,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import timber.log.Timber
 
 /**
  * Presenter for [BadgesScreen].
@@ -52,6 +53,7 @@ class BadgesPresenter
             // Group badges by category
             val badgesByCategory =
                 remember(allBadges) {
+                    Timber.d("Grouping ${allBadges.size} badges by category")
                     allBadges.groupBy { it.category }
                 }
 
@@ -62,14 +64,17 @@ class BadgesPresenter
             ) { event ->
                 when (event) {
                     is BadgesScreen.Event.BadgeClicked -> {
+                        Timber.d("Badge clicked: ${event.badge.name} (${event.badge.id})")
                         selectedBadge = event.badge
                     }
 
                     is BadgesScreen.Event.CloseDialog -> {
+                        Timber.d("Badge detail dialog closed")
                         selectedBadge = null
                     }
 
                     is BadgesScreen.Event.BackPressed -> {
+                        Timber.d("Back pressed from badges screen")
                         navigator.pop()
                     }
                 }

@@ -20,8 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -31,8 +29,8 @@ import dev.hossain.mathtutor.domain.model.Badge
  * A grid component for displaying a list of badges.
  *
  * Displays badges in a responsive grid layout (3-4 per row) with Material 3 design.
- * Unlocked badges show full color with a checkmark, while locked badges are grayscale
- * with a lock icon.
+ * Unlocked badges show full color with a checkmark, while locked badges are dimmed
+ * (40% alpha) with a lock icon.
  *
  * @param badges List of badges to display
  * @param onBadgeClick Callback when a badge is clicked

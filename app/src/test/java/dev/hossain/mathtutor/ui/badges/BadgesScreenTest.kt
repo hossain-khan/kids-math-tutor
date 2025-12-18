@@ -3,7 +3,6 @@ package dev.hossain.mathtutor.ui.badges
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
-import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull

@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.util.TimeFormatter
-import java.time.Instant
 
 /**
  * Dialog component for displaying badge details.
