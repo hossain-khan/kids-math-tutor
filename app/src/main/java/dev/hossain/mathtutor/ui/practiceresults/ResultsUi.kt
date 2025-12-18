@@ -394,3 +394,55 @@ private fun ResultsUiPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun ResultsUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        ResultsUi(
+            state =
+                ResultsScreen.State(
+                    totalProblems = 5,
+                    correctCount = 4,
+                    accuracyPercentage = 80f,
+                    problemResults =
+                        listOf(
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 5,
+                                        num2 = 3,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 8,
+                                    ),
+                                userAnswer = 8,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 7,
+                                        num2 = 2,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 9,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = false,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 4,
+                                        num2 = 6,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}

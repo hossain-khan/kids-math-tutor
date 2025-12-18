@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -50,6 +51,7 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.ui.home.HomeScreen
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -351,6 +353,36 @@ private fun OnboardingPageContent(page: OnboardingPage) {
             color = page.accentColor.copy(alpha = 0.8f),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Medium,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingContentPreview() {
+    KidsMathTutorAppTheme {
+        OnboardingContent(
+            state =
+                OnboardingScreen.State(
+                    currentPage = 0,
+                    totalPages = 4,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingContentDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        OnboardingContent(
+            state =
+                OnboardingScreen.State(
+                    currentPage = 2,
+                    totalPages = 4,
+                    eventSink = {},
+                ),
         )
     }
 }
