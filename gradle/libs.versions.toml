@@ -41,7 +41,7 @@ room = "2.8.4"
 # Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
 coroutines = "1.10.2"
 # Robolectric for Android unit tests - https://robolectric.org/
-robolectric = "4.14"
+robolectric = "4.16"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
