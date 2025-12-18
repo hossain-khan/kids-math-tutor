@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.practiceresults
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
 import kotlinx.parcelize.Parcelize
 
@@ -15,6 +16,7 @@ import kotlinx.parcelize.Parcelize
 data class ResultsScreen(
     val problems: List<MathProblem>,
     val userAnswers: List<Int?>,
+    val badgesAlreadyChecked: Boolean = false,
 ) : Screen {
     /**
      * State for the Results screen.
@@ -23,6 +25,9 @@ data class ResultsScreen(
      * @property correctCount Number of correct answers
      * @property accuracyPercentage Accuracy as a percentage (0-100)
      * @property problemResults List of problems with their user answers
+     * @property unlockedBadges List of badges unlocked during this session
+     * @property showBadgeUnlock Whether to show badge unlock dialog
+     * @property currentBadgeIndex Index of current badge being shown
      * @property eventSink Handler for user events
      */
     data class State(
@@ -30,6 +35,9 @@ data class ResultsScreen(
         val correctCount: Int,
         val accuracyPercentage: Float,
         val problemResults: List<ProblemResult>,
+        val unlockedBadges: List<Badge> = emptyList(),
+        val showBadgeUnlock: Boolean = false,
+        val currentBadgeIndex: Int = 0,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -51,5 +59,8 @@ data class ResultsScreen(
 
         /** User wants to navigate back */
         data object NavigateBack : Event
+
+        /** User dismissed the badge unlock dialog */
+        data object DismissBadgeDialog : Event
     }
 }

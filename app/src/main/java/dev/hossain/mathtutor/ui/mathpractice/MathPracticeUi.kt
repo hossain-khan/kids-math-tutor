@@ -41,6 +41,7 @@ import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.animation.SuccessAnimation
 import dev.hossain.mathtutor.ui.animation.shake
 import dev.hossain.mathtutor.ui.component.AnswerField
+import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
@@ -142,6 +143,17 @@ fun MathPracticeUi(
                 onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
                 onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
             )
+        }
+
+        // Badge unlock dialog - shown after session completion
+        if (state.showBadgeUnlock && state.unlockedBadges.isNotEmpty()) {
+            val currentBadge = state.unlockedBadges.getOrNull(state.currentBadgeIndex)
+            if (currentBadge != null) {
+                BadgeDetailDialog(
+                    badge = currentBadge,
+                    onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissBadgeDialog) },
+                )
+            }
         }
     }
 }

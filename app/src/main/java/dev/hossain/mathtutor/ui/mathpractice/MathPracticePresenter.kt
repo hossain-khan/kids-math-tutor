@@ -10,11 +10,14 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionAnswer
 import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
+import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -22,6 +25,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.time.Instant
 
@@ -37,6 +41,8 @@ class MathPracticePresenter
         @Assisted private val navigator: Navigator,
         private val problemGenerator: ProblemGenerator,
         private val sessionRepository: SessionRepository,
+        private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
+        private val updateStreakUseCase: UpdateStreakUseCase,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -66,6 +72,9 @@ class MathPracticePresenter
             var currentAnswer by remember { mutableStateOf("") }
             var isCorrect by remember { mutableStateOf<Boolean?>(null) }
             var userAnswers by remember { mutableStateOf<List<Int?>>(emptyList()) }
+            var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
+            var showBadgeUnlock by remember { mutableStateOf(false) }
+            var currentBadgeIndex by remember { mutableStateOf(0) }
 
             val currentProblem = problems.getOrNull(currentProblemIndex)
 
@@ -75,6 +84,9 @@ class MathPracticePresenter
                 currentProblemIndex = currentProblemIndex,
                 totalProblems = problems.size,
                 isCorrect = isCorrect,
+                unlockedBadges = unlockedBadges,
+                showBadgeUnlock = showBadgeUnlock,
+                currentBadgeIndex = currentBadgeIndex,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
@@ -108,7 +120,7 @@ class MathPracticePresenter
                             currentAnswer = ""
                             isCorrect = null
                         } else {
-                            // All problems completed, save session and navigate to results
+                            // All problems completed, save session and check for badges/streak
                             val sessionEndTime = Instant.now()
                             val durationSeconds =
                                 java.time.Duration
@@ -149,7 +161,7 @@ class MathPracticePresenter
                                     completedAt = sessionEndTime,
                                 )
 
-                            // Save session to database asynchronously
+                            // Save session, update streak, and check badges asynchronously
                             coroutineScope.launch(Dispatchers.IO) {
                                 try {
                                     Timber.d("Saving session to database...")
@@ -159,23 +171,73 @@ class MathPracticePresenter
                                         durationSeconds = practiceSession.durationSeconds!!,
                                     )
                                     Timber.d("Session saved successfully")
+
+                                    // Update streak
+                                    Timber.d("Updating streak...")
+                                    val updatedStreak = updateStreakUseCase.updateStreak()
+                                    Timber.d(
+                                        "Streak updated: current=${updatedStreak.currentStreak}, longest=${updatedStreak.longestStreak}",
+                                    )
+
+                                    // Check for badge unlocks
+                                    Timber.d("Checking for badge unlocks...")
+                                    val newlyUnlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
+
+                                    // Switch to Main dispatcher for state updates and navigation
+                                    withContext(Dispatchers.Main) {
+                                        if (newlyUnlocked.isNotEmpty()) {
+                                            Timber.d("Unlocked ${newlyUnlocked.size} badges: ${newlyUnlocked.map { it.name }}")
+                                            unlockedBadges = newlyUnlocked
+                                            showBadgeUnlock = true
+                                            currentBadgeIndex = 0
+                                        } else {
+                                            Timber.d("No new badges unlocked")
+                                            // Navigate to results immediately if no badges
+                                            navigator.goTo(
+                                                ResultsScreen(
+                                                    problems = problems,
+                                                    userAnswers = userAnswers,
+                                                    badgesAlreadyChecked = true,
+                                                ),
+                                            )
+                                        }
+                                    }
                                 } catch (e: Exception) {
-                                    Timber.e(e, "Failed to save session")
+                                    Timber.e(e, "Failed to save session or check achievements")
+                                    // Navigate to results even on error - use Main dispatcher
+                                    withContext(Dispatchers.Main) {
+                                        navigator.goTo(
+                                            ResultsScreen(
+                                                problems = problems,
+                                                userAnswers = userAnswers,
+                                                badgesAlreadyChecked = true,
+                                            ),
+                                        )
+                                    }
                                 }
                             }
-
-                            // Navigate to results
-                            navigator.goTo(
-                                ResultsScreen(
-                                    problems = problems,
-                                    userAnswers = userAnswers,
-                                ),
-                            )
                         }
                     }
 
                     is MathPracticeScreen.Event.NavigateBack -> {
                         navigator.pop()
+                    }
+
+                    is MathPracticeScreen.Event.DismissBadgeDialog -> {
+                        // Check if there are more badges to show
+                        if (currentBadgeIndex < unlockedBadges.size - 1) {
+                            currentBadgeIndex++
+                        } else {
+                            // All badges shown, hide dialog and navigate to results
+                            showBadgeUnlock = false
+                            navigator.goTo(
+                                ResultsScreen(
+                                    problems = problems,
+                                    userAnswers = userAnswers,
+                                    badgesAlreadyChecked = true,
+                                ),
+                            )
+                        }
                     }
                 }
             }
