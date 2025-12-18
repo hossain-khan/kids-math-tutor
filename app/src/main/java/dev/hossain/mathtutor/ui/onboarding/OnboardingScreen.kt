@@ -49,6 +49,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.ui.home.HomeScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -146,10 +147,7 @@ class OnboardingPresenter
                     -> {
                         coroutineScope.launch {
                             userPreferencesRepository.setOnboardingCompleted(true)
-                            navigator.resetRoot(
-                                dev.hossain.mathtutor.ui.operationselector
-                                    .OperationSelectorScreen,
-                            )
+                            navigator.resetRoot(HomeScreen)
                         }
                     }
                 }

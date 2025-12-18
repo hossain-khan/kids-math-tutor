@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Enhanced GitHub Actions workflow to support manual triggering via `workflow_dispatch` for Android CI workflow
+- **Phase 3-7: Navigation Updates - Home as Entry** - Updated navigation flow to make HomeScreen the primary entry point
+  - Updated `OnboardingScreen.kt`:
+    - Changed navigation from `OperationSelectorScreen` to `HomeScreen` on onboarding completion (Skip/Get Started)
+    - Users are now taken directly to the home dashboard after first-time setup
+  - Updated `ResultsPresenter.kt`:
+    - Changed "Try Again" navigation from `resetRoot(OperationSelectorScreen)` to `resetRoot(HomeScreen)`
+    - Ensures users return to home dashboard for consistent navigation experience
+  - Navigation flow improvements:
+    - First-time users: Onboarding → Home → Practice (via Start Practice) → Results → Home
+    - Returning users: Home → Practice → Results → Home
+    - Home provides access to Stats, Badges, and Practice sessions
+    - Back navigation throughout app uses `navigator.pop()` for intuitive back button behavior
+  - All existing navigation patterns preserved:
+    - MainActivity already conditionally shows HomeScreen for returning users and OnboardingScreen for new users
+    - HomePresenter navigates to OperationSelectorScreen via "Start Practice" button
+    - MathPractice → Results uses `navigator.goTo()` for forward navigation
+    - Stats, Badges use `navigator.pop()` for back navigation to Home
+  - Benefits:
+    - Consistent entry point for all user sessions
+    - Users can easily access stats, badges, and practice from one place
+    - Simplified navigation stack management
+    - Better alignment with home dashboard design as central hub
+  - All 290 unit tests passing (no regressions)
 
 ### Added
 - **Phase 3-6: Badge & Streak Integration** - Integrated badge checking and streak updates after practice sessions
