@@ -1,0 +1,439 @@
+package dev.hossain.mathtutor.ui.home
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeRequirement
+import dev.hossain.mathtutor.domain.model.DailyStreak
+import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.hossain.mathtutor.ui.component.StreakCard
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.zacsweers.metro.AppScope
+import java.time.Instant
+import java.time.LocalDate
+
+/**
+ * UI for [HomeScreen].
+ *
+ * Displays the home dashboard with:
+ * - Welcome message (personalized or generic)
+ * - Streak card with calendar
+ * - Quick stats card (total problems, accuracy)
+ * - Latest badges section (3 badges)
+ * - Start Practice button (primary action)
+ * - View Full Stats and View All Badges links
+ */
+@CircuitInject(HomeScreen::class, AppScope::class)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeUi(
+    state: HomeScreen.State,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Math Pup Tutor")
+                },
+            )
+        },
+        modifier = modifier.fillMaxSize(),
+    ) { paddingValues ->
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            // Welcome message
+            WelcomeSection(userName = state.userName)
+
+            // Streak card
+            StreakCard(streakData = state.streakData)
+
+            // Quick stats card
+            if (state.overallStats.sessionCount > 0) {
+                QuickStatsCard(stats = state.overallStats)
+            }
+
+            // Latest badges section
+            if (state.recentBadges.isNotEmpty()) {
+                LatestBadgesSection(
+                    badges = state.recentBadges,
+                    onViewAllClicked = { state.eventSink(HomeScreen.Event.ViewBadgesClicked) },
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Primary action: Start Practice button
+            Button(
+                onClick = { state.eventSink(HomeScreen.Event.StartPracticeClicked) },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+            ) {
+                Text(
+                    text = "🐶 Start Practice",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+
+            // View Full Stats link
+            if (state.overallStats.sessionCount > 0) {
+                TextButton(
+                    onClick = { state.eventSink(HomeScreen.Event.ViewStatsClicked) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = "View Full Stats",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+/**
+ * Welcome section with personalized or generic greeting.
+ */
+@Composable
+private fun WelcomeSection(
+    userName: String?,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text =
+                if (userName != null) {
+                    "Welcome back, $userName!"
+                } else {
+                    "Welcome back!"
+                },
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "Ready to practice some math? 📚",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+/**
+ * Quick stats card showing total problems solved and accuracy.
+ */
+@Composable
+private fun QuickStatsCard(
+    stats: SessionStats,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation =
+            CardDefaults.elevatedCardElevation(
+                defaultElevation = 4.dp,
+            ),
+        colors =
+            CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = "Quick Stats",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                // Total problems
+                StatItem(
+                    label = "Problems Solved",
+                    value = "${stats.totalProblems}",
+                    emoji = "📝",
+                )
+
+                // Accuracy
+                StatItem(
+                    label = "Accuracy",
+                    value = "${stats.accuracy.toInt()}%",
+                    emoji = "🎯",
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Individual stat item with emoji, value, and label.
+ */
+@Composable
+private fun StatItem(
+    label: String,
+    value: String,
+    emoji: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = emoji,
+            style = MaterialTheme.typography.headlineMedium,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+/**
+ * Latest badges section showing 3 most recently unlocked badges.
+ */
+@Composable
+private fun LatestBadgesSection(
+    badges: List<Badge>,
+    onViewAllClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation =
+            CardDefaults.elevatedCardElevation(
+                defaultElevation = 4.dp,
+            ),
+        colors =
+            CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            ),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Latest Badges",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+                TextButton(onClick = onViewAllClicked) {
+                    Text(
+                        text = "View All",
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+            }
+
+            // Display badges in a row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                badges.take(3).forEach { badge ->
+                    BadgeItem(badge = badge)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Individual badge item with icon and name.
+ */
+@Composable
+private fun BadgeItem(
+    badge: Badge,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = badge.icon,
+            style = MaterialTheme.typography.displaySmall,
+            modifier = Modifier.size(48.dp),
+        )
+        Text(
+            text = badge.name,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeUiWithDataPreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Alex",
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 5,
+                            longestStreak = 7,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 10,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 150,
+                            correctCount = 135,
+                            accuracy = 90f,
+                            sessionCount = 15,
+                        ),
+                    recentBadges =
+                        listOf(
+                            Badge(
+                                id = "first_steps",
+                                name = "First Steps",
+                                description = "Solved first problem",
+                                icon = "🎯",
+                                category = BadgeCategory.GETTING_STARTED,
+                                requirement = BadgeRequirement.ProblemCount(1),
+                                unlockedAt = Instant.now(),
+                            ),
+                            Badge(
+                                id = "quick_learner",
+                                name = "Quick Learner",
+                                description = "Solved 10 problems",
+                                icon = "🚀",
+                                category = BadgeCategory.VOLUME,
+                                requirement = BadgeRequirement.ProblemCount(10),
+                                unlockedAt = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeUiNewUserPreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = null,
+                    streakData = null,
+                    overallStats = SessionStats.EMPTY,
+                    recentBadges = emptyList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = null,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 3,
+                            longestStreak = 5,
+                            lastPracticeDate = LocalDate.now().minusDays(1),
+                            totalDaysPracticed = 8,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 50,
+                            correctCount = 42,
+                            accuracy = 84f,
+                            sessionCount = 5,
+                        ),
+                    recentBadges = emptyList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
