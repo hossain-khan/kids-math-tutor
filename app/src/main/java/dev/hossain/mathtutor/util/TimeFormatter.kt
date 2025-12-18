@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter
 object TimeFormatter {
     private val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, h:mm a")
+    private val dateFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy")
 
     /**
      * Formats an [Instant] timestamp into a relative time string.
@@ -58,5 +59,19 @@ object TimeFormatter {
                 timestampDateTime.format(dateTimeFormatter)
             }
         }
+    }
+
+    /**
+     * Formats an [Instant] timestamp into a date string.
+     *
+     * Format example: "Dec 15, 2024"
+     *
+     * @param timestamp The instant to format
+     * @return Formatted date string
+     */
+    fun formatDate(timestamp: Instant): String {
+        val zoneId = ZoneId.systemDefault()
+        val dateTime = LocalDateTime.ofInstant(timestamp, zoneId)
+        return dateTime.format(dateFormatter)
     }
 }
