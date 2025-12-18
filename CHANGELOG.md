@@ -8,6 +8,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 4-2: Enhanced Onboarding with Profile Setup** - Updated onboarding flow with grade selection and optional name entry
+  - Created `GradeSelectionScreen` with Circuit pattern
+    - State: selectedGrade, eventSink
+    - Events: GradeSelected, ContinueClicked
+    - Three grade cards (K, 1, 2) with descriptions and Material 3 styling
+    - Selected state with primary color border
+    - Continue button enabled only when grade is selected
+  - Created `NameEntryScreen` with Circuit pattern
+    - State: name text, eventSink
+    - Events: NameChanged, SkipClicked, ContinueClicked
+    - Optional name input with friendly helper text
+    - Skip and Continue buttons for flexible user choice
+    - Saves complete UserProfile on skip or continue
+  - Updated `OnboardingScreen` navigation
+    - Now navigates to GradeSelectionScreen after welcome screens
+    - GradeSelectionScreen navigates to NameEntryScreen with selected grade
+    - NameEntryScreen saves profile and navigates to HomeScreen
+    - Profile includes gradeLevel, optional name, createdAt timestamp
+  - Comprehensive unit tests:
+    - 8 GradeSelectionScreen tests covering all grade options and events
+    - 10 NameEntryScreen tests covering name input and skip/continue flows
+    - All 18 new tests passing
+  - Material 3 compliance:
+    - All colors use MaterialTheme.colorScheme (no hardcoded colors)
+    - Card components use elevatedCardColors and elevatedCardElevation
+    - Typography uses MaterialTheme.typography throughout
 - **Phase 4-1: User Profile System** - Foundational user profile system with DataStore persistence
   - Created `GradeLevel` enum with three levels (KINDERGARTEN, GRADE_1, GRADE_2)
     - Grade-specific number ranges for each math operation

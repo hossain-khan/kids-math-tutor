@@ -50,7 +50,6 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.data.UserPreferencesRepository
-import dev.hossain.mathtutor.ui.home.HomeScreen
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -149,7 +148,7 @@ class OnboardingPresenter
                     -> {
                         coroutineScope.launch {
                             userPreferencesRepository.setOnboardingCompleted(true)
-                            navigator.resetRoot(HomeScreen)
+                            navigator.goTo(GradeSelectionScreen)
                         }
                     }
                 }
