@@ -162,7 +162,7 @@ fun GradeSelectionUi(
             // Kindergarten Card
             GradeCard(
                 gradeLevel = GradeLevel.KINDERGARTEN,
-                description = "Numbers 1-10, Simple addition",
+                description = "Numbers 1-5, Simple addition",
                 isSelected = state.selectedGrade == GradeLevel.KINDERGARTEN,
                 onClick = {
                     state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.KINDERGARTEN))
@@ -172,7 +172,7 @@ fun GradeSelectionUi(
             // Grade 1 Card
             GradeCard(
                 gradeLevel = GradeLevel.GRADE_1,
-                description = "Numbers 1-20, Add, subtract",
+                description = "Numbers 1-10, Add, subtract",
                 isSelected = state.selectedGrade == GradeLevel.GRADE_1,
                 onClick = {
                     state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_1))
@@ -182,7 +182,7 @@ fun GradeSelectionUi(
             // Grade 2 Card
             GradeCard(
                 gradeLevel = GradeLevel.GRADE_2,
-                description = "Numbers 1-100, All operations",
+                description = "Numbers 1-20, All operations",
                 isSelected = state.selectedGrade == GradeLevel.GRADE_2,
                 onClick = {
                     state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_2))
