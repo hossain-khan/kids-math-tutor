@@ -17,10 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeRequirement
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.util.TimeFormatter
+import java.time.Instant
 
 /**
  * Dialog component for displaying badge details.
@@ -153,3 +158,63 @@ private fun formatRequirement(badge: Badge): String =
             "Complete ${req.count} mixed mode sessions"
         }
     }
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgeDetailDialogUnlockedPreview() {
+    KidsMathTutorAppTheme {
+        BadgeDetailDialog(
+            badge =
+                Badge(
+                    id = "first_steps",
+                    name = "First Steps",
+                    description = "You solved your first math problem! Great job!",
+                    icon = "🎯",
+                    category = BadgeCategory.GETTING_STARTED,
+                    requirement = BadgeRequirement.ProblemCount(1),
+                    unlockedAt = Instant.now(),
+                ),
+            onDismiss = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgeDetailDialogLockedPreview() {
+    KidsMathTutorAppTheme {
+        BadgeDetailDialog(
+            badge =
+                Badge(
+                    id = "math_master",
+                    name = "Math Master",
+                    description = "You're a true math champion! Keep up the great work!",
+                    icon = "🏆",
+                    category = BadgeCategory.VOLUME,
+                    requirement = BadgeRequirement.ProblemCount(100),
+                    unlockedAt = null,
+                ),
+            onDismiss = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BadgeDetailDialogDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        BadgeDetailDialog(
+            badge =
+                Badge(
+                    id = "speed_demon",
+                    name = "Speed Demon",
+                    description = "Lightning fast! You solved a problem in record time!",
+                    icon = "⚡",
+                    category = BadgeCategory.SPEED_ACCURACY,
+                    requirement = BadgeRequirement.ProblemSpeed(5),
+                    unlockedAt = Instant.now(),
+                ),
+            onDismiss = {},
+        )
+    }
+}
