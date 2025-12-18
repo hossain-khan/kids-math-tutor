@@ -8,7 +8,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ApplicationContext
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
@@ -21,7 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
 
-// Use the existing dataStore from UserPreferencesRepository
+// Shared DataStore for user preferences (also used by UserPreferencesRepository)
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 /**
