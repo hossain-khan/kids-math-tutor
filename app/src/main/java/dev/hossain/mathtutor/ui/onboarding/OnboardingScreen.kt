@@ -83,8 +83,6 @@ private data class OnboardingPage(
     val imageRes: Int,
     val title: String,
     val description: String,
-    val backgroundColor: Color,
-    val accentColor: Color,
 )
 
 private val onboardingPages =
@@ -93,29 +91,21 @@ private val onboardingPages =
             imageRes = R.drawable.onboarding_1_app_name_welcome,
             title = "Welcome to Math Pup Tutor!",
             description = "Let's make learning math fun and exciting together!",
-            backgroundColor = Color(0xFFFBF4D1),
-            accentColor = Color(0xFF9E5626),
         ),
         OnboardingPage(
             imageRes = R.drawable.onboarding_2_creative_math_red_theme,
             title = "Creative Learning",
             description = "Explore math concepts through interactive and creative exercises.",
-            backgroundColor = Color(0xFFE7D5CA),
-            accentColor = Color(0xFF991F36),
         ),
         OnboardingPage(
             imageRes = R.drawable.onboarding_3_explore_numbers_green_theme,
             title = "Discover Numbers",
             description = "Build confidence with numbers through engaging practice sessions.",
-            backgroundColor = Color(0xFFCFB06A),
-            accentColor = Color(0xFF244426),
         ),
         OnboardingPage(
             imageRes = R.drawable.onboarding_4_master_math_blue_theme,
             title = "Master Math Skills",
             description = "Track your progress and become a math champion!",
-            backgroundColor = Color(0xFFC1DCE7),
-            accentColor = Color(0xFF226095),
         ),
     )
 
@@ -173,11 +163,16 @@ fun OnboardingContent(
     val currentPage = onboardingPages[pagerState.currentPage]
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
 
+    // Use theme colors for background based on page index
+    // Rotate through theme color containers for variety
+    val colorScheme = MaterialTheme.colorScheme
+    val pageColors = getPageColors(pagerState.currentPage, colorScheme)
+
     Box(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(currentPage.backgroundColor),
+                .background(pageColors.backgroundColor),
     ) {
         Column(
             modifier =
@@ -201,7 +196,7 @@ fun OnboardingContent(
                         onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) },
                         colors =
                             ButtonDefaults.textButtonColors(
-                                contentColor = currentPage.accentColor,
+                                contentColor = pageColors.contentColor,
                             ),
                     ) {
                         Text(
@@ -217,7 +212,10 @@ fun OnboardingContent(
                 state = pagerState,
                 modifier = Modifier.weight(1f),
             ) { page ->
-                OnboardingPageContent(onboardingPages[page])
+                OnboardingPageContent(
+                    page = onboardingPages[page],
+                    contentColor = pageColors.contentColor,
+                )
             }
 
             Row(
@@ -238,9 +236,9 @@ fun OnboardingContent(
                                 .clip(CircleShape)
                                 .background(
                                     if (isSelected) {
-                                        currentPage.accentColor
+                                        pageColors.contentColor
                                     } else {
-                                        currentPage.accentColor.copy(alpha = 0.3f)
+                                        pageColors.contentColor.copy(alpha = 0.3f)
                                     },
                                 ),
                     )
@@ -260,8 +258,8 @@ fun OnboardingContent(
                             .height(56.dp),
                     colors =
                         ButtonDefaults.buttonColors(
-                            containerColor = currentPage.accentColor,
-                            contentColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                     shape = RoundedCornerShape(28.dp),
                 ) {
@@ -285,8 +283,8 @@ fun OnboardingContent(
                             .height(56.dp),
                     colors =
                         ButtonDefaults.buttonColors(
-                            containerColor = currentPage.accentColor,
-                            contentColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                     shape = RoundedCornerShape(28.dp),
                 ) {
@@ -302,7 +300,10 @@ fun OnboardingContent(
 }
 
 @Composable
-private fun OnboardingPageContent(page: OnboardingPage) {
+private fun OnboardingPageContent(
+    page: OnboardingPage,
+    contentColor: Color,
+) {
     Column(
         modifier =
             Modifier
@@ -319,7 +320,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
             shape = RoundedCornerShape(24.dp),
             colors =
                 CardDefaults.cardColors(
-                    containerColor = Color.White.copy(alpha = 0.9f),
+                    containerColor = MaterialTheme.colorScheme.surface,
                 ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
@@ -339,7 +340,7 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         Text(
             text = page.title,
             style = MaterialTheme.typography.headlineLarge,
-            color = page.accentColor,
+            color = contentColor,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.ExtraBold,
         )
@@ -349,10 +350,60 @@ private fun OnboardingPageContent(page: OnboardingPage) {
         Text(
             text = page.description,
             style = MaterialTheme.typography.bodyLarge,
-            color = page.accentColor.copy(alpha = 0.8f),
+            color = contentColor.copy(alpha = 0.8f),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Medium,
         )
+    }
+}
+
+/**
+ * Data class to hold background and content color pairs for onboarding pages.
+ */
+private data class PageColors(
+    val backgroundColor: Color,
+    val contentColor: Color,
+)
+
+/**
+ * Returns theme-aware colors for onboarding pages based on page index.
+ * Rotates through Material 3 color containers for visual variety while maintaining accessibility.
+ */
+private fun getPageColors(
+    pageIndex: Int,
+    colorScheme: androidx.compose.material3.ColorScheme,
+): PageColors {
+    // Number of different color schemes to rotate through
+    val colorRotationCount = 4
+
+    return when (pageIndex % colorRotationCount) {
+        0 -> {
+            PageColors(
+                backgroundColor = colorScheme.primaryContainer,
+                contentColor = colorScheme.onPrimaryContainer,
+            )
+        }
+
+        1 -> {
+            PageColors(
+                backgroundColor = colorScheme.secondaryContainer,
+                contentColor = colorScheme.onSecondaryContainer,
+            )
+        }
+
+        2 -> {
+            PageColors(
+                backgroundColor = colorScheme.tertiaryContainer,
+                contentColor = colorScheme.onTertiaryContainer,
+            )
+        }
+
+        else -> {
+            PageColors(
+                backgroundColor = colorScheme.surfaceVariant,
+                contentColor = colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
