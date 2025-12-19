@@ -16,6 +16,10 @@ interface UserPreferencesRepository {
     val isOnboardingCompleted: Flow<Boolean>
 
     suspend fun setOnboardingCompleted(completed: Boolean)
+
+    val isHapticsEnabled: Flow<Boolean>
+
+    suspend fun setHapticsEnabled(enabled: Boolean)
 }
 
 @SingleIn(AppScope::class)
@@ -27,6 +31,7 @@ class UserPreferencesRepositoryImpl
     ) : UserPreferencesRepository {
         private object PreferencesKeys {
             val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+            val HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
         }
 
         override val isOnboardingCompleted: Flow<Boolean> =
@@ -37,6 +42,17 @@ class UserPreferencesRepositoryImpl
         override suspend fun setOnboardingCompleted(completed: Boolean) {
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.ONBOARDING_COMPLETED] = completed
+            }
+        }
+
+        override val isHapticsEnabled: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.HAPTICS_ENABLED] ?: true
+            }
+
+        override suspend fun setHapticsEnabled(enabled: Boolean) {
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.HAPTICS_ENABLED] = enabled
             }
         }
     }
