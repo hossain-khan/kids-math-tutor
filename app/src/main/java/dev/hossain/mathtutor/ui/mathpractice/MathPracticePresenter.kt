@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.Badge
@@ -23,6 +24,7 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
+import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -54,6 +56,8 @@ class MathPracticePresenter
         private val performanceRepository: PerformanceRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val updateStreakUseCase: UpdateStreakUseCase,
+        private val audioService: AudioService,
+        private val hapticService: HapticService,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -113,6 +117,15 @@ class MathPracticePresenter
                     difficultyAdjustment = result.adjustment
                     if (result.wasAdjusted) {
                         showDifficultyChangeNotice = true
+                        // Play level up audio and haptic if difficulty was increased
+                        if (result.wasIncreased) {
+                            audioService.playLevelUp()
+                            hapticService.triggerSuccess()
+                            Timber.d(
+                                "[MathPractice] Difficulty increased from $grade to ${result.actualGradeLevel} - " +
+                                    "played level up audio and haptic feedback",
+                            )
+                        }
                         Timber.d(
                             "Difficulty adjusted from $grade to ${result.actualGradeLevel} " +
                                 "(adjustment: ${result.adjustment})",
@@ -169,6 +182,25 @@ class MathPracticePresenter
                             val userAnswer = currentAnswer.toIntOrNull()
                             val correct = userAnswer?.let { currentProblem.checkAnswer(it) } ?: false
                             isCorrect = if (userAnswer != null) correct else null
+
+                            // Play audio and haptic feedback based on correctness
+                            if (userAnswer != null) {
+                                if (correct) {
+                                    audioService.playSuccess()
+                                    hapticService.triggerSuccess()
+                                    Timber.d(
+                                        "[MathPractice] Correct answer for problem ${currentProblem.id} - " +
+                                            "played success audio and haptic feedback",
+                                    )
+                                } else {
+                                    audioService.playError()
+                                    hapticService.triggerError()
+                                    Timber.d(
+                                        "[MathPractice] Incorrect answer for problem ${currentProblem.id} - " +
+                                            "played error audio and haptic feedback",
+                                    )
+                                }
+                            }
 
                             // Store the user's answer
                             val updatedAnswers = userAnswers.toMutableList()
@@ -239,9 +271,20 @@ class MathPracticePresenter
 
                             val correctCount = sessionAnswers.values.count { it.isCorrect }
                             Timber.d(
-                                "Session stats: answered=${sessionAnswers.count { it.value.userAnswer != null }}/${problems.size}, " +
+                                "[MathPractice] Session stats: answered=${sessionAnswers.count {
+                                    it.value.userAnswer != null
+                                }}/${problems.size}, " +
                                     "correct=$correctCount",
                             )
+
+                            // Check for perfect score
+                            val isPerfectScore = correctCount == problems.size && problems.isNotEmpty()
+                            if (isPerfectScore) {
+                                audioService.playPerfectScore()
+                                Timber.d(
+                                    "[MathPractice] Perfect score achieved ($correctCount/${problems.size}) - played perfect score audio",
+                                )
+                            }
 
                             val practiceSession =
                                 PracticeSession(
@@ -265,20 +308,46 @@ class MathPracticePresenter
                                     Timber.d("Session saved successfully")
 
                                     // Update streak
-                                    Timber.d("Updating streak...")
+                                    Timber.d("[MathPractice] Updating streak...")
+                                    val previousStreak = updateStreakUseCase.getCurrentStreak()
                                     val updatedStreak = updateStreakUseCase.updateStreak()
                                     Timber.d(
-                                        "Streak updated: current=${updatedStreak.currentStreak}, longest=${updatedStreak.longestStreak}",
+                                        "[MathPractice] Streak updated: current=${updatedStreak.currentStreak}, " +
+                                            "longest=${updatedStreak.longestStreak}",
                                     )
 
                                     // Check for badge unlocks
-                                    Timber.d("Checking for badge unlocks...")
+                                    Timber.d("[MathPractice] Checking for badge unlocks...")
                                     val newlyUnlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
 
-                                    // Switch to Main dispatcher for state updates and navigation
+                                    // Switch to Main dispatcher for audio/haptic feedback and state updates
                                     withContext(Dispatchers.Main) {
+                                        // Play streak continue audio if streak was maintained or increased
+                                        if (updatedStreak.currentStreak > 0 &&
+                                            updatedStreak.currentStreak >= previousStreak.currentStreak
+                                        ) {
+                                            audioService.playStreakContinue()
+                                            Timber.d(
+                                                "[MathPractice] Streak continued (${updatedStreak.currentStreak} days) - " +
+                                                    "played streak continue audio",
+                                            )
+                                        }
+
+                                        // Play badge unlock audio and haptic if badges were unlocked
                                         if (newlyUnlocked.isNotEmpty()) {
-                                            Timber.d("Unlocked ${newlyUnlocked.size} badges: ${newlyUnlocked.map { it.name }}")
+                                            audioService.playBadgeUnlock()
+                                            hapticService.triggerBadgeUnlock()
+                                            Timber.d(
+                                                "[MathPractice] ${newlyUnlocked.size} badge(s) unlocked - " +
+                                                    "played badge unlock audio and haptic feedback",
+                                            )
+                                        }
+
+                                        // Update state and navigation
+                                        if (newlyUnlocked.isNotEmpty()) {
+                                            Timber.d(
+                                                "[MathPractice] Showing badge dialog for: ${newlyUnlocked.map { it.name }}",
+                                            )
                                             unlockedBadges = newlyUnlocked
                                             showBadgeUnlock = true
                                             currentBadgeIndex = 0

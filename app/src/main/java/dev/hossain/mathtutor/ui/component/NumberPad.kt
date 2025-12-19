@@ -16,7 +16,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import timber.log.Timber
 
 /**
  * A number pad component for kids to input their answers.
@@ -27,11 +29,13 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
  *
  * @param onNumberClick Callback invoked when a number button is clicked, provides the number (0-9)
  * @param modifier Optional modifier for the number pad container
+ * @param hapticService Optional haptic service for button click feedback
  */
 @Composable
 fun NumberPad(
     onNumberClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    hapticService: HapticService? = null,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -46,6 +50,7 @@ fun NumberPad(
                 NumberButton(
                     number = number,
                     onClick = { onNumberClick(number) },
+                    hapticService = hapticService,
                 )
             }
         }
@@ -59,11 +64,13 @@ fun NumberPad(
                 NumberButton(
                     number = number,
                     onClick = { onNumberClick(number) },
+                    hapticService = hapticService,
                 )
             }
             NumberButton(
                 number = 0,
                 onClick = { onNumberClick(0) },
+                hapticService = hapticService,
             )
         }
     }
@@ -75,15 +82,21 @@ fun NumberPad(
  * @param number The number to display (0-9)
  * @param onClick Callback invoked when the button is clicked
  * @param modifier Optional modifier for the button
+ * @param hapticService Optional haptic service for button click feedback
  */
 @Composable
 private fun NumberButton(
     number: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    hapticService: HapticService? = null,
 ) {
     Button(
-        onClick = onClick,
+        onClick = {
+            hapticService?.triggerButtonClick()
+            Timber.d("[NumberPad] Number button $number clicked - triggered haptic feedback")
+            onClick()
+        },
         modifier =
             modifier
                 .size(64.dp)

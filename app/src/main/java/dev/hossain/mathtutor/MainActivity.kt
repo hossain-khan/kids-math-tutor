@@ -9,6 +9,8 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
@@ -17,6 +19,7 @@ import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
+import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ActivityKey
 import dev.hossain.mathtutor.ui.home.HomeScreen
@@ -26,6 +29,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
+import timber.log.Timber
 
 /**
  * Main activity for the application, demonstrating Metro constructor injection for Activities.
@@ -52,11 +56,43 @@ class MainActivity
     constructor(
         private val circuit: Circuit,
         private val userPreferencesRepository: UserPreferencesRepository,
+        private val audioService: AudioService,
     ) : ComponentActivity() {
+        // Lifecycle observer for music management - stored as property to allow proper cleanup
+        private val musicLifecycleObserver =
+            object : DefaultLifecycleObserver {
+                override fun onStart(owner: LifecycleOwner) {
+                    // Start/resume music when app becomes visible (better than onResume for lifecycle)
+                    audioService.resumeBackgroundMusic()
+                    Timber.d("[MainActivity] Resumed background music (app visible)")
+                }
+
+                override fun onStop(owner: LifecycleOwner) {
+                    // Pause music when app is no longer visible (better than onPause for lifecycle)
+                    audioService.pauseBackgroundMusic()
+                    Timber.d("[MainActivity] Paused background music (app not visible)")
+                }
+
+                override fun onDestroy(owner: LifecycleOwner) {
+                    // Clean up audio resources and remove observer to prevent memory leaks
+                    audioService.stopBackgroundMusic()
+                    audioService.release()
+                    lifecycle.removeObserver(this)
+                    Timber.d("[MainActivity] Stopped background music, released resources, and removed observer")
+                }
+            }
+
         @OptIn(ExperimentalSharedTransitionApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
             enableEdgeToEdge()
             super.onCreate(savedInstanceState)
+
+            // Start background music when app launches
+            audioService.startBackgroundMusic()
+            Timber.d("[MainActivity] Started background music on app launch")
+
+            // Register lifecycle observer for music management
+            lifecycle.addObserver(musicLifecycleObserver)
 
             setContent {
                 KidsMathTutorAppTheme {

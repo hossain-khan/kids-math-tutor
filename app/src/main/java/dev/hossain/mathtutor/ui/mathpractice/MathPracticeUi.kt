@@ -38,10 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.ui.Ui
+import com.slack.circuit.runtime.ui.ui
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.animation.SuccessAnimation
 import dev.hossain.mathtutor.ui.animation.shake
 import dev.hossain.mathtutor.ui.component.AnswerField
@@ -49,18 +53,46 @@ import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metro.Inject
+import timber.log.Timber
+
+/**
+ * Custom Ui.Factory for MathPracticeScreen that injects HapticService.
+ */
+@Inject
+@ContributesIntoSet(AppScope::class)
+class MathPracticeUiFactory(
+    private val hapticService: HapticService,
+) : Ui.Factory {
+    override fun create(
+        screen: Screen,
+        context: CircuitContext,
+    ): Ui<*>? =
+        when (screen) {
+            is MathPracticeScreen -> {
+                ui<MathPracticeScreen.State> { state, modifier ->
+                    MathPracticeUi(state = state, modifier = modifier, hapticService = hapticService)
+                }
+            }
+
+            else -> {
+                null
+            }
+        }
+}
 
 /**
  * UI for [MathPracticeScreen].
  *
  * Displays the math problem, answer input field, number pad, and action buttons.
  */
-@CircuitInject(MathPracticeScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MathPracticeUi(
+internal fun MathPracticeUi(
     state: MathPracticeScreen.State,
     modifier: Modifier = Modifier,
+    hapticService: HapticService,
 ) {
     // Track shake animation state and previous isCorrect value
     var shouldShake by remember { mutableStateOf(false) }
@@ -194,6 +226,7 @@ fun MathPracticeUi(
                         state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
                     },
                     modifier = Modifier.fillMaxWidth(),
+                    hapticService = hapticService,
                 )
 
                 // Action buttons
@@ -203,6 +236,7 @@ fun MathPracticeUi(
                     onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
                     onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
                     onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
+                    hapticService = hapticService,
                 )
             }
         }
@@ -347,6 +381,7 @@ private fun ActionButtons(
     onCheck: () -> Unit,
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
+    hapticService: HapticService? = null,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -354,7 +389,11 @@ private fun ActionButtons(
     ) {
         // Clear button
         Button(
-            onClick = onClear,
+            onClick = {
+                hapticService?.triggerButtonClick()
+                Timber.d("[MathPracticeUi] Clear button clicked - triggered haptic feedback")
+                onClear()
+            },
             enabled = hasAnswer,
             modifier = Modifier.weight(1f),
             colors =
@@ -373,7 +412,12 @@ private fun ActionButtons(
 
         // Check/Next button
         Button(
-            onClick = if (isCorrect == true) onNext else onCheck,
+            onClick = {
+                hapticService?.triggerButtonClick()
+                val action = if (isCorrect == true) "Next" else "Check"
+                Timber.d("[MathPracticeUi] $action button clicked - triggered haptic feedback")
+                if (isCorrect == true) onNext() else onCheck()
+            },
             enabled = hasAnswer,
             modifier = Modifier.weight(1f),
         ) {
@@ -458,6 +502,20 @@ private fun MathPracticeUiPreview() {
                     isCorrect = null,
                     eventSink = {},
                 ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
         )
     }
 }
@@ -476,6 +534,20 @@ private fun MathPracticeUiCorrectPreview() {
                     isCorrect = true,
                     eventSink = {},
                 ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
         )
     }
 }
@@ -494,6 +566,20 @@ private fun MathPracticeUiIncorrectPreview() {
                     isCorrect = false,
                     eventSink = {},
                 ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
         )
     }
 }
