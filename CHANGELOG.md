@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Material 3 Color System Enhancement** - Implemented comprehensive Material 3 color scheme with proper dark and light mode support
+  - Expanded color definitions in `Color.kt` with complete Material 3 color palette:
+    - Light theme colors: Primary, Secondary, Tertiary containers with proper on-colors
+    - Dark theme colors: Primary, Secondary, Tertiary containers with proper on-colors
+    - Surface variants, Outlines, Error containers for both themes
+  - Updated `Theme.kt` to use comprehensive color scheme instead of minimal palette
+  - Replaced hardcoded colors in `OnboardingScreen` with theme-aware colors:
+    - Removed hardcoded background and accent colors from `OnboardingPage` data class
+    - Updated page backgrounds to rotate through Material 3 container colors (primaryContainer, secondaryContainer, tertiaryContainer, surfaceVariant)
+    - Updated button colors to use MaterialTheme.colorScheme.primary/onPrimary
+    - Replaced `Color.White` with MaterialTheme.colorScheme.surface for card backgrounds
+  - All colors now properly adapt to light and dark modes with good contrast ratios
+
 ### Fixed
 - Fixed crash after onboarding due to multiple DataStore instances. Created singleton DataStore in `UserPreferencesDataStore.kt` shared by both `UserPreferencesRepository` and `UserProfileRepository`.
 - Fixed ANR (Application Not Responding) on first launch by initializing badge database in background during app startup in `KidsMathTutorApp.onCreate()`.
