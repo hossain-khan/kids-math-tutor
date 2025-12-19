@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.domain.generator
 
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -7,38 +8,39 @@ import org.junit.Test
 
 class SimpleProblemGeneratorTest {
     private val generator = SimpleProblemGenerator()
+    private val defaultGrade = GradeLevel.GRADE_1 // Default grade for SimpleProblemGenerator tests
 
     @Test
     fun `generateProblems returns correct count`() {
-        val problems = generator.generateProblems(10, MathOperation.ADDITION)
+        val problems = generator.generateProblems(10, MathOperation.ADDITION, defaultGrade)
         assertEquals(10, problems.size)
     }
 
     @Test
     fun `generateProblems returns single problem when count is 1`() {
-        val problems = generator.generateProblems(1, MathOperation.ADDITION)
+        val problems = generator.generateProblems(1, MathOperation.ADDITION, defaultGrade)
         assertEquals(1, problems.size)
     }
 
     @Test
     fun `generateProblems with large count works correctly`() {
-        val problems = generator.generateProblems(100, MathOperation.ADDITION)
+        val problems = generator.generateProblems(100, MathOperation.ADDITION, defaultGrade)
         assertEquals(100, problems.size)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `generateProblems throws exception for zero count`() {
-        generator.generateProblems(0, MathOperation.ADDITION)
+        generator.generateProblems(0, MathOperation.ADDITION, defaultGrade)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `generateProblems throws exception for negative count`() {
-        generator.generateProblems(-5, MathOperation.ADDITION)
+        generator.generateProblems(-5, MathOperation.ADDITION, defaultGrade)
     }
 
     @Test
     fun `generated addition problems have numbers in range 1-10`() {
-        val problems = generator.generateProblems(100, MathOperation.ADDITION)
+        val problems = generator.generateProblems(100, MathOperation.ADDITION, defaultGrade)
 
         problems.forEach { problem ->
             assertTrue("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10)
@@ -48,7 +50,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generated addition problems have correct answers`() {
-        val problems = generator.generateProblems(50, MathOperation.ADDITION)
+        val problems = generator.generateProblems(50, MathOperation.ADDITION, defaultGrade)
 
         problems.forEach { problem ->
             val expectedAnswer = problem.num1 + problem.num2
@@ -62,7 +64,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generated problems have ADDITION operation`() {
-        val problems = generator.generateProblems(20, MathOperation.ADDITION)
+        val problems = generator.generateProblems(20, MathOperation.ADDITION, defaultGrade)
 
         problems.forEach { problem ->
             assertEquals(MathOperation.ADDITION, problem.operation)
@@ -71,7 +73,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generated problems have unique IDs`() {
-        val problems = generator.generateProblems(10, MathOperation.ADDITION)
+        val problems = generator.generateProblems(10, MathOperation.ADDITION, defaultGrade)
         val ids = problems.map { it.id }.toSet()
 
         assertEquals("All problem IDs should be unique", problems.size, ids.size)
@@ -79,17 +81,17 @@ class SimpleProblemGeneratorTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `generateProblems throws exception for MULTIPLICATION in Phase 1`() {
-        generator.generateProblems(5, MathOperation.MULTIPLICATION)
+        generator.generateProblems(5, MathOperation.MULTIPLICATION, defaultGrade)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `generateProblems throws exception for DIVISION in Phase 1`() {
-        generator.generateProblems(5, MathOperation.DIVISION)
+        generator.generateProblems(5, MathOperation.DIVISION, defaultGrade)
     }
 
     @Test
     fun `generated problems produce variety of numbers`() {
-        val problems = generator.generateProblems(100, MathOperation.ADDITION)
+        val problems = generator.generateProblems(100, MathOperation.ADDITION, defaultGrade)
         val num1Values = problems.map { it.num1 }.toSet()
         val num2Values = problems.map { it.num2 }.toSet()
 
@@ -103,13 +105,13 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generateProblems returns correct count for subtraction`() {
-        val problems = generator.generateProblems(10, MathOperation.SUBTRACTION)
+        val problems = generator.generateProblems(10, MathOperation.SUBTRACTION, defaultGrade)
         assertEquals(10, problems.size)
     }
 
     @Test
     fun `generated subtraction problems have numbers in range 1-10`() {
-        val problems = generator.generateProblems(100, MathOperation.SUBTRACTION)
+        val problems = generator.generateProblems(100, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
             assertTrue("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10)
@@ -119,7 +121,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generated subtraction problems never produce negative results`() {
-        val problems = generator.generateProblems(200, MathOperation.SUBTRACTION)
+        val problems = generator.generateProblems(200, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
             assertTrue(
@@ -131,7 +133,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generated subtraction problems have larger number first`() {
-        val problems = generator.generateProblems(100, MathOperation.SUBTRACTION)
+        val problems = generator.generateProblems(100, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
             assertTrue(
@@ -143,7 +145,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generated subtraction problems have correct answers`() {
-        val problems = generator.generateProblems(50, MathOperation.SUBTRACTION)
+        val problems = generator.generateProblems(50, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
             val expectedAnswer = problem.num1 - problem.num2
@@ -157,7 +159,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generated subtraction problems have SUBTRACTION operation`() {
-        val problems = generator.generateProblems(20, MathOperation.SUBTRACTION)
+        val problems = generator.generateProblems(20, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
             assertEquals(MathOperation.SUBTRACTION, problem.operation)
@@ -166,7 +168,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `subtraction problems produce variety of numbers`() {
-        val problems = generator.generateProblems(100, MathOperation.SUBTRACTION)
+        val problems = generator.generateProblems(100, MathOperation.SUBTRACTION, defaultGrade)
         val num1Values = problems.map { it.num1 }.toSet()
         val num2Values = problems.map { it.num2 }.toSet()
 
@@ -179,13 +181,13 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `generateProblems returns correct count for mixed mode`() {
-        val problems = generator.generateProblems(10, MathOperation.MIXED)
+        val problems = generator.generateProblems(10, MathOperation.MIXED, defaultGrade)
         assertEquals(10, problems.size)
     }
 
     @Test
     fun `mixed mode produces both addition and subtraction problems`() {
-        val problems = generator.generateProblems(100, MathOperation.MIXED)
+        val problems = generator.generateProblems(100, MathOperation.MIXED, defaultGrade)
 
         val additionCount = problems.count { it.operation == MathOperation.ADDITION }
         val subtractionCount = problems.count { it.operation == MathOperation.SUBTRACTION }
@@ -197,7 +199,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `mixed mode problems have numbers in range 1-10`() {
-        val problems = generator.generateProblems(100, MathOperation.MIXED)
+        val problems = generator.generateProblems(100, MathOperation.MIXED, defaultGrade)
 
         problems.forEach { problem ->
             assertTrue("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10)
@@ -207,7 +209,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `mixed mode never produces negative results`() {
-        val problems = generator.generateProblems(200, MathOperation.MIXED)
+        val problems = generator.generateProblems(200, MathOperation.MIXED, defaultGrade)
 
         problems.forEach { problem ->
             assertTrue(
@@ -219,7 +221,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `mixed mode problems have correct answers`() {
-        val problems = generator.generateProblems(50, MathOperation.MIXED)
+        val problems = generator.generateProblems(50, MathOperation.MIXED, defaultGrade)
 
         problems.forEach { problem ->
             val expectedAnswer =
@@ -238,7 +240,7 @@ class SimpleProblemGeneratorTest {
 
     @Test
     fun `mixed mode distribution is roughly 50-50`() {
-        val problems = generator.generateProblems(200, MathOperation.MIXED)
+        val problems = generator.generateProblems(200, MathOperation.MIXED, defaultGrade)
 
         val additionCount = problems.count { it.operation == MathOperation.ADDITION }
         val subtractionCount = problems.count { it.operation == MathOperation.SUBTRACTION }

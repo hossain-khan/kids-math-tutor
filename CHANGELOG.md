@@ -8,6 +8,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 4-3: Grade-Aware Problem Generation** - Implemented grade-appropriate problem generation for K-2 students
+  - Updated `ProblemGenerator` interface to include `gradeLevel` parameter
+  - Created `GradeAwareProblemGenerator` with grade-specific logic:
+    - **Kindergarten**: Numbers 1-10 only
+      - Addition: 1-10 + 1-10 = 2-18 (constrained to prevent exceeding 18)
+      - Subtraction: 1-10 - 1-10 = 0-9 (no negative results)
+      - Multiplication/Division: Falls back to addition/subtraction
+    - **Grade 1**: Numbers 1-20, limited multiplication
+      - Addition: 1-20 + 1-20 = 2-40
+      - Subtraction: 1-20 - 1-20 = 0-19 (no negative results)
+      - Multiplication: Only ×2, ×5, ×10 tables (first operand 1-10)
+      - Division: Falls back to subtraction
+    - **Grade 2**: Numbers 1-100, all operations
+      - Addition: 1-100 + 1-100
+      - Subtraction: 1-100 - 1-100 (no negative results)
+      - Multiplication: Full tables 2-10 (first operand 1-12)
+      - Division: Derived from multiplication facts (always divides evenly)
+  - Updated `MathPracticePresenter` to fetch user grade from `UserProfileRepository`
+    - Defaults to Grade 1 if no profile exists
+    - Passes grade level to problem generator
+  - Added integration tests for grade-level problem generation
+
+### Changed
+- Enhanced `MathPracticeScreen.State` with loading state indicator
+- Improved `MathPracticePresenter` to follow Compose best practices
+  - Problem generation now happens in `LaunchedEffect` to avoid composition issues
+  - Fixed race condition where UI could render before problems are generated
+- Added loading UI to show "Preparing problems..." while fetching profile and generating problems
+- Enhanced timber logging in presenter for better debugging of grade-level and problem generation
+  - Updated `SimpleProblemGenerator` for backward compatibility
+  - Configured Metro DI binding to use `GradeAwareProblemGenerator` as primary implementation
+  - Comprehensive test suite with 39 new tests:
+    - Kindergarten: 7 tests covering addition, subtraction, and fallbacks
+    - Grade 1: 9 tests covering all operations and constraints
+    - Grade 2: 10 tests covering all operations including division
+    - Mixed mode: 3 tests per grade level
+    - All tests verify number ranges, correct answers, and operation availability
+  - All 358 unit tests passing (up from 319)
 - **Phase 4-2: Enhanced Onboarding with Profile Setup** - Updated onboarding flow with grade selection and optional name entry
   - Created `GradeSelectionScreen` with Circuit pattern
     - State: selectedGrade, eventSink
