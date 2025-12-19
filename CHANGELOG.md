@@ -8,6 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 4-4: Adaptive Difficulty System** - Implemented performance tracking and automatic difficulty adjustment
+  - Created domain models for performance tracking:
+    - `DifficultyAdjustment` enum (EASIER, CURRENT, HARDER) for difficulty recommendations
+    - `OperationPerformance` data class with performance statistics and threshold methods:
+      - `shouldIncreaseDifficulty()`: Returns true when accuracy ≥85% with ≥20 recent attempts
+      - `shouldDecreaseDifficulty()`: Returns true when accuracy <50% with ≥10 recent attempts
+      - `getRecommendedAdjustment()`: Returns recommended difficulty change
+  - Created database schema (Room v4) for performance tracking:
+    - `PerformanceEntity` with operation, gradeLevel, problemId, isCorrect, timeSpentSeconds, timestamp
+    - `PerformanceDao` with queries for recording and calculating performance metrics
+    - `MIGRATION_3_4` for adding performance_records table
+    - Added `GradeLevel` type converter to `Converters.kt`
+  - Created repository layer:
+    - `PerformanceRepository` interface with recordPerformance, getPerformance, getRecentAccuracy methods
+    - `PerformanceRepositoryImpl` with Room database integration and Metro DI binding
+  - Created `AdaptiveProblemGenerator`:
+    - Generates problems at adjusted difficulty based on performance
+    - Grade level adjustment helpers: `getNextGradeLevel()`, `getPreviousGradeLevel()`
+    - Returns `AdaptiveProblemsResult` with adjustment metadata
+    - Respects grade boundaries (K min, Grade 2 max)
+  - Updated `MathPracticePresenter`:
+    - Records performance after each answered problem (when adaptive enabled)
+    - Uses `AdaptiveProblemGenerator` when user has adaptive difficulty enabled
+    - Tracks problem timing for performance recording
+    - Shows difficulty change notification dialog when level changes
+  - Updated `MathPracticeScreen.State`:
+    - Added `difficultyAdjustment`, `actualGradeLevel`, `showDifficultyChangeNotice` fields
+    - Added `DismissDifficultyNotice` event
+  - Updated `MathPracticeUi`:
+    - Added `DifficultyChangeDialog` component for displaying level changes
+    - Kid-friendly messages with emoji for level up (⬆️) and practice more (⬇️)
+  - Unit tests:
+    - `OperationPerformanceTest` (17 tests): Threshold logic, boundary conditions, recommendations
+    - `AdaptiveProblemGeneratorTest` (11 tests): Difficulty adjustment, grade boundaries, problem generation
 - **Phase 4-3: Grade-Aware Problem Generation** - Implemented grade-appropriate problem generation for K-2 students
   - Updated `ProblemGenerator` interface to include `gradeLevel` parameter
   - Created `GradeAwareProblemGenerator` with grade-specific logic:

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,6 +25,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.animation.SuccessAnimation
@@ -180,6 +183,15 @@ fun MathPracticeUi(
                 )
             }
         }
+
+        // Difficulty change notification dialog
+        if (state.showDifficultyChangeNotice && state.difficultyAdjustment != null) {
+            DifficultyChangeDialog(
+                adjustment = state.difficultyAdjustment,
+                actualGradeLevel = state.actualGradeLevel,
+                onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissDifficultyNotice) },
+            )
+        }
     }
 }
 
@@ -315,6 +327,68 @@ private fun ActionButtons(
             Text(if (isCorrect == true) "Next" else "Check")
         }
     }
+}
+
+/**
+ * Dialog shown when difficulty has been adjusted based on performance.
+ */
+@Composable
+private fun DifficultyChangeDialog(
+    adjustment: DifficultyAdjustment,
+    actualGradeLevel: dev.hossain.mathtutor.domain.model.GradeLevel?,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val (emoji, title, message) =
+        when (adjustment) {
+            DifficultyAdjustment.HARDER -> {
+                Triple(
+                    "⬆️",
+                    "Level Up!",
+                    "Great job! You're doing so well that we're giving you " +
+                        "harder problems. Now practicing at ${actualGradeLevel?.displayName ?: "higher level"}!",
+                )
+            }
+
+            DifficultyAdjustment.EASIER -> {
+                Triple(
+                    "⬇️",
+                    "Let's Practice More",
+                    "We've adjusted the difficulty to help you practice. " +
+                        "Now practicing at ${actualGradeLevel?.displayName ?: "easier level"}!",
+                )
+            }
+
+            DifficultyAdjustment.CURRENT -> {
+                Triple(
+                    "✨",
+                    "Keep Going!",
+                    "You're on track! Keep practicing at ${actualGradeLevel?.displayName ?: "current level"}.",
+                )
+            }
+        }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "$emoji $title",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+        },
+        text = {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Got it!")
+            }
+        },
+        modifier = modifier,
+    )
 }
 
 @Preview(showBackground = true)

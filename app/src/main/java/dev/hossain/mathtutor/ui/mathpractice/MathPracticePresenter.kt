@@ -10,13 +10,15 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
-import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionAnswer
+import dev.hossain.mathtutor.domain.repository.PerformanceRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
@@ -37,6 +39,8 @@ import java.time.Instant
  * Presenter for [MathPracticeScreen].
  *
  * Manages the state and business logic for the math practice session.
+ * Supports adaptive difficulty when enabled in user profile, which adjusts
+ * problem difficulty based on recent performance.
  */
 @AssistedInject
 class MathPracticePresenter
@@ -44,8 +48,10 @@ class MathPracticePresenter
         @Assisted private val screen: MathPracticeScreen,
         @Assisted private val navigator: Navigator,
         private val problemGenerator: ProblemGenerator,
+        private val adaptiveProblemGenerator: AdaptiveProblemGenerator,
         private val sessionRepository: SessionRepository,
         private val userProfileRepository: UserProfileRepository,
+        private val performanceRepository: PerformanceRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val updateStreakUseCase: UpdateStreakUseCase,
     ) : Presenter<MathPracticeScreen.State> {
@@ -74,22 +80,57 @@ class MathPracticePresenter
             var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var showBadgeUnlock by remember { mutableStateOf(false) }
             var currentBadgeIndex by remember { mutableStateOf(0) }
+            var difficultyAdjustment by remember { mutableStateOf<DifficultyAdjustment?>(null) }
+            var actualGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
+            var showDifficultyChangeNotice by remember { mutableStateOf(false) }
+            var problemStartTime by remember { mutableStateOf(Instant.now()) }
+            var currentGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
+            var isAdaptiveEnabled by remember { mutableStateOf(false) }
 
             // Fetch user profile and generate problems in a single LaunchedEffect
             LaunchedEffect(Unit) {
                 Timber.d("Starting problem generation for operation ${screen.operation}")
                 val profile = userProfileRepository.getProfile().firstOrNull()
                 val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1
-                Timber.d("Fetched user grade: $grade (profile exists: ${profile != null})")
+                isAdaptiveEnabled = profile?.adaptiveDifficultyEnabled ?: true
+                currentGradeLevel = grade
+                Timber.d(
+                    "Fetched user grade: $grade (profile exists: ${profile != null}, adaptive: $isAdaptiveEnabled)",
+                )
 
-                // Generate problems with the fetched grade level
-                problems =
-                    problemGenerator.generateProblems(
-                        count = screen.problemCount,
-                        operation = screen.operation,
-                        gradeLevel = grade,
-                    )
-                Timber.d("Generated ${problems.size} problems for grade $grade and operation ${screen.operation}")
+                if (isAdaptiveEnabled) {
+                    // Use adaptive problem generator
+                    val result =
+                        adaptiveProblemGenerator.generateAdaptiveProblems(
+                            count = screen.problemCount,
+                            operation = screen.operation,
+                            baseGradeLevel = grade,
+                        )
+                    problems = result.problems
+                    actualGradeLevel = result.actualGradeLevel
+                    difficultyAdjustment = result.adjustment
+                    if (result.wasAdjusted) {
+                        showDifficultyChangeNotice = true
+                        Timber.d(
+                            "Difficulty adjusted from $grade to ${result.actualGradeLevel} " +
+                                "(adjustment: ${result.adjustment})",
+                        )
+                    }
+                } else {
+                    // Use standard problem generator
+                    problems =
+                        problemGenerator.generateProblems(
+                            count = screen.problemCount,
+                            operation = screen.operation,
+                            gradeLevel = grade,
+                        )
+                    actualGradeLevel = grade
+                }
+                Timber.d(
+                    "Generated ${problems.size} problems for grade $actualGradeLevel " +
+                        "and operation ${screen.operation}",
+                )
+                problemStartTime = Instant.now()
                 isLoading = false
             }
 
@@ -105,6 +146,9 @@ class MathPracticePresenter
                 unlockedBadges = unlockedBadges,
                 showBadgeUnlock = showBadgeUnlock,
                 currentBadgeIndex = currentBadgeIndex,
+                difficultyAdjustment = difficultyAdjustment,
+                actualGradeLevel = actualGradeLevel,
+                showDifficultyChangeNotice = showDifficultyChangeNotice,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
@@ -120,7 +164,8 @@ class MathPracticePresenter
                     is MathPracticeScreen.Event.CheckAnswer -> {
                         if (currentProblem != null) {
                             val userAnswer = currentAnswer.toIntOrNull()
-                            isCorrect = userAnswer?.let { currentProblem.checkAnswer(it) }
+                            val correct = userAnswer?.let { currentProblem.checkAnswer(it) } ?: false
+                            isCorrect = userAnswer?.let { correct }
 
                             // Store the user's answer
                             val updatedAnswers = userAnswers.toMutableList()
@@ -129,6 +174,31 @@ class MathPracticePresenter
                             }
                             updatedAnswers[currentProblemIndex] = userAnswer
                             userAnswers = updatedAnswers
+
+                            // Record performance for adaptive difficulty (if enabled)
+                            if (isAdaptiveEnabled && currentGradeLevel != null && userAnswer != null) {
+                                val timeSpent =
+                                    java.time.Duration
+                                        .between(problemStartTime, Instant.now())
+                                        .seconds
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    try {
+                                        performanceRepository.recordPerformance(
+                                            operation = screen.operation,
+                                            gradeLevel = currentGradeLevel!!,
+                                            problemId = currentProblem.id,
+                                            isCorrect = correct,
+                                            timeSpentSeconds = timeSpent,
+                                        )
+                                        Timber.d(
+                                            "Recorded performance: problem=${currentProblem.id}, " +
+                                                "correct=$correct, time=${timeSpent}s",
+                                        )
+                                    } catch (e: Exception) {
+                                        Timber.e(e, "Failed to record performance")
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -137,6 +207,7 @@ class MathPracticePresenter
                             currentProblemIndex++
                             currentAnswer = ""
                             isCorrect = null
+                            problemStartTime = Instant.now() // Reset timer for next problem
                         } else {
                             // All problems completed, save session and check for badges/streak
                             val sessionEndTime = Instant.now()
@@ -256,6 +327,10 @@ class MathPracticePresenter
                                 ),
                             )
                         }
+                    }
+
+                    is MathPracticeScreen.Event.DismissDifficultyNotice -> {
+                        showDifficultyChangeNotice = false
                     }
                 }
             }

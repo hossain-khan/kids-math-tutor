@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.data.local
 
 import androidx.room.TypeConverter
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import java.time.Instant
 import java.time.LocalDate
@@ -82,4 +83,22 @@ class Converters {
      */
     @TypeConverter
     fun toLocalDate(value: Long?): LocalDate? = value?.let { LocalDate.ofEpochDay(it) }
+
+    /**
+     * Converts GradeLevel enum to String for database storage.
+     *
+     * @param gradeLevel The GradeLevel enum value
+     * @return String representation of the grade level name
+     */
+    @TypeConverter
+    fun fromGradeLevel(gradeLevel: GradeLevel): String = gradeLevel.name
+
+    /**
+     * Converts String from database back to GradeLevel enum.
+     *
+     * @param value String representation of the grade level name
+     * @return GradeLevel enum value
+     */
+    @TypeConverter
+    fun toGradeLevel(value: String): GradeLevel = GradeLevel.valueOf(value)
 }
