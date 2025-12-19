@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Android Q+ (API 29): Uses predefined VibrationEffect constants (EFFECT_CLICK, EFFECT_DOUBLE_CLICK, EFFECT_TICK, EFFECT_HEAVY_CLICK)
     - Android O+ (API 26): Uses VibrationEffect.createWaveform with amplitude control for badge unlock crescendo
     - Pre-Q: Uses custom timing patterns with vibrate() method
+    - **Continuous preference observation**: Flow-based observation ensures real-time updates when preferences change
+    - **Coroutine scope**: Uses Dispatchers.IO for DataStore operations (appropriate for background data operations)
+    - **Thread-safe state**: Uses @Volatile annotation for hapticsEnabled state accessed across coroutines
   - Metro DI integration:
     - Added `@ContributesBinding` for HapticService
     - Injected with `@ApplicationContext` for system service access
@@ -38,7 +41,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Tests for state transitions
     - FakeHapticService for testing without actual vibration hardware
   - All vibration patterns respect user preferences and only trigger when haptics are enabled
-  - Timber logging for debugging and monitoring vibration triggers
+  - Comprehensive Timber logging for debugging and monitoring:
+    - Logs each vibration trigger method call
+    - Logs preference state updates
+    - Logs enabled/disabled state changes
+    - Logs errors when preference operations fail
 
 ### Changed
 - **Material 3 Color System Enhancement** - Implemented comprehensive Material 3 color scheme with proper dark and light mode support

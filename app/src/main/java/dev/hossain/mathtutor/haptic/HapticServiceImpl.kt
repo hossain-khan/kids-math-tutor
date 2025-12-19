@@ -14,8 +14,9 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -31,6 +32,11 @@ import timber.log.Timber
  * - Pre-Q: Uses custom timing patterns with vibrate() method
  *
  * The service respects user preferences and only triggers vibrations when haptics are enabled.
+ * Preferences are continuously observed and the service state updates automatically when
+ * preferences change.
+ *
+ * Lifecycle: As an AppScope singleton, this service lives for the application lifetime.
+ * The coroutine scope is tied to the application lifecycle and doesn't require manual cleanup.
  */
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
@@ -53,23 +59,23 @@ class HapticServiceImpl
             }
         }
 
-        // Coroutine scope for observing user preferences
-        private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        // Coroutine scope for observing user preferences (uses IO dispatcher for DataStore operations)
+        private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-        // Track haptics enabled state (loaded from preferences)
+        // Track haptics enabled state (continuously updated from preferences)
+        @Volatile
         private var hapticsEnabled: Boolean = true
 
         init {
-            // Observe haptics preference from repository
-            scope.launch {
-                try {
-                    hapticsEnabled = userPreferencesRepository.isHapticsEnabled.first()
-                    Timber.d("[HapticService] Initial haptics enabled state: $hapticsEnabled")
-                } catch (e: Exception) {
-                    Timber.e(e, "[HapticService] Error loading haptics preference, defaulting to enabled")
+            // Continuously observe haptics preference from repository
+            userPreferencesRepository.isHapticsEnabled
+                .onEach { enabled ->
+                    hapticsEnabled = enabled
+                    Timber.d("[HapticService] Haptics enabled state updated: $enabled")
+                }.catch { e ->
+                    Timber.e(e, "[HapticService] Error observing haptics preference, defaulting to enabled")
                     hapticsEnabled = true
-                }
-            }
+                }.launchIn(scope)
         }
 
         /**
@@ -140,6 +146,7 @@ class HapticServiceImpl
         // ==================== Haptic Feedback Methods ====================
 
         override fun triggerSuccess() {
+            Timber.d("[HapticService] triggerSuccess() called")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Android Q+: Use EFFECT_CLICK for short, pleasant feedback
                 val effect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
@@ -151,6 +158,7 @@ class HapticServiceImpl
         }
 
         override fun triggerError() {
+            Timber.d("[HapticService] triggerError() called")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Android Q+: Use EFFECT_DOUBLE_CLICK for distinct feedback
                 val effect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK)
@@ -164,6 +172,7 @@ class HapticServiceImpl
         }
 
         override fun triggerBadgeUnlock() {
+            Timber.d("[HapticService] triggerBadgeUnlock() called")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // Android O+: Waveform with increasing amplitudes (crescendo)
                 // Pattern: 0ms delay, 50ms@128, 50ms pause, 100ms@192, 50ms pause, 150ms@255
@@ -180,6 +189,7 @@ class HapticServiceImpl
         }
 
         override fun triggerButtonClick() {
+            Timber.d("[HapticService] triggerButtonClick() called")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Android Q+: Use EFFECT_TICK for very subtle feedback
                 val effect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK)
@@ -191,6 +201,7 @@ class HapticServiceImpl
         }
 
         override fun triggerLongPress() {
+            Timber.d("[HapticService] triggerLongPress() called")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Android Q+: Use EFFECT_HEAVY_CLICK for firm feedback
                 val effect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
@@ -204,26 +215,16 @@ class HapticServiceImpl
         // ==================== Settings ====================
 
         override fun setHapticsEnabled(enabled: Boolean) {
-            hapticsEnabled = enabled
-            Timber.d("[HapticService] Haptics enabled: $enabled")
+            Timber.d("[HapticService] Setting haptics enabled: $enabled")
 
-            // Persist to user preferences
+            // Persist to user preferences (state will be updated via the flow observation)
             scope.launch {
                 try {
                     userPreferencesRepository.setHapticsEnabled(enabled)
-                    Timber.d("[HapticService] Haptics preference saved")
+                    Timber.d("[HapticService] Haptics preference saved successfully")
                 } catch (e: Exception) {
                     Timber.e(e, "[HapticService] Error saving haptics preference")
                 }
             }
-        }
-
-        /**
-         * Clean up resources when the service is no longer needed.
-         * Call this when the app is being destroyed.
-         */
-        fun release() {
-            scope.cancel()
-            Timber.d("[HapticService] Released")
         }
     }
