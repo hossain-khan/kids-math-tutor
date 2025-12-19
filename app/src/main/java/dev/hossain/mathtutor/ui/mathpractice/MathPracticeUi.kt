@@ -35,6 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -143,10 +148,17 @@ internal fun MathPracticeUi(
                     Text("Math Practice")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { showExitDialog = true }) {
+                    IconButton(
+                        onClick = { showExitDialog = true },
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Go back"
+                                role = Role.Button
+                            },
+                    ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = null, // Described by button semantics
                         )
                     }
                 },
@@ -269,19 +281,33 @@ private fun ProgressSection(
     totalProblems: Int,
     modifier: Modifier = Modifier,
 ) {
+    val progressDescription = "Problem ${currentIndex + 1} of $totalProblems"
+
+    Timber.d("[ProgressSection] Rendering progress: $progressDescription")
+
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Problem ${currentIndex + 1} of $totalProblems",
+            text = progressDescription,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
+            modifier =
+                Modifier.semantics {
+                    contentDescription = progressDescription
+                    heading()
+                },
         )
         Spacer(modifier = Modifier.height(8.dp))
         LinearProgressIndicator(
             progress = { (currentIndex + 1).toFloat() / totalProblems },
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .semantics {
+                        contentDescription = "Progress: ${currentIndex + 1} out of $totalProblems problems completed"
+                    },
         )
     }
 }
@@ -291,8 +317,18 @@ private fun ProblemCard(
     problem: MathProblem,
     modifier: Modifier = Modifier,
 ) {
+    val spokenProblem = problem.getSpokenString()
+
+    Timber.d("[ProblemCard] Rendering problem with TalkBack announcement: '$spokenProblem'")
+
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) {
+                    // Use spoken format for TalkBack: "3 plus 5 equals"
+                    contentDescription = spokenProblem
+                },
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -395,7 +431,18 @@ private fun ActionButtons(
                 onClear()
             },
             enabled = hasAnswer,
-            modifier = Modifier.weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .semantics {
+                        role = Role.Button
+                        contentDescription =
+                            if (hasAnswer) {
+                                "Clear answer"
+                            } else {
+                                "Clear, disabled"
+                            }
+                    },
             colors =
                 ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -404,7 +451,7 @@ private fun ActionButtons(
         ) {
             Icon(
                 imageVector = Icons.Default.Clear,
-                contentDescription = "Clear",
+                contentDescription = null, // Described by button semantics
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text("Clear")
@@ -419,7 +466,18 @@ private fun ActionButtons(
                 if (isCorrect == true) onNext() else onCheck()
             },
             enabled = hasAnswer,
-            modifier = Modifier.weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .semantics {
+                        role = Role.Button
+                        contentDescription =
+                            when {
+                                isCorrect == true -> "Next problem"
+                                hasAnswer -> "Check your answer"
+                                else -> "Enter an answer first, disabled"
+                            }
+                    },
         ) {
             Text(if (isCorrect == true) "Next" else "Check")
         }

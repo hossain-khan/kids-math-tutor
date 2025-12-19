@@ -30,6 +30,14 @@ data class MathProblem(
     fun getDisplayString(): String = "$num1 ${operation.symbol} $num2 = ?"
 
     /**
+     * Returns a spoken string representation for screen readers (TalkBack).
+     * Example: "3 plus 5 equals"
+     *
+     * @return Formatted spoken problem string
+     */
+    fun getSpokenString(): String = "$num1 ${operation.spokenName} $num2 equals"
+
+    /**
      * Checks if the user's answer is correct.
      *
      * @param userAnswer The answer provided by the user
