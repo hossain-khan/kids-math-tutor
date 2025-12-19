@@ -53,8 +53,12 @@ class AudioServiceImpl
         // Background music volume is 30% of main volume
         private val musicVolumeMultiplier: Float = 0.3f
 
+        // Track whether SoundPool has been initialized to avoid unnecessary initialization in release()
+        private var soundPoolInitialized = false
+
         // SoundPool for short sound effects (max 3 concurrent streams)
         private val soundPool: SoundPool by lazy {
+            soundPoolInitialized = true
             val audioAttributes =
                 AudioAttributes
                     .Builder()
@@ -212,7 +216,10 @@ class AudioServiceImpl
 
         override fun release() {
             Timber.d("[AudioService] Releasing audio resources")
-            soundPool.release()
+            // Only release SoundPool if it was actually initialized
+            if (soundPoolInitialized) {
+                soundPool.release()
+            }
             exoPlayer?.release()
             exoPlayer = null
         }
