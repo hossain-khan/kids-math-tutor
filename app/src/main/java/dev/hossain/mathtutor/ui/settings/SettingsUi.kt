@@ -100,6 +100,12 @@ fun SettingsUi(
                 color = MaterialTheme.colorScheme.outlineVariant,
             )
 
+            // Audio & Haptics link
+            SettingsLinkItem(
+                text = "Audio & Haptics",
+                onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
+            )
+
             // Additional sections
             SettingsLinks()
         }
@@ -276,9 +282,9 @@ private fun SettingsLinks(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
-        SettingsLinkItem(text = "About")
-        SettingsLinkItem(text = "Privacy")
-        SettingsLinkItem(text = "Help")
+        SettingsLinkItem(text = "About", onClick = { /* TODO: Implement navigation */ })
+        SettingsLinkItem(text = "Privacy", onClick = { /* TODO: Implement navigation */ })
+        SettingsLinkItem(text = "Help", onClick = { /* TODO: Implement navigation */ })
     }
 }
 
@@ -289,12 +295,13 @@ private fun SettingsLinks(modifier: Modifier = Modifier) {
 private fun SettingsLinkItem(
     text: String,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable { /* TODO: Implement navigation */ }
+                .clickable { onClick() }
                 .padding(vertical = 16.dp, horizontal = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

@@ -82,5 +82,10 @@ data object SettingsScreen : Screen {
          * User tapped the back button.
          */
         data object BackClicked : Event
+
+        /**
+         * User tapped the Audio & Haptics button.
+         */
+        data object AudioHapticsClicked : Event
     }
 }
