@@ -8,6 +8,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 5-5: Audio & Haptic Settings Screen** - Created comprehensive settings screen for audio, haptic, and accessibility preferences
+  - **UserPreferencesRepository Enhancements**:
+    - Added `isSoundEffectsEnabled` Flow and `setSoundEffectsEnabled()` for sound effects control (default: true)
+    - Added `isBackgroundMusicEnabled` Flow and `setBackgroundMusicEnabled()` for music control (default: false)
+    - Added `volume` Flow and `setVolume()` for volume control (default: 0.7f, range 0.0-1.0)
+    - Added `isHighContrastEnabled` Flow and `setHighContrastEnabled()` for high contrast mode (default: false)
+    - Added `isLargeTextEnabled` Flow and `setLargeTextEnabled()` for large text mode (default: false)
+    - All preferences persist across app restarts using DataStore
+  - **AudioHapticSettingsScreen (Circuit)**:
+    - Created `AudioHapticSettingsScreen` with Circuit pattern (@Parcelize Screen)
+    - Defined State with all audio/haptic/accessibility settings
+    - Defined Event sealed interface: ToggleSoundEffects, ToggleBackgroundMusic, ToggleHaptics, SetVolume, ToggleHighContrast, ToggleLargeText, BackClicked
+  - **AudioHapticSettingsPresenter**:
+    - Integrated with UserPreferencesRepository, AudioService, and HapticService
+    - Collects all preferences as Flow state for reactive updates
+    - Handles ToggleSoundEffects: Updates AudioService.setSoundEffectsEnabled() and persists to repository
+    - Handles ToggleBackgroundMusic: Updates AudioService.setMusicEnabled(), starts/stops music, and persists to repository
+    - Handles ToggleHaptics: Updates HapticService.setHapticsEnabled() and persists to repository
+    - Handles SetVolume: Updates AudioService.setVolume() and persists to repository
+    - Handles accessibility toggles (high contrast, large text) with repository persistence
+    - Added comprehensive Timber logging for all settings changes
+  - **AudioHapticSettingsUi (Material 3)**:
+    - Created Scaffold with TopAppBar and back navigation
+    - Sound Effects section: Card with toggle switch showing current state
+    - Volume section: Material 3 Slider with percentage display, disabled when both sound and music are off
+    - Background Music section: Card with toggle switch for music playback control
+    - Haptic Feedback section: Card with toggle switch for vibration control
+    - Accessibility section: Card with toggles for high contrast mode and large text
+    - Used HorizontalDividers between sections for visual separation
+    - All UI components use Material 3 theme colors (primaryContainer, secondaryContainer, tertiaryContainer)
+    - Added content descriptions to slider for accessibility (announces state and volume percentage)
+  - **Navigation Integration**:
+    - Added "Audio & Haptics" button to main Settings screen
+    - Added `AudioHapticsClicked` event to SettingsScreen
+    - Wired navigation in SettingsPresenter to navigate to AudioHapticSettingsScreen
+  - **Testing**:
+    - Created `AudioHapticSettingsPresenterTest` with FakeUserPreferencesRepository, FakeAudioService, and FakeHapticService
+    - Tests for all toggle switches (sound effects, music, haptics)
+    - Tests for volume slider with coercion to valid range (0.0-1.0)
+    - Tests for accessibility toggles (high contrast, large text)
+    - Tests for preferences persistence and service integration
+    - All 11 tests passing
 - **Phase 5-4: Accessibility Improvements** - Enhanced app accessibility with comprehensive TalkBack support and WCAG 2.1 AA compliance
   - **Core Accessibility Components**:
     - Created `AccessibilitySettings` data class to track high contrast, large text, and TalkBack states

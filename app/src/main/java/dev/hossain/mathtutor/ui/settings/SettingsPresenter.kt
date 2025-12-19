@@ -104,6 +104,11 @@ class SettingsPresenter
                         Timber.d("SettingsScreen: Back clicked")
                         navigator.pop()
                     }
+
+                    is SettingsScreen.Event.AudioHapticsClicked -> {
+                        Timber.d("SettingsScreen: Audio & Haptics clicked")
+                        navigator.goTo(AudioHapticSettingsScreen)
+                    }
                 }
             }
         }

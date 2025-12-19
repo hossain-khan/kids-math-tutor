@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.data
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import dev.hossain.mathtutor.data.local.userPreferencesDataStore
 import dev.hossain.mathtutor.di.ApplicationContext
 import dev.zacsweers.metro.AppScope
@@ -20,6 +21,26 @@ interface UserPreferencesRepository {
     val isHapticsEnabled: Flow<Boolean>
 
     suspend fun setHapticsEnabled(enabled: Boolean)
+
+    val isSoundEffectsEnabled: Flow<Boolean>
+
+    suspend fun setSoundEffectsEnabled(enabled: Boolean)
+
+    val isBackgroundMusicEnabled: Flow<Boolean>
+
+    suspend fun setBackgroundMusicEnabled(enabled: Boolean)
+
+    val volume: Flow<Float>
+
+    suspend fun setVolume(volume: Float)
+
+    val isHighContrastEnabled: Flow<Boolean>
+
+    suspend fun setHighContrastEnabled(enabled: Boolean)
+
+    val isLargeTextEnabled: Flow<Boolean>
+
+    suspend fun setLargeTextEnabled(enabled: Boolean)
 }
 
 @SingleIn(AppScope::class)
@@ -32,6 +53,11 @@ class UserPreferencesRepositoryImpl
         private object PreferencesKeys {
             val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
             val HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
+            val SOUND_EFFECTS_ENABLED = booleanPreferencesKey("sound_effects_enabled")
+            val BACKGROUND_MUSIC_ENABLED = booleanPreferencesKey("background_music_enabled")
+            val VOLUME = floatPreferencesKey("volume")
+            val HIGH_CONTRAST_ENABLED = booleanPreferencesKey("high_contrast_enabled")
+            val LARGE_TEXT_ENABLED = booleanPreferencesKey("large_text_enabled")
         }
 
         override val isOnboardingCompleted: Flow<Boolean> =
@@ -53,6 +79,61 @@ class UserPreferencesRepositoryImpl
         override suspend fun setHapticsEnabled(enabled: Boolean) {
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.HAPTICS_ENABLED] = enabled
+            }
+        }
+
+        override val isSoundEffectsEnabled: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.SOUND_EFFECTS_ENABLED] ?: true
+            }
+
+        override suspend fun setSoundEffectsEnabled(enabled: Boolean) {
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.SOUND_EFFECTS_ENABLED] = enabled
+            }
+        }
+
+        override val isBackgroundMusicEnabled: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.BACKGROUND_MUSIC_ENABLED] ?: false
+            }
+
+        override suspend fun setBackgroundMusicEnabled(enabled: Boolean) {
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.BACKGROUND_MUSIC_ENABLED] = enabled
+            }
+        }
+
+        override val volume: Flow<Float> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.VOLUME] ?: 0.7f
+            }
+
+        override suspend fun setVolume(volume: Float) {
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.VOLUME] = volume.coerceIn(0f, 1f)
+            }
+        }
+
+        override val isHighContrastEnabled: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.HIGH_CONTRAST_ENABLED] ?: false
+            }
+
+        override suspend fun setHighContrastEnabled(enabled: Boolean) {
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.HIGH_CONTRAST_ENABLED] = enabled
+            }
+        }
+
+        override val isLargeTextEnabled: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.LARGE_TEXT_ENABLED] ?: false
+            }
+
+        override suspend fun setLargeTextEnabled(enabled: Boolean) {
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.LARGE_TEXT_ENABLED] = enabled
             }
         }
     }
