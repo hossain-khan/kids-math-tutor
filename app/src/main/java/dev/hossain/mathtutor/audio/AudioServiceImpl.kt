@@ -54,6 +54,8 @@ class AudioServiceImpl
         private val musicVolumeMultiplier: Float = 0.3f
 
         // Track whether SoundPool has been initialized to avoid unnecessary initialization in release()
+        // Note: This flag is set within the lazy initializer. In a single-threaded context (main thread),
+        // this is safe. For multi-threaded access, additional synchronization would be needed.
         private var soundPoolInitialized = false
 
         // SoundPool for short sound effects (max 3 concurrent streams)
