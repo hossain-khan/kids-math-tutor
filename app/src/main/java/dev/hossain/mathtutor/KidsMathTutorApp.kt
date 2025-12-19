@@ -11,6 +11,10 @@ import androidx.work.workDataOf
 import dev.hossain.mathtutor.di.AppGraph
 import dev.hossain.mathtutor.work.SampleWorker
 import dev.zacsweers.metro.createGraphFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -36,6 +40,8 @@ class KidsMathTutorApp :
      */
     val appGraph by lazy { createGraphFactory<AppGraph.Factory>().create(this) }
 
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     fun appGraph(): AppGraph = appGraph
 
     override val workManagerConfiguration: Configuration
@@ -50,7 +56,19 @@ class KidsMathTutorApp :
         }
         Timber.d("App initialized")
 
+        initializeDatabase()
         scheduleBackgroundWork()
+    }
+
+    private fun initializeDatabase() {
+        applicationScope.launch {
+            try {
+                appGraph.badgeRepository.initializeBadges()
+                Timber.d("Badge database initialized")
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to initialize badge database")
+            }
+        }
     }
 
     /**

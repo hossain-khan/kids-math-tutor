@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.mathpractice
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,6 +65,7 @@ fun MathPracticeUi(
     // Track shake animation state and previous isCorrect value
     var shouldShake by remember { mutableStateOf(false) }
     var previousIsCorrect by remember { mutableStateOf<Boolean?>(null) }
+    var showExitDialog by remember { mutableStateOf(false) }
 
     // Trigger shake only on transition to incorrect state
     if (state.isCorrect == false && previousIsCorrect != false) {
@@ -73,6 +75,35 @@ fun MathPracticeUi(
         previousIsCorrect = state.isCorrect
     }
 
+    // Handle system back button
+    BackHandler {
+        showExitDialog = true
+    }
+
+    // Exit confirmation dialog
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Exit Practice?") },
+            text = { Text("Your progress will be lost if you exit now.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showExitDialog = false
+                        state.eventSink(MathPracticeScreen.Event.NavigateBack)
+                    },
+                ) {
+                    Text("Exit")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) {
+                    Text("Continue")
+                }
+            },
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -80,7 +111,7 @@ fun MathPracticeUi(
                     Text("Math Practice")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { state.eventSink(MathPracticeScreen.Event.NavigateBack) }) {
+                    IconButton(onClick = { showExitDialog = true }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
