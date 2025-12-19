@@ -55,5 +55,10 @@ data object HomeScreen : Screen {
          * User tapped the View All Badges link.
          */
         data object ViewBadgesClicked : Event
+
+        /**
+         * User tapped the Settings button.
+         */
+        data object ViewSettingsClicked : Event
     }
 }

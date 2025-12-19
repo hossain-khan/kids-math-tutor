@@ -231,6 +231,15 @@ class HomeScreenTest {
     }
 
     @Test
+    fun event_viewSettingsClicked_createsCorrectEvent() {
+        // When
+        val event = HomeScreen.Event.ViewSettingsClicked
+
+        // Then
+        assertTrue(event is HomeScreen.Event.ViewSettingsClicked)
+    }
+
+    @Test
     fun eventSink_startPracticeClicked_receivesEvent() {
         // Given
         var receivedEvent: HomeScreen.Event? = null
@@ -291,6 +300,27 @@ class HomeScreenTest {
         // Then
         assertNotNull(receivedEvent)
         assertTrue(receivedEvent is HomeScreen.Event.ViewBadgesClicked)
+    }
+
+    @Test
+    fun eventSink_viewSettingsClicked_receivesEvent() {
+        // Given
+        var receivedEvent: HomeScreen.Event? = null
+        val state =
+            HomeScreen.State(
+                userName = null,
+                streakData = null,
+                overallStats = SessionStats.EMPTY,
+                recentBadges = emptyList(),
+                eventSink = { event -> receivedEvent = event },
+            )
+
+        // When
+        state.eventSink(HomeScreen.Event.ViewSettingsClicked)
+
+        // Then
+        assertNotNull(receivedEvent)
+        assertTrue(receivedEvent is HomeScreen.Event.ViewSettingsClicked)
     }
 
     @Test

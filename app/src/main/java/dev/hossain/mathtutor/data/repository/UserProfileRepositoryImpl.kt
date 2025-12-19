@@ -86,4 +86,10 @@ class UserProfileRepositoryImpl
                 preferences[PreferencesKeys.NAME_KEY] = name ?: ""
             }
         }
+
+        override suspend fun updateAdaptiveDifficulty(enabled: Boolean) {
+            context.dataStore.edit { preferences ->
+                preferences[PreferencesKeys.ADAPTIVE_KEY] = enabled
+            }
+        }
     }

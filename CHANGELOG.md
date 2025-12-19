@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 4-5: Settings Screen for Profile Management** - Implemented settings screen for users to view and edit their profile
+  - Created `SettingsScreen` with Circuit pattern (State and Events)
+  - Created `SettingsPresenter` for profile loading and event handling
+  - Created `SettingsUi` with Material 3 components:
+    - Profile section displaying name and grade level with edit buttons
+    - Adaptive difficulty toggle switch
+    - About, Privacy, and Help sections (placeholders)
+  - Created `NameEditDialog` with Material 3 AlertDialog for editing user name
+  - Created `GradeChangeDialog` with Material 3 AlertDialog:
+    - Radio buttons for grade selection (K, 1, 2)
+    - Warning message about difficulty changes
+  - Added `updateAdaptiveDifficulty()` method to `UserProfileRepository`
+  - Updated `HomeScreen` with `ViewSettingsClicked` event
+  - Updated `HomePresenter` to handle settings navigation
+  - Added settings gear icon to `HomeUi` TopAppBar
+  - Unit tests:
+    - `SettingsScreenTest` (19 tests): State and event validation
+    - `SettingsPresenterTest` (5 tests): Repository logic validation
+    - Updated `HomeScreenTest` with settings event tests
 - **Phase 4-4: Adaptive Difficulty System** - Implemented performance tracking and automatic difficulty adjustment
   - Created domain models for performance tracking:
     - `DifficultyAdjustment` enum (EASIER, CURRENT, HARDER) for difficulty recommendations
