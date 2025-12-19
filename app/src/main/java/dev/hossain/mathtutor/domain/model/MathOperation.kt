@@ -5,16 +5,18 @@ package dev.hossain.mathtutor.domain.model
  *
  * @property symbol The symbolic representation of the operation
  * @property displayName The human-readable name of the operation
+ * @property spokenName The spoken name for screen readers (e.g., "plus", "minus")
  */
 enum class MathOperation(
     val symbol: String,
     val displayName: String,
+    val spokenName: String,
 ) {
-    ADDITION("+", "Addition"),
-    SUBTRACTION("-", "Subtraction"),
-    MULTIPLICATION("×", "Multiplication"),
-    DIVISION("÷", "Division"),
-    MIXED("?", "Mix It Up"),
+    ADDITION("+", "Addition", "plus"),
+    SUBTRACTION("-", "Subtraction", "minus"),
+    MULTIPLICATION("×", "Multiplication", "times"),
+    DIVISION("÷", "Division", "divided by"),
+    MIXED("?", "Mix It Up", ""),
     ;
 
     /**

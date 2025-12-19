@@ -8,6 +8,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,10 +29,25 @@ fun AnswerField(
     answer: String,
     modifier: Modifier = Modifier,
 ) {
+    // Create content description for screen readers
+    val answerDescription =
+        if (answer.isEmpty()) {
+            "Your answer, empty"
+        } else {
+            // Announce each digit separately for clarity
+            val digits = answer.toCharArray().joinToString(" ")
+            "Your answer: $digits"
+        }
+
     OutlinedTextField(
         value = answer,
         onValueChange = {}, // Read-only, no direct text input
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .semantics {
+                    contentDescription = answerDescription
+                },
         readOnly = true,
         label = {
             Text("Your Answer")
