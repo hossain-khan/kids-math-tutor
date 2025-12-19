@@ -165,27 +165,14 @@ fun OnboardingContent(
 
     // Use theme colors for background based on page index
     // Rotate through theme color containers for variety
-    val backgroundColor =
-        when (pagerState.currentPage % 4) {
-            0 -> MaterialTheme.colorScheme.primaryContainer
-            1 -> MaterialTheme.colorScheme.secondaryContainer
-            2 -> MaterialTheme.colorScheme.tertiaryContainer
-            else -> MaterialTheme.colorScheme.surfaceVariant
-        }
-
-    val contentColor =
-        when (pagerState.currentPage % 4) {
-            0 -> MaterialTheme.colorScheme.onPrimaryContainer
-            1 -> MaterialTheme.colorScheme.onSecondaryContainer
-            2 -> MaterialTheme.colorScheme.onTertiaryContainer
-            else -> MaterialTheme.colorScheme.onSurfaceVariant
-        }
+    val colorScheme = MaterialTheme.colorScheme
+    val pageColors = getPageColors(pagerState.currentPage, colorScheme)
 
     Box(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(backgroundColor),
+                .background(pageColors.backgroundColor),
     ) {
         Column(
             modifier =
@@ -209,7 +196,7 @@ fun OnboardingContent(
                         onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) },
                         colors =
                             ButtonDefaults.textButtonColors(
-                                contentColor = contentColor,
+                                contentColor = pageColors.contentColor,
                             ),
                     ) {
                         Text(
@@ -227,7 +214,7 @@ fun OnboardingContent(
             ) { page ->
                 OnboardingPageContent(
                     page = onboardingPages[page],
-                    contentColor = contentColor,
+                    contentColor = pageColors.contentColor,
                 )
             }
 
@@ -249,9 +236,9 @@ fun OnboardingContent(
                                 .clip(CircleShape)
                                 .background(
                                     if (isSelected) {
-                                        contentColor
+                                        pageColors.contentColor
                                     } else {
-                                        contentColor.copy(alpha = 0.3f)
+                                        pageColors.contentColor.copy(alpha = 0.3f)
                                     },
                                 ),
                     )
@@ -367,6 +354,56 @@ private fun OnboardingPageContent(
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Medium,
         )
+    }
+}
+
+/**
+ * Data class to hold background and content color pairs for onboarding pages.
+ */
+private data class PageColors(
+    val backgroundColor: Color,
+    val contentColor: Color,
+)
+
+/**
+ * Returns theme-aware colors for onboarding pages based on page index.
+ * Rotates through Material 3 color containers for visual variety while maintaining accessibility.
+ */
+private fun getPageColors(
+    pageIndex: Int,
+    colorScheme: androidx.compose.material3.ColorScheme,
+): PageColors {
+    // Number of different color schemes to rotate through
+    val colorRotationCount = 4
+
+    return when (pageIndex % colorRotationCount) {
+        0 -> {
+            PageColors(
+                backgroundColor = colorScheme.primaryContainer,
+                contentColor = colorScheme.onPrimaryContainer,
+            )
+        }
+
+        1 -> {
+            PageColors(
+                backgroundColor = colorScheme.secondaryContainer,
+                contentColor = colorScheme.onSecondaryContainer,
+            )
+        }
+
+        2 -> {
+            PageColors(
+                backgroundColor = colorScheme.tertiaryContainer,
+                contentColor = colorScheme.onTertiaryContainer,
+            )
+        }
+
+        else -> {
+            PageColors(
+                backgroundColor = colorScheme.surfaceVariant,
+                contentColor = colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
