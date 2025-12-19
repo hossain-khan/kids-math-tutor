@@ -165,7 +165,7 @@ class MathPracticePresenter
                         if (currentProblem != null) {
                             val userAnswer = currentAnswer.toIntOrNull()
                             val correct = userAnswer?.let { currentProblem.checkAnswer(it) } ?: false
-                            isCorrect = userAnswer?.let { correct }
+                            isCorrect = if (userAnswer != null) correct else null
 
                             // Store the user's answer
                             val updatedAnswers = userAnswers.toMutableList()

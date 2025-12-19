@@ -118,6 +118,7 @@ class AdaptiveProblemGenerator
                 GradeLevel.KINDERGARTEN -> GradeLevel.KINDERGARTEN
 
                 // Min level
+
                 GradeLevel.GRADE_1 -> GradeLevel.KINDERGARTEN
 
                 GradeLevel.GRADE_2 -> GradeLevel.GRADE_1
