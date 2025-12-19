@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Phase 5-2: Haptic Feedback System** - Implemented comprehensive haptic feedback system for tactile user interaction confirmation
+  - Added `android.permission.VIBRATE` permission to AndroidManifest.xml
+  - Created `HapticService` interface with 5 vibration methods:
+    - `triggerSuccess()` - Pleasant vibration for correct answers (50ms)
+    - `triggerError()` - Distinct double pulse for incorrect answers (~200ms)
+    - `triggerBadgeUnlock()` - Celebratory crescendo pattern (~400ms)
+    - `triggerButtonClick()` - Subtle tap for UI interactions (10ms)
+    - `triggerLongPress()` - Firm feedback for long press actions (100ms)
+    - `setHapticsEnabled(enabled: Boolean)` - Enable/disable haptics
+  - Created `HapticServiceImpl` with version-specific vibration patterns:
+    - Android S+ (API 31): Uses VibratorManager for system-level vibrator access
+    - Pre-S: Uses deprecated Vibrator service for backwards compatibility
+    - Android Q+ (API 29): Uses predefined VibrationEffect constants (EFFECT_CLICK, EFFECT_DOUBLE_CLICK, EFFECT_TICK, EFFECT_HEAVY_CLICK)
+    - Android O+ (API 26): Uses VibrationEffect.createWaveform with amplitude control for badge unlock crescendo
+    - Pre-Q: Uses custom timing patterns with vibrate() method
+  - Metro DI integration:
+    - Added `@ContributesBinding` for HapticService
+    - Injected with `@ApplicationContext` for system service access
+    - Injected UserPreferencesRepository for settings persistence
+  - Extended `UserPreferencesRepository` with haptics support:
+    - Added `isHapticsEnabled: Flow<Boolean>` - Observes haptics enabled state (default: true)
+    - Added `setHapticsEnabled(enabled: Boolean)` - Persists haptics preference to DataStore
+    - Added `HAPTICS_ENABLED` preference key to DataStore
+  - Created comprehensive unit tests in `HapticServiceTest`:
+    - 16 test cases covering all 5 vibration patterns
+    - Tests for enabled/disabled states
+    - Tests for multiple trigger calls
+    - Tests for state transitions
+    - FakeHapticService for testing without actual vibration hardware
+  - All vibration patterns respect user preferences and only trigger when haptics are enabled
+  - Timber logging for debugging and monitoring vibration triggers
+
 ### Changed
 - **Material 3 Color System Enhancement** - Implemented comprehensive Material 3 color scheme with proper dark and light mode support
   - Expanded color definitions in `Color.kt` with complete Material 3 color palette:
