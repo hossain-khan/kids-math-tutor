@@ -8,6 +8,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 5-1: Audio System Foundation** - Implemented foundational audio system with Media3 ExoPlayer and SoundPool
+  - Added Media3 dependencies:
+    - Added `androidx.media3:media3-exoplayer` (v1.4.1) for background music playback
+    - Added `androidx.media3:media3-common` (v1.4.1) for Media3 common utilities
+  - Created audio assets in `app/src/main/res/raw/`:
+    - Success sound effects: `success_01.ogg` (correct answer), with alternate versions `success_01_alt1.ogg`, `success_01_alt2.ogg`
+    - Perfect score sound: `success_02.ogg`, with alternate `success_02_alt1.ogg`
+    - Badge unlock sound: `success_03.ogg`, with alternate `success_03_alt1.ogg`
+    - Error sound: `error_gentle.ogg` (gentle feedback), with alternates `error_gentle_alt1.ogg`, `error_gentle_alt2.ogg`
+    - Streak continue sound: `streak_continue.ogg`, with alternate `streak_continue_alt1.ogg`
+    - Level up sound: `level_up.ogg`, with alternate `level_up_alt1.ogg`
+    - Background music: `background_music.ogg` (loopable), with alternate `background_music_alt1.ogg`
+  - Created `AudioService` interface with comprehensive audio API:
+    - Sound effects: `playSuccess()`, `playPerfectScore()`, `playBadgeUnlock()`, `playError()`, `playStreakContinue()`, `playLevelUp()`
+    - Background music: `startBackgroundMusic()`, `stopBackgroundMusic()`, `pauseBackgroundMusic()`, `resumeBackgroundMusic()`
+    - Settings: `setMusicEnabled()`, `setSoundEffectsEnabled()`, `setVolume()`
+    - Lifecycle: `release()` for proper resource cleanup
+  - Created `AudioServiceImpl` with SoundPool and ExoPlayer:
+    - SoundPool for short sound effects (< 1s) with max 3 concurrent streams
+    - ExoPlayer for background music with loop mode and 30% volume multiplier
+    - AudioAttributes.USAGE_GAME for game context
+    - Metro DI integration with `@ContributesBinding`
+  - Created comprehensive unit tests in `AudioServiceTest`:
+    - 27 test cases covering all sound effects, background music, volume control, and settings
+    - Tests for enabled/disabled states, volume clamping, and lifecycle management
 - **Phase 4-6: Personalization Integration & Polish** - Integrated personalized elements throughout the app
   - Updated `HomeScreen` with personalization:
     - Added `gradeLevel` field to `HomeScreen.State`
