@@ -37,4 +37,11 @@ interface UserProfileRepository {
      * @param name The new user name (can be null to clear the name)
      */
     suspend fun updateName(name: String?)
+
+    /**
+     * Updates the adaptive difficulty setting in the profile.
+     *
+     * @param enabled Whether adaptive difficulty should be enabled
+     */
+    suspend fun updateAdaptiveDifficulty(enabled: Boolean)
 }

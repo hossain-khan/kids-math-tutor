@@ -13,6 +13,7 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.StreakRepository
 import dev.hossain.mathtutor.ui.badges.BadgesScreen
 import dev.hossain.mathtutor.ui.operationselector.OperationSelectorScreen
+import dev.hossain.mathtutor.ui.settings.SettingsScreen
 import dev.hossain.mathtutor.ui.stats.StatsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -82,6 +83,11 @@ class HomePresenter
                     is HomeScreen.Event.ViewBadgesClicked -> {
                         Timber.d("HomeScreen: Navigating to BadgesScreen")
                         navigator.goTo(BadgesScreen)
+                    }
+
+                    is HomeScreen.Event.ViewSettingsClicked -> {
+                        Timber.d("HomeScreen: Navigating to SettingsScreen")
+                        navigator.goTo(SettingsScreen)
                     }
                 }
             }
