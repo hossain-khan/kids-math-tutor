@@ -4,6 +4,8 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import kotlinx.parcelize.Parcelize
@@ -35,6 +37,9 @@ data class MathPracticeScreen(
         val unlockedBadges: List<Badge> = emptyList(),
         val showBadgeUnlock: Boolean = false,
         val currentBadgeIndex: Int = 0,
+        val difficultyAdjustment: DifficultyAdjustment? = null,
+        val actualGradeLevel: GradeLevel? = null,
+        val showDifficultyChangeNotice: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -55,5 +60,7 @@ data class MathPracticeScreen(
         data object NavigateBack : Event
 
         data object DismissBadgeDialog : Event
+
+        data object DismissDifficultyNotice : Event
     }
 }
