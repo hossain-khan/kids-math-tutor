@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2025-12-19
+
 ### Added
 - **Phase 5-6: Polish, Testing & Documentation** - Completed comprehensive quality assurance and documentation for Phase 5 features
   - **Testing Infrastructure**:
@@ -25,14 +27,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Accessibility features documentation (high contrast, dynamic text, semantic navigation)
     - Audio and haptic system architecture documentation in CHANGELOG
   - **Phase 5 Feature Summary**:
-    - ✅ Audio feedback system with 7 distinct sound effects
-    - ✅ Background music with ExoPlayer and lifecycle management
-    - ✅ Haptic feedback with 5 vibration patterns (version-specific)
-    - ✅ TalkBack support with content descriptions for all interactive elements
-    - ✅ High contrast mode (WCAG 2.1 AA compliant)
-    - ✅ Dynamic text sizing with AccessibleText component
-    - ✅ Audio & Haptic settings screen with user preferences persistence
-    - ✅ Complete sensory feedback integration in math practice flow
+    - Audio feedback system with 7 distinct sound effects
+    - Background music with ExoPlayer and lifecycle management
+    - Haptic feedback with 5 vibration patterns (version-specific)
+    - TalkBack support with content descriptions for all interactive elements
+    - High contrast mode (WCAG 2.1 AA compliant)
+    - Dynamic text sizing with AccessibleText component
+    - Audio & Haptic settings screen with user preferences persistence
+    - Complete sensory feedback integration in math practice flow
   - **Accessibility Compliance**:
     - WCAG 2.1 Level AA compliant for all criteria (1.1, 1.3, 1.4, 2.1, 2.4, 3.1, 3.2, 3.3, 4.1)
     - Touch targets meet minimum 48dp × 48dp requirement (NumberPad exceeds at 64dp)
@@ -237,6 +239,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Created comprehensive unit tests in `AudioServiceTest`:
     - 27 test cases covering all sound effects, background music, volume control, and settings
     - Tests for enabled/disabled states, volume clamping, and lifecycle management
+
+## [1.3.0] - 2025-12-18
+
+### Added
 - **Phase 4-6: Personalization Integration & Polish** - Integrated personalized elements throughout the app
   - Updated `HomeScreen` with personalization:
     - Added `gradeLevel` field to `HomeScreen.State`
@@ -397,13 +403,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - 16 GradeLevel tests covering all operations and grade levels
     - 9 UserProfileRepository tests with >85% coverage
     - All 25 new tests passing
+
+## [1.2.0] - 2025-12-17
+
+### Changed
 - **Phase 3-9: Polish & Documentation** - Final polish and documentation for Phase 3 completion
   - Code quality verification:
-    - ✅ All code formatted with `./gradlew formatKotlin` (zero changes needed)
-    - ✅ All code passing `./gradlew lintKotlin` with zero warnings
-    - ✅ All 319 unit tests passing (100% pass rate)
-    - ✅ Material 3 compliance verified (102 usages of MaterialTheme.colorScheme)
-    - ✅ Zero hardcoded colors (except intentional theme definitions and confetti animation)
+    - All code formatted with `./gradlew formatKotlin` (zero changes needed)
+    - All code passing `./gradlew lintKotlin` with zero warnings
+    - All 319 unit tests passing (100% pass rate)
+    - Material 3 compliance verified (102 usages of MaterialTheme.colorScheme)
+    - Zero hardcoded colors (except intentional theme definitions and confetti animation)
   - Documentation updates:
     - Updated CHANGELOG.md with comprehensive Phase 3 summary
     - Ready for Phase 4 development
@@ -446,17 +456,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Multiple badge unlocks tested
     - Boundary conditions thoroughly tested
   - Verified all Phase 3 acceptance criteria:
-    - ✅ All 319 unit tests passing (100% pass rate, exceeds 80% target)
-    - ✅ All 15 badges unlockable (13 functional, 2 planned for Phase 4)
-    - ✅ Streak tracking accurate (same-day, consecutive, gaps, resets)
-    - ✅ Home dashboard functional (state, events, navigation)
-    - ✅ No crashes in tests
-    - ✅ Code formatted and passing all checks
+    - All 319 unit tests passing (100% pass rate, exceeds 80% target)
+    - All 15 badges unlockable (13 functional, 2 planned for Phase 4)
+    - Streak tracking accurate (same-day, consecutive, gaps, resets)
+    - Home dashboard functional (state, events, navigation)
+    - No crashes in tests
+    - Code formatted and passing all checks
   - All Material 3 design guidelines maintained
   - All code properly formatted with kotlinter
   - Zero test failures, zero regressions
-
-### Changed
 - Enhanced GitHub Actions workflow to support manual triggering via `workflow_dispatch` for Android CI workflow
 - **Phase 3-7: Navigation Updates - Home as Entry** - Updated navigation flow to make HomeScreen the primary entry point
   - Updated `OnboardingScreen.kt`:
@@ -650,30 +658,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - BadgeDaoTest (19 instrumented tests) - All DAO operations
   - All tests passing (174 total unit tests)
 
-### Fixed
-- **Phase 2-9: Code Quality Improvements** - Fixed all Kotlin compiler warnings
-  - Moved `@AssistedInject` annotation to class level for cleaner DI code in 4 presenters:
-    - `MathPracticePresenter`, `OperationSelectorPresenter`, `ResultsPresenter`, `StatsPresenter`
-  - Fixed deprecated Room API: `fallbackToDestructiveMigration()` now includes `dropAllTables` parameter
-  - Fixed annotation target warning in `UserPreferencesRepository` by using `@param:` target
-  - All 147 unit tests still passing after fixes
-  - Zero Kotlin lint warnings (lintKotlin passes cleanly)
-  - Code formatted with formatKotlin
-
-### Changed
-- **Phase 2-8: Navigation Flow Updates** - Updated app navigation for improved user flow
-  - Updated `ResultsPresenter.kt` to navigate to `OperationSelectorScreen` on "Try Again"
-    - Changed from `navigator.resetRoot(MathPracticeScreen())` to `navigator.resetRoot(OperationSelectorScreen)`
-    - Users can now select a new operation after viewing results
-  - Verified complete navigation flow:
-    - Onboarding → Operation Selector → Practice → Results → (Try Again) → Operation Selector
-    - Operation Selector → Stats → Back to Selector (using `navigator.pop()`)
-    - Practice → Back to Selector (using `navigator.pop()`)
-    - Results → Back to Practice (using `navigator.pop()`)
-  - All navigation uses appropriate Circuit Navigator methods:
-    - `navigator.resetRoot()` for replacing navigation stack (Onboarding → Selector, Results → Selector)
-    - `navigator.goTo()` for forward navigation with data (Selector → Practice, Practice → Results)
-    - `navigator.pop()` for back navigation (all back buttons)
+## [1.1.0] - 2025-12-17
 
 ### Added
 - **Phase 2-7: Math Practice Screen with Persistence** - Practice sessions now save to database with duration tracking
@@ -791,12 +776,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplified DatabaseModule to use direct @Provides methods instead of provider interfaces
 - Updated `getTodaySessions()` to accept timezone-aware timestamp parameters for correct date filtering
 - Enhanced test comment for `allowMainThreadQueries()` to emphasize production prohibition
+- **Phase 2-8: Navigation Flow Updates** - Updated app navigation for improved user flow
+    - Updated `ResultsPresenter.kt` to navigate to `OperationSelectorScreen` on "Try Again"
+        - Changed from `navigator.resetRoot(MathPracticeScreen())` to `navigator.resetRoot(OperationSelectorScreen)`
+        - Users can now select a new operation after viewing results
+    - Verified complete navigation flow:
+        - Onboarding → Operation Selector → Practice → Results → (Try Again) → Operation Selector
+        - Operation Selector → Stats → Back to Selector (using `navigator.pop()`)
+        - Practice → Back to Selector (using `navigator.pop()`)
+        - Results → Back to Practice (using `navigator.pop()`)
+    - All navigation uses appropriate Circuit Navigator methods:
+        - `navigator.resetRoot()` for replacing navigation stack (Onboarding → Selector, Results → Selector)
+        - `navigator.goTo()` for forward navigation with data (Selector → Practice, Practice → Results)
+        - `navigator.pop()` for back navigation (all back buttons)
 
 ### Fixed
 - Removed incorrect `testImplementation` dependency for Room testing (only works with androidTest)
 - Fixed timezone issues in `getTodaySessions()` query and test to work correctly across timezones
 - Added Room schema export location configuration to build.gradle.kts
 - Fixed Room 2.6.1 KSP compatibility issue by upgrading to Room 2.7.1 (resolves JVM signature V error)
+- **Phase 2-9: Code Quality Improvements** - Fixed all Kotlin compiler warnings
+    - Moved `@AssistedInject` annotation to class level for cleaner DI code in 4 presenters:
+        - `MathPracticePresenter`, `OperationSelectorPresenter`, `ResultsPresenter`, `StatsPresenter`
+    - Fixed deprecated Room API: `fallbackToDestructiveMigration()` now includes `dropAllTables` parameter
+    - Fixed annotation target warning in `UserPreferencesRepository` by using `@param:` target
+    - All 147 unit tests still passing after fixes
+    - Zero Kotlin lint warnings (lintKotlin passes cleanly)
+    - Code formatted with formatKotlin
 
 ## [1.0.0] - 2025-12-16
 
