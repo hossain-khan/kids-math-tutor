@@ -9,6 +9,8 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
@@ -17,6 +19,7 @@ import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
+import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ActivityKey
 import dev.hossain.mathtutor.ui.home.HomeScreen
@@ -26,6 +29,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
+import timber.log.Timber
 
 /**
  * Main activity for the application, demonstrating Metro constructor injection for Activities.
@@ -52,11 +56,37 @@ class MainActivity
     constructor(
         private val circuit: Circuit,
         private val userPreferencesRepository: UserPreferencesRepository,
+        private val audioService: AudioService,
     ) : ComponentActivity() {
         @OptIn(ExperimentalSharedTransitionApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
             enableEdgeToEdge()
             super.onCreate(savedInstanceState)
+
+            // Start background music when app launches
+            audioService.startBackgroundMusic()
+            Timber.d("Started background music on app launch")
+
+            // Register lifecycle observer for music management
+            lifecycle.addObserver(
+                object : DefaultLifecycleObserver {
+                    override fun onPause(owner: LifecycleOwner) {
+                        audioService.pauseBackgroundMusic()
+                        Timber.d("Paused background music (app backgrounded)")
+                    }
+
+                    override fun onResume(owner: LifecycleOwner) {
+                        audioService.resumeBackgroundMusic()
+                        Timber.d("Resumed background music (app foregrounded)")
+                    }
+
+                    override fun onDestroy(owner: LifecycleOwner) {
+                        audioService.stopBackgroundMusic()
+                        audioService.release()
+                        Timber.d("Stopped background music and released audio resources (app closed)")
+                    }
+                },
+            )
 
             setContent {
                 KidsMathTutorAppTheme {

@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.Badge
@@ -23,6 +24,7 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
+import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -54,6 +56,8 @@ class MathPracticePresenter
         private val performanceRepository: PerformanceRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val updateStreakUseCase: UpdateStreakUseCase,
+        private val audioService: AudioService,
+        private val hapticService: HapticService,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -113,6 +117,12 @@ class MathPracticePresenter
                     difficultyAdjustment = result.adjustment
                     if (result.wasAdjusted) {
                         showDifficultyChangeNotice = true
+                        // Play level up audio and haptic if difficulty was increased
+                        if (result.wasIncreased) {
+                            audioService.playLevelUp()
+                            hapticService.triggerSuccess()
+                            Timber.d("Difficulty increased - played level up audio and haptic feedback")
+                        }
                         Timber.d(
                             "Difficulty adjusted from $grade to ${result.actualGradeLevel} " +
                                 "(adjustment: ${result.adjustment})",
@@ -169,6 +179,19 @@ class MathPracticePresenter
                             val userAnswer = currentAnswer.toIntOrNull()
                             val correct = userAnswer?.let { currentProblem.checkAnswer(it) } ?: false
                             isCorrect = if (userAnswer != null) correct else null
+
+                            // Play audio and haptic feedback based on correctness
+                            if (userAnswer != null) {
+                                if (correct) {
+                                    audioService.playSuccess()
+                                    hapticService.triggerSuccess()
+                                    Timber.d("Correct answer - played success audio and haptic feedback")
+                                } else {
+                                    audioService.playError()
+                                    hapticService.triggerError()
+                                    Timber.d("Incorrect answer - played error audio and haptic feedback")
+                                }
+                            }
 
                             // Store the user's answer
                             val updatedAnswers = userAnswers.toMutableList()
@@ -243,6 +266,13 @@ class MathPracticePresenter
                                     "correct=$correctCount",
                             )
 
+                            // Check for perfect score
+                            val isPerfectScore = correctCount == problems.size && problems.isNotEmpty()
+                            if (isPerfectScore) {
+                                audioService.playPerfectScore()
+                                Timber.d("Perfect score achieved - played perfect score audio")
+                            }
+
                             val practiceSession =
                                 PracticeSession(
                                     totalProblems = problems.size,
@@ -266,14 +296,28 @@ class MathPracticePresenter
 
                                     // Update streak
                                     Timber.d("Updating streak...")
+                                    val previousStreak = updateStreakUseCase.getCurrentStreak()
                                     val updatedStreak = updateStreakUseCase.updateStreak()
                                     Timber.d(
                                         "Streak updated: current=${updatedStreak.currentStreak}, longest=${updatedStreak.longestStreak}",
                                     )
 
+                                    // Play streak continue audio if streak was maintained or increased
+                                    if (updatedStreak.currentStreak > 0 && updatedStreak.currentStreak >= previousStreak.currentStreak) {
+                                        audioService.playStreakContinue()
+                                        Timber.d("Streak continued - played streak continue audio")
+                                    }
+
                                     // Check for badge unlocks
                                     Timber.d("Checking for badge unlocks...")
                                     val newlyUnlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
+
+                                    // Play badge unlock audio and haptic if badges were unlocked
+                                    if (newlyUnlocked.isNotEmpty()) {
+                                        audioService.playBadgeUnlock()
+                                        hapticService.triggerBadgeUnlock()
+                                        Timber.d("Badges unlocked - played badge unlock audio and haptic feedback")
+                                    }
 
                                     // Switch to Main dispatcher for state updates and navigation
                                     withContext(Dispatchers.Main) {

@@ -8,6 +8,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 5-3: Audio & Haptics Integration** - Integrated AudioService and HapticService throughout the app for comprehensive sensory feedback
+  - **MathPracticePresenter Integration**:
+    - Injected `AudioService` and `HapticService` into MathPracticePresenter constructor
+    - Added audio + haptic feedback on correct answer: `playSuccess()` + `triggerSuccess()`
+    - Added audio + haptic feedback on incorrect answer: `playError()` + `triggerError()`
+    - Added perfect score audio feedback: `playPerfectScore()` when all problems answered correctly
+    - Added level up audio + haptic feedback: `playLevelUp()` + `triggerSuccess()` when adaptive difficulty increases
+    - Added streak continue audio feedback: `playStreakContinue()` when streak is maintained/increased
+    - Added badge unlock audio + haptic feedback: `playBadgeUnlock()` + `triggerBadgeUnlock()` when badges are unlocked
+  - **UI Component Integration**:
+    - Updated `NumberPad` component to accept optional `HapticService` parameter
+    - Added haptic feedback to all number buttons: `triggerButtonClick()` on each number press
+    - Updated `MathPracticeUi` to inject and pass `HapticService` to interactive components
+    - Added haptic feedback to Clear button and Check/Next button in action buttons
+    - Created custom `MathPracticeUiFactory` with `HapticService` dependency injection for Circuit integration
+  - **Background Music Management in MainActivity**:
+    - Injected `AudioService` into MainActivity constructor
+    - Implemented lifecycle-aware background music management:
+      - `onCreate()`: Starts background music on app launch
+      - `onPause()`: Pauses music when app goes to background
+      - `onResume()`: Resumes music when app returns to foreground
+      - `onDestroy()`: Stops music and releases audio resources when app closes
+    - Added comprehensive Timber logging for all audio lifecycle events
+  - **Complete sensory feedback flow**:
+    - Number button press → Haptic feedback
+    - Correct answer → Success sound + success vibration
+    - Incorrect answer → Error sound + error vibration
+    - Perfect score (100%) → Perfect score sound
+    - Level up → Level up sound + success vibration
+    - Badge unlock → Badge unlock sound + celebratory vibration
+    - Streak continue → Streak continue sound
+    - All feedback respects user preferences and only triggers when enabled
 - **Phase 5-2: Haptic Feedback System** - Implemented comprehensive haptic feedback system for tactile user interaction confirmation
   - Added `android.permission.VIBRATE` permission to AndroidManifest.xml
   - Created `HapticService` interface with 5 vibration methods:
