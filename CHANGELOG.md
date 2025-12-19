@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed crash after onboarding due to multiple DataStore instances. Created singleton DataStore in `UserPreferencesDataStore.kt` shared by both `UserPreferencesRepository` and `UserProfileRepository`.
+
 ### Added
 - **Phase 4-6: Personalization Integration & Polish** - Integrated personalized elements throughout the app
   - Updated `HomeScreen` with personalization:

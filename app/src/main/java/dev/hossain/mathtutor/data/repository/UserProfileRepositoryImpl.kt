@@ -1,13 +1,11 @@
 package dev.hossain.mathtutor.data.repository
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import dev.hossain.mathtutor.data.local.userPreferencesDataStore
 import dev.hossain.mathtutor.di.ApplicationContext
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
@@ -19,9 +17,6 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
-
-// Shared DataStore for user preferences (also used by UserPreferencesRepository)
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 /**
  * Implementation of [UserProfileRepository] using DataStore Preferences.
@@ -42,7 +37,7 @@ class UserProfileRepositoryImpl
         }
 
         override fun getProfile(): Flow<UserProfile?> =
-            context.dataStore.data.map { preferences ->
+            context.userPreferencesDataStore.data.map { preferences ->
                 val gradeString = preferences[PreferencesKeys.GRADE_KEY]
                 val createdAtMillis = preferences[PreferencesKeys.CREATED_AT_KEY]
 
@@ -65,7 +60,7 @@ class UserProfileRepositoryImpl
             }
 
         override suspend fun saveProfile(profile: UserProfile) {
-            context.dataStore.edit { preferences ->
+            context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.NAME_KEY] =
                     profile.name
                         ?: "" // Store empty string instead of null
@@ -76,19 +71,19 @@ class UserProfileRepositoryImpl
         }
 
         override suspend fun updateGradeLevel(gradeLevel: GradeLevel) {
-            context.dataStore.edit { preferences ->
+            context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.GRADE_KEY] = gradeLevel.name
             }
         }
 
         override suspend fun updateName(name: String?) {
-            context.dataStore.edit { preferences ->
+            context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.NAME_KEY] = name ?: ""
             }
         }
 
         override suspend fun updateAdaptiveDifficulty(enabled: Boolean) {
-            context.dataStore.edit { preferences ->
+            context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.ADAPTIVE_KEY] = enabled
             }
         }
