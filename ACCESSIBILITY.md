@@ -32,8 +32,10 @@ The app converts mathematical symbols to spoken words:
 - Buttons have `Role.Button` semantic property for proper screen reader behavior
 
 #### Answer Field
-- Empty state: "Your answer, empty"
-- With input: "Your answer: 1 2" (digits announced separately for clarity)
+- Empty state: "Your Answer, empty"
+- With input: "Your Answer, 1 2" (digits announced separately for clarity)
+
+Note: The field's label "Your Answer" is announced automatically by TalkBack, followed by the content description which provides just the state ("empty") or the digit sequence to avoid redundancy.
 
 #### Action Buttons
 - **Check button**: 
@@ -98,7 +100,7 @@ High contrast mode can be enabled through:
 
 ### AccessibleText Component
 
-The `AccessibleText` composable (`ui/accessibility/AccessibleText.kt`) automatically scales text based on system font settings:
+The `AccessibleText` composable (`ui/accessibility/AccessibleText.kt`) provides semantic support for accessibility while leveraging Compose's built-in font scaling:
 
 ```kotlin
 @Composable
@@ -111,10 +113,11 @@ fun AccessibleText(
 ```
 
 Features:
-- Reads `LocalConfiguration.fontScale` for system accessibility settings
-- Automatically applies scaling to text size
+- **Automatic font scaling**: Compose Text automatically respects system font scale settings via `LocalConfiguration`, so no manual scaling is needed
+- Adds semantic properties for better screen reader support
 - Supports custom content descriptions for screen readers
 - Works with all Material 3 text styles
+- Includes Timber logging for debugging accessibility announcements
 
 ### Usage Example
 

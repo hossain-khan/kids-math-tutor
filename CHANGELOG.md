@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Phase 5-4: Accessibility Improvements** - Enhanced app accessibility with comprehensive TalkBack support and WCAG 2.1 AA compliance
   - **Core Accessibility Components**:
     - Created `AccessibilitySettings` data class to track high contrast, large text, and TalkBack states
-    - Created `AccessibleText` composable that automatically scales font size based on system font scale settings
+    - Created `AccessibleText` composable that leverages Compose's built-in font scaling for accessibility
     - Created `HighContrastTheme` composable with WCAG 2.1 compliant high contrast color scheme (contrast ratio ≥ 4.5:1)
   - **TalkBack Content Descriptions**:
     - Added spoken format for math problems: "3 plus 5 equals" instead of "3 + 5 = ?" for natural screen reader announcement
@@ -21,8 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Enhanced `NumberPad` buttons with `Role.Button` semantic property
     - Added context-aware content descriptions to action buttons (Clear, Check, Next)
     - Enhanced Back button with "Go back" content description
-    - Added content descriptions to `AnswerField`: "Your answer, empty" or "Your answer: 1 2" (space-separated digits)
+    - Added content descriptions to `AnswerField`: announces "empty" or digit sequence (e.g., "1 2"), avoiding redundancy with field label
     - Enhanced progress indicator with "Problem 3 of 10" and "Progress: 3 out of 10 problems completed"
+    - Added Timber logging to key accessibility areas for debugging TalkBack announcements
   - **Semantic Properties**:
     - Added `Role.Button` to all interactive button elements for proper screen reader behavior
     - Added `heading()` semantic to progress section title for better navigation structure
@@ -38,6 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Keyboard accessible functionality through semantic roles (2.1)
     - Logical navigation order with proper focus management (2.4)
     - Content compatible with assistive technologies like TalkBack (4.1)
+
+### Fixed
+- **Accessibility Improvements Refinements** - Addressed code review feedback
+  - Removed redundant manual font scaling from `AccessibleText` - Compose already handles font scaling automatically via `LocalConfiguration`
+  - Fixed duplicate TalkBack announcements in `AnswerField` by removing "Your answer:" prefix from content description (field label already announces this)
 - **Phase 5-3: Audio & Haptics Integration** - Integrated AudioService and HapticService throughout the app for comprehensive sensory feedback
   - **MathPracticePresenter Integration**:
     - Injected `AudioService` and `HapticService` into MathPracticePresenter constructor

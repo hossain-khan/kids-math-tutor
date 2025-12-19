@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import timber.log.Timber
 
 /**
  * A read-only text field component for displaying the user's answer input.
@@ -30,14 +31,18 @@ fun AnswerField(
     modifier: Modifier = Modifier,
 ) {
     // Create content description for screen readers
+    // Note: The field label "Your Answer" is already announced by TalkBack,
+    // so we only need to announce the state or digits to avoid redundancy
     val answerDescription =
         if (answer.isEmpty()) {
-            "Your answer, empty"
+            "empty"
         } else {
             // Announce each digit separately for clarity
             val digits = answer.toCharArray().joinToString(" ")
-            "Your answer: $digits"
+            digits
         }
+
+    Timber.d("[AnswerField] Answer updated: '$answer', TalkBack will announce: '$answerDescription'")
 
     OutlinedTextField(
         value = answer,

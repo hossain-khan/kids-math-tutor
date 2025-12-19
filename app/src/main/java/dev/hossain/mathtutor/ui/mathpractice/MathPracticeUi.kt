@@ -283,6 +283,8 @@ private fun ProgressSection(
 ) {
     val progressDescription = "Problem ${currentIndex + 1} of $totalProblems"
 
+    Timber.d("[ProgressSection] Rendering progress: $progressDescription")
+
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -315,13 +317,17 @@ private fun ProblemCard(
     problem: MathProblem,
     modifier: Modifier = Modifier,
 ) {
+    val spokenProblem = problem.getSpokenString()
+
+    Timber.d("[ProblemCard] Rendering problem with TalkBack announcement: '$spokenProblem'")
+
     Card(
         modifier =
             modifier
                 .fillMaxWidth()
                 .semantics(mergeDescendants = true) {
                     // Use spoken format for TalkBack: "3 plus 5 equals"
-                    contentDescription = problem.getSpokenString()
+                    contentDescription = spokenProblem
                 },
         colors =
             CardDefaults.cardColors(

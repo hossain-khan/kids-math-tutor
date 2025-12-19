@@ -5,22 +5,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import timber.log.Timber
 
 /**
- * An accessible text component that automatically adjusts font size based on system settings.
+ * An accessible text component that respects system font scale settings.
  *
- * This composable respects the system's font scale settings and provides better support
- * for users who need larger text. It also supports custom content descriptions for screen readers.
+ * This composable provides better support for users who need larger text by using Compose's
+ * built-in font scaling. It also supports custom content descriptions for screen readers.
+ *
+ * Note: Compose Text automatically respects system font scale settings via LocalConfiguration,
+ * so no manual scaling is needed. This component primarily adds semantic support for accessibility.
  *
  * @param text The text to display
  * @param modifier Optional modifier for the text
- * @param style The text style to use (will be scaled based on font scale)
+ * @param style The text style to use (Compose will automatically scale based on system settings)
  * @param color The color of the text
  * @param textAlign Optional text alignment
  * @param overflow How to handle text overflow
@@ -38,23 +41,18 @@ fun AccessibleText(
     maxLines: Int = Int.MAX_VALUE,
     contentDescription: String? = null,
 ) {
-    // Get the current font scale from configuration
-    val fontScale = LocalConfiguration.current.fontScale
+    val finalContentDescription = contentDescription ?: text
 
-    // Apply font scale to the text style
-    val scaledStyle =
-        style.copy(
-            fontSize = style.fontSize * fontScale,
-        )
+    Timber.d("[AccessibleText] Rendering text with content description: $finalContentDescription")
 
     Text(
         text = text,
         modifier =
             modifier.semantics {
                 // Use custom content description if provided, otherwise use the text
-                this.contentDescription = contentDescription ?: text
+                this.contentDescription = finalContentDescription
             },
-        style = scaledStyle,
+        style = style,
         color = color,
         textAlign = textAlign,
         overflow = overflow,
