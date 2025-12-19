@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed crash after onboarding due to multiple DataStore instances. Created singleton DataStore in `UserPreferencesDataStore.kt` shared by both `UserPreferencesRepository` and `UserProfileRepository`.
+- Fixed ANR (Application Not Responding) on first launch by initializing badge database in background during app startup in `KidsMathTutorApp.onCreate()`.
+- Fixed ANR when pressing back button during math practice. Added `BackHandler` with exit confirmation dialog to prevent accidental quiz abandonment and ensure clean navigation.
 
 ### Added
 - **Phase 4-6: Personalization Integration & Polish** - Integrated personalized elements throughout the app

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import androidx.work.WorkManager
 import com.slack.circuit.foundation.Circuit
+import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Multibinds
@@ -51,6 +52,7 @@ interface AppGraph {
      */
     val circuit: Circuit
 
+    val badgeRepository: BadgeRepository
     val workManager: WorkManager
     val workerFactory: AppWorkerFactory
 
