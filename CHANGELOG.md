@@ -8,6 +8,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 4-6: Personalization Integration & Polish** - Integrated personalized elements throughout the app
+  - Updated `HomeScreen` with personalization:
+    - Added `gradeLevel` field to `HomeScreen.State`
+    - Updated `HomePresenter` to fetch user profile and populate `userName` and `gradeLevel`
+    - Updated `HomeUi` welcome section to show "Hi [Name]! 👋" when name is available
+    - Added grade level and accuracy display below greeting (e.g., "Grade 1 • 78% accuracy")
+    - Updated `StreakCard` to accept optional `userName` parameter
+    - Added personalized streak messages using user's name when available
+  - Updated `MathPracticeScreen` with personalized feedback:
+    - Added `userName` field to `MathPracticeScreen.State`
+    - Updated `MathPracticePresenter` to fetch and pass user name from profile
+    - Enhanced `FeedbackSection` with personalized success messages:
+      - "Great job, [Name]!" / "Excellent work, [Name]!" / "You're doing awesome, [Name]!" / "Perfect, [Name]!"
+      - Randomly selects from 4 personalized messages when name is available
+      - Falls back to generic messages when no name is set
+  - Updated `ResultsScreen` with personalized congratulations:
+    - Added `userName` field to `ResultsScreen.State`
+    - Updated `ResultsPresenter` to fetch user name from profile
+    - Created `getCongratsMessage()` helper function with accuracy-based personalized messages:
+      - Perfect score (100%): "Perfect score, [Name]! 🎉"
+      - Excellent (≥90%): "Excellent work, [Name]! ⭐"
+      - Great (≥75%): "Great job, [Name]! 👍"
+      - Good effort (≥50%): "Good effort, [Name]! 💪"
+      - Keep practicing (<50%): "Keep practicing, [Name]! 📚"
+    - Updated `SummaryCard` to display personalized congratulations message
+  - All personalization features gracefully degrade to generic messages when userName is null
+  - All changes follow Material 3 design guidelines
+  - Code formatted with formatKotlin
 - **Phase 4-5: Settings Screen for Profile Management** - Implemented settings screen for users to view and edit their profile
   - Created `SettingsScreen` with Circuit pattern (State and Events)
   - Created `SettingsPresenter` for profile loading and event handling

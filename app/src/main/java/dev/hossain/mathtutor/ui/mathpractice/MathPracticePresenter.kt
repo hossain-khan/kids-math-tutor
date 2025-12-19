@@ -86,6 +86,7 @@ class MathPracticePresenter
             var problemStartTime by remember { mutableStateOf(Instant.now()) }
             var currentGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
             var isAdaptiveEnabled by remember { mutableStateOf(false) }
+            var userName by remember { mutableStateOf<String?>(null) }
 
             // Fetch user profile and generate problems in a single LaunchedEffect
             LaunchedEffect(Unit) {
@@ -94,8 +95,9 @@ class MathPracticePresenter
                 val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1
                 isAdaptiveEnabled = profile?.adaptiveDifficultyEnabled ?: true
                 currentGradeLevel = grade
+                userName = profile?.name
                 Timber.d(
-                    "Fetched user grade: $grade (profile exists: ${profile != null}, adaptive: $isAdaptiveEnabled)",
+                    "Fetched user grade: $grade (profile exists: ${profile != null}, adaptive: $isAdaptiveEnabled, name: $userName)",
                 )
 
                 if (isAdaptiveEnabled) {
@@ -143,6 +145,7 @@ class MathPracticePresenter
                 totalProblems = problems.size,
                 isCorrect = isCorrect,
                 isLoading = isLoading,
+                userName = userName,
                 unlockedBadges = unlockedBadges,
                 showBadgeUnlock = showBadgeUnlock,
                 currentBadgeIndex = currentBadgeIndex,

@@ -58,6 +58,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = userName,
+                gradeLevel = null,
                 streakData = streakData,
                 overallStats = overallStats,
                 recentBadges = recentBadges,
@@ -66,6 +67,7 @@ class HomeScreenTest {
 
         // Then
         assertEquals(userName, state.userName)
+        assertEquals(null, state.gradeLevel)
         assertEquals(streakData, state.streakData)
         assertEquals(overallStats, state.overallStats)
         assertEquals(recentBadges, state.recentBadges)
@@ -81,6 +83,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -100,6 +103,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -119,6 +123,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -140,6 +145,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -190,6 +196,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = recentBadges,
@@ -246,6 +253,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -267,6 +275,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -288,6 +297,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -309,6 +319,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -340,6 +351,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = streakData,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -371,6 +383,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = streakData,
                 overallStats = SessionStats.EMPTY,
                 recentBadges = emptyList(),
@@ -399,6 +412,7 @@ class HomeScreenTest {
         val state =
             HomeScreen.State(
                 userName = null,
+                gradeLevel = null,
                 streakData = null,
                 overallStats = stats,
                 recentBadges = emptyList(),

@@ -11,6 +11,7 @@ import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.StreakRepository
+import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.ui.badges.BadgesScreen
 import dev.hossain.mathtutor.ui.operationselector.OperationSelectorScreen
 import dev.hossain.mathtutor.ui.settings.SettingsScreen
@@ -34,6 +35,7 @@ class HomePresenter
         private val streakRepository: StreakRepository,
         private val sessionRepository: SessionRepository,
         private val badgeRepository: BadgeRepository,
+        private val userProfileRepository: UserProfileRepository,
     ) : Presenter<HomeScreen.State> {
         @CircuitInject(HomeScreen::class, AppScope::class)
         @AssistedFactory
@@ -43,6 +45,12 @@ class HomePresenter
 
         @Composable
         override fun present(): HomeScreen.State {
+            // Collect user profile
+            val userProfile by userProfileRepository.getProfile().collectAsState(initial = null)
+            Timber.d(
+                "HomeScreen: User profile - name=${userProfile?.name}, grade=${userProfile?.gradeLevel}",
+            )
+
             // Collect streak data
             val streakData by streakRepository.getStreak().collectAsState(initial = null)
             Timber.d(
@@ -64,7 +72,8 @@ class HomePresenter
             Timber.d("HomeScreen: Recent badges count=${recentBadges.size}")
 
             return HomeScreen.State(
-                userName = null, // TODO: Add user name support in future
+                userName = userProfile?.name,
+                gradeLevel = userProfile?.gradeLevel,
                 streakData = streakData,
                 overallStats = overallStats,
                 recentBadges = recentBadges,

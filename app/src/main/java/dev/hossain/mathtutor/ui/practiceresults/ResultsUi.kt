@@ -87,6 +87,7 @@ fun ResultsUi(
                     totalProblems = state.totalProblems,
                     correctCount = state.correctCount,
                     accuracyPercentage = state.accuracyPercentage,
+                    userName = state.userName,
                 )
             }
 
@@ -131,6 +132,7 @@ private fun SummaryCard(
     totalProblems: Int,
     correctCount: Int,
     accuracyPercentage: Float,
+    userName: String?,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -145,11 +147,14 @@ private fun SummaryCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Personalized congratulations message
+            val congratsMessage = getCongratsMessage(accuracyPercentage, userName)
             Text(
-                text = "Great Job!",
+                text = congratsMessage,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
+                textAlign = TextAlign.Center,
             )
 
             // Accuracy percentage
@@ -339,6 +344,50 @@ private fun ActionButtonsSection(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Try Again")
+        }
+    }
+}
+
+/**
+ * Generate personalized congratulations message based on accuracy and user name.
+ */
+private fun getCongratsMessage(
+    accuracyPercentage: Float,
+    userName: String?,
+): String {
+    val nameSuffix = if (userName != null) ", $userName" else ""
+
+    return when {
+        accuracyPercentage == 100f -> {
+            if (userName != null) {
+                "Perfect score, $userName! 🎉"
+            } else {
+                "Perfect score! 🎉"
+            }
+        }
+
+        accuracyPercentage >= 90f -> {
+            if (userName != null) {
+                "Excellent work, $userName! ⭐"
+            } else {
+                "Excellent work! ⭐"
+            }
+        }
+
+        accuracyPercentage >= 75f -> {
+            if (userName != null) {
+                "Great job, $userName! 👍"
+            } else {
+                "Great job! 👍"
+            }
+        }
+
+        accuracyPercentage >= 50f -> {
+            "Good effort$nameSuffix! 💪"
+        }
+
+        else -> {
+            "Keep practicing$nameSuffix! 📚"
         }
     }
 }
