@@ -43,7 +43,7 @@ coroutines = "1.10.2"
 # Robolectric for Android unit tests - https://robolectric.org/
 robolectric = "4.16"
 # Media3 ExoPlayer - https://developer.android.com/media/media3
-media3 = "1.4.1"
+media3 = "1.9.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
