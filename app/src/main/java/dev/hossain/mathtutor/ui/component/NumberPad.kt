@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import timber.log.Timber
 
 /**
  * A number pad component for kids to input their answers.
@@ -93,6 +94,7 @@ private fun NumberButton(
     Button(
         onClick = {
             hapticService?.triggerButtonClick()
+            Timber.d("[NumberPad] Number button $number clicked - triggered haptic feedback")
             onClick()
         },
         modifier =

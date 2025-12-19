@@ -58,6 +58,30 @@ class MainActivity
         private val userPreferencesRepository: UserPreferencesRepository,
         private val audioService: AudioService,
     ) : ComponentActivity() {
+        // Lifecycle observer for music management - stored as property to allow proper cleanup
+        private val musicLifecycleObserver =
+            object : DefaultLifecycleObserver {
+                override fun onStart(owner: LifecycleOwner) {
+                    // Start/resume music when app becomes visible (better than onResume for lifecycle)
+                    audioService.resumeBackgroundMusic()
+                    Timber.d("[MainActivity] Resumed background music (app visible)")
+                }
+
+                override fun onStop(owner: LifecycleOwner) {
+                    // Pause music when app is no longer visible (better than onPause for lifecycle)
+                    audioService.pauseBackgroundMusic()
+                    Timber.d("[MainActivity] Paused background music (app not visible)")
+                }
+
+                override fun onDestroy(owner: LifecycleOwner) {
+                    // Clean up audio resources and remove observer to prevent memory leaks
+                    audioService.stopBackgroundMusic()
+                    audioService.release()
+                    lifecycle.removeObserver(this)
+                    Timber.d("[MainActivity] Stopped background music, released resources, and removed observer")
+                }
+            }
+
         @OptIn(ExperimentalSharedTransitionApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
             enableEdgeToEdge()
@@ -65,28 +89,10 @@ class MainActivity
 
             // Start background music when app launches
             audioService.startBackgroundMusic()
-            Timber.d("Started background music on app launch")
+            Timber.d("[MainActivity] Started background music on app launch")
 
             // Register lifecycle observer for music management
-            lifecycle.addObserver(
-                object : DefaultLifecycleObserver {
-                    override fun onPause(owner: LifecycleOwner) {
-                        audioService.pauseBackgroundMusic()
-                        Timber.d("Paused background music (app backgrounded)")
-                    }
-
-                    override fun onResume(owner: LifecycleOwner) {
-                        audioService.resumeBackgroundMusic()
-                        Timber.d("Resumed background music (app foregrounded)")
-                    }
-
-                    override fun onDestroy(owner: LifecycleOwner) {
-                        audioService.stopBackgroundMusic()
-                        audioService.release()
-                        Timber.d("Stopped background music and released audio resources (app closed)")
-                    }
-                },
-            )
+            lifecycle.addObserver(musicLifecycleObserver)
 
             setContent {
                 KidsMathTutorAppTheme {

@@ -55,6 +55,7 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metro.Inject
+import timber.log.Timber
 
 /**
  * Custom Ui.Factory for MathPracticeScreen that injects HapticService.
@@ -390,6 +391,7 @@ private fun ActionButtons(
         Button(
             onClick = {
                 hapticService?.triggerButtonClick()
+                Timber.d("[MathPracticeUi] Clear button clicked - triggered haptic feedback")
                 onClear()
             },
             enabled = hasAnswer,
@@ -412,6 +414,8 @@ private fun ActionButtons(
         Button(
             onClick = {
                 hapticService?.triggerButtonClick()
+                val action = if (isCorrect == true) "Next" else "Check"
+                Timber.d("[MathPracticeUi] $action button clicked - triggered haptic feedback")
                 if (isCorrect == true) onNext() else onCheck()
             },
             enabled = hasAnswer,
