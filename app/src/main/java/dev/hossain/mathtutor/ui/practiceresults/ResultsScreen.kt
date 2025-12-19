@@ -25,6 +25,7 @@ data class ResultsScreen(
      * @property correctCount Number of correct answers
      * @property accuracyPercentage Accuracy as a percentage (0-100)
      * @property problemResults List of problems with their user answers
+     * @property userName Optional user name for personalized messages
      * @property unlockedBadges List of badges unlocked during this session
      * @property showBadgeUnlock Whether to show badge unlock dialog
      * @property currentBadgeIndex Index of current badge being shown
@@ -35,6 +36,7 @@ data class ResultsScreen(
         val correctCount: Int,
         val accuracyPercentage: Float,
         val problemResults: List<ProblemResult>,
+        val userName: String? = null,
         val unlockedBadges: List<Badge> = emptyList(),
         val showBadgeUnlock: Boolean = false,
         val currentBadgeIndex: Int = 0,

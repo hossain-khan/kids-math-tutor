@@ -40,12 +40,14 @@ import java.time.LocalDate
  * - Urgent message if streak is at risk
  *
  * @param streakData The current streak data, null if no practice history
+ * @param userName Optional user name for personalized messages
  * @param today Current date for calculating streak status
  * @param modifier Optional modifier for the card
  */
 @Composable
 fun StreakCard(
     streakData: DailyStreak?,
+    userName: String? = null,
     today: LocalDate = LocalDate.now(),
     modifier: Modifier = Modifier,
 ) {
@@ -122,26 +124,31 @@ fun StreakCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             // Encouraging message
+            val namePrefix = if (userName != null) "$userName, " else ""
             val message =
                 when {
                     streakData == null || !streakData.isStreakAlive(today) -> {
-                        "Start your streak today! 🎯"
+                        if (userName != null) {
+                            "$userName, start your streak today! 🎯"
+                        } else {
+                            "Start your streak today! 🎯"
+                        }
                     }
 
                     streakData.currentStreak == 1 -> {
-                        "Great start! Come back tomorrow! 🌟"
+                        "Great start${if (userName != null) ", $userName" else ""}! Come back tomorrow! 🌟"
                     }
 
                     streakData.lastPracticeDate == today -> {
-                        "Amazing! You practiced today! 🎉"
+                        "Amazing${if (userName != null) ", $userName" else ""}! You practiced today! 🎉"
                     }
 
                     streakData.lastPracticeDate == today.minusDays(1) -> {
-                        "⚠️ Practice today to keep your streak alive!"
+                        "⚠️ ${namePrefix}practice today to keep your streak alive!"
                     }
 
                     else -> {
-                        "Keep it up! You're doing great! 💪"
+                        "Keep it up${if (userName != null) ", $userName" else ""}! You're doing great! 💪"
                     }
                 }
 

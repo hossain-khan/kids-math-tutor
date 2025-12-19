@@ -150,7 +150,10 @@ fun MathPracticeUi(
                 )
 
                 // Feedback display with success animation
-                FeedbackSection(isCorrect = state.isCorrect)
+                FeedbackSection(
+                    isCorrect = state.isCorrect,
+                    userName = state.userName,
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -250,6 +253,7 @@ private fun ProblemCard(
 @Composable
 private fun FeedbackSection(
     isCorrect: Boolean?,
+    userName: String? = null,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -258,12 +262,30 @@ private fun FeedbackSection(
     ) {
         when (isCorrect) {
             true -> {
+                // Random personalized success messages
+                val successMessages =
+                    if (userName != null) {
+                        listOf(
+                            "✓ Great job, $userName!",
+                            "✓ Excellent work, $userName!",
+                            "✓ You're doing awesome, $userName!",
+                            "✓ Perfect, $userName!",
+                        )
+                    } else {
+                        listOf(
+                            "✓ Correct!",
+                            "✓ Great job!",
+                            "✓ Excellent work!",
+                            "✓ You're doing awesome!",
+                        )
+                    }
+
                 // Success animation for correct answer
                 SuccessAnimation(
                     isVisible = true,
                     content = {
                         Text(
-                            text = "✓ Correct!",
+                            text = successMessages.random(),
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.primary,
                         )

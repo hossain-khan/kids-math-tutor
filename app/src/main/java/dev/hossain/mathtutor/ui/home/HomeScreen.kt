@@ -5,6 +5,7 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DailyStreak
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.SessionStats
 import kotlinx.parcelize.Parcelize
 
@@ -24,6 +25,7 @@ data object HomeScreen : Screen {
      * State for [HomeScreen].
      *
      * @property userName Optional user name for personalized greeting (null = generic greeting)
+     * @property gradeLevel User's current grade level (null if no profile)
      * @property streakData Current streak data, null if no practice history
      * @property overallStats Overall session statistics
      * @property recentBadges List of 3 most recently unlocked badges
@@ -31,6 +33,7 @@ data object HomeScreen : Screen {
      */
     data class State(
         val userName: String?,
+        val gradeLevel: GradeLevel?,
         val streakData: DailyStreak?,
         val overallStats: SessionStats,
         val recentBadges: List<Badge>,

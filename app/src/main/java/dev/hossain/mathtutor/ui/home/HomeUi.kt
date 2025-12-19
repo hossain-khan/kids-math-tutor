@@ -36,6 +36,7 @@ import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.DailyStreak
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.ui.component.StreakCard
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
@@ -89,10 +90,17 @@ fun HomeUi(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             // Welcome message
-            WelcomeSection(userName = state.userName)
+            WelcomeSection(
+                userName = state.userName,
+                gradeLevel = state.gradeLevel,
+                accuracy = state.overallStats.accuracy,
+            )
 
             // Streak card
-            StreakCard(streakData = state.streakData)
+            StreakCard(
+                streakData = state.streakData,
+                userName = state.userName,
+            )
 
             // Quick stats card
             if (state.overallStats.sessionCount > 0) {
@@ -147,10 +155,13 @@ fun HomeUi(
 
 /**
  * Welcome section with personalized or generic greeting.
+ * Shows grade level and accuracy if available.
  */
 @Composable
 private fun WelcomeSection(
     userName: String?,
+    gradeLevel: GradeLevel?,
+    accuracy: Float,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -160,18 +171,31 @@ private fun WelcomeSection(
                 .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // Personalized greeting
         Text(
             text =
                 if (userName != null) {
-                    "Welcome back, $userName!"
+                    "Hi $userName! 👋"
                 } else {
-                    "Welcome back!"
+                    "Welcome back! 👋"
                 },
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Grade level and accuracy
+        if (gradeLevel != null) {
+            Text(
+                text = "${gradeLevel.displayName} • ${accuracy.toInt()}% accuracy",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
         Text(
             text = "Ready to practice some math? 📚",
             style = MaterialTheme.typography.bodyLarge,
@@ -363,6 +387,7 @@ private fun HomeUiWithDataPreview() {
             state =
                 HomeScreen.State(
                     userName = "Alex",
+                    gradeLevel = GradeLevel.GRADE_1,
                     streakData =
                         DailyStreak(
                             currentStreak = 5,
@@ -412,6 +437,7 @@ private fun HomeUiNewUserPreview() {
             state =
                 HomeScreen.State(
                     userName = null,
+                    gradeLevel = null,
                     streakData = null,
                     overallStats = SessionStats.EMPTY,
                     recentBadges = emptyList(),
@@ -429,6 +455,7 @@ private fun HomeUiDarkPreview() {
             state =
                 HomeScreen.State(
                     userName = null,
+                    gradeLevel = GradeLevel.GRADE_2,
                     streakData =
                         DailyStreak(
                             currentStreak = 3,

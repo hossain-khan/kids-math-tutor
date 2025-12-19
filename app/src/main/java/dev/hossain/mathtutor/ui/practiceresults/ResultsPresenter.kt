@@ -11,6 +11,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
 import dev.hossain.mathtutor.ui.home.HomeScreen
@@ -19,6 +20,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -35,6 +37,7 @@ class ResultsPresenter
         @Assisted private val navigator: Navigator,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val updateStreakUseCase: UpdateStreakUseCase,
+        private val userProfileRepository: UserProfileRepository,
     ) : Presenter<ResultsScreen.State> {
         @CircuitInject(ResultsScreen::class, AppScope::class)
         @AssistedFactory
@@ -51,6 +54,14 @@ class ResultsPresenter
             var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var showBadgeUnlock by remember { mutableStateOf(false) }
             var currentBadgeIndex by remember { mutableStateOf(0) }
+            var userName by remember { mutableStateOf<String?>(null) }
+
+            // Fetch user name
+            LaunchedEffect(Unit) {
+                val profile = userProfileRepository.getProfile().firstOrNull()
+                userName = profile?.name
+                Timber.d("[ResultsPresenter] Fetched user name: $userName")
+            }
 
             // Backup: Check for badges and update streak on results screen load
             // This serves as a fallback if the practice screen doesn't handle it
@@ -114,6 +125,7 @@ class ResultsPresenter
                 correctCount = correctCount,
                 accuracyPercentage = accuracyPercentage,
                 problemResults = problemResults,
+                userName = userName,
                 unlockedBadges = unlockedBadges,
                 showBadgeUnlock = showBadgeUnlock,
                 currentBadgeIndex = currentBadgeIndex,
