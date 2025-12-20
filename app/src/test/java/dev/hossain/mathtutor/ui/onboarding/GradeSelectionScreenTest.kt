@@ -1,10 +1,7 @@
 package dev.hossain.mathtutor.ui.onboarding
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.GradeLevel
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -26,8 +23,8 @@ class GradeSelectionScreenTest {
             )
 
         // Then
-        assertNull(state.selectedGrade)
-        assertNotNull(state.eventSink)
+        assertThat(state.selectedGrade).isNull()
+        assertThat(state.eventSink).isNotNull()
     }
 
     @Test
@@ -43,7 +40,7 @@ class GradeSelectionScreenTest {
             )
 
         // Then
-        assertEquals(GradeLevel.KINDERGARTEN, state.selectedGrade)
+        assertThat(state.selectedGrade).isEqualTo(GradeLevel.KINDERGARTEN)
     }
 
     @Test
@@ -59,7 +56,7 @@ class GradeSelectionScreenTest {
             )
 
         // Then
-        assertEquals(GradeLevel.GRADE_1, state.selectedGrade)
+        assertThat(state.selectedGrade).isEqualTo(GradeLevel.GRADE_1)
     }
 
     @Test
@@ -75,7 +72,7 @@ class GradeSelectionScreenTest {
             )
 
         // Then
-        assertEquals(GradeLevel.GRADE_2, state.selectedGrade)
+        assertThat(state.selectedGrade).isEqualTo(GradeLevel.GRADE_2)
     }
 
     @Test
@@ -84,7 +81,7 @@ class GradeSelectionScreenTest {
         val event = GradeSelectionScreen.Event.GradeSelected(GradeLevel.KINDERGARTEN)
 
         // Then
-        assertEquals(GradeLevel.KINDERGARTEN, event.grade)
+        assertThat(event.grade).isEqualTo(GradeLevel.KINDERGARTEN)
     }
 
     @Test
@@ -93,7 +90,7 @@ class GradeSelectionScreenTest {
         val event = GradeSelectionScreen.Event.ContinueClicked
 
         // Then - verify it's the singleton object
-        assertEquals(GradeSelectionScreen.Event.ContinueClicked, event)
+        assertThat(event).isEqualTo(GradeSelectionScreen.Event.ContinueClicked)
     }
 
     @Test
@@ -110,12 +107,9 @@ class GradeSelectionScreenTest {
         state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_1))
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is GradeSelectionScreen.Event.GradeSelected)
-        assertEquals(
-            GradeLevel.GRADE_1,
-            (receivedEvent as GradeSelectionScreen.Event.GradeSelected).grade,
-        )
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is GradeSelectionScreen.Event.GradeSelected).isTrue()
+        assertThat((receivedEvent as GradeSelectionScreen.Event.GradeSelected).grade).isEqualTo(GradeLevel.GRADE_1)
     }
 
     @Test
@@ -132,7 +126,7 @@ class GradeSelectionScreenTest {
         state.eventSink(GradeSelectionScreen.Event.ContinueClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is GradeSelectionScreen.Event.ContinueClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is GradeSelectionScreen.Event.ContinueClicked).isTrue()
     }
 }

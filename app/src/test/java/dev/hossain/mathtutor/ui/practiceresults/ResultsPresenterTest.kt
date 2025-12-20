@@ -1,11 +1,8 @@
 package dev.hossain.mathtutor.ui.practiceresults
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -29,7 +26,7 @@ class ResultsPresenterTest {
         val accuracy = (correctCount.toFloat() / problems.size) * 100f
 
         // Then
-        assertEquals(100f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(100f)
     }
 
     @Test
@@ -47,7 +44,7 @@ class ResultsPresenterTest {
         val accuracy = (correctCount.toFloat() / problems.size) * 100f
 
         // Then
-        assertEquals(50f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(50f)
     }
 
     @Test
@@ -65,7 +62,7 @@ class ResultsPresenterTest {
         val accuracy = (correctCount.toFloat() / problems.size) * 100f
 
         // Then
-        assertEquals(0f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(0f)
     }
 
     @Test
@@ -78,7 +75,7 @@ class ResultsPresenterTest {
         val isCorrect = problem.checkAnswer(userAnswer)
 
         // Then
-        assertTrue(isCorrect)
+        assertThat(isCorrect).isTrue()
     }
 
     @Test
@@ -91,7 +88,7 @@ class ResultsPresenterTest {
         val isCorrect = problem.checkAnswer(userAnswer)
 
         // Then
-        assertFalse(isCorrect)
+        assertThat(isCorrect).isFalse()
     }
 
     @Test
@@ -104,7 +101,7 @@ class ResultsPresenterTest {
         val isCorrect = userAnswer?.let { problem.checkAnswer(it) } ?: false
 
         // Then
-        assertFalse(isCorrect)
+        assertThat(isCorrect).isFalse()
     }
 
     @Test
@@ -121,7 +118,7 @@ class ResultsPresenterTest {
         val totalProblems = problems.size
 
         // Then
-        assertEquals(3, totalProblems)
+        assertThat(totalProblems).isEqualTo(3)
     }
 
     @Test
@@ -139,7 +136,7 @@ class ResultsPresenterTest {
         val correctCount = problems.zip(userAnswers).count { (problem, answer) -> problem.checkAnswer(answer) }
 
         // Then
-        assertEquals(2, correctCount)
+        assertThat(correctCount).isEqualTo(2)
     }
 
     @Test
@@ -157,8 +154,8 @@ class ResultsPresenterTest {
             )
 
         // Then
-        assertNotNull(result.problem)
-        assertEquals(problem, result.problem)
+        assertThat(result.problem).isNotNull()
+        assertThat(result.problem).isEqualTo(problem)
     }
 
     @Test
@@ -176,7 +173,7 @@ class ResultsPresenterTest {
             )
 
         // Then
-        assertEquals(userAnswer, result.userAnswer)
+        assertThat(result.userAnswer).isEqualTo(userAnswer)
     }
 
     @Test
@@ -194,8 +191,8 @@ class ResultsPresenterTest {
             )
 
         // Then
-        assertEquals(null, result.userAnswer)
-        assertFalse(result.isCorrect)
+        assertThat(result.userAnswer).isEqualTo(null)
+        assertThat(result.isCorrect).isFalse()
     }
 
     @Test
@@ -214,7 +211,7 @@ class ResultsPresenterTest {
             }
 
         // Then
-        assertEquals(0f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(0f)
     }
 
     @Test
@@ -233,6 +230,6 @@ class ResultsPresenterTest {
         val accuracy = (correctCount.toFloat() / problems.size) * 100f
 
         // Then
-        assertEquals(66.67f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(66.67f)
     }
 }

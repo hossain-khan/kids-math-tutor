@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.data.repository
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.dao.GameSessionDao
 import dev.hossain.mathtutor.data.local.entity.GameSessionEntity
 import dev.hossain.mathtutor.domain.model.Game
@@ -12,10 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.Instant
@@ -40,11 +37,11 @@ class GameRepositoryImplTest {
 
             val id = repository.saveGameSession(session)
 
-            assertEquals(1L, id)
-            assertEquals(1, fakeGameSessionDao.insertedSessions.size)
+            assertThat(id).isEqualTo(1L)
+            assertThat(fakeGameSessionDao.insertedSessions.size).isEqualTo(1)
             val inserted = fakeGameSessionDao.insertedSessions[0]
-            assertEquals("MATH_RACE", inserted.gameId)
-            assertEquals(15, inserted.score)
+            assertThat(inserted.gameId).isEqualTo("MATH_RACE")
+            assertThat(inserted.score).isEqualTo(15)
         }
 
     // getPersonalBest tests
@@ -55,7 +52,7 @@ class GameRepositoryImplTest {
 
             val personalBest = repository.getPersonalBest(Game.MATH_RACE).first()
 
-            assertEquals(25, personalBest)
+            assertThat(personalBest).isEqualTo(25)
         }
 
     @Test
@@ -65,7 +62,7 @@ class GameRepositoryImplTest {
 
             val personalBest = repository.getPersonalBest(Game.MATH_RACE).first()
 
-            assertEquals(0, personalBest)
+            assertThat(personalBest).isEqualTo(0)
         }
 
     // getBestSession tests
@@ -77,8 +74,8 @@ class GameRepositoryImplTest {
 
             val bestSession = repository.getBestSession(Game.MATH_RACE).first()
 
-            assertEquals(30, bestSession?.score)
-            assertTrue(bestSession?.isNewRecord == true)
+            assertThat(bestSession?.score).isEqualTo(30)
+            assertThat(bestSession?.isNewRecord == true).isTrue()
         }
 
     @Test
@@ -88,7 +85,7 @@ class GameRepositoryImplTest {
 
             val bestSession = repository.getBestSession(Game.MATH_RACE).first()
 
-            assertNull(bestSession)
+            assertThat(bestSession).isNull()
         }
 
     // getGameStats tests
@@ -106,13 +103,13 @@ class GameRepositoryImplTest {
 
             val stats = repository.getGameStats(Game.MATH_RACE).first()
 
-            assertEquals(Game.MATH_RACE, stats.game)
-            assertEquals(25, stats.personalBest)
-            assertEquals(5, stats.totalGamesPlayed)
-            assertEquals(18f, stats.averageScore)
-            assertEquals(95f, stats.bestAccuracy)
-            assertEquals(80, stats.totalCorrectAnswers)
-            assertEquals(100, stats.totalAttempts)
+            assertThat(stats.game).isEqualTo(Game.MATH_RACE)
+            assertThat(stats.personalBest).isEqualTo(25)
+            assertThat(stats.totalGamesPlayed).isEqualTo(5)
+            assertThat(stats.averageScore).isEqualTo(18f)
+            assertThat(stats.bestAccuracy).isEqualTo(95f)
+            assertThat(stats.totalCorrectAnswers).isEqualTo(80)
+            assertThat(stats.totalAttempts).isEqualTo(100)
         }
 
     @Test
@@ -129,11 +126,11 @@ class GameRepositoryImplTest {
 
             val stats = repository.getGameStats(Game.MATH_RACE).first()
 
-            assertEquals(0, stats.personalBest)
-            assertEquals(0, stats.totalGamesPlayed)
-            assertEquals(0f, stats.averageScore)
-            assertEquals(0f, stats.bestAccuracy)
-            assertNull(stats.lastPlayedAt)
+            assertThat(stats.personalBest).isEqualTo(0)
+            assertThat(stats.totalGamesPlayed).isEqualTo(0)
+            assertThat(stats.averageScore).isEqualTo(0f)
+            assertThat(stats.bestAccuracy).isEqualTo(0f)
+            assertThat(stats.lastPlayedAt).isNull()
         }
 
     // getTotalGamesPlayed tests
@@ -144,7 +141,7 @@ class GameRepositoryImplTest {
 
             val count = repository.getTotalGamesPlayed(Game.MATH_RACE).first()
 
-            assertEquals(10, count)
+            assertThat(count).isEqualTo(10)
         }
 
     // isGameUnlocked tests
@@ -155,7 +152,7 @@ class GameRepositoryImplTest {
 
             val isUnlocked = repository.isGameUnlocked(Game.MATH_RACE).first()
 
-            assertTrue(isUnlocked)
+            assertThat(isUnlocked).isTrue()
         }
 
     @Test
@@ -165,7 +162,7 @@ class GameRepositoryImplTest {
 
             val isUnlocked = repository.isGameUnlocked(Game.MATH_RACE).first()
 
-            assertFalse(isUnlocked)
+            assertThat(isUnlocked).isFalse()
         }
 
     @Test
@@ -175,7 +172,7 @@ class GameRepositoryImplTest {
 
             val isUnlocked = repository.isGameUnlocked(Game.MATH_RACE).first()
 
-            assertTrue(isUnlocked)
+            assertThat(isUnlocked).isTrue()
         }
 
     @Test
@@ -185,7 +182,7 @@ class GameRepositoryImplTest {
 
             val isUnlocked = repository.isGameUnlocked(Game.MATH_RACE).first()
 
-            assertFalse(isUnlocked)
+            assertThat(isUnlocked).isFalse()
         }
 
     // getSessionsByGame tests
@@ -201,9 +198,9 @@ class GameRepositoryImplTest {
 
             val sessions = repository.getSessionsByGame(Game.MATH_RACE).first()
 
-            assertEquals(2, sessions.size)
-            assertEquals(15, sessions[0].score)
-            assertEquals(20, sessions[1].score)
+            assertThat(sessions.size).isEqualTo(2)
+            assertThat(sessions[0].score).isEqualTo(15)
+            assertThat(sessions[1].score).isEqualTo(20)
         }
 
     // getRecentSessions tests
@@ -219,7 +216,7 @@ class GameRepositoryImplTest {
 
             val sessions = repository.getRecentSessions(10).first()
 
-            assertEquals(2, sessions.size)
+            assertThat(sessions.size).isEqualTo(2)
         }
 
     // getPerfectGameCount tests
@@ -230,7 +227,7 @@ class GameRepositoryImplTest {
 
             val count = repository.getPerfectGameCount(Game.MATH_RACE).first()
 
-            assertEquals(3, count)
+            assertThat(count).isEqualTo(3)
         }
 
     // clearAllSessions tests
@@ -239,7 +236,7 @@ class GameRepositoryImplTest {
         runTest {
             repository.clearAllSessions()
 
-            assertTrue(fakeGameSessionDao.deleteAllCalled)
+            assertThat(fakeGameSessionDao.deleteAllCalled).isTrue()
         }
 
     // Helper methods

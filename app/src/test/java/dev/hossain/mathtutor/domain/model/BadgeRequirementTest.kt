@@ -1,6 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class BadgeRequirementTest {
@@ -8,59 +8,59 @@ class BadgeRequirementTest {
     fun `ProblemCount requirement has correct count`() {
         val requirement = BadgeRequirement.ProblemCount(25)
 
-        assertEquals(25, requirement.count)
+        assertThat(requirement.count).isEqualTo(25)
     }
 
     @Test
     fun `OperationCount requirement has correct operation and count`() {
         val requirement = BadgeRequirement.OperationCount(MathOperation.ADDITION, 50)
 
-        assertEquals(MathOperation.ADDITION, requirement.operation)
-        assertEquals(50, requirement.count)
+        assertThat(requirement.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(requirement.count).isEqualTo(50)
     }
 
     @Test
     fun `ConsecutiveCorrect requirement has correct count`() {
         val requirement = BadgeRequirement.ConsecutiveCorrect(5)
 
-        assertEquals(5, requirement.count)
+        assertThat(requirement.count).isEqualTo(5)
     }
 
     @Test
     fun `SessionAccuracy requirement has correct percentage and default sessionCount`() {
         val requirement = BadgeRequirement.SessionAccuracy(90f)
 
-        assertEquals(90f, requirement.percentage, 0.01f)
-        assertEquals(1, requirement.sessionCount)
+        assertThat(requirement.percentage).isWithin(0.01f).of(90f)
+        assertThat(requirement.sessionCount).isEqualTo(1)
     }
 
     @Test
     fun `SessionAccuracy requirement has correct percentage and custom sessionCount`() {
         val requirement = BadgeRequirement.SessionAccuracy(100f, 3)
 
-        assertEquals(100f, requirement.percentage, 0.01f)
-        assertEquals(3, requirement.sessionCount)
+        assertThat(requirement.percentage).isWithin(0.01f).of(100f)
+        assertThat(requirement.sessionCount).isEqualTo(3)
     }
 
     @Test
     fun `DailyStreak requirement has correct days`() {
         val requirement = BadgeRequirement.DailyStreak(7)
 
-        assertEquals(7, requirement.days)
+        assertThat(requirement.days).isEqualTo(7)
     }
 
     @Test
     fun `ProblemSpeed requirement has correct maxSeconds`() {
         val requirement = BadgeRequirement.ProblemSpeed(3)
 
-        assertEquals(3, requirement.maxSeconds)
+        assertThat(requirement.maxSeconds).isEqualTo(3)
     }
 
     @Test
     fun `MixedSessions requirement has correct count`() {
         val requirement = BadgeRequirement.MixedSessions(10)
 
-        assertEquals(10, requirement.count)
+        assertThat(requirement.count).isEqualTo(10)
     }
 
     @Test
@@ -74,14 +74,14 @@ class BadgeRequirementTest {
         val mixedSessions = BadgeRequirement.MixedSessions(8)
 
         // Verify each subtype can be constructed and has expected values
-        assertEquals(10, problemCount.count)
-        assertEquals(MathOperation.SUBTRACTION, operationCount.operation)
-        assertEquals(20, operationCount.count)
-        assertEquals(5, consecutiveCorrect.count)
-        assertEquals(85f, sessionAccuracy.percentage)
-        assertEquals(2, sessionAccuracy.sessionCount)
-        assertEquals(3, dailyStreak.days)
-        assertEquals(5, problemSpeed.maxSeconds)
-        assertEquals(8, mixedSessions.count)
+        assertThat(problemCount.count).isEqualTo(10)
+        assertThat(operationCount.operation).isEqualTo(MathOperation.SUBTRACTION)
+        assertThat(operationCount.count).isEqualTo(20)
+        assertThat(consecutiveCorrect.count).isEqualTo(5)
+        assertThat(sessionAccuracy.percentage).isEqualTo(85f)
+        assertThat(sessionAccuracy.sessionCount).isEqualTo(2)
+        assertThat(dailyStreak.days).isEqualTo(3)
+        assertThat(problemSpeed.maxSeconds).isEqualTo(5)
+        assertThat(mixedSessions.count).isEqualTo(8)
     }
 }

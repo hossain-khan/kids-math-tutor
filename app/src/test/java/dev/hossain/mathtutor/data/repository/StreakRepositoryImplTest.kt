@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.data.repository
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.dao.StreakDao
 import dev.hossain.mathtutor.data.local.entity.StreakEntity
 import dev.hossain.mathtutor.domain.model.DailyStreak
@@ -7,8 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
@@ -30,7 +29,7 @@ class StreakRepositoryImplTest {
 
             val result = repository.getStreak().first()
 
-            assertNull(result)
+            assertThat(result).isNull()
         }
 
     @Test
@@ -49,10 +48,10 @@ class StreakRepositoryImplTest {
 
             val result = repository.getStreak().first()
 
-            assertEquals(5, result?.currentStreak)
-            assertEquals(10, result?.longestStreak)
-            assertEquals(date, result?.lastPracticeDate)
-            assertEquals(20, result?.totalDaysPracticed)
+            assertThat(result?.currentStreak).isEqualTo(5)
+            assertThat(result?.longestStreak).isEqualTo(10)
+            assertThat(result?.lastPracticeDate).isEqualTo(date)
+            assertThat(result?.totalDaysPracticed).isEqualTo(20)
         }
 
     @Test
@@ -69,13 +68,13 @@ class StreakRepositoryImplTest {
 
             repository.saveStreak(streak)
 
-            assertEquals(1, fakeDao.insertedEntities.size)
+            assertThat(fakeDao.insertedEntities.size).isEqualTo(1)
             val inserted = fakeDao.insertedEntities[0]
-            assertEquals(1, inserted.id) // Singleton ID
-            assertEquals(7, inserted.currentStreak)
-            assertEquals(12, inserted.longestStreak)
-            assertEquals(date, inserted.lastPracticeDate)
-            assertEquals(25, inserted.totalDaysPracticed)
+            assertThat(inserted.id).isEqualTo(1) // Singleton ID
+            assertThat(inserted.currentStreak).isEqualTo(7)
+            assertThat(inserted.longestStreak).isEqualTo(12)
+            assertThat(inserted.lastPracticeDate).isEqualTo(date)
+            assertThat(inserted.totalDaysPracticed).isEqualTo(25)
         }
 
     @Test
@@ -83,12 +82,12 @@ class StreakRepositoryImplTest {
         runTest {
             repository.saveStreak(DailyStreak.EMPTY)
 
-            assertEquals(1, fakeDao.insertedEntities.size)
+            assertThat(fakeDao.insertedEntities.size).isEqualTo(1)
             val inserted = fakeDao.insertedEntities[0]
-            assertEquals(0, inserted.currentStreak)
-            assertEquals(0, inserted.longestStreak)
-            assertNull(inserted.lastPracticeDate)
-            assertEquals(0, inserted.totalDaysPracticed)
+            assertThat(inserted.currentStreak).isEqualTo(0)
+            assertThat(inserted.longestStreak).isEqualTo(0)
+            assertThat(inserted.lastPracticeDate).isNull()
+            assertThat(inserted.totalDaysPracticed).isEqualTo(0)
         }
 
     @Test
@@ -97,7 +96,7 @@ class StreakRepositoryImplTest {
             // Initial state
             fakeDao.streakFlow.value = null
             val firstResult = repository.getStreak().first()
-            assertNull(firstResult)
+            assertThat(firstResult).isNull()
 
             // Update streak
             val date = LocalDate.of(2025, 1, 15)
@@ -111,8 +110,8 @@ class StreakRepositoryImplTest {
                 )
 
             val secondResult = repository.getStreak().first()
-            assertEquals(3, secondResult?.currentStreak)
-            assertEquals(5, secondResult?.longestStreak)
+            assertThat(secondResult?.currentStreak).isEqualTo(3)
+            assertThat(secondResult?.longestStreak).isEqualTo(5)
         }
 
     @Test
@@ -127,10 +126,10 @@ class StreakRepositoryImplTest {
             repository.saveStreak(streak2)
 
             // Both should be inserted (Room REPLACE strategy)
-            assertEquals(2, fakeDao.insertedEntities.size)
+            assertThat(fakeDao.insertedEntities.size).isEqualTo(2)
             val latest = fakeDao.insertedEntities[1]
-            assertEquals(2, latest.currentStreak)
-            assertEquals(date2, latest.lastPracticeDate)
+            assertThat(latest.currentStreak).isEqualTo(2)
+            assertThat(latest.lastPracticeDate).isEqualTo(date2)
         }
 }
 

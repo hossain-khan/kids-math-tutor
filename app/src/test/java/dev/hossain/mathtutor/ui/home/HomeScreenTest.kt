@@ -1,14 +1,11 @@
 package dev.hossain.mathtutor.ui.home
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.SessionStats
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalDate
@@ -66,12 +63,12 @@ class HomeScreenTest {
             )
 
         // Then
-        assertEquals(userName, state.userName)
-        assertEquals(null, state.gradeLevel)
-        assertEquals(streakData, state.streakData)
-        assertEquals(overallStats, state.overallStats)
-        assertEquals(recentBadges, state.recentBadges)
-        assertNotNull(state.eventSink)
+        assertThat(state.userName).isEqualTo(userName)
+        assertThat(state.gradeLevel).isEqualTo(null)
+        assertThat(state.streakData).isEqualTo(streakData)
+        assertThat(state.overallStats).isEqualTo(overallStats)
+        assertThat(state.recentBadges).isEqualTo(recentBadges)
+        assertThat(state.eventSink).isNotNull()
     }
 
     @Test
@@ -91,7 +88,7 @@ class HomeScreenTest {
             )
 
         // Then
-        assertNull(state.userName)
+        assertThat(state.userName).isNull()
     }
 
     @Test
@@ -111,7 +108,7 @@ class HomeScreenTest {
             )
 
         // Then
-        assertNull(state.streakData)
+        assertThat(state.streakData).isNull()
     }
 
     @Test
@@ -131,9 +128,9 @@ class HomeScreenTest {
             )
 
         // Then
-        assertEquals(SessionStats.EMPTY, state.overallStats)
-        assertEquals(0, state.overallStats.sessionCount)
-        assertEquals(0, state.overallStats.totalProblems)
+        assertThat(state.overallStats).isEqualTo(SessionStats.EMPTY)
+        assertThat(state.overallStats.sessionCount).isEqualTo(0)
+        assertThat(state.overallStats.totalProblems).isEqualTo(0)
     }
 
     @Test
@@ -153,7 +150,7 @@ class HomeScreenTest {
             )
 
         // Then
-        assertTrue(state.recentBadges.isEmpty())
+        assertThat(state.recentBadges.isEmpty()).isTrue()
     }
 
     @Test
@@ -204,10 +201,10 @@ class HomeScreenTest {
             )
 
         // Then
-        assertEquals(3, state.recentBadges.size)
-        assertEquals(badge1, state.recentBadges[0])
-        assertEquals(badge2, state.recentBadges[1])
-        assertEquals(badge3, state.recentBadges[2])
+        assertThat(state.recentBadges.size).isEqualTo(3)
+        assertThat(state.recentBadges[0]).isEqualTo(badge1)
+        assertThat(state.recentBadges[1]).isEqualTo(badge2)
+        assertThat(state.recentBadges[2]).isEqualTo(badge3)
     }
 
     @Test
@@ -216,7 +213,7 @@ class HomeScreenTest {
         val event = HomeScreen.Event.StartPracticeClicked
 
         // Then - verify it's the singleton object
-        assertEquals(HomeScreen.Event.StartPracticeClicked, event)
+        assertThat(event).isEqualTo(HomeScreen.Event.StartPracticeClicked)
     }
 
     @Test
@@ -225,7 +222,7 @@ class HomeScreenTest {
         val event = HomeScreen.Event.ViewStatsClicked
 
         // Then - verify it's the singleton object
-        assertEquals(HomeScreen.Event.ViewStatsClicked, event)
+        assertThat(event).isEqualTo(HomeScreen.Event.ViewStatsClicked)
     }
 
     @Test
@@ -234,7 +231,7 @@ class HomeScreenTest {
         val event = HomeScreen.Event.ViewBadgesClicked
 
         // Then - verify it's the singleton object
-        assertEquals(HomeScreen.Event.ViewBadgesClicked, event)
+        assertThat(event).isEqualTo(HomeScreen.Event.ViewBadgesClicked)
     }
 
     @Test
@@ -243,7 +240,7 @@ class HomeScreenTest {
         val event = HomeScreen.Event.ViewSettingsClicked
 
         // Then - verify it's the singleton object
-        assertEquals(HomeScreen.Event.ViewSettingsClicked, event)
+        assertThat(event).isEqualTo(HomeScreen.Event.ViewSettingsClicked)
     }
 
     @Test
@@ -264,8 +261,8 @@ class HomeScreenTest {
         state.eventSink(HomeScreen.Event.StartPracticeClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is HomeScreen.Event.StartPracticeClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is HomeScreen.Event.StartPracticeClicked).isTrue()
     }
 
     @Test
@@ -286,8 +283,8 @@ class HomeScreenTest {
         state.eventSink(HomeScreen.Event.ViewStatsClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is HomeScreen.Event.ViewStatsClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is HomeScreen.Event.ViewStatsClicked).isTrue()
     }
 
     @Test
@@ -308,8 +305,8 @@ class HomeScreenTest {
         state.eventSink(HomeScreen.Event.ViewBadgesClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is HomeScreen.Event.ViewBadgesClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is HomeScreen.Event.ViewBadgesClicked).isTrue()
     }
 
     @Test
@@ -330,8 +327,8 @@ class HomeScreenTest {
         state.eventSink(HomeScreen.Event.ViewSettingsClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is HomeScreen.Event.ViewSettingsClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is HomeScreen.Event.ViewSettingsClicked).isTrue()
     }
 
     @Test
@@ -359,10 +356,10 @@ class HomeScreenTest {
             )
 
         // Then
-        assertEquals(5, state.streakData?.currentStreak)
-        assertEquals(7, state.streakData?.longestStreak)
-        assertEquals(today, state.streakData?.lastPracticeDate)
-        assertTrue(state.streakData?.isStreakAlive(today) == true)
+        assertThat(state.streakData?.currentStreak).isEqualTo(5)
+        assertThat(state.streakData?.longestStreak).isEqualTo(7)
+        assertThat(state.streakData?.lastPracticeDate).isEqualTo(today)
+        assertThat(state.streakData?.isStreakAlive(today).isTrue() == true)
     }
 
     @Test
@@ -391,9 +388,9 @@ class HomeScreenTest {
             )
 
         // Then
-        assertEquals(3, state.streakData?.currentStreak)
-        assertEquals(yesterday, state.streakData?.lastPracticeDate)
-        assertTrue(state.streakData?.isStreakAlive(today) == true)
+        assertThat(state.streakData?.currentStreak).isEqualTo(3)
+        assertThat(state.streakData?.lastPracticeDate).isEqualTo(yesterday)
+        assertThat(state.streakData?.isStreakAlive(today).isTrue() == true)
     }
 
     @Test
@@ -420,9 +417,9 @@ class HomeScreenTest {
             )
 
         // Then
-        assertEquals(100, state.overallStats.totalProblems)
-        assertEquals(85, state.overallStats.correctCount)
-        assertEquals(85f, state.overallStats.accuracy, 0.01f)
-        assertEquals(10, state.overallStats.sessionCount)
+        assertThat(state.overallStats.totalProblems).isEqualTo(100)
+        assertThat(state.overallStats.correctCount).isEqualTo(85)
+        assertThat(state.overallStats.accuracy).isWithin(0.01f).of(85f)
+        assertThat(state.overallStats.sessionCount).isEqualTo(10)
     }
 }

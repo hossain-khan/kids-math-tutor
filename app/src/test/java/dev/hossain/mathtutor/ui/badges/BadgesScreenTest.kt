@@ -1,13 +1,10 @@
 package dev.hossain.mathtutor.ui.badges
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 
@@ -61,10 +58,10 @@ class BadgesScreenTest {
             )
 
         // Then
-        assertEquals(badgesByCategory, state.badgesByCategory)
-        assertEquals(progressSummary, state.progressSummary)
-        assertEquals(selectedBadge, state.selectedBadge)
-        assertNotNull(state.eventSink)
+        assertThat(state.badgesByCategory).isEqualTo(badgesByCategory)
+        assertThat(state.progressSummary).isEqualTo(progressSummary)
+        assertThat(state.selectedBadge).isEqualTo(selectedBadge)
+        assertThat(state.eventSink).isNotNull()
     }
 
     @Test
@@ -84,10 +81,10 @@ class BadgesScreenTest {
             )
 
         // Then
-        assertTrue(state.badgesByCategory.isEmpty())
-        assertEquals(0, state.progressSummary.unlockedCount)
-        assertEquals(0, state.progressSummary.totalCount)
-        assertNull(state.selectedBadge)
+        assertThat(state.badgesByCategory.isEmpty()).isTrue()
+        assertThat(state.progressSummary.unlockedCount).isEqualTo(0)
+        assertThat(state.progressSummary.totalCount).isEqualTo(0)
+        assertThat(state.selectedBadge).isNull()
     }
 
     @Test
@@ -138,10 +135,10 @@ class BadgesScreenTest {
             )
 
         // Then
-        assertEquals(3, state.badgesByCategory.size)
-        assertEquals(1, state.badgesByCategory[BadgeCategory.GETTING_STARTED]?.size)
-        assertEquals(1, state.badgesByCategory[BadgeCategory.VOLUME]?.size)
-        assertEquals(1, state.badgesByCategory[BadgeCategory.SPEED_ACCURACY]?.size)
+        assertThat(state.badgesByCategory.size).isEqualTo(3)
+        assertThat(state.badgesByCategory[BadgeCategory.GETTING_STARTED]?.size).isEqualTo(1)
+        assertThat(state.badgesByCategory[BadgeCategory.VOLUME]?.size).isEqualTo(1)
+        assertThat(state.badgesByCategory[BadgeCategory.SPEED_ACCURACY]?.size).isEqualTo(1)
     }
 
     @Test
@@ -161,7 +158,7 @@ class BadgesScreenTest {
         val event = BadgesScreen.Event.BadgeClicked(badge)
 
         // Then
-        assertEquals(badge, event.badge)
+        assertThat(event.badge).isEqualTo(badge)
     }
 
     @Test
@@ -170,7 +167,7 @@ class BadgesScreenTest {
         val event = BadgesScreen.Event.CloseDialog
 
         // Then - verify it's the singleton object
-        assertEquals(BadgesScreen.Event.CloseDialog, event)
+        assertThat(event).isEqualTo(BadgesScreen.Event.CloseDialog)
     }
 
     @Test
@@ -179,7 +176,7 @@ class BadgesScreenTest {
         val event = BadgesScreen.Event.BackPressed
 
         // Then - verify it's the singleton object
-        assertEquals(BadgesScreen.Event.BackPressed, event)
+        assertThat(event).isEqualTo(BadgesScreen.Event.BackPressed)
     }
 
     @Test
@@ -207,9 +204,9 @@ class BadgesScreenTest {
         state.eventSink(BadgesScreen.Event.BadgeClicked(badge))
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is BadgesScreen.Event.BadgeClicked)
-        assertEquals(badge, (receivedEvent as BadgesScreen.Event.BadgeClicked).badge)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is BadgesScreen.Event.BadgeClicked).isTrue()
+        assertThat((receivedEvent as BadgesScreen.Event.BadgeClicked).isEqualTo(badge).badge)
     }
 
     @Test
@@ -228,8 +225,8 @@ class BadgesScreenTest {
         state.eventSink(BadgesScreen.Event.CloseDialog)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is BadgesScreen.Event.CloseDialog)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is BadgesScreen.Event.CloseDialog).isTrue()
     }
 
     @Test
@@ -248,8 +245,8 @@ class BadgesScreenTest {
         state.eventSink(BadgesScreen.Event.BackPressed)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is BadgesScreen.Event.BackPressed)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is BadgesScreen.Event.BackPressed).isTrue()
     }
 
     @Test
@@ -261,7 +258,7 @@ class BadgesScreenTest {
         val percentage = progress.percentage
 
         // Then
-        assertEquals(33.333332f, percentage, 0.01f)
+        assertThat(percentage).isWithin(0.01f).of(33.333332f)
     }
 
     @Test
@@ -273,6 +270,6 @@ class BadgesScreenTest {
         val percentage = progress.percentage
 
         // Then
-        assertEquals(0f, percentage, 0.01f)
+        assertThat(percentage).isWithin(0.01f).of(0f)
     }
 }

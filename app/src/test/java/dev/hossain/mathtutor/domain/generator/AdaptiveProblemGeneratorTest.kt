@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.domain.generator
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
@@ -8,9 +9,6 @@ import dev.hossain.mathtutor.domain.repository.PerformanceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -43,11 +41,11 @@ class AdaptiveProblemGeneratorTest {
                     baseGradeLevel = GradeLevel.GRADE_1,
                 )
 
-            assertEquals(5, result.problems.size)
-            assertEquals(GradeLevel.GRADE_1, result.actualGradeLevel)
-            assertEquals(GradeLevel.GRADE_1, result.baseGradeLevel)
-            assertEquals(DifficultyAdjustment.CURRENT, result.adjustment)
-            assertFalse(result.wasAdjusted)
+            assertThat(result.problems.size).isEqualTo(5)
+            assertThat(result.actualGradeLevel).isEqualTo(GradeLevel.GRADE_1)
+            assertThat(result.baseGradeLevel).isEqualTo(GradeLevel.GRADE_1)
+            assertThat(result.adjustment).isEqualTo(DifficultyAdjustment.CURRENT)
+            assertThat(result.wasAdjusted).isFalse()
         }
 
     @Test
@@ -72,11 +70,11 @@ class AdaptiveProblemGeneratorTest {
                     baseGradeLevel = GradeLevel.GRADE_1,
                 )
 
-            assertEquals(GradeLevel.GRADE_2, result.actualGradeLevel) // Increased from Grade 1
-            assertEquals(GradeLevel.GRADE_1, result.baseGradeLevel)
-            assertEquals(DifficultyAdjustment.HARDER, result.adjustment)
-            assertTrue(result.wasAdjusted)
-            assertTrue(result.wasIncreased)
+            assertThat(result.actualGradeLevel).isEqualTo(GradeLevel.GRADE_2) // Increased from Grade 1
+            assertThat(result.baseGradeLevel).isEqualTo(GradeLevel.GRADE_1)
+            assertThat(result.adjustment).isEqualTo(DifficultyAdjustment.HARDER)
+            assertThat(result.wasAdjusted).isTrue()
+            assertThat(result.wasIncreased).isTrue()
         }
 
     @Test
@@ -101,11 +99,11 @@ class AdaptiveProblemGeneratorTest {
                     baseGradeLevel = GradeLevel.GRADE_2,
                 )
 
-            assertEquals(GradeLevel.GRADE_1, result.actualGradeLevel) // Decreased from Grade 2
-            assertEquals(GradeLevel.GRADE_2, result.baseGradeLevel)
-            assertEquals(DifficultyAdjustment.EASIER, result.adjustment)
-            assertTrue(result.wasAdjusted)
-            assertTrue(result.wasDecreased)
+            assertThat(result.actualGradeLevel).isEqualTo(GradeLevel.GRADE_1) // Decreased from Grade 2
+            assertThat(result.baseGradeLevel).isEqualTo(GradeLevel.GRADE_2)
+            assertThat(result.adjustment).isEqualTo(DifficultyAdjustment.EASIER)
+            assertThat(result.wasAdjusted).isTrue()
+            assertThat(result.wasDecreased).isTrue()
         }
 
     @Test
@@ -130,9 +128,9 @@ class AdaptiveProblemGeneratorTest {
                     baseGradeLevel = GradeLevel.GRADE_2,
                 )
 
-            assertEquals(GradeLevel.GRADE_2, result.actualGradeLevel) // Stays at Grade 2
-            assertEquals(DifficultyAdjustment.CURRENT, result.adjustment)
-            assertFalse(result.wasAdjusted)
+            assertThat(result.actualGradeLevel).isEqualTo(GradeLevel.GRADE_2) // Stays at Grade 2
+            assertThat(result.adjustment).isEqualTo(DifficultyAdjustment.CURRENT)
+            assertThat(result.wasAdjusted).isFalse()
         }
 
     @Test
@@ -157,29 +155,27 @@ class AdaptiveProblemGeneratorTest {
                     baseGradeLevel = GradeLevel.KINDERGARTEN,
                 )
 
-            assertEquals(GradeLevel.KINDERGARTEN, result.actualGradeLevel) // Stays at K
-            assertEquals(DifficultyAdjustment.CURRENT, result.adjustment)
-            assertFalse(result.wasAdjusted)
+            assertThat(result.actualGradeLevel).isEqualTo(GradeLevel.KINDERGARTEN) // Stays at K
+            assertThat(result.adjustment).isEqualTo(DifficultyAdjustment.CURRENT)
+            assertThat(result.wasAdjusted).isFalse()
         }
 
     @Test
     fun `getNextGradeLevel returns correct next level`() {
-        assertEquals(
-            GradeLevel.GRADE_1,
-            adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.KINDERGARTEN),
+        assertThat(
+            adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.KINDERGARTEN).isEqualTo(GradeLevel.GRADE_1),
         )
-        assertEquals(GradeLevel.GRADE_2, adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_1))
-        assertEquals(GradeLevel.GRADE_2, adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_2)) // Max
+        assertThat(adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_1).isEqualTo(GradeLevel.GRADE_2))
+        assertThat(adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_2).isEqualTo(GradeLevel.GRADE_2)) // Max
     }
 
     @Test
     fun `getPreviousGradeLevel returns correct previous level`() {
-        assertEquals(
-            GradeLevel.KINDERGARTEN,
-            adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.KINDERGARTEN),
+        assertThat(
+            adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.KINDERGARTEN).isEqualTo(GradeLevel.KINDERGARTEN),
         ) // Min
-        assertEquals(GradeLevel.KINDERGARTEN, adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_1))
-        assertEquals(GradeLevel.GRADE_1, adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_2))
+        assertThat(adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_1).isEqualTo(GradeLevel.KINDERGARTEN))
+        assertThat(adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_2).isEqualTo(GradeLevel.GRADE_1))
     }
 
     @Test
@@ -192,7 +188,7 @@ class AdaptiveProblemGeneratorTest {
                     baseGradeLevel = GradeLevel.KINDERGARTEN,
                 )
 
-            assertEquals(10, result.problems.size)
+            assertThat(result.problems.size).isEqualTo(10)
         }
 
     @Test
@@ -218,10 +214,10 @@ class AdaptiveProblemGeneratorTest {
                 )
 
             // Verify problems are generated at Grade 1 level
-            assertEquals(GradeLevel.GRADE_1, result.actualGradeLevel)
+            assertThat(result.actualGradeLevel).isEqualTo(GradeLevel.GRADE_1)
             // Grade 1 addition can have sums > 18 (K max), so at least some problems
             // should have numbers in the 1-20 range
-            assertTrue(result.problems.any { it.num1 > 10 || it.num2 > 10 || it.correctAnswer > 18 })
+            assertThat(result.problems.any { it.num1 > 10 || it.num2 > 10 || it.correctAnswer > 18 }).isTrue()
         }
 }
 

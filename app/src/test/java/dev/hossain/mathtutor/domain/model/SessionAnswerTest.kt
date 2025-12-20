@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class SessionAnswerTest {
@@ -17,11 +15,11 @@ class SessionAnswerTest {
                 timeSpentSeconds = 15,
             )
 
-        assertEquals("problem-123", answer.problemId)
-        assertEquals(8, answer.userAnswer)
-        assertTrue(answer.isCorrect)
-        assertEquals(1, answer.attemptCount)
-        assertEquals(15L, answer.timeSpentSeconds)
+        assertThat(answer.problemId).isEqualTo("problem-123")
+        assertThat(answer.userAnswer).isEqualTo(8)
+        assertThat(answer.isCorrect).isTrue()
+        assertThat(answer.attemptCount).isEqualTo(1)
+        assertThat(answer.timeSpentSeconds).isEqualTo(15L)
     }
 
     @Test
@@ -33,7 +31,7 @@ class SessionAnswerTest {
                 isCorrect = false,
             )
 
-        assertEquals(1, answer.attemptCount)
+        assertThat(answer.attemptCount).isEqualTo(1)
     }
 
     @Test
@@ -45,7 +43,7 @@ class SessionAnswerTest {
                 isCorrect = false,
             )
 
-        assertEquals(0L, answer.timeSpentSeconds)
+        assertThat(answer.timeSpentSeconds).isEqualTo(0L)
     }
 
     @Test
@@ -58,8 +56,8 @@ class SessionAnswerTest {
                 attemptCount = 2,
             )
 
-        assertFalse(answer.isCorrect)
-        assertEquals(2, answer.attemptCount)
+        assertThat(answer.isCorrect).isFalse()
+        assertThat(answer.attemptCount).isEqualTo(2)
     }
 
     @Test
@@ -73,7 +71,7 @@ class SessionAnswerTest {
                 timeSpentSeconds = 45,
             )
 
-        assertEquals(3, answer.attemptCount)
-        assertEquals(45L, answer.timeSpentSeconds)
+        assertThat(answer.attemptCount).isEqualTo(3)
+        assertThat(answer.timeSpentSeconds).isEqualTo(45L)
     }
 }

@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class MathProblemTest {
@@ -16,7 +14,7 @@ class MathProblemTest {
                 correctAnswer = 8,
             )
 
-        assertEquals("3 + 5 = ?", problem.getDisplayString())
+        assertThat(problem.getDisplayString().isEqualTo("3 + 5 = ?"))
     }
 
     @Test
@@ -29,7 +27,7 @@ class MathProblemTest {
                 correctAnswer = 6,
             )
 
-        assertEquals("10 - 4 = ?", problem.getDisplayString())
+        assertThat(problem.getDisplayString().isEqualTo("10 - 4 = ?"))
     }
 
     @Test
@@ -42,7 +40,7 @@ class MathProblemTest {
                 correctAnswer = 21,
             )
 
-        assertEquals("7 × 3 = ?", problem.getDisplayString())
+        assertThat(problem.getDisplayString().isEqualTo("7 × 3 = ?"))
     }
 
     @Test
@@ -55,7 +53,7 @@ class MathProblemTest {
                 correctAnswer = 4,
             )
 
-        assertEquals("20 ÷ 5 = ?", problem.getDisplayString())
+        assertThat(problem.getDisplayString().isEqualTo("20 ÷ 5 = ?"))
     }
 
     @Test
@@ -68,7 +66,7 @@ class MathProblemTest {
                 correctAnswer = 8,
             )
 
-        assertTrue(problem.checkAnswer(8))
+        assertThat(problem.checkAnswer(8)).isTrue()
     }
 
     @Test
@@ -81,8 +79,8 @@ class MathProblemTest {
                 correctAnswer = 8,
             )
 
-        assertFalse(problem.checkAnswer(7))
-        assertFalse(problem.checkAnswer(9))
+        assertThat(problem.checkAnswer(7)).isFalse()
+        assertThat(problem.checkAnswer(9)).isFalse()
     }
 
     @Test
@@ -104,7 +102,7 @@ class MathProblemTest {
             )
 
         // IDs should be different even if content is the same
-        assertTrue(problem1.id != problem2.id)
+        assertThat(problem1.id != problem2.id).isTrue()
     }
 
     @Test
@@ -117,7 +115,7 @@ class MathProblemTest {
                 correctAnswer = 8,
             )
 
-        assertEquals("3 plus 5 equals", problem.getSpokenString())
+        assertThat(problem.getSpokenString().isEqualTo("3 plus 5 equals"))
     }
 
     @Test
@@ -130,7 +128,7 @@ class MathProblemTest {
                 correctAnswer = 6,
             )
 
-        assertEquals("10 minus 4 equals", problem.getSpokenString())
+        assertThat(problem.getSpokenString().isEqualTo("10 minus 4 equals"))
     }
 
     @Test
@@ -143,7 +141,7 @@ class MathProblemTest {
                 correctAnswer = 21,
             )
 
-        assertEquals("7 times 3 equals", problem.getSpokenString())
+        assertThat(problem.getSpokenString().isEqualTo("7 times 3 equals"))
     }
 
     @Test
@@ -156,6 +154,6 @@ class MathProblemTest {
                 correctAnswer = 4,
             )
 
-        assertEquals("20 divided by 5 equals", problem.getSpokenString())
+        assertThat(problem.getSpokenString().isEqualTo("20 divided by 5 equals"))
     }
 }

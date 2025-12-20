@@ -1,13 +1,11 @@
 package dev.hossain.mathtutor.ui.settings
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.haptic.HapticService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -25,7 +23,7 @@ class AudioHapticSettingsPresenterTest {
         repository.setSoundEffectsEnabledSync(false)
 
         // Then
-        assertFalse(repository.getCurrentSoundEffectsEnabled())
+        assertThat(repository.getCurrentSoundEffectsEnabled()).isFalse()
     }
 
     @Test
@@ -37,7 +35,7 @@ class AudioHapticSettingsPresenterTest {
         repository.setBackgroundMusicEnabledSync(true)
 
         // Then
-        assertTrue(repository.getCurrentBackgroundMusicEnabled())
+        assertThat(repository.getCurrentBackgroundMusicEnabled()).isTrue()
     }
 
     @Test
@@ -49,7 +47,7 @@ class AudioHapticSettingsPresenterTest {
         repository.setHapticsEnabledSync(false)
 
         // Then
-        assertFalse(repository.getCurrentHapticsEnabled())
+        assertThat(repository.getCurrentHapticsEnabled()).isFalse()
     }
 
     @Test
@@ -61,7 +59,7 @@ class AudioHapticSettingsPresenterTest {
         repository.setVolumeSync(0.5f)
 
         // Then
-        assertEquals(0.5f, repository.getCurrentVolume(), 0.01f)
+        assertThat(repository.getCurrentVolume()).isWithin(0.01f).of(0.5f)
     }
 
     @Test
@@ -73,13 +71,13 @@ class AudioHapticSettingsPresenterTest {
         repository.setVolumeSync(1.5f)
 
         // Then
-        assertEquals(1.0f, repository.getCurrentVolume(), 0.01f)
+        assertThat(repository.getCurrentVolume()).isWithin(0.01f).of(1.0f)
 
         // When - Set below min
         repository.setVolumeSync(-0.5f)
 
         // Then
-        assertEquals(0.0f, repository.getCurrentVolume(), 0.01f)
+        assertThat(repository.getCurrentVolume()).isWithin(0.01f).of(0.0f)
     }
 
     @Test
@@ -91,7 +89,7 @@ class AudioHapticSettingsPresenterTest {
         repository.setHighContrastEnabledSync(true)
 
         // Then
-        assertTrue(repository.getCurrentHighContrastEnabled())
+        assertThat(repository.getCurrentHighContrastEnabled()).isTrue()
     }
 
     @Test
@@ -103,7 +101,7 @@ class AudioHapticSettingsPresenterTest {
         repository.setLargeTextEnabledSync(true)
 
         // Then
-        assertTrue(repository.getCurrentLargeTextEnabled())
+        assertThat(repository.getCurrentLargeTextEnabled()).isTrue()
     }
 
     @Test
@@ -115,7 +113,7 @@ class AudioHapticSettingsPresenterTest {
         audioService.setSoundEffectsEnabled(false)
 
         // Then
-        assertFalse(audioService.isSoundEffectsEnabled())
+        assertThat(audioService.isSoundEffectsEnabled()).isFalse()
     }
 
     @Test
@@ -127,7 +125,7 @@ class AudioHapticSettingsPresenterTest {
         audioService.setMusicEnabled(true)
 
         // Then
-        assertTrue(audioService.isMusicEnabled())
+        assertThat(audioService.isMusicEnabled()).isTrue()
     }
 
     @Test
@@ -139,7 +137,7 @@ class AudioHapticSettingsPresenterTest {
         audioService.setVolume(0.8f)
 
         // Then
-        assertEquals(0.8f, audioService.getVolume(), 0.01f)
+        assertThat(audioService.getVolume()).isWithin(0.01f).of(0.8f)
     }
 
     @Test
@@ -151,7 +149,7 @@ class AudioHapticSettingsPresenterTest {
         hapticService.setHapticsEnabled(false)
 
         // Then
-        assertFalse(hapticService.isHapticsEnabled())
+        assertThat(hapticService.isHapticsEnabled()).isFalse()
     }
 
     /**

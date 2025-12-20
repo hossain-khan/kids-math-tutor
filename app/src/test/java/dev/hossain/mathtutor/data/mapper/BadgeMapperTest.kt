@@ -1,13 +1,11 @@
 package dev.hossain.mathtutor.data.mapper
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.entity.BadgeEntity
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.MathOperation
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Test
 import java.time.Instant
 
@@ -28,14 +26,14 @@ class BadgeMapperTest {
 
         val badge = BadgeMapper.toDomain(entity)
 
-        assertEquals("test_badge", badge.id)
-        assertEquals("Test Badge", badge.name)
-        assertEquals("Test description", badge.description)
-        assertEquals("🎯", badge.icon)
-        assertEquals(BadgeCategory.GETTING_STARTED, badge.category)
+        assertThat(badge.id).isEqualTo("test_badge")
+        assertThat(badge.name).isEqualTo("Test Badge")
+        assertThat(badge.description).isEqualTo("Test description")
+        assertThat(badge.icon).isEqualTo("🎯")
+        assertThat(badge.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assert(badge.requirement is BadgeRequirement.ProblemCount)
-        assertEquals(10, (badge.requirement as BadgeRequirement.ProblemCount).count)
-        assertNull(badge.unlockedAt)
+        assertThat((badge.requirement as BadgeRequirement.ProblemCount).isEqualTo(10).count)
+        assertThat(badge.unlockedAt).isNull()
     }
 
     @Test
@@ -56,8 +54,8 @@ class BadgeMapperTest {
 
         assert(badge.requirement is BadgeRequirement.OperationCount)
         val requirement = badge.requirement as BadgeRequirement.OperationCount
-        assertEquals(MathOperation.ADDITION, requirement.operation)
-        assertEquals(50, requirement.count)
+        assertThat(requirement.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(requirement.count).isEqualTo(50)
     }
 
     @Test
@@ -77,7 +75,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.ConsecutiveCorrect)
-        assertEquals(5, (badge.requirement as BadgeRequirement.ConsecutiveCorrect).count)
+        assertThat((badge.requirement as BadgeRequirement.ConsecutiveCorrect).isEqualTo(5).count)
     }
 
     @Test
@@ -98,8 +96,8 @@ class BadgeMapperTest {
 
         assert(badge.requirement is BadgeRequirement.SessionAccuracy)
         val requirement = badge.requirement as BadgeRequirement.SessionAccuracy
-        assertEquals(90.0f, requirement.percentage, 0.01f)
-        assertEquals(3, requirement.sessionCount)
+        assertThat(requirement.percentage).isWithin(0.01f).of(90.0f)
+        assertThat(requirement.sessionCount).isEqualTo(3)
     }
 
     @Test
@@ -119,7 +117,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.DailyStreak)
-        assertEquals(7, (badge.requirement as BadgeRequirement.DailyStreak).days)
+        assertThat((badge.requirement as BadgeRequirement.DailyStreak).isEqualTo(7).days)
     }
 
     @Test
@@ -139,7 +137,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.ProblemSpeed)
-        assertEquals(3, (badge.requirement as BadgeRequirement.ProblemSpeed).maxSeconds)
+        assertThat((badge.requirement as BadgeRequirement.ProblemSpeed).isEqualTo(3).maxSeconds)
     }
 
     @Test
@@ -159,7 +157,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.MixedSessions)
-        assertEquals(10, (badge.requirement as BadgeRequirement.MixedSessions).count)
+        assertThat((badge.requirement as BadgeRequirement.MixedSessions).isEqualTo(10).count)
     }
 
     @Test
@@ -179,8 +177,8 @@ class BadgeMapperTest {
 
         val badge = BadgeMapper.toDomain(entity)
 
-        assertNotNull(badge.unlockedAt)
-        assertEquals(unlockTime, badge.unlockedAt)
+        assertThat(badge.unlockedAt).isNotNull()
+        assertThat(badge.unlockedAt).isEqualTo(unlockTime)
     }
 
     @Test
@@ -198,14 +196,14 @@ class BadgeMapperTest {
 
         val entity = BadgeMapper.toEntity(badge)
 
-        assertEquals("test_badge", entity.id)
-        assertEquals("Test Badge", entity.name)
-        assertEquals("Test description", entity.description)
-        assertEquals("🎯", entity.icon)
-        assertEquals(BadgeCategory.GETTING_STARTED, entity.category)
-        assertEquals("ProblemCount", entity.requirementType)
+        assertThat(entity.id).isEqualTo("test_badge")
+        assertThat(entity.name).isEqualTo("Test Badge")
+        assertThat(entity.description).isEqualTo("Test description")
+        assertThat(entity.icon).isEqualTo("🎯")
+        assertThat(entity.category).isEqualTo(BadgeCategory.GETTING_STARTED)
+        assertThat(entity.requirementType).isEqualTo("ProblemCount")
         assert(entity.requirementData.contains("count=10"))
-        assertNull(entity.unlockedAt)
+        assertThat(entity.unlockedAt).isNull()
     }
 
     @Test
@@ -223,7 +221,7 @@ class BadgeMapperTest {
 
         val entity = BadgeMapper.toEntity(badge)
 
-        assertEquals("OperationCount", entity.requirementType)
+        assertThat(entity.requirementType).isEqualTo("OperationCount")
         assert(entity.requirementData.contains("operation=ADDITION"))
         assert(entity.requirementData.contains("count=50"))
     }
@@ -243,7 +241,7 @@ class BadgeMapperTest {
 
         val entity = BadgeMapper.toEntity(badge)
 
-        assertEquals("SessionAccuracy", entity.requirementType)
+        assertThat(entity.requirementType).isEqualTo("SessionAccuracy")
         assert(entity.requirementData.contains("percentage=90.0"))
         assert(entity.requirementData.contains("sessionCount=3"))
     }
@@ -264,8 +262,8 @@ class BadgeMapperTest {
 
         val entity = BadgeMapper.toEntity(badge)
 
-        assertNotNull(entity.unlockedAt)
-        assertEquals(unlockTime, entity.unlockedAt)
+        assertThat(entity.unlockedAt).isNotNull()
+        assertThat(entity.unlockedAt).isEqualTo(unlockTime)
     }
 
     @Test
@@ -284,16 +282,16 @@ class BadgeMapperTest {
         val entity = BadgeMapper.toEntity(originalBadge)
         val convertedBadge = BadgeMapper.toDomain(entity)
 
-        assertEquals(originalBadge.id, convertedBadge.id)
-        assertEquals(originalBadge.name, convertedBadge.name)
-        assertEquals(originalBadge.description, convertedBadge.description)
-        assertEquals(originalBadge.icon, convertedBadge.icon)
-        assertEquals(originalBadge.category, convertedBadge.category)
-        assertEquals(originalBadge.unlockedAt, convertedBadge.unlockedAt)
+        assertThat(convertedBadge.id).isEqualTo(originalBadge.id)
+        assertThat(convertedBadge.name).isEqualTo(originalBadge.name)
+        assertThat(convertedBadge.description).isEqualTo(originalBadge.description)
+        assertThat(convertedBadge.icon).isEqualTo(originalBadge.icon)
+        assertThat(convertedBadge.category).isEqualTo(originalBadge.category)
+        assertThat(convertedBadge.unlockedAt).isEqualTo(originalBadge.unlockedAt)
 
         val originalReq = originalBadge.requirement as BadgeRequirement.ProblemCount
         val convertedReq = convertedBadge.requirement as BadgeRequirement.ProblemCount
-        assertEquals(originalReq.count, convertedReq.count)
+        assertThat(convertedReq.count).isEqualTo(originalReq.count)
     }
 
     @Test(expected = IllegalArgumentException::class)

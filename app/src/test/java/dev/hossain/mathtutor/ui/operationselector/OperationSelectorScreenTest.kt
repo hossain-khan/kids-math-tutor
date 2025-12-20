@@ -1,10 +1,7 @@
 package dev.hossain.mathtutor.ui.operationselector
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.MathOperation
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -30,8 +27,8 @@ class OperationSelectorScreenTest {
             )
 
         // Then
-        assertTrue(state.hasSessionHistory)
-        assertNotNull(state.eventSink)
+        assertThat(state.hasSessionHistory).isTrue()
+        assertThat(state.eventSink).isNotNull()
     }
 
     @Test
@@ -48,7 +45,7 @@ class OperationSelectorScreenTest {
             )
 
         // Then
-        assertFalse(state.hasSessionHistory)
+        assertThat(state.hasSessionHistory).isFalse()
     }
 
     @Test
@@ -60,7 +57,7 @@ class OperationSelectorScreenTest {
             )
 
         // Then
-        assertEquals(MathOperation.ADDITION, event.operation)
+        assertThat(event.operation).isEqualTo(MathOperation.ADDITION)
     }
 
     @Test
@@ -69,7 +66,7 @@ class OperationSelectorScreenTest {
         val event = OperationSelectorScreen.Event.ViewStatsClicked
 
         // Then - verify it's the singleton object
-        assertEquals(OperationSelectorScreen.Event.ViewStatsClicked, event)
+        assertThat(event).isEqualTo(OperationSelectorScreen.Event.ViewStatsClicked)
     }
 
     @Test
@@ -90,12 +87,9 @@ class OperationSelectorScreenTest {
         )
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is OperationSelectorScreen.Event.OperationSelected)
-        assertEquals(
-            MathOperation.SUBTRACTION,
-            (receivedEvent as OperationSelectorScreen.Event.OperationSelected).operation,
-        )
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is OperationSelectorScreen.Event.OperationSelected).isTrue()
+        assertThat((receivedEvent as OperationSelectorScreen.Event.OperationSelected).operation).isEqualTo(MathOperation.SUBTRACTION)
     }
 
     @Test
@@ -112,7 +106,7 @@ class OperationSelectorScreenTest {
         state.eventSink(OperationSelectorScreen.Event.ViewStatsClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is OperationSelectorScreen.Event.ViewStatsClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is OperationSelectorScreen.Event.ViewStatsClicked).isTrue()
     }
 }

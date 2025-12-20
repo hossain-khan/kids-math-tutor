@@ -1,11 +1,9 @@
 package dev.hossain.mathtutor.ui.stats
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 
@@ -63,10 +61,10 @@ class StatsScreenTest {
             )
 
         // Then
-        assertEquals(overallStats, state.overallStats)
-        assertEquals(operationStats, state.operationStats)
-        assertEquals(recentSessions, state.recentSessions)
-        assertNotNull(state.eventSink)
+        assertThat(state.overallStats).isEqualTo(overallStats)
+        assertThat(state.operationStats).isEqualTo(operationStats)
+        assertThat(state.recentSessions).isEqualTo(recentSessions)
+        assertThat(state.eventSink).isNotNull()
     }
 
     @Test
@@ -87,9 +85,9 @@ class StatsScreenTest {
             )
 
         // Then
-        assertEquals(SessionStats.EMPTY, state.overallStats)
-        assertTrue(state.operationStats.isEmpty())
-        assertTrue(state.recentSessions.isEmpty())
+        assertThat(state.overallStats).isEqualTo(SessionStats.EMPTY)
+        assertThat(state.operationStats.isEmpty()).isTrue()
+        assertThat(state.recentSessions.isEmpty()).isTrue()
     }
 
     @Test
@@ -98,7 +96,7 @@ class StatsScreenTest {
         val event = StatsScreen.Event.BackPressed
 
         // Then - verify it's the singleton object
-        assertEquals(StatsScreen.Event.BackPressed, event)
+        assertThat(event).isEqualTo(StatsScreen.Event.BackPressed)
     }
 
     @Test
@@ -117,8 +115,8 @@ class StatsScreenTest {
         state.eventSink(StatsScreen.Event.BackPressed)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is StatsScreen.Event.BackPressed)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is StatsScreen.Event.BackPressed).isTrue()
     }
 
     @Test
@@ -154,9 +152,9 @@ class StatsScreenTest {
             )
 
         // Then
-        assertEquals(2, state.operationStats.size)
-        assertEquals(additionStats, state.operationStats[MathOperation.ADDITION])
-        assertEquals(subtractionStats, state.operationStats[MathOperation.SUBTRACTION])
+        assertThat(state.operationStats.size).isEqualTo(2)
+        assertThat(state.operationStats[MathOperation.ADDITION]).isEqualTo(additionStats)
+        assertThat(state.operationStats[MathOperation.SUBTRACTION]).isEqualTo(subtractionStats)
     }
 
     @Test
@@ -196,8 +194,8 @@ class StatsScreenTest {
             )
 
         // Then
-        assertEquals(2, state.recentSessions.size)
-        assertEquals(session1, state.recentSessions[0])
-        assertEquals(session2, state.recentSessions[1])
+        assertThat(state.recentSessions.size).isEqualTo(2)
+        assertThat(state.recentSessions[0]).isEqualTo(session1)
+        assertThat(state.recentSessions[1]).isEqualTo(session2)
     }
 }

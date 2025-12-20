@@ -1,15 +1,12 @@
 package dev.hossain.mathtutor
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalDate
@@ -34,11 +31,11 @@ class Phase3EdgeCasesTest {
     fun `first-time user has empty streak data`() {
         val streak = DailyStreak.EMPTY
 
-        assertEquals(0, streak.currentStreak)
-        assertEquals(0, streak.longestStreak)
-        assertNull(streak.lastPracticeDate)
-        assertEquals(0, streak.totalDaysPracticed)
-        assertFalse(streak.isStreakAlive(LocalDate.now()))
+        assertThat(streak.currentStreak).isEqualTo(0)
+        assertThat(streak.longestStreak).isEqualTo(0)
+        assertThat(streak.lastPracticeDate).isNull()
+        assertThat(streak.totalDaysPracticed).isEqualTo(0)
+        assertThat(streak.isStreakAlive(LocalDate.now())).isFalse()
     }
 
     @Test
@@ -52,17 +49,17 @@ class Phase3EdgeCasesTest {
 
         val unlockedBadges = badges.filter { it.isUnlocked() }
 
-        assertTrue("First-time user should have no unlocked badges", unlockedBadges.isEmpty())
+        assertThat(unlockedBadges.isEmpty()).isTrue()
     }
 
     @Test
     fun `first-time user session stats are empty`() {
         val stats = SessionStats.EMPTY
 
-        assertEquals(0, stats.totalProblems)
-        assertEquals(0, stats.correctCount)
-        assertEquals(0f, stats.accuracy, 0.01f)
-        assertEquals(0, stats.sessionCount)
+        assertThat(stats.totalProblems).isEqualTo(0)
+        assertThat(stats.correctCount).isEqualTo(0)
+        assertThat(stats.accuracy).isWithin(0.01f).of(0f)
+        assertThat(stats.sessionCount).isEqualTo(0)
     }
 
     @Test
@@ -70,11 +67,11 @@ class Phase3EdgeCasesTest {
         val today = LocalDate.now()
         val firstStreak = DailyStreak.EMPTY.updateStreak(today)
 
-        assertEquals(1, firstStreak.currentStreak)
-        assertEquals(1, firstStreak.longestStreak)
-        assertEquals(today, firstStreak.lastPracticeDate)
-        assertEquals(1, firstStreak.totalDaysPracticed)
-        assertTrue(firstStreak.isStreakAlive(today))
+        assertThat(firstStreak.currentStreak).isEqualTo(1)
+        assertThat(firstStreak.longestStreak).isEqualTo(1)
+        assertThat(firstStreak.lastPracticeDate).isEqualTo(today)
+        assertThat(firstStreak.totalDaysPracticed).isEqualTo(1)
+        assertThat(firstStreak.isStreakAlive(today)).isTrue()
     }
 
     // ============================================================
@@ -110,10 +107,10 @@ class Phase3EdgeCasesTest {
         }
 
         // Then - All three badges should be unlocked
-        assertEquals(3, unlockedBadges.size)
-        assertTrue(unlockedBadges.any { it.id == "first_steps" })
-        assertTrue(unlockedBadges.any { it.id == "math_rookie" })
-        assertTrue(unlockedBadges.any { it.id == "perfect_10" })
+        assertThat(unlockedBadges.size).isEqualTo(3)
+        assertThat(unlockedBadges.any { it.id == "first_steps" }).isTrue()
+        assertThat(unlockedBadges.any { it.id == "math_rookie" }).isTrue()
+        assertThat(unlockedBadges.any { it.id == "perfect_10" }).isTrue()
     }
 
     @Test
@@ -135,7 +132,7 @@ class Phase3EdgeCasesTest {
             }
 
         // Then - Only first two badges should unlock
-        assertEquals(2, unlockedCount)
+        assertThat(unlockedCount).isEqualTo(2)
     }
 
     @Test
@@ -152,8 +149,8 @@ class Phase3EdgeCasesTest {
         val additionMet = additionStats.totalProblems >= 50
         val subtractionMet = subtractionStats.totalProblems >= 50
 
-        assertTrue("Addition badge should unlock", additionMet)
-        assertTrue("Subtraction badge should unlock", subtractionMet)
+        assertThat("Addition badge should unlock", additionMet).isTrue()
+        assertThat("Subtraction badge should unlock", subtractionMet).isTrue()
     }
 
     // ============================================================
@@ -174,11 +171,11 @@ class Phase3EdgeCasesTest {
         // Second practice same day
         val secondPractice = streak.updateStreak(today)
 
-        assertEquals("Current streak should not change", streak.currentStreak, secondPractice.currentStreak)
-        assertEquals("Longest streak should not change", streak.longestStreak, secondPractice.longestStreak)
-        assertEquals("Total days practiced should not change", streak.totalDaysPracticed, secondPractice.totalDaysPracticed)
-        assertEquals("Last practice date should remain same", streak.lastPracticeDate, secondPractice.lastPracticeDate)
-        assertEquals("Streak should be identical", streak, secondPractice)
+        assertThat(streak.currentStreak, secondPractice.currentStreak).isEqualTo("Current streak should not change")
+        assertThat(streak.longestStreak, secondPractice.longestStreak).isEqualTo("Longest streak should not change")
+        assertThat(streak.totalDaysPracticed, secondPractice.totalDaysPracticed).isEqualTo("Total days practiced should not change")
+        assertThat(streak.lastPracticeDate, secondPractice.lastPracticeDate).isEqualTo("Last practice date should remain same")
+        assertThat(streak, secondPractice).isEqualTo("Streak should be identical")
     }
 
     @Test
@@ -195,14 +192,14 @@ class Phase3EdgeCasesTest {
         // Simulate 5 practice sessions same day
         repeat(5) {
             val updatedStreak = streak.updateStreak(today)
-            assertEquals("Streak should not change on same-day practice", streak, updatedStreak)
+            assertThat(streak, updatedStreak).isEqualTo("Streak should not change on same-day practice")
             streak = updatedStreak
         }
 
         // All stats should remain unchanged
-        assertEquals(3, streak.currentStreak)
-        assertEquals(5, streak.longestStreak)
-        assertEquals(10, streak.totalDaysPracticed)
+        assertThat(streak.currentStreak).isEqualTo(3)
+        assertThat(streak.longestStreak).isEqualTo(5)
+        assertThat(streak.totalDaysPracticed).isEqualTo(10)
     }
 
     @Test
@@ -221,13 +218,13 @@ class Phase3EdgeCasesTest {
 
         // First practice today (should increment)
         streak = streak.updateStreak(today)
-        assertEquals(8, streak.currentStreak)
-        assertEquals(21, streak.totalDaysPracticed)
+        assertThat(streak.currentStreak).isEqualTo(8)
+        assertThat(streak.totalDaysPracticed).isEqualTo(21)
 
         // Second practice today (should not change)
         val secondPractice = streak.updateStreak(today)
-        assertEquals(8, secondPractice.currentStreak)
-        assertEquals(21, secondPractice.totalDaysPracticed)
+        assertThat(secondPractice.currentStreak).isEqualTo(8)
+        assertThat(secondPractice.totalDaysPracticed).isEqualTo(21)
     }
 
     // ============================================================
@@ -249,10 +246,10 @@ class Phase3EdgeCasesTest {
 
         val updated = streak.updateStreak(today)
 
-        assertEquals(1, updated.currentStreak)
-        assertEquals(15, updated.longestStreak) // Preserved
-        assertEquals(26, updated.totalDaysPracticed)
-        assertEquals(today, updated.lastPracticeDate)
+        assertThat(updated.currentStreak).isEqualTo(1)
+        assertThat(updated.longestStreak).isEqualTo(15) // Preserved
+        assertThat(updated.totalDaysPracticed).isEqualTo(26)
+        assertThat(updated.lastPracticeDate).isEqualTo(today)
     }
 
     @Test
@@ -270,10 +267,10 @@ class Phase3EdgeCasesTest {
 
         val updated = streak.updateStreak(today)
 
-        assertEquals(1, updated.currentStreak)
-        assertEquals(25, updated.longestStreak) // Preserved
-        assertEquals(51, updated.totalDaysPracticed)
-        assertFalse(streak.isStreakAlive(today))
+        assertThat(updated.currentStreak).isEqualTo(1)
+        assertThat(updated.longestStreak).isEqualTo(25) // Preserved
+        assertThat(updated.totalDaysPracticed).isEqualTo(51)
+        assertThat(streak.isStreakAlive(today)).isFalse()
     }
 
     @Test
@@ -291,9 +288,9 @@ class Phase3EdgeCasesTest {
 
         val updated = streak.updateStreak(today)
 
-        assertEquals(1, updated.currentStreak)
-        assertEquals(20, updated.longestStreak) // Longest still preserved
-        assertEquals(41, updated.totalDaysPracticed)
+        assertThat(updated.currentStreak).isEqualTo(1)
+        assertThat(updated.longestStreak).isEqualTo(20) // Longest still preserved
+        assertThat(updated.totalDaysPracticed).isEqualTo(41)
     }
 
     @Test
@@ -305,21 +302,21 @@ class Phase3EdgeCasesTest {
         for (i in 0 until 5) {
             streak = streak.updateStreak(startDate.plusDays(i.toLong()))
         }
-        assertEquals(5, streak.currentStreak)
-        assertEquals(5, streak.longestStreak)
+        assertThat(streak.currentStreak).isEqualTo(5)
+        assertThat(streak.longestStreak).isEqualTo(5)
 
         // Skip 3 days, restart
         val restartDate = startDate.plusDays(8)
         streak = streak.updateStreak(restartDate)
-        assertEquals(1, streak.currentStreak)
-        assertEquals(5, streak.longestStreak)
+        assertThat(streak.currentStreak).isEqualTo(1)
+        assertThat(streak.longestStreak).isEqualTo(5)
 
         // Build 7-day streak (exceeding previous longest)
         for (i in 1 until 7) {
             streak = streak.updateStreak(restartDate.plusDays(i.toLong()))
         }
-        assertEquals(7, streak.currentStreak)
-        assertEquals(7, streak.longestStreak) // New longest
+        assertThat(streak.currentStreak).isEqualTo(7)
+        assertThat(streak.longestStreak).isEqualTo(7) // New longest
     }
 
     // ============================================================
@@ -353,7 +350,7 @@ class Phase3EdgeCasesTest {
             )
 
         // Verify all 15 requirements are unique types
-        assertEquals(15, allBadgeRequirements.size)
+        assertThat(allBadgeRequirements.size).isEqualTo(15)
     }
 
     @Test
@@ -367,8 +364,8 @@ class Phase3EdgeCasesTest {
                 BadgeCategory.STREAK,
             )
 
-        assertEquals(5, categories.size)
-        assertTrue(
+        assertThat(categories.size).isEqualTo(5)
+        assertThat(
             "All badge categories should be present",
             categories.containsAll(
                 setOf(
@@ -377,7 +374,7 @@ class Phase3EdgeCasesTest {
                     BadgeCategory.OPERATION_MASTERY,
                     BadgeCategory.SPEED_ACCURACY,
                     BadgeCategory.STREAK,
-                ),
+                ).isTrue(),
             ),
         )
     }
@@ -394,8 +391,8 @@ class Phase3EdgeCasesTest {
             )
 
         volumeBadges.forEachIndexed { index, req ->
-            assertTrue("Badge $index should have positive count", req.count > 0)
-            assertTrue("Badge $index should be achievable", req.count <= 1000)
+            assertThat("Badge $index should have positive count", req.count > 0).isTrue()
+            assertThat("Badge $index should be achievable", req.count <= 1000).isTrue()
         }
 
         val streakBadges =
@@ -405,8 +402,8 @@ class Phase3EdgeCasesTest {
             )
 
         streakBadges.forEach { req ->
-            assertTrue("Streak should be positive", req.days > 0)
-            assertTrue("Streak should be achievable", req.days <= 30)
+            assertThat("Streak should be positive", req.days > 0).isTrue()
+            assertThat("Streak should be achievable", req.days <= 30).isTrue()
         }
     }
 
@@ -421,7 +418,7 @@ class Phase3EdgeCasesTest {
 
         // Exactly 50 problems should unlock badge
         val meetsRequirement = stats.totalProblems >= 50
-        assertTrue("Exactly meeting requirement should unlock badge", meetsRequirement)
+        assertThat("Exactly meeting requirement should unlock badge", meetsRequirement).isTrue()
     }
 
     @Test
@@ -431,7 +428,7 @@ class Phase3EdgeCasesTest {
 
         // 49 problems should NOT unlock badge
         val meetsRequirement = stats.totalProblems >= 50
-        assertFalse("One less than requirement should not unlock badge", meetsRequirement)
+        assertThat("One less than requirement should not unlock badge", meetsRequirement).isFalse()
     }
 
     @Test
@@ -441,7 +438,7 @@ class Phase3EdgeCasesTest {
         val requirement = BadgeRequirement.SessionAccuracy(90f, 1)
 
         val meetsRequirement = stats.accuracy >= 90f && stats.sessionCount >= 1
-        assertTrue("Exactly 90% accuracy should unlock badge", meetsRequirement)
+        assertThat("Exactly 90% accuracy should unlock badge", meetsRequirement).isTrue()
     }
 
     @Test
@@ -456,7 +453,7 @@ class Phase3EdgeCasesTest {
         val requirement = BadgeRequirement.DailyStreak(7)
 
         val meetsRequirement = streak.currentStreak >= 7
-        assertTrue("Exactly 7-day streak should unlock badge", meetsRequirement)
+        assertThat("Exactly 7-day streak should unlock badge", meetsRequirement).isTrue()
     }
 
     @Test
@@ -473,12 +470,12 @@ class Phase3EdgeCasesTest {
             )
 
         // Streak is at risk (practiced yesterday, not today yet)
-        assertTrue("Streak should be alive", streak.isStreakAlive(today))
+        assertThat("Streak should be alive", streak.isStreakAlive(today)).isTrue()
 
         // Practicing today saves it
         val saved = streak.updateStreak(today)
-        assertEquals(7, saved.currentStreak)
-        assertTrue(saved.isStreakAlive(today))
+        assertThat(saved.currentStreak).isEqualTo(7)
+        assertThat(saved.isStreakAlive(today)).isTrue()
     }
 
     @Test
@@ -487,8 +484,8 @@ class Phase3EdgeCasesTest {
         val problemCountBadge = BadgeRequirement.ProblemCount(1)
         val accuracyBadge = BadgeRequirement.SessionAccuracy(50f, 1)
 
-        assertFalse("Zero problems should not unlock badge", stats.totalProblems >= 1)
-        assertFalse("No sessions should not unlock accuracy badge", stats.sessionCount >= 1)
+        assertThat("Zero problems should not unlock badge", stats.totalProblems >= 1).isFalse()
+        assertThat("No sessions should not unlock accuracy badge", stats.sessionCount >= 1).isFalse()
     }
 
     // ============================================================

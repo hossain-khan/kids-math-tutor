@@ -1,12 +1,8 @@
 package dev.hossain.mathtutor.ui.settings
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 
@@ -41,10 +37,10 @@ class SettingsScreenTest {
             )
 
         // Then
-        assertEquals(profile, state.profile)
-        assertFalse(state.showNameDialog)
-        assertFalse(state.showGradeDialog)
-        assertNotNull(state.eventSink)
+        assertThat(state.profile).isEqualTo(profile)
+        assertThat(state.showNameDialog).isFalse()
+        assertThat(state.showGradeDialog).isFalse()
+        assertThat(state.eventSink).isNotNull()
     }
 
     @Test
@@ -62,7 +58,7 @@ class SettingsScreenTest {
             )
 
         // Then
-        assertNull(state.profile)
+        assertThat(state.profile).isNull()
     }
 
     @Test
@@ -87,8 +83,8 @@ class SettingsScreenTest {
             )
 
         // Then
-        assertTrue(state.showNameDialog)
-        assertFalse(state.showGradeDialog)
+        assertThat(state.showNameDialog).isTrue()
+        assertThat(state.showGradeDialog).isFalse()
     }
 
     @Test
@@ -113,8 +109,8 @@ class SettingsScreenTest {
             )
 
         // Then
-        assertFalse(state.showNameDialog)
-        assertTrue(state.showGradeDialog)
+        assertThat(state.showNameDialog).isFalse()
+        assertThat(state.showGradeDialog).isTrue()
     }
 
     @Test
@@ -123,7 +119,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.EditNameClicked
 
         // Then - verify it's the singleton object
-        assertEquals(SettingsScreen.Event.EditNameClicked, event)
+        assertThat(event).isEqualTo(SettingsScreen.Event.EditNameClicked)
     }
 
     @Test
@@ -132,7 +128,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.ChangeGradeClicked
 
         // Then - verify it's the singleton object
-        assertEquals(SettingsScreen.Event.ChangeGradeClicked, event)
+        assertThat(event).isEqualTo(SettingsScreen.Event.ChangeGradeClicked)
     }
 
     @Test
@@ -141,7 +137,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.ToggleAdaptiveDifficulty(true)
 
         // Then
-        assertTrue(event.enabled)
+        assertThat(event.enabled).isTrue()
     }
 
     @Test
@@ -150,7 +146,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.SaveName("John")
 
         // Then
-        assertEquals("John", event.name)
+        assertThat(event.name).isEqualTo("John")
     }
 
     @Test
@@ -159,7 +155,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.SaveName(null)
 
         // Then
-        assertNull(event.name)
+        assertThat(event.name).isNull()
     }
 
     @Test
@@ -168,7 +164,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.CancelNameEdit
 
         // Then - verify it's the singleton object
-        assertEquals(SettingsScreen.Event.CancelNameEdit, event)
+        assertThat(event).isEqualTo(SettingsScreen.Event.CancelNameEdit)
     }
 
     @Test
@@ -177,7 +173,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.SaveGrade(GradeLevel.GRADE_1)
 
         // Then
-        assertEquals(GradeLevel.GRADE_1, event.gradeLevel)
+        assertThat(event.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
     }
 
     @Test
@@ -186,7 +182,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.CancelGradeChange
 
         // Then - verify it's the singleton object
-        assertEquals(SettingsScreen.Event.CancelGradeChange, event)
+        assertThat(event).isEqualTo(SettingsScreen.Event.CancelGradeChange)
     }
 
     @Test
@@ -195,7 +191,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.BackClicked
 
         // Then - verify it's the singleton object
-        assertEquals(SettingsScreen.Event.BackClicked, event)
+        assertThat(event).isEqualTo(SettingsScreen.Event.BackClicked)
     }
 
     @Test
@@ -221,8 +217,8 @@ class SettingsScreenTest {
         state.eventSink(SettingsScreen.Event.EditNameClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is SettingsScreen.Event.EditNameClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is SettingsScreen.Event.EditNameClicked).isTrue()
     }
 
     @Test
@@ -248,9 +244,9 @@ class SettingsScreenTest {
         state.eventSink(SettingsScreen.Event.ToggleAdaptiveDifficulty(false))
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is SettingsScreen.Event.ToggleAdaptiveDifficulty)
-        assertFalse((receivedEvent as SettingsScreen.Event.ToggleAdaptiveDifficulty).enabled)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is SettingsScreen.Event.ToggleAdaptiveDifficulty).isTrue()
+        assertThat((receivedEvent as SettingsScreen.Event.ToggleAdaptiveDifficulty).enabled).isFalse()
     }
 
     @Test
@@ -275,7 +271,7 @@ class SettingsScreenTest {
             )
 
         // Then
-        assertTrue(state.profile?.adaptiveDifficultyEnabled ?: false)
+        assertThat(state.profile?.adaptiveDifficultyEnabled ?: false).isTrue()
     }
 
     @Test
@@ -300,6 +296,6 @@ class SettingsScreenTest {
             )
 
         // Then
-        assertFalse(state.profile?.adaptiveDifficultyEnabled ?: true)
+        assertThat(state.profile?.adaptiveDifficultyEnabled ?: true).isFalse()
     }
 }

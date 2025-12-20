@@ -1,9 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.Instant
 
@@ -11,75 +8,75 @@ class GameStatsTest {
     @Test
     fun `overallAccuracy is calculated correctly`() {
         val stats = createStats(totalCorrectAnswers = 80, totalAttempts = 100)
-        assertEquals(80f, stats.overallAccuracy)
+        assertThat(stats.overallAccuracy).isEqualTo(80f)
     }
 
     @Test
     fun `overallAccuracy returns 0 when no attempts`() {
         val stats = createStats(totalCorrectAnswers = 0, totalAttempts = 0)
-        assertEquals(0f, stats.overallAccuracy)
+        assertThat(stats.overallAccuracy).isEqualTo(0f)
     }
 
     @Test
     fun `hasPlayed returns true when totalGamesPlayed greater than 0`() {
         val stats = createStats(totalGamesPlayed = 1)
-        assertTrue(stats.hasPlayed)
+        assertThat(stats.hasPlayed).isTrue()
     }
 
     @Test
     fun `hasPlayed returns false when totalGamesPlayed is 0`() {
         val stats = createStats(totalGamesPlayed = 0)
-        assertFalse(stats.hasPlayed)
+        assertThat(stats.hasPlayed).isFalse()
     }
 
     @Test
     fun `getStarRating returns 0 when never played`() {
         val stats = createStats(totalGamesPlayed = 0, bestAccuracy = 100f)
-        assertEquals(0, stats.getStarRating())
+        assertThat(stats.getStarRating().isEqualTo(0))
     }
 
     @Test
     fun `getStarRating returns 5 for 90+ best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 95f)
-        assertEquals(5, stats.getStarRating())
+        assertThat(stats.getStarRating().isEqualTo(5))
     }
 
     @Test
     fun `getStarRating returns 4 for 80-89 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 85f)
-        assertEquals(4, stats.getStarRating())
+        assertThat(stats.getStarRating().isEqualTo(4))
     }
 
     @Test
     fun `getStarRating returns 3 for 70-79 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 75f)
-        assertEquals(3, stats.getStarRating())
+        assertThat(stats.getStarRating().isEqualTo(3))
     }
 
     @Test
     fun `getStarRating returns 2 for 60-69 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 65f)
-        assertEquals(2, stats.getStarRating())
+        assertThat(stats.getStarRating().isEqualTo(2))
     }
 
     @Test
     fun `getStarRating returns 1 for less than 60 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 50f)
-        assertEquals(1, stats.getStarRating())
+        assertThat(stats.getStarRating().isEqualTo(1))
     }
 
     @Test
     fun `empty creates stats with all zeroed values`() {
         val stats = GameStats.empty(Game.MATH_RACE)
 
-        assertEquals(Game.MATH_RACE, stats.game)
-        assertEquals(0, stats.personalBest)
-        assertEquals(0, stats.totalGamesPlayed)
-        assertEquals(0f, stats.averageScore)
-        assertEquals(0f, stats.bestAccuracy)
-        assertNull(stats.lastPlayedAt)
-        assertEquals(0, stats.totalCorrectAnswers)
-        assertEquals(0, stats.totalAttempts)
+        assertThat(stats.game).isEqualTo(Game.MATH_RACE)
+        assertThat(stats.personalBest).isEqualTo(0)
+        assertThat(stats.totalGamesPlayed).isEqualTo(0)
+        assertThat(stats.averageScore).isEqualTo(0f)
+        assertThat(stats.bestAccuracy).isEqualTo(0f)
+        assertThat(stats.lastPlayedAt).isNull()
+        assertThat(stats.totalCorrectAnswers).isEqualTo(0)
+        assertThat(stats.totalAttempts).isEqualTo(0)
     }
 
     private fun createStats(

@@ -1,19 +1,16 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.LocalDate
 
 class DailyStreakTest {
     @Test
     fun `EMPTY constant has zero values`() {
-        assertEquals(0, DailyStreak.EMPTY.currentStreak)
-        assertEquals(0, DailyStreak.EMPTY.longestStreak)
-        assertNull(DailyStreak.EMPTY.lastPracticeDate)
-        assertEquals(0, DailyStreak.EMPTY.totalDaysPracticed)
+        assertThat(DailyStreak.EMPTY.currentStreak).isEqualTo(0)
+        assertThat(DailyStreak.EMPTY.longestStreak).isEqualTo(0)
+        assertThat(DailyStreak.EMPTY.lastPracticeDate).isNull()
+        assertThat(DailyStreak.EMPTY.totalDaysPracticed).isEqualTo(0)
     }
 
     @Test
@@ -21,10 +18,10 @@ class DailyStreakTest {
         val today = LocalDate.of(2025, 1, 15)
         val streak = DailyStreak.EMPTY.updateStreak(today)
 
-        assertEquals(1, streak.currentStreak)
-        assertEquals(1, streak.longestStreak)
-        assertEquals(today, streak.lastPracticeDate)
-        assertEquals(1, streak.totalDaysPracticed)
+        assertThat(streak.currentStreak).isEqualTo(1)
+        assertThat(streak.longestStreak).isEqualTo(1)
+        assertThat(streak.lastPracticeDate).isEqualTo(today)
+        assertThat(streak.totalDaysPracticed).isEqualTo(1)
     }
 
     @Test
@@ -40,7 +37,7 @@ class DailyStreakTest {
 
         val updated = existingStreak.updateStreak(today)
 
-        assertEquals(existingStreak, updated)
+        assertThat(updated).isEqualTo(existingStreak)
     }
 
     @Test
@@ -57,10 +54,10 @@ class DailyStreakTest {
 
         val updated = existingStreak.updateStreak(today)
 
-        assertEquals(6, updated.currentStreak)
-        assertEquals(10, updated.longestStreak) // Unchanged since 6 < 10
-        assertEquals(today, updated.lastPracticeDate)
-        assertEquals(16, updated.totalDaysPracticed)
+        assertThat(updated.currentStreak).isEqualTo(6)
+        assertThat(updated.longestStreak).isEqualTo(10) // Unchanged since 6 < 10
+        assertThat(updated.lastPracticeDate).isEqualTo(today)
+        assertThat(updated.totalDaysPracticed).isEqualTo(16)
     }
 
     @Test
@@ -77,10 +74,10 @@ class DailyStreakTest {
 
         val updated = existingStreak.updateStreak(today)
 
-        assertEquals(11, updated.currentStreak)
-        assertEquals(11, updated.longestStreak) // Updated to match current
-        assertEquals(today, updated.lastPracticeDate)
-        assertEquals(21, updated.totalDaysPracticed)
+        assertThat(updated.currentStreak).isEqualTo(11)
+        assertThat(updated.longestStreak).isEqualTo(11) // Updated to match current
+        assertThat(updated.lastPracticeDate).isEqualTo(today)
+        assertThat(updated.totalDaysPracticed).isEqualTo(21)
     }
 
     @Test
@@ -97,10 +94,10 @@ class DailyStreakTest {
 
         val updated = existingStreak.updateStreak(today)
 
-        assertEquals(1, updated.currentStreak) // Reset
-        assertEquals(10, updated.longestStreak) // Longest unchanged
-        assertEquals(today, updated.lastPracticeDate)
-        assertEquals(16, updated.totalDaysPracticed)
+        assertThat(updated.currentStreak).isEqualTo(1) // Reset
+        assertThat(updated.longestStreak).isEqualTo(10) // Longest unchanged
+        assertThat(updated.lastPracticeDate).isEqualTo(today)
+        assertThat(updated.totalDaysPracticed).isEqualTo(16)
     }
 
     @Test
@@ -117,10 +114,10 @@ class DailyStreakTest {
 
         val updated = existingStreak.updateStreak(today)
 
-        assertEquals(1, updated.currentStreak)
-        assertEquals(7, updated.longestStreak)
-        assertEquals(today, updated.lastPracticeDate)
-        assertEquals(11, updated.totalDaysPracticed)
+        assertThat(updated.currentStreak).isEqualTo(1)
+        assertThat(updated.longestStreak).isEqualTo(7)
+        assertThat(updated.lastPracticeDate).isEqualTo(today)
+        assertThat(updated.totalDaysPracticed).isEqualTo(11)
     }
 
     @Test
@@ -128,7 +125,7 @@ class DailyStreakTest {
         val today = LocalDate.of(2025, 1, 15)
         val streak = DailyStreak.EMPTY
 
-        assertFalse(streak.isStreakAlive(today))
+        assertThat(streak.isStreakAlive(today)).isFalse()
     }
 
     @Test
@@ -142,7 +139,7 @@ class DailyStreakTest {
                 totalDaysPracticed = 15,
             )
 
-        assertTrue(streak.isStreakAlive(today))
+        assertThat(streak.isStreakAlive(today)).isTrue()
     }
 
     @Test
@@ -157,7 +154,7 @@ class DailyStreakTest {
                 totalDaysPracticed = 15,
             )
 
-        assertTrue(streak.isStreakAlive(today))
+        assertThat(streak.isStreakAlive(today)).isTrue()
     }
 
     @Test
@@ -172,7 +169,7 @@ class DailyStreakTest {
                 totalDaysPracticed = 15,
             )
 
-        assertFalse(streak.isStreakAlive(today))
+        assertThat(streak.isStreakAlive(today)).isFalse()
     }
 
     @Test
@@ -184,10 +181,10 @@ class DailyStreakTest {
         for (i in 0 until 7) {
             val date = startDate.plusDays(i.toLong())
             streak = streak.updateStreak(date)
-            assertEquals(i + 1, streak.currentStreak)
-            assertEquals(i + 1, streak.longestStreak)
-            assertEquals(date, streak.lastPracticeDate)
-            assertEquals(i + 1, streak.totalDaysPracticed)
+            assertThat(streak.currentStreak).isEqualTo(i + 1)
+            assertThat(streak.longestStreak).isEqualTo(i + 1)
+            assertThat(streak.lastPracticeDate).isEqualTo(date)
+            assertThat(streak.totalDaysPracticed).isEqualTo(i + 1)
         }
     }
 
@@ -200,22 +197,22 @@ class DailyStreakTest {
         for (i in 0 until 7) {
             streak = streak.updateStreak(startDate.plusDays(i.toLong()))
         }
-        assertEquals(7, streak.currentStreak)
-        assertEquals(7, streak.longestStreak)
+        assertThat(streak.currentStreak).isEqualTo(7)
+        assertThat(streak.longestStreak).isEqualTo(7)
 
         // Miss 2 days and restart
         val restartDate = startDate.plusDays(9) // 2 days gap
         streak = streak.updateStreak(restartDate)
-        assertEquals(1, streak.currentStreak)
-        assertEquals(7, streak.longestStreak) // Longest preserved
+        assertThat(streak.currentStreak).isEqualTo(1)
+        assertThat(streak.longestStreak).isEqualTo(7) // Longest preserved
 
         // Build a new 5-day streak
         for (i in 1 until 5) {
             streak = streak.updateStreak(restartDate.plusDays(i.toLong()))
         }
-        assertEquals(5, streak.currentStreak)
-        assertEquals(7, streak.longestStreak) // Still the longest
-        assertEquals(12, streak.totalDaysPracticed) // 7 + 1 + 4
+        assertThat(streak.currentStreak).isEqualTo(5)
+        assertThat(streak.longestStreak).isEqualTo(7) // Still the longest
+        assertThat(streak.totalDaysPracticed).isEqualTo(12) // 7 + 1 + 4
     }
 
     @Test
@@ -231,14 +228,14 @@ class DailyStreakTest {
 
         // First practice today
         streak = streak.updateStreak(today)
-        assertEquals(4, streak.currentStreak)
-        assertEquals(11, streak.totalDaysPracticed)
+        assertThat(streak.currentStreak).isEqualTo(4)
+        assertThat(streak.totalDaysPracticed).isEqualTo(11)
 
         // Second practice same day
         val secondUpdate = streak.updateStreak(today)
-        assertEquals(4, secondUpdate.currentStreak)
-        assertEquals(11, secondUpdate.totalDaysPracticed)
-        assertEquals(streak, secondUpdate)
+        assertThat(secondUpdate.currentStreak).isEqualTo(4)
+        assertThat(secondUpdate.totalDaysPracticed).isEqualTo(11)
+        assertThat(secondUpdate).isEqualTo(streak)
     }
 
     @Test
@@ -247,18 +244,18 @@ class DailyStreakTest {
 
         // Day 1
         streak = streak.updateStreak(LocalDate.of(2025, 1, 1))
-        assertEquals(1, streak.totalDaysPracticed)
+        assertThat(streak.totalDaysPracticed).isEqualTo(1)
 
         // Day 2 (consecutive)
         streak = streak.updateStreak(LocalDate.of(2025, 1, 2))
-        assertEquals(2, streak.totalDaysPracticed)
+        assertThat(streak.totalDaysPracticed).isEqualTo(2)
 
         // Skip to Day 5 (2 days gap)
         streak = streak.updateStreak(LocalDate.of(2025, 1, 5))
-        assertEquals(3, streak.totalDaysPracticed)
+        assertThat(streak.totalDaysPracticed).isEqualTo(3)
 
         // Skip to Day 10 (4 days gap)
         streak = streak.updateStreak(LocalDate.of(2025, 1, 10))
-        assertEquals(4, streak.totalDaysPracticed)
+        assertThat(streak.totalDaysPracticed).isEqualTo(4)
     }
 }

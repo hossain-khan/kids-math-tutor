@@ -1,7 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class BadgeDefinitionsTest {
@@ -9,7 +8,7 @@ class BadgeDefinitionsTest {
     fun `getAllBadges returns 19 badges`() {
         val badges = BadgeDefinitions.getAllBadges()
 
-        assertEquals("Should have exactly 19 badges", 19, badges.size)
+        assertThat(19, badges.size).isEqualTo("Should have exactly 19 badges")
     }
 
     @Test
@@ -17,7 +16,7 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
         val ids = badges.map { it.id }
 
-        assertEquals("All badge IDs should be unique", ids.size, ids.distinct().size)
+        assertThat(ids.size, ids.distinct().isEqualTo("All badge IDs should be unique").size)
     }
 
     @Test
@@ -31,12 +30,12 @@ class BadgeDefinitionsTest {
         val streak = badges.filter { it.category == BadgeCategory.STREAK }
         val games = badges.filter { it.category == BadgeCategory.GAMES }
 
-        assertEquals("Should have 3 Getting Started badges", 3, gettingStarted.size)
-        assertEquals("Should have 4 Volume badges", 4, volume.size)
-        assertEquals("Should have 3 Operation Mastery badges", 3, operationMastery.size)
-        assertEquals("Should have 3 Speed & Accuracy badges", 3, speedAccuracy.size)
-        assertEquals("Should have 2 Streak badges", 2, streak.size)
-        assertEquals("Should have 4 Games badges", 4, games.size)
+        assertThat(3, gettingStarted.size).isEqualTo("Should have 3 Getting Started badges")
+        assertThat(4, volume.size).isEqualTo("Should have 4 Volume badges")
+        assertThat(3, operationMastery.size).isEqualTo("Should have 3 Operation Mastery badges")
+        assertThat(3, speedAccuracy.size).isEqualTo("Should have 3 Speed & Accuracy badges")
+        assertThat(2, streak.size).isEqualTo("Should have 2 Streak badges")
+        assertThat(4, games.size).isEqualTo("Should have 4 Games badges")
     }
 
     @Test
@@ -44,10 +43,10 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
 
         badges.forEach { badge ->
-            assertTrue("Badge ID should not be empty", badge.id.isNotEmpty())
-            assertTrue("Badge name should not be empty", badge.name.isNotEmpty())
-            assertTrue("Badge description should not be empty", badge.description.isNotEmpty())
-            assertTrue("Badge icon should not be empty", badge.icon.isNotEmpty())
+            assertThat("Badge ID should not be empty", badge.id.isNotEmpty()).isTrue()
+            assertThat("Badge name should not be empty", badge.name.isNotEmpty()).isTrue()
+            assertThat("Badge description should not be empty", badge.description.isNotEmpty()).isTrue()
+            assertThat("Badge icon should not be empty", badge.icon.isNotEmpty()).isTrue()
         }
     }
 
@@ -56,7 +55,7 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
 
         badges.forEach { badge ->
-            assertEquals("Badges should not be unlocked by default", null, badge.unlockedAt)
+            assertThat(null, badge.unlockedAt).isEqualTo("Badges should not be unlocked by default")
         }
     }
 
@@ -65,12 +64,12 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
         val firstSteps = badges.find { it.id == "first_steps" }
 
-        assertEquals("First Steps", firstSteps?.name)
-        assertEquals("Solve your first problem", firstSteps?.description)
-        assertEquals("🎯", firstSteps?.icon)
-        assertEquals(BadgeCategory.GETTING_STARTED, firstSteps?.category)
-        assertTrue(firstSteps?.requirement is BadgeRequirement.ProblemCount)
-        assertEquals(1, (firstSteps?.requirement as BadgeRequirement.ProblemCount).count)
+        assertThat(firstSteps?.name).isEqualTo("First Steps")
+        assertThat(firstSteps?.description).isEqualTo("Solve your first problem")
+        assertThat(firstSteps?.icon).isEqualTo("🎯")
+        assertThat(firstSteps?.category).isEqualTo(BadgeCategory.GETTING_STARTED)
+        assertThat(firstSteps?.requirement is BadgeRequirement.ProblemCount).isTrue()
+        assertThat((firstSteps?.requirement as BadgeRequirement.ProblemCount).isEqualTo(1).count)
     }
 
     @Test
@@ -78,12 +77,12 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
         val mathLegend = badges.find { it.id == "math_legend" }
 
-        assertEquals("Math Legend", mathLegend?.name)
-        assertEquals("Solve 500 total problems", mathLegend?.description)
-        assertEquals("🦅", mathLegend?.icon)
-        assertEquals(BadgeCategory.VOLUME, mathLegend?.category)
-        assertTrue(mathLegend?.requirement is BadgeRequirement.ProblemCount)
-        assertEquals(500, (mathLegend?.requirement as BadgeRequirement.ProblemCount).count)
+        assertThat(mathLegend?.name).isEqualTo("Math Legend")
+        assertThat(mathLegend?.description).isEqualTo("Solve 500 total problems")
+        assertThat(mathLegend?.icon).isEqualTo("🦅")
+        assertThat(mathLegend?.category).isEqualTo(BadgeCategory.VOLUME)
+        assertThat(mathLegend?.requirement is BadgeRequirement.ProblemCount).isTrue()
+        assertThat((mathLegend?.requirement as BadgeRequirement.ProblemCount).isEqualTo(500).count)
     }
 
     @Test
@@ -91,14 +90,14 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
         val additionExpert = badges.find { it.id == "addition_expert" }
 
-        assertEquals("Addition Expert", additionExpert?.name)
-        assertEquals("Solve 50 addition problems", additionExpert?.description)
-        assertEquals("➕", additionExpert?.icon)
-        assertEquals(BadgeCategory.OPERATION_MASTERY, additionExpert?.category)
-        assertTrue(additionExpert?.requirement is BadgeRequirement.OperationCount)
+        assertThat(additionExpert?.name).isEqualTo("Addition Expert")
+        assertThat(additionExpert?.description).isEqualTo("Solve 50 addition problems")
+        assertThat(additionExpert?.icon).isEqualTo("➕")
+        assertThat(additionExpert?.category).isEqualTo(BadgeCategory.OPERATION_MASTERY)
+        assertThat(additionExpert?.requirement is BadgeRequirement.OperationCount).isTrue()
         val requirement = additionExpert?.requirement as BadgeRequirement.OperationCount
-        assertEquals(MathOperation.ADDITION, requirement.operation)
-        assertEquals(50, requirement.count)
+        assertThat(requirement.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(requirement.count).isEqualTo(50)
     }
 
     @Test
@@ -106,11 +105,11 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
         val dedication = badges.find { it.id == "dedication_award" }
 
-        assertEquals("Dedication Award", dedication?.name)
-        assertEquals("Practice 7 days in a row", dedication?.description)
-        assertEquals("🏆", dedication?.icon)
-        assertEquals(BadgeCategory.STREAK, dedication?.category)
-        assertTrue(dedication?.requirement is BadgeRequirement.DailyStreak)
-        assertEquals(7, (dedication?.requirement as BadgeRequirement.DailyStreak).days)
+        assertThat(dedication?.name).isEqualTo("Dedication Award")
+        assertThat(dedication?.description).isEqualTo("Practice 7 days in a row")
+        assertThat(dedication?.icon).isEqualTo("🏆")
+        assertThat(dedication?.category).isEqualTo(BadgeCategory.STREAK)
+        assertThat(dedication?.requirement is BadgeRequirement.DailyStreak).isTrue()
+        assertThat((dedication?.requirement as BadgeRequirement.DailyStreak).isEqualTo(7).days)
     }
 }

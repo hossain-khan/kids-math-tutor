@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,11 +16,6 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -79,7 +75,7 @@ class UserProfileRepositoryImplTest {
         testScope.runTest {
             val repository = UserProfileRepositoryImpl(testContext)
             val profile = repository.getProfile().first()
-            assertNull(profile)
+            assertThat(profile).isNull()
         }
 
     @Test
@@ -98,11 +94,11 @@ class UserProfileRepositoryImplTest {
             repository.saveProfile(testProfile)
 
             val retrievedProfile = repository.getProfile().first()
-            assertNotNull(retrievedProfile)
-            assertEquals("Test User", retrievedProfile?.name)
-            assertEquals(GradeLevel.GRADE_1, retrievedProfile?.gradeLevel)
-            assertEquals(now.toEpochMilli(), retrievedProfile?.createdAt?.toEpochMilli())
-            assertTrue(retrievedProfile?.adaptiveDifficultyEnabled ?: false)
+            assertThat(retrievedProfile).isNotNull()
+            assertThat(retrievedProfile?.name).isEqualTo("Test User")
+            assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
+            assertThat(retrievedProfile?.createdAt?.toEpochMilli().isEqualTo(now.toEpochMilli()))
+            assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
         }
 
     @Test
@@ -121,10 +117,10 @@ class UserProfileRepositoryImplTest {
             repository.saveProfile(testProfile)
 
             val retrievedProfile = repository.getProfile().first()
-            assertNotNull(retrievedProfile)
-            assertEquals("", retrievedProfile?.name)
-            assertEquals(GradeLevel.KINDERGARTEN, retrievedProfile?.gradeLevel)
-            assertFalse(retrievedProfile?.adaptiveDifficultyEnabled ?: true)
+            assertThat(retrievedProfile).isNotNull()
+            assertThat(retrievedProfile?.name).isEqualTo("")
+            assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.KINDERGARTEN)
+            assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: true).isFalse()
         }
 
     @Test
@@ -144,11 +140,11 @@ class UserProfileRepositoryImplTest {
             repository.updateGradeLevel(GradeLevel.GRADE_2)
 
             val retrievedProfile = repository.getProfile().first()
-            assertNotNull(retrievedProfile)
-            assertEquals("Test User", retrievedProfile?.name)
-            assertEquals(GradeLevel.GRADE_2, retrievedProfile?.gradeLevel)
-            assertEquals(now.toEpochMilli(), retrievedProfile?.createdAt?.toEpochMilli())
-            assertTrue(retrievedProfile?.adaptiveDifficultyEnabled ?: false)
+            assertThat(retrievedProfile).isNotNull()
+            assertThat(retrievedProfile?.name).isEqualTo("Test User")
+            assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.GRADE_2)
+            assertThat(retrievedProfile?.createdAt?.toEpochMilli().isEqualTo(now.toEpochMilli()))
+            assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
         }
 
     @Test
@@ -168,11 +164,11 @@ class UserProfileRepositoryImplTest {
             repository.updateName("New Name")
 
             val retrievedProfile = repository.getProfile().first()
-            assertNotNull(retrievedProfile)
-            assertEquals("New Name", retrievedProfile?.name)
-            assertEquals(GradeLevel.GRADE_1, retrievedProfile?.gradeLevel)
-            assertEquals(now.toEpochMilli(), retrievedProfile?.createdAt?.toEpochMilli())
-            assertTrue(retrievedProfile?.adaptiveDifficultyEnabled ?: false)
+            assertThat(retrievedProfile).isNotNull()
+            assertThat(retrievedProfile?.name).isEqualTo("New Name")
+            assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
+            assertThat(retrievedProfile?.createdAt?.toEpochMilli().isEqualTo(now.toEpochMilli()))
+            assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
         }
 
     @Test
@@ -192,10 +188,10 @@ class UserProfileRepositoryImplTest {
             repository.updateName(null)
 
             val retrievedProfile = repository.getProfile().first()
-            assertNotNull(retrievedProfile)
-            assertEquals("", retrievedProfile?.name)
-            assertEquals(GradeLevel.GRADE_2, retrievedProfile?.gradeLevel)
-            assertFalse(retrievedProfile?.adaptiveDifficultyEnabled ?: true)
+            assertThat(retrievedProfile).isNotNull()
+            assertThat(retrievedProfile?.name).isEqualTo("")
+            assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.GRADE_2)
+            assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: true).isFalse()
         }
 
     @Test
@@ -218,9 +214,9 @@ class UserProfileRepositoryImplTest {
             val secondRead = repository.getProfile().first()
             val thirdRead = repository.getProfile().first()
 
-            assertEquals(firstRead?.name, secondRead?.name)
-            assertEquals(secondRead?.name, thirdRead?.name)
-            assertEquals("Persistent User", thirdRead?.name)
+            assertThat(secondRead?.name).isEqualTo(firstRead?.name)
+            assertThat(thirdRead?.name).isEqualTo(secondRead?.name)
+            assertThat(thirdRead?.name).isEqualTo("Persistent User")
         }
 
     @Test
@@ -239,7 +235,7 @@ class UserProfileRepositoryImplTest {
             repository.saveProfile(testProfile)
 
             val retrievedProfile = repository.getProfile().first()
-            assertTrue(retrievedProfile?.adaptiveDifficultyEnabled ?: false)
+            assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
         }
 
     @Test
@@ -257,14 +253,32 @@ class UserProfileRepositoryImplTest {
                     adaptiveDifficultyEnabled = true,
                 ),
             )
-            assertEquals(GradeLevel.KINDERGARTEN, repository.getProfile().first()?.gradeLevel)
+            assertThat(
+                repository
+                    .getProfile()
+                    .isEqualTo(GradeLevel.KINDERGARTEN)
+                    .first()
+                    ?.gradeLevel,
+            )
 
             // Test Grade 1
             repository.updateGradeLevel(GradeLevel.GRADE_1)
-            assertEquals(GradeLevel.GRADE_1, repository.getProfile().first()?.gradeLevel)
+            assertThat(
+                repository
+                    .getProfile()
+                    .isEqualTo(GradeLevel.GRADE_1)
+                    .first()
+                    ?.gradeLevel,
+            )
 
             // Test Grade 2
             repository.updateGradeLevel(GradeLevel.GRADE_2)
-            assertEquals(GradeLevel.GRADE_2, repository.getProfile().first()?.gradeLevel)
+            assertThat(
+                repository
+                    .getProfile()
+                    .isEqualTo(GradeLevel.GRADE_2)
+                    .first()
+                    ?.gradeLevel,
+            )
         }
 }
