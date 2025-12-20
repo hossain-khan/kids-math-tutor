@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Timber logging in Circuit Presenters** - Added comprehensive logging for better debugging and monitoring
+  - Added logging to `OperationSelectorPresenter` for session history checks and navigation events
+  - Added logging to `StatsPresenter` for data collection and statistics loading
+- **Timber logging in Repository Implementations** - Added detailed logging for all data operations
+  - Added logging to `SessionRepositoryImpl` for session save/delete operations
+  - Added logging to `BadgeRepositoryImpl` for badge unlock and initialization operations
+  - Added logging to `UserProfileRepositoryImpl` for profile CRUD operations (save, update name, grade level, adaptive difficulty)
+  - Added logging to `StreakRepositoryImpl` for streak save operations
+  - Added logging to `GameRepositoryImpl` for game session save/delete operations
+  - Added logging to `PerformanceRepositoryImpl` for performance recording and clear operations
+  - Added logging to `UserPreferencesRepositoryImpl` for all preference updates (onboarding, haptics, sound effects, music, volume, high contrast, large text)
+
+### Added
 - **Grade Selection from Settings** - Users can now change their grade level from the Settings screen (#XX)
   - Navigate to full GradeSelectionScreen from Settings instead of using a dialog
   - `GradeSelectionScreen` now accepts `isFromSettings` parameter for dual-mode operation

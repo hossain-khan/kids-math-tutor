@@ -10,6 +10,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 /**
  * Implementation of [StreakRepository] using Room database.
@@ -28,7 +29,12 @@ class StreakRepositoryImpl
             }
 
         override suspend fun saveStreak(streak: DailyStreak) {
+            Timber.d(
+                "StreakRepository: Saving streak - currentStreak=${streak.currentStreak}, " +
+                    "longestStreak=${streak.longestStreak}, lastPracticeDate=${streak.lastPracticeDate}",
+            )
             val entity = StreakMapper.toEntity(streak)
             streakDao.insertStreak(entity)
+            Timber.d("StreakRepository: Streak saved successfully")
         }
     }

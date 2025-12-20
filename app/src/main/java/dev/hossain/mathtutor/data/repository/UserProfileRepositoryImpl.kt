@@ -16,6 +16,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -60,6 +61,10 @@ class UserProfileRepositoryImpl
             }
 
         override suspend fun saveProfile(profile: UserProfile) {
+            Timber.d(
+                "UserProfileRepository: Saving profile - name=${profile.name}, " +
+                    "gradeLevel=${profile.gradeLevel}, adaptive=${profile.adaptiveDifficultyEnabled}",
+            )
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.NAME_KEY] =
                     profile.name
@@ -68,23 +73,30 @@ class UserProfileRepositoryImpl
                 preferences[PreferencesKeys.CREATED_AT_KEY] = profile.createdAt.toEpochMilli()
                 preferences[PreferencesKeys.ADAPTIVE_KEY] = profile.adaptiveDifficultyEnabled
             }
+            Timber.d("UserProfileRepository: Profile saved successfully")
         }
 
         override suspend fun updateGradeLevel(gradeLevel: GradeLevel) {
+            Timber.d("UserProfileRepository: Updating grade level to $gradeLevel")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.GRADE_KEY] = gradeLevel.name
             }
+            Timber.d("UserProfileRepository: Grade level updated successfully")
         }
 
         override suspend fun updateName(name: String?) {
+            Timber.d("UserProfileRepository: Updating name to '$name'")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.NAME_KEY] = name ?: ""
             }
+            Timber.d("UserProfileRepository: Name updated successfully")
         }
 
         override suspend fun updateAdaptiveDifficulty(enabled: Boolean) {
+            Timber.d("UserProfileRepository: Updating adaptive difficulty to $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.ADAPTIVE_KEY] = enabled
             }
+            Timber.d("UserProfileRepository: Adaptive difficulty updated successfully")
         }
     }

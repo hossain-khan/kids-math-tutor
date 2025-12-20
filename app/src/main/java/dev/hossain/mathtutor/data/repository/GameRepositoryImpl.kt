@@ -14,6 +14,7 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -41,8 +42,15 @@ class GameRepositoryImpl
         private val sessionRepository: SessionRepository,
     ) : GameRepository {
         override suspend fun saveGameSession(session: GameSession): Long {
+            Timber.d(
+                "GameRepository: Saving game session - game=${session.game}, score=${session.score}, " +
+                    "correctAnswers=${session.correctAnswers}, totalAttempts=${session.totalAttempts}, " +
+                    "isNewRecord=${session.isNewRecord}",
+            )
             val entity = GameSessionEntity.fromDomainModel(session)
-            return gameSessionDao.insertSession(entity)
+            val sessionId = gameSessionDao.insertSession(entity)
+            Timber.d("GameRepository: Game session saved with ID=$sessionId")
+            return sessionId
         }
 
         override fun getPersonalBest(game: Game): Flow<Int> = gameSessionDao.getPersonalBest(game.name).map { it ?: 0 }
@@ -126,6 +134,8 @@ class GameRepositoryImpl
         override fun getPerfectGameCount(game: Game): Flow<Int> = gameSessionDao.getPerfectGameCount(game.name)
 
         override suspend fun clearAllSessions() {
+            Timber.d("GameRepository: Clearing all game sessions")
             gameSessionDao.deleteAllSessions()
+            Timber.d("GameRepository: All game sessions cleared")
         }
     }

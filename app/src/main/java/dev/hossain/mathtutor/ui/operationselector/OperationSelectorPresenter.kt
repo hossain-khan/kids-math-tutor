@@ -14,6 +14,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import timber.log.Timber
 
 /**
  * Presenter for [OperationSelectorScreen].
@@ -40,12 +41,14 @@ class OperationSelectorPresenter
                 initial = dev.hossain.mathtutor.domain.model.SessionStats.EMPTY,
             )
             val hasSessionHistory = overallStats.sessionCount > 0
+            Timber.d("OperationSelector: Session history exists = $hasSessionHistory (sessionCount=${overallStats.sessionCount})")
 
             return OperationSelectorScreen.State(
                 hasSessionHistory = hasSessionHistory,
             ) { event ->
                 when (event) {
                     is OperationSelectorScreen.Event.OperationSelected -> {
+                        Timber.d("OperationSelector: Operation selected - ${event.operation}")
                         // Navigate to MathPracticeScreen with selected operation
                         navigator.goTo(
                             MathPracticeScreen(
@@ -56,6 +59,7 @@ class OperationSelectorPresenter
                     }
 
                     is OperationSelectorScreen.Event.ViewStatsClicked -> {
+                        Timber.d("OperationSelector: View stats clicked")
                         navigator.goTo(StatsScreen)
                     }
                 }
