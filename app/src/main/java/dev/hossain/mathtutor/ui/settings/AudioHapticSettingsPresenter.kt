@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,10 +50,13 @@ class AudioHapticSettingsPresenter
             val highContrastEnabled by userPreferencesRepository.isHighContrastEnabled.collectAsState(initial = false)
             val largeTextEnabled by userPreferencesRepository.isLargeTextEnabled.collectAsState(initial = false)
 
-            Timber.d(
-                "[AudioHapticSettings] State - soundEffects=$soundEffectsEnabled, music=$backgroundMusicEnabled, " +
-                    "haptics=$hapticsEnabled, volume=$volume, highContrast=$highContrastEnabled, largeText=$largeTextEnabled",
-            )
+            // Log state changes in LaunchedEffect to avoid recomposition spam
+            LaunchedEffect(soundEffectsEnabled, backgroundMusicEnabled, hapticsEnabled, volume, highContrastEnabled, largeTextEnabled) {
+                Timber.d(
+                    "[AudioHapticSettings] State - soundEffects=$soundEffectsEnabled, music=$backgroundMusicEnabled, " +
+                        "haptics=$hapticsEnabled, volume=$volume, highContrast=$highContrastEnabled, largeText=$largeTextEnabled",
+                )
+            }
 
             return AudioHapticSettingsScreen.State(
                 soundEffectsEnabled = soundEffectsEnabled,

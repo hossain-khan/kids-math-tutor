@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **LeakCanary Integration** - Added LeakCanary 3.0-alpha-8 for memory leak detection in debug builds
+  - Automatically detects leaks of Activities, Fragments, Views, ViewModels, and Services
+  - Only runs in debug builds, no code changes required
+  - Displays leak analysis results in a notification when leaks are detected
 - **Timber logging in Circuit Presenters** - Added comprehensive logging for better debugging and monitoring
   - Added logging to `OperationSelectorPresenter` for session history checks and navigation events
   - Added logging to `StatsPresenter` for data collection and statistics loading
@@ -33,6 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Moved `navigator.pop()` call outside of coroutine block to prevent blocking UI thread
   - Database save now happens asynchronously without blocking navigation
   - User experiences immediate navigation response
+- **ANR when pressing back from My Stats screen** - Fixed Application Not Responding issue caused by excessive logging during recomposition
+  - Moved Timber.d() logging calls from composition body to `LaunchedEffect` blocks
+  - Logs now only execute when data changes, not on every recomposition
+  - Fixed same issue in `StatsPresenter`, `OperationSelectorPresenter`, and `GameSelectionPresenter`
 
 ## [1.5.0] - 2025-12-19
 

@@ -48,6 +48,9 @@ media3 = "1.9.0"
 # https://truth.dev/
 # https://github.com/google/truth/releases
 truth = "1.4.5"
+# LeakCanary - Memory leak detection library
+# https://square.github.io/leakcanary/
+leakcanary = "3.0-alpha-8"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -121,6 +124,9 @@ androidx-media3-common = { group = "androidx.media3", name = "media3-common", ve
 
 # Google Truth - Fluent testing library
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+# LeakCanary - Memory leak detection library for debug builds
+# https://square.github.io/leakcanary/
+leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

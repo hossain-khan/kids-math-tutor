@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,9 +46,13 @@ class SettingsPresenter
 
             // Collect user profile
             val profile by userProfileRepository.getProfile().collectAsState(initial = null)
-            Timber.d(
-                "SettingsScreen: Profile loaded - name=${profile?.name}, grade=${profile?.gradeLevel}, adaptive=${profile?.adaptiveDifficultyEnabled}",
-            )
+
+            // Log state changes in LaunchedEffect to avoid recomposition spam
+            LaunchedEffect(profile?.name, profile?.gradeLevel, profile?.adaptiveDifficultyEnabled) {
+                Timber.d(
+                    "SettingsScreen: Profile loaded - name=${profile?.name}, grade=${profile?.gradeLevel}, adaptive=${profile?.adaptiveDifficultyEnabled}",
+                )
+            }
 
             // Dialog visibility states
             var showNameDialog by remember { mutableStateOf(false) }
