@@ -60,7 +60,6 @@ class NameEntryScreenTest {
         val event = NameEntryScreen.Event.NameChanged("John")
 
         // Then
-        assertTrue(event is NameEntryScreen.Event.NameChanged)
         assertEquals("John", event.name)
     }
 
@@ -69,8 +68,8 @@ class NameEntryScreenTest {
         // When
         val event = NameEntryScreen.Event.SkipClicked
 
-        // Then
-        assertTrue(event is NameEntryScreen.Event.SkipClicked)
+        // Then - verify it's the singleton object
+        assertEquals(NameEntryScreen.Event.SkipClicked, event)
     }
 
     @Test
@@ -78,8 +77,8 @@ class NameEntryScreenTest {
         // When
         val event = NameEntryScreen.Event.ContinueClicked
 
-        // Then
-        assertTrue(event is NameEntryScreen.Event.ContinueClicked)
+        // Then - verify it's the singleton object
+        assertEquals(NameEntryScreen.Event.ContinueClicked, event)
     }
 
     @Test

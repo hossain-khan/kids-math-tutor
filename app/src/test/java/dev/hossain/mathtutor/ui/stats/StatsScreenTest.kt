@@ -97,8 +97,8 @@ class StatsScreenTest {
         // When
         val event = StatsScreen.Event.BackPressed
 
-        // Then
-        assertTrue(event is StatsScreen.Event.BackPressed)
+        // Then - verify it's the singleton object
+        assertEquals(StatsScreen.Event.BackPressed, event)
     }
 
     @Test

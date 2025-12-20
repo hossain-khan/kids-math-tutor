@@ -122,8 +122,8 @@ class SettingsScreenTest {
         // When
         val event = SettingsScreen.Event.EditNameClicked
 
-        // Then
-        assertTrue(event is SettingsScreen.Event.EditNameClicked)
+        // Then - verify it's the singleton object
+        assertEquals(SettingsScreen.Event.EditNameClicked, event)
     }
 
     @Test
@@ -131,8 +131,8 @@ class SettingsScreenTest {
         // When
         val event = SettingsScreen.Event.ChangeGradeClicked
 
-        // Then
-        assertTrue(event is SettingsScreen.Event.ChangeGradeClicked)
+        // Then - verify it's the singleton object
+        assertEquals(SettingsScreen.Event.ChangeGradeClicked, event)
     }
 
     @Test
@@ -141,8 +141,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.ToggleAdaptiveDifficulty(true)
 
         // Then
-        assertTrue(event is SettingsScreen.Event.ToggleAdaptiveDifficulty)
-        assertTrue((event as SettingsScreen.Event.ToggleAdaptiveDifficulty).enabled)
+        assertTrue(event.enabled)
     }
 
     @Test
@@ -151,8 +150,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.SaveName("John")
 
         // Then
-        assertTrue(event is SettingsScreen.Event.SaveName)
-        assertEquals("John", (event as SettingsScreen.Event.SaveName).name)
+        assertEquals("John", event.name)
     }
 
     @Test
@@ -161,8 +159,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.SaveName(null)
 
         // Then
-        assertTrue(event is SettingsScreen.Event.SaveName)
-        assertNull((event as SettingsScreen.Event.SaveName).name)
+        assertNull(event.name)
     }
 
     @Test
@@ -170,8 +167,8 @@ class SettingsScreenTest {
         // When
         val event = SettingsScreen.Event.CancelNameEdit
 
-        // Then
-        assertTrue(event is SettingsScreen.Event.CancelNameEdit)
+        // Then - verify it's the singleton object
+        assertEquals(SettingsScreen.Event.CancelNameEdit, event)
     }
 
     @Test
@@ -180,8 +177,7 @@ class SettingsScreenTest {
         val event = SettingsScreen.Event.SaveGrade(GradeLevel.GRADE_1)
 
         // Then
-        assertTrue(event is SettingsScreen.Event.SaveGrade)
-        assertEquals(GradeLevel.GRADE_1, (event as SettingsScreen.Event.SaveGrade).gradeLevel)
+        assertEquals(GradeLevel.GRADE_1, event.gradeLevel)
     }
 
     @Test
@@ -189,8 +185,8 @@ class SettingsScreenTest {
         // When
         val event = SettingsScreen.Event.CancelGradeChange
 
-        // Then
-        assertTrue(event is SettingsScreen.Event.CancelGradeChange)
+        // Then - verify it's the singleton object
+        assertEquals(SettingsScreen.Event.CancelGradeChange, event)
     }
 
     @Test
@@ -198,8 +194,8 @@ class SettingsScreenTest {
         // When
         val event = SettingsScreen.Event.BackClicked
 
-        // Then
-        assertTrue(event is SettingsScreen.Event.BackClicked)
+        // Then - verify it's the singleton object
+        assertEquals(SettingsScreen.Event.BackClicked, event)
     }
 
     @Test

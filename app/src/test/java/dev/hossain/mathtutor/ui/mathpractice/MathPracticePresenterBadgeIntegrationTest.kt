@@ -137,20 +137,20 @@ class MathPracticePresenterBadgeIntegrationTest {
     @Test
     fun `events are properly defined`() {
         // Verify all events exist and are of correct type
-        val numberClicked: MathPracticeScreen.Event = MathPracticeScreen.Event.NumberClicked(5)
-        val clearAnswer: MathPracticeScreen.Event = MathPracticeScreen.Event.ClearAnswer
-        val checkAnswer: MathPracticeScreen.Event = MathPracticeScreen.Event.CheckAnswer
-        val nextProblem: MathPracticeScreen.Event = MathPracticeScreen.Event.NextProblem
-        val navigateBack: MathPracticeScreen.Event = MathPracticeScreen.Event.NavigateBack
-        val dismissBadge: MathPracticeScreen.Event = MathPracticeScreen.Event.DismissBadgeDialog
+        val numberClicked = MathPracticeScreen.Event.NumberClicked(5)
+        val clearAnswer = MathPracticeScreen.Event.ClearAnswer
+        val checkAnswer = MathPracticeScreen.Event.CheckAnswer
+        val nextProblem = MathPracticeScreen.Event.NextProblem
+        val navigateBack = MathPracticeScreen.Event.NavigateBack
+        val dismissBadge = MathPracticeScreen.Event.DismissBadgeDialog
 
-        // All events should be instances of Event interface
-        assertTrue(numberClicked is MathPracticeScreen.Event)
-        assertTrue(clearAnswer is MathPracticeScreen.Event)
-        assertTrue(checkAnswer is MathPracticeScreen.Event)
-        assertTrue(nextProblem is MathPracticeScreen.Event)
-        assertTrue(navigateBack is MathPracticeScreen.Event)
-        assertTrue(dismissBadge is MathPracticeScreen.Event)
+        // Verify event values and singleton objects
+        assertEquals(5, numberClicked.number)
+        assertEquals(MathPracticeScreen.Event.ClearAnswer, clearAnswer)
+        assertEquals(MathPracticeScreen.Event.CheckAnswer, checkAnswer)
+        assertEquals(MathPracticeScreen.Event.NextProblem, nextProblem)
+        assertEquals(MathPracticeScreen.Event.NavigateBack, navigateBack)
+        assertEquals(MathPracticeScreen.Event.DismissBadgeDialog, dismissBadge)
     }
 
     @Test

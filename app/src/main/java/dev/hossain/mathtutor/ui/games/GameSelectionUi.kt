@@ -205,8 +205,8 @@ private fun UnlockedGameContent(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        // Stats row
-        if (gameInfo.personalBest != null || gameInfo.totalPlays > 0) {
+        // Stats row - show if there are any meaningful stats
+        if (gameInfo.personalBest > 0 || gameInfo.totalPlays > 0) {
             Row(
                 modifier =
                     Modifier
@@ -215,7 +215,7 @@ private fun UnlockedGameContent(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Personal best
-                if (gameInfo.personalBest != null) {
+                if (gameInfo.personalBest > 0) {
                     StatItem(
                         icon = "🏆",
                         label = "Best",
