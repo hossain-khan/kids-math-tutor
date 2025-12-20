@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.Instant
 
@@ -10,104 +8,104 @@ class GameSessionTest {
     @Test
     fun `accuracy is calculated correctly with all correct answers`() {
         val session = createSession(correctAnswers = 10, totalAttempts = 10)
-        assertEquals(100f, session.accuracy)
+        assertThat(session.accuracy).isEqualTo(100f)
     }
 
     @Test
     fun `accuracy is calculated correctly with partial correct answers`() {
         val session = createSession(correctAnswers = 15, totalAttempts = 18)
-        assertEquals(83.333336f, session.accuracy, 0.001f)
+        assertThat(session.accuracy).isWithin(0.001f).of(83.333336f)
     }
 
     @Test
     fun `accuracy returns 0 when no attempts`() {
         val session = createSession(correctAnswers = 0, totalAttempts = 0)
-        assertEquals(0f, session.accuracy)
+        assertThat(session.accuracy).isEqualTo(0f)
     }
 
     @Test
     fun `averageTimePerProblem is calculated correctly`() {
         val session = createSession(durationSeconds = 60, totalAttempts = 20)
-        assertEquals(3f, session.averageTimePerProblem)
+        assertThat(session.averageTimePerProblem).isEqualTo(3f)
     }
 
     @Test
     fun `averageTimePerProblem returns 0 when no attempts`() {
         val session = createSession(durationSeconds = 60, totalAttempts = 0)
-        assertEquals(0f, session.averageTimePerProblem)
+        assertThat(session.averageTimePerProblem).isEqualTo(0f)
     }
 
     @Test
     fun `problemsPerMinute is calculated correctly`() {
         val session = createSession(durationSeconds = 60, totalAttempts = 20)
-        assertEquals(20f, session.problemsPerMinute)
+        assertThat(session.problemsPerMinute).isEqualTo(20f)
     }
 
     @Test
     fun `problemsPerMinute returns 0 when duration is 0`() {
         val session = createSession(durationSeconds = 0, totalAttempts = 20)
-        assertEquals(0f, session.problemsPerMinute)
+        assertThat(session.problemsPerMinute).isEqualTo(0f)
     }
 
     @Test
     fun `isPerfectGame returns true when all correct`() {
         val session = createSession(correctAnswers = 15, totalAttempts = 15)
-        assertTrue(session.isPerfectGame)
+        assertThat(session.isPerfectGame).isTrue()
     }
 
     @Test
     fun `isPerfectGame returns false when not all correct`() {
         val session = createSession(correctAnswers = 14, totalAttempts = 15)
-        assertFalse(session.isPerfectGame)
+        assertThat(session.isPerfectGame).isFalse()
     }
 
     @Test
     fun `isPerfectGame returns false when no attempts`() {
         val session = createSession(correctAnswers = 0, totalAttempts = 0)
-        assertFalse(session.isPerfectGame)
+        assertThat(session.isPerfectGame).isFalse()
     }
 
     @Test
     fun `getStarRating returns 5 for 90+ accuracy`() {
         val session = createSession(correctAnswers = 9, totalAttempts = 10)
-        assertEquals(5, session.getStarRating())
+        assertThat(session.getStarRating().isEqualTo(5))
     }
 
     @Test
     fun `getStarRating returns 4 for 80-89 accuracy`() {
         val session = createSession(correctAnswers = 8, totalAttempts = 10)
-        assertEquals(4, session.getStarRating())
+        assertThat(session.getStarRating().isEqualTo(4))
     }
 
     @Test
     fun `getStarRating returns 3 for 70-79 accuracy`() {
         val session = createSession(correctAnswers = 7, totalAttempts = 10)
-        assertEquals(3, session.getStarRating())
+        assertThat(session.getStarRating().isEqualTo(3))
     }
 
     @Test
     fun `getStarRating returns 2 for 60-69 accuracy`() {
         val session = createSession(correctAnswers = 6, totalAttempts = 10)
-        assertEquals(2, session.getStarRating())
+        assertThat(session.getStarRating().isEqualTo(2))
     }
 
     @Test
     fun `getStarRating returns 1 for less than 60 accuracy`() {
         val session = createSession(correctAnswers = 5, totalAttempts = 10)
-        assertEquals(1, session.getStarRating())
+        assertThat(session.getStarRating().isEqualTo(1))
     }
 
     @Test
     fun `startNew creates session with default values`() {
         val session = GameSession.startNew(Game.MATH_RACE, GradeLevel.GRADE_1)
 
-        assertEquals(Game.MATH_RACE, session.game)
-        assertEquals(GradeLevel.GRADE_1, session.gradeLevel)
-        assertEquals(0, session.score)
-        assertEquals(0, session.correctAnswers)
-        assertEquals(0, session.totalAttempts)
-        assertEquals(0, session.durationSeconds)
-        assertFalse(session.isNewRecord)
+        assertThat(session.game).isEqualTo(Game.MATH_RACE)
+        assertThat(session.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
+        assertThat(session.score).isEqualTo(0)
+        assertThat(session.correctAnswers).isEqualTo(0)
+        assertThat(session.totalAttempts).isEqualTo(0)
+        assertThat(session.durationSeconds).isEqualTo(0)
+        assertThat(session.isNewRecord).isFalse()
     }
 
     private fun createSession(

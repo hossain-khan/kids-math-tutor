@@ -1,6 +1,6 @@
 package dev.hossain.mathtutor.util
 
-import org.junit.Assert.assertEquals
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -47,7 +47,7 @@ class TimeFormatterTest {
         val result = TimeFormatter.formatRelativeTime(timestamp, now)
 
         // Then
-        assertEquals("2 days ago", result)
+        assertThat(result).isEqualTo("2 days ago")
     }
 
     @Test
@@ -60,7 +60,7 @@ class TimeFormatterTest {
         val result = TimeFormatter.formatRelativeTime(timestamp, now)
 
         // Then
-        assertEquals("3 days ago", result)
+        assertThat(result).isEqualTo("3 days ago")
     }
 
     @Test
@@ -73,7 +73,7 @@ class TimeFormatterTest {
         val result = TimeFormatter.formatRelativeTime(timestamp, now)
 
         // Then
-        assertEquals("6 days ago", result)
+        assertThat(result).isEqualTo("6 days ago")
     }
 
     @Test

@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.domain.usecase
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
@@ -19,8 +20,6 @@ import dev.hossain.mathtutor.domain.repository.StreakRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.Instant
@@ -55,8 +54,8 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
-            assertEquals(0, fakeBadgeRepository.unlockCalls.size)
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
+            assertThat(fakeBadgeRepository.unlockCalls.size).isEqualTo(0)
         }
 
     @Test
@@ -68,8 +67,8 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
-            assertEquals(0, fakeBadgeRepository.unlockCalls.size)
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
+            assertThat(fakeBadgeRepository.unlockCalls.size).isEqualTo(0)
         }
 
     @Test
@@ -81,10 +80,10 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertEquals(1, newlyUnlocked.size)
-            assertEquals("badge1", newlyUnlocked[0].id)
-            assertEquals(1, fakeBadgeRepository.unlockCalls.size)
-            assertEquals("badge1", fakeBadgeRepository.unlockCalls[0])
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("badge1")
+            assertThat(fakeBadgeRepository.unlockCalls.size).isEqualTo(1)
+            assertThat(fakeBadgeRepository.unlockCalls[0]).isEqualTo("badge1")
         }
 
     @Test
@@ -101,8 +100,8 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertEquals(1, newlyUnlocked.size)
-            assertEquals("addition_badge", newlyUnlocked[0].id)
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("addition_badge")
         }
 
     @Test
@@ -119,7 +118,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -130,7 +129,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -145,8 +144,8 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertEquals(1, newlyUnlocked.size)
-            assertEquals("accuracy_badge", newlyUnlocked[0].id)
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("accuracy_badge")
         }
 
     @Test
@@ -161,7 +160,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -176,7 +175,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -187,7 +186,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -198,7 +197,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -212,8 +211,8 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertEquals(1, newlyUnlocked.size)
-            assertEquals("mixed_badge", newlyUnlocked[0].id)
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("mixed_badge")
         }
 
     @Test
@@ -231,8 +230,8 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertEquals(1, newlyUnlocked.size)
-            assertEquals("streak_badge", newlyUnlocked[0].id)
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("streak_badge")
         }
 
     @Test
@@ -250,7 +249,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -262,7 +261,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertTrue(newlyUnlocked.isEmpty())
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
         }
 
     @Test
@@ -276,10 +275,10 @@ class CheckBadgeUnlocksUseCaseTest {
 
             val newlyUnlocked = useCase.checkAndUnlockBadges()
 
-            assertEquals(2, newlyUnlocked.size)
-            assertTrue(newlyUnlocked.any { it.id == "badge1" })
-            assertTrue(newlyUnlocked.any { it.id == "badge2" })
-            assertEquals(2, fakeBadgeRepository.unlockCalls.size)
+            assertThat(newlyUnlocked.size).isEqualTo(2)
+            assertThat(newlyUnlocked.any { it.id == "badge1" }).isTrue()
+            assertThat(newlyUnlocked.any { it.id == "badge2" }).isTrue()
+            assertThat(fakeBadgeRepository.unlockCalls.size).isEqualTo(2)
         }
 
     private fun createBadge(

@@ -1,15 +1,11 @@
 package dev.hossain.mathtutor.ui.settings
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 
@@ -36,7 +32,7 @@ class SettingsPresenterTest {
         repository.updateNameSync("New Name")
 
         // Then
-        assertEquals("New Name", repository.getCurrentProfile()?.name)
+        assertThat(repository.getCurrentProfile()?.name).isEqualTo("New Name")
     }
 
     @Test
@@ -56,7 +52,7 @@ class SettingsPresenterTest {
         repository.updateGradeLevelSync(GradeLevel.GRADE_2)
 
         // Then
-        assertEquals(GradeLevel.GRADE_2, repository.getCurrentProfile()?.gradeLevel)
+        assertThat(repository.getCurrentProfile()?.gradeLevel).isEqualTo(GradeLevel.GRADE_2)
     }
 
     @Test
@@ -76,7 +72,7 @@ class SettingsPresenterTest {
         repository.updateAdaptiveDifficultySync(false)
 
         // Then
-        assertFalse(repository.getCurrentProfile()?.adaptiveDifficultyEnabled ?: true)
+        assertThat(repository.getCurrentProfile()?.adaptiveDifficultyEnabled ?: true).isFalse()
     }
 
     @Test
@@ -89,7 +85,7 @@ class SettingsPresenterTest {
         val profile = repository.getCurrentProfile()
 
         // Then
-        assertNull(profile)
+        assertThat(profile).isNull()
     }
 
     @Test
@@ -109,10 +105,10 @@ class SettingsPresenterTest {
         val retrievedProfile = repository.getCurrentProfile()
 
         // Then
-        assertNotNull(retrievedProfile)
-        assertEquals("Sarah", retrievedProfile?.name)
-        assertEquals(GradeLevel.KINDERGARTEN, retrievedProfile?.gradeLevel)
-        assertTrue(retrievedProfile?.adaptiveDifficultyEnabled ?: false)
+        assertThat(retrievedProfile).isNotNull()
+        assertThat(retrievedProfile?.name).isEqualTo("Sarah")
+        assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.KINDERGARTEN)
+        assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
     }
 
     /**

@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.Instant
 
@@ -24,7 +22,7 @@ class PracticeSessionTest {
                 problems = emptyList(),
             )
 
-        assertEquals(0, session.getCorrectCount())
+        assertThat(session.getCorrectCount().isEqualTo(0))
     }
 
     @Test
@@ -41,7 +39,7 @@ class PracticeSessionTest {
         session.answers["4"] = SessionAnswer("4", 8, isCorrect = true)
         session.answers["5"] = SessionAnswer("5", 7, isCorrect = false)
 
-        assertEquals(3, session.getCorrectCount())
+        assertThat(session.getCorrectCount().isEqualTo(3))
     }
 
     @Test
@@ -52,7 +50,7 @@ class PracticeSessionTest {
                 problems = emptyList(),
             )
 
-        assertEquals(0f, session.getAccuracy(), 0.01f)
+        assertThat(session.getAccuracy()).isWithin(0.01f).of(0f)
     }
 
     @Test
@@ -72,7 +70,7 @@ class PracticeSessionTest {
                 SessionAnswer((i + 8).toString(), 5, isCorrect = false)
         }
 
-        assertEquals(80f, session.getAccuracy(), 0.01f)
+        assertThat(session.getAccuracy()).isWithin(0.01f).of(80f)
     }
 
     @Test
@@ -87,7 +85,7 @@ class PracticeSessionTest {
             session.answers[i.toString()] = SessionAnswer(i.toString(), 8, isCorrect = true)
         }
 
-        assertEquals(100f, session.getAccuracy(), 0.01f)
+        assertThat(session.getAccuracy()).isWithin(0.01f).of(100f)
     }
 
     @Test
@@ -102,7 +100,7 @@ class PracticeSessionTest {
             session.answers[i.toString()] = SessionAnswer(i.toString(), 5, isCorrect = false)
         }
 
-        assertEquals(0f, session.getAccuracy(), 0.01f)
+        assertThat(session.getAccuracy()).isWithin(0.01f).of(0f)
     }
 
     @Test
@@ -120,8 +118,8 @@ class PracticeSessionTest {
                 problems = problems,
             )
 
-        assertEquals(3, session.problems.size)
-        assertEquals(3, session.totalProblems)
+        assertThat(session.problems.size).isEqualTo(3)
+        assertThat(session.totalProblems).isEqualTo(3)
     }
 
     @Test
@@ -133,7 +131,7 @@ class PracticeSessionTest {
                 completedAt = null,
             )
 
-        assertFalse(session.isComplete())
+        assertThat(session.isComplete()).isFalse()
     }
 
     @Test
@@ -145,7 +143,7 @@ class PracticeSessionTest {
                 completedAt = Instant.now(),
             )
 
-        assertTrue(session.isComplete())
+        assertThat(session.isComplete()).isTrue()
     }
 
     @Test
@@ -157,7 +155,7 @@ class PracticeSessionTest {
                 operation = MathOperation.ADDITION,
             )
 
-        assertEquals(MathOperation.ADDITION, session.operation)
+        assertThat(session.operation).isEqualTo(MathOperation.ADDITION)
     }
 
     @Test
@@ -169,7 +167,7 @@ class PracticeSessionTest {
                 durationSeconds = 120L,
             )
 
-        assertEquals(120L, session.durationSeconds)
+        assertThat(session.durationSeconds).isEqualTo(120L)
     }
 
     @Test
@@ -184,9 +182,9 @@ class PracticeSessionTest {
                 completedAt = completedAt,
             )
 
-        assertEquals(MathOperation.SUBTRACTION, session.operation)
-        assertEquals(180L, session.durationSeconds)
-        assertEquals(completedAt, session.completedAt)
-        assertTrue(session.isComplete())
+        assertThat(session.operation).isEqualTo(MathOperation.SUBTRACTION)
+        assertThat(session.durationSeconds).isEqualTo(180L)
+        assertThat(session.completedAt).isEqualTo(completedAt)
+        assertThat(session.isComplete()).isTrue()
     }
 }

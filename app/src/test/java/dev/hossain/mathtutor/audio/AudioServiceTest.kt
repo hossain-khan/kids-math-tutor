@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.audio
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -28,7 +26,7 @@ class AudioServiceTest {
 
         audioService.playSuccess()
 
-        assertEquals(1, audioService.successPlayed)
+        assertThat(audioService.successPlayed).isEqualTo(1)
     }
 
     @Test
@@ -37,7 +35,7 @@ class AudioServiceTest {
 
         audioService.playSuccess()
 
-        assertEquals(0, audioService.successPlayed)
+        assertThat(audioService.successPlayed).isEqualTo(0)
     }
 
     @Test
@@ -46,7 +44,7 @@ class AudioServiceTest {
 
         audioService.playPerfectScore()
 
-        assertEquals(1, audioService.perfectScorePlayed)
+        assertThat(audioService.perfectScorePlayed).isEqualTo(1)
     }
 
     @Test
@@ -55,7 +53,7 @@ class AudioServiceTest {
 
         audioService.playPerfectScore()
 
-        assertEquals(0, audioService.perfectScorePlayed)
+        assertThat(audioService.perfectScorePlayed).isEqualTo(0)
     }
 
     @Test
@@ -64,7 +62,7 @@ class AudioServiceTest {
 
         audioService.playBadgeUnlock()
 
-        assertEquals(1, audioService.badgeUnlockPlayed)
+        assertThat(audioService.badgeUnlockPlayed).isEqualTo(1)
     }
 
     @Test
@@ -73,7 +71,7 @@ class AudioServiceTest {
 
         audioService.playBadgeUnlock()
 
-        assertEquals(0, audioService.badgeUnlockPlayed)
+        assertThat(audioService.badgeUnlockPlayed).isEqualTo(0)
     }
 
     @Test
@@ -82,7 +80,7 @@ class AudioServiceTest {
 
         audioService.playError()
 
-        assertEquals(1, audioService.errorPlayed)
+        assertThat(audioService.errorPlayed).isEqualTo(1)
     }
 
     @Test
@@ -91,7 +89,7 @@ class AudioServiceTest {
 
         audioService.playError()
 
-        assertEquals(0, audioService.errorPlayed)
+        assertThat(audioService.errorPlayed).isEqualTo(0)
     }
 
     @Test
@@ -100,7 +98,7 @@ class AudioServiceTest {
 
         audioService.playStreakContinue()
 
-        assertEquals(1, audioService.streakContinuePlayed)
+        assertThat(audioService.streakContinuePlayed).isEqualTo(1)
     }
 
     @Test
@@ -109,7 +107,7 @@ class AudioServiceTest {
 
         audioService.playStreakContinue()
 
-        assertEquals(0, audioService.streakContinuePlayed)
+        assertThat(audioService.streakContinuePlayed).isEqualTo(0)
     }
 
     @Test
@@ -118,7 +116,7 @@ class AudioServiceTest {
 
         audioService.playLevelUp()
 
-        assertEquals(1, audioService.levelUpPlayed)
+        assertThat(audioService.levelUpPlayed).isEqualTo(1)
     }
 
     @Test
@@ -127,7 +125,7 @@ class AudioServiceTest {
 
         audioService.playLevelUp()
 
-        assertEquals(0, audioService.levelUpPlayed)
+        assertThat(audioService.levelUpPlayed).isEqualTo(0)
     }
 
     // ==================== Game Sound Effects Tests ====================
@@ -138,7 +136,7 @@ class AudioServiceTest {
 
         audioService.playCountdown()
 
-        assertEquals(1, audioService.countdownPlayed)
+        assertThat(audioService.countdownPlayed).isEqualTo(1)
     }
 
     @Test
@@ -147,7 +145,7 @@ class AudioServiceTest {
 
         audioService.playCountdown()
 
-        assertEquals(0, audioService.countdownPlayed)
+        assertThat(audioService.countdownPlayed).isEqualTo(0)
     }
 
     @Test
@@ -156,7 +154,7 @@ class AudioServiceTest {
 
         audioService.playGo()
 
-        assertEquals(1, audioService.goPlayed)
+        assertThat(audioService.goPlayed).isEqualTo(1)
     }
 
     @Test
@@ -165,7 +163,7 @@ class AudioServiceTest {
 
         audioService.playGo()
 
-        assertEquals(0, audioService.goPlayed)
+        assertThat(audioService.goPlayed).isEqualTo(0)
     }
 
     @Test
@@ -174,7 +172,7 @@ class AudioServiceTest {
 
         audioService.playWarning()
 
-        assertEquals(1, audioService.warningPlayed)
+        assertThat(audioService.warningPlayed).isEqualTo(1)
     }
 
     @Test
@@ -183,7 +181,7 @@ class AudioServiceTest {
 
         audioService.playWarning()
 
-        assertEquals(0, audioService.warningPlayed)
+        assertThat(audioService.warningPlayed).isEqualTo(0)
     }
 
     // ==================== Background Music Tests ====================
@@ -194,7 +192,7 @@ class AudioServiceTest {
 
         audioService.startBackgroundMusic()
 
-        assertTrue(audioService.isMusicPlaying)
+        assertThat(audioService.isMusicPlaying).isTrue()
     }
 
     @Test
@@ -203,7 +201,7 @@ class AudioServiceTest {
 
         audioService.startBackgroundMusic()
 
-        assertFalse(audioService.isMusicPlaying)
+        assertThat(audioService.isMusicPlaying).isFalse()
     }
 
     @Test
@@ -213,7 +211,7 @@ class AudioServiceTest {
 
         audioService.stopBackgroundMusic()
 
-        assertFalse(audioService.isMusicPlaying)
+        assertThat(audioService.isMusicPlaying).isFalse()
     }
 
     @Test
@@ -223,7 +221,7 @@ class AudioServiceTest {
 
         audioService.pauseBackgroundMusic()
 
-        assertTrue(audioService.isMusicPaused)
+        assertThat(audioService.isMusicPaused).isTrue()
     }
 
     @Test
@@ -234,7 +232,7 @@ class AudioServiceTest {
 
         audioService.resumeBackgroundMusic()
 
-        assertFalse(audioService.isMusicPaused)
+        assertThat(audioService.isMusicPaused).isFalse()
     }
 
     @Test
@@ -246,7 +244,7 @@ class AudioServiceTest {
 
         audioService.resumeBackgroundMusic()
 
-        assertTrue(audioService.isMusicPaused)
+        assertThat(audioService.isMusicPaused).isTrue()
     }
 
     // ==================== Volume Control Tests ====================
@@ -255,26 +253,26 @@ class AudioServiceTest {
     fun `setVolume sets volume correctly`() {
         audioService.setVolume(0.5f)
 
-        assertEquals(0.5f, audioService.currentVolume, 0.01f)
+        assertThat(audioService.currentVolume).isWithin(0.01f).of(0.5f)
     }
 
     @Test
     fun `setVolume clamps volume below 0 to 0`() {
         audioService.setVolume(-0.5f)
 
-        assertEquals(0f, audioService.currentVolume, 0.01f)
+        assertThat(audioService.currentVolume).isWithin(0.01f).of(0f)
     }
 
     @Test
     fun `setVolume clamps volume above 1 to 1`() {
         audioService.setVolume(1.5f)
 
-        assertEquals(1f, audioService.currentVolume, 0.01f)
+        assertThat(audioService.currentVolume).isWithin(0.01f).of(1f)
     }
 
     @Test
     fun `initial volume is 1`() {
-        assertEquals(1f, audioService.currentVolume, 0.01f)
+        assertThat(audioService.currentVolume).isWithin(0.01f).of(1f)
     }
 
     // ==================== Settings Tests ====================
@@ -283,14 +281,14 @@ class AudioServiceTest {
     fun `sound effects are enabled by default`() {
         val newService = FakeAudioService()
 
-        assertTrue(newService.isSoundEffectsEnabled)
+        assertThat(newService.isSoundEffectsEnabled).isTrue()
     }
 
     @Test
     fun `music is disabled by default`() {
         val newService = FakeAudioService()
 
-        assertFalse(newService.isMusicEnabled)
+        assertThat(newService.isMusicEnabled).isFalse()
     }
 
     @Test
@@ -300,7 +298,7 @@ class AudioServiceTest {
 
         audioService.setMusicEnabled(false)
 
-        assertTrue(audioService.isMusicPaused)
+        assertThat(audioService.isMusicPaused).isTrue()
     }
 
     // ==================== Lifecycle Tests ====================
@@ -312,8 +310,8 @@ class AudioServiceTest {
 
         audioService.release()
 
-        assertTrue(audioService.isReleased)
-        assertFalse(audioService.isMusicPlaying)
+        assertThat(audioService.isReleased).isTrue()
+        assertThat(audioService.isMusicPlaying).isFalse()
     }
 
     @Test
@@ -324,7 +322,7 @@ class AudioServiceTest {
         audioService.playSuccess()
         audioService.playSuccess()
 
-        assertEquals(3, audioService.successPlayed)
+        assertThat(audioService.successPlayed).isEqualTo(3)
     }
 
     /**

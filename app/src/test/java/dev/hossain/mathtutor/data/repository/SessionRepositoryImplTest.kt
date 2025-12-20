@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.data.repository
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
@@ -43,16 +43,16 @@ class SessionRepositoryImplTest {
 
             val id = repository.saveSession(session, MathOperation.ADDITION, 60L, 1)
 
-            assertEquals(1L, id)
-            assertEquals(1, fakeDao.insertedSessions.size)
+            assertThat(id).isEqualTo(1L)
+            assertThat(fakeDao.insertedSessions.size).isEqualTo(1)
             val inserted = fakeDao.insertedSessions[0]
-            assertEquals(MathOperation.ADDITION, inserted.operation)
-            assertEquals(1, inserted.totalProblems)
-            assertEquals(1, inserted.correctAnswers)
-            assertEquals(0, inserted.incorrectAnswers)
-            assertEquals(100f, inserted.accuracy)
-            assertEquals(60L, inserted.durationSeconds)
-            assertEquals(1, inserted.gradeLevel)
+            assertThat(inserted.operation).isEqualTo(MathOperation.ADDITION)
+            assertThat(inserted.totalProblems).isEqualTo(1)
+            assertThat(inserted.correctAnswers).isEqualTo(1)
+            assertThat(inserted.incorrectAnswers).isEqualTo(0)
+            assertThat(inserted.accuracy).isEqualTo(100f)
+            assertThat(inserted.durationSeconds).isEqualTo(60L)
+            assertThat(inserted.gradeLevel).isEqualTo(1)
         }
 
     @Test
@@ -63,9 +63,9 @@ class SessionRepositoryImplTest {
             fakeDao.allSessions.value = listOf(session1, session2)
 
             val sessions = repository.getAllSessions().first()
-            assertEquals(2, sessions.size)
-            assertEquals(session1, sessions[0])
-            assertEquals(session2, sessions[1])
+            assertThat(sessions.size).isEqualTo(2)
+            assertThat(sessions[0]).isEqualTo(session1)
+            assertThat(sessions[1]).isEqualTo(session2)
         }
 
     @Test
@@ -76,7 +76,7 @@ class SessionRepositoryImplTest {
             fakeDao.recentSessions.value = listOf(session1, session2)
 
             val sessions = repository.getRecentSessions(5).first()
-            assertEquals(2, sessions.size)
+            assertThat(sessions.size).isEqualTo(2)
         }
 
     @Test
@@ -89,8 +89,8 @@ class SessionRepositoryImplTest {
                 )
 
             val sessions = repository.getSessionsByOperation(MathOperation.ADDITION).first()
-            assertEquals(1, sessions.size)
-            assertEquals(MathOperation.ADDITION, sessions[0].operation)
+            assertThat(sessions.size).isEqualTo(1)
+            assertThat(sessions[0].operation).isEqualTo(MathOperation.ADDITION)
         }
 
     @Test
@@ -101,10 +101,10 @@ class SessionRepositoryImplTest {
             fakeDao.sessionCount.value = 3
 
             val stats = repository.getOverallStats().first()
-            assertEquals(30, stats.totalProblems)
-            assertEquals(24, stats.correctCount)
-            assertEquals(80f, stats.accuracy)
-            assertEquals(3, stats.sessionCount)
+            assertThat(stats.totalProblems).isEqualTo(30)
+            assertThat(stats.correctCount).isEqualTo(24)
+            assertThat(stats.accuracy).isEqualTo(80f)
+            assertThat(stats.sessionCount).isEqualTo(3)
         }
 
     @Test
@@ -115,7 +115,7 @@ class SessionRepositoryImplTest {
             fakeDao.sessionCount.value = 0
 
             val stats = repository.getOverallStats().first()
-            assertEquals(SessionStats.EMPTY, stats)
+            assertThat(stats).isEqualTo(SessionStats.EMPTY)
         }
 
     @Test
@@ -126,7 +126,7 @@ class SessionRepositoryImplTest {
             fakeDao.sessionCount.value = 1
 
             val stats = repository.getOverallStats().first()
-            assertEquals(SessionStats.EMPTY, stats)
+            assertThat(stats).isEqualTo(SessionStats.EMPTY)
         }
 
     @Test
@@ -141,10 +141,10 @@ class SessionRepositoryImplTest {
             fakeDao.sessionCount.value = 2
 
             val stats = repository.getStatsByOperation(MathOperation.ADDITION).first()
-            assertEquals(20, stats.totalProblems)
-            assertEquals(17, stats.correctCount)
-            assertEquals(85f, stats.accuracy)
-            assertEquals(2, stats.sessionCount)
+            assertThat(stats.totalProblems).isEqualTo(20)
+            assertThat(stats.correctCount).isEqualTo(17)
+            assertThat(stats.accuracy).isEqualTo(85f)
+            assertThat(stats.sessionCount).isEqualTo(2)
         }
 
     @Test
@@ -154,14 +154,14 @@ class SessionRepositoryImplTest {
             fakeDao.sessionCount.value = 0
 
             val stats = repository.getStatsByOperation(MathOperation.SUBTRACTION).first()
-            assertEquals(SessionStats.EMPTY, stats)
+            assertThat(stats).isEqualTo(SessionStats.EMPTY)
         }
 
     @Test
     fun `clearAllSessions calls DAO delete method`() =
         runTest {
             repository.clearAllSessions()
-            assertEquals(true, fakeDao.deleteAllCalled)
+            assertThat(fakeDao.deleteAllCalled).isEqualTo(true)
         }
 
     @Test
@@ -181,7 +181,7 @@ class SessionRepositoryImplTest {
             repository.saveSession(session, MathOperation.SUBTRACTION, 45L, 2)
 
             val inserted = fakeDao.insertedSessions[0]
-            assertEquals(MathOperation.SUBTRACTION, inserted.operation)
+            assertThat(inserted.operation).isEqualTo(MathOperation.SUBTRACTION)
         }
 
     @Test
@@ -202,7 +202,7 @@ class SessionRepositoryImplTest {
             val id2 = repository.saveSession(session, MathOperation.ADDITION, 70L)
 
             assertNotEquals(id1, id2)
-            assertEquals(2, fakeDao.insertedSessions.size)
+            assertThat(fakeDao.insertedSessions.size).isEqualTo(2)
         }
 
     @Test
@@ -213,7 +213,7 @@ class SessionRepositoryImplTest {
             fakeDao.sessionCount.value = 10
 
             val stats = repository.getOverallStats().first()
-            assertEquals(75f, stats.accuracy)
+            assertThat(stats.accuracy).isEqualTo(75f)
         }
 
     @Test
@@ -229,10 +229,10 @@ class SessionRepositoryImplTest {
             fakeDao.sessionCount.value = 3
 
             val stats = repository.getStatsByOperation(MathOperation.ADDITION).first()
-            assertEquals(60, stats.totalProblems) // 10 + 20 + 30
-            assertEquals(45, stats.correctCount) // 10 + 15 + 20
-            assertEquals(75f, stats.accuracy) // (45/60) * 100
-            assertEquals(3, stats.sessionCount)
+            assertThat(stats.totalProblems).isEqualTo(60) // 10 + 20 + 30
+            assertThat(stats.correctCount).isEqualTo(45) // 10 + 15 + 20
+            assertThat(stats.accuracy).isEqualTo(75f) // (45/60) * 100
+            assertThat(stats.sessionCount).isEqualTo(3)
         }
 
     private fun createSessionEntity(

@@ -1,9 +1,7 @@
 package dev.hossain.mathtutor.ui.onboarding
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.GradeLevel
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -18,7 +16,7 @@ class NameEntryScreenTest {
         val screen = NameEntryScreen(gradeLevel = GradeLevel.GRADE_1)
 
         // Then
-        assertEquals(GradeLevel.GRADE_1, screen.gradeLevel)
+        assertThat(screen.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
     }
 
     @Test
@@ -34,8 +32,8 @@ class NameEntryScreenTest {
             )
 
         // Then
-        assertEquals("", state.name)
-        assertNotNull(state.eventSink)
+        assertThat(state.name).isEqualTo("")
+        assertThat(state.eventSink).isNotNull()
     }
 
     @Test
@@ -51,7 +49,7 @@ class NameEntryScreenTest {
             )
 
         // Then
-        assertEquals("Alex", state.name)
+        assertThat(state.name).isEqualTo("Alex")
     }
 
     @Test
@@ -60,7 +58,7 @@ class NameEntryScreenTest {
         val event = NameEntryScreen.Event.NameChanged("John")
 
         // Then
-        assertEquals("John", event.name)
+        assertThat(event.name).isEqualTo("John")
     }
 
     @Test
@@ -69,7 +67,7 @@ class NameEntryScreenTest {
         val event = NameEntryScreen.Event.SkipClicked
 
         // Then - verify it's the singleton object
-        assertEquals(NameEntryScreen.Event.SkipClicked, event)
+        assertThat(event).isEqualTo(NameEntryScreen.Event.SkipClicked)
     }
 
     @Test
@@ -78,7 +76,7 @@ class NameEntryScreenTest {
         val event = NameEntryScreen.Event.ContinueClicked
 
         // Then - verify it's the singleton object
-        assertEquals(NameEntryScreen.Event.ContinueClicked, event)
+        assertThat(event).isEqualTo(NameEntryScreen.Event.ContinueClicked)
     }
 
     @Test
@@ -95,11 +93,10 @@ class NameEntryScreenTest {
         state.eventSink(NameEntryScreen.Event.NameChanged("Sarah"))
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is NameEntryScreen.Event.NameChanged)
-        assertEquals(
-            "Sarah",
-            (receivedEvent as NameEntryScreen.Event.NameChanged).name,
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is NameEntryScreen.Event.NameChanged).isTrue()
+        assertThat(
+            (receivedEvent as NameEntryScreen.Event.NameChanged).isEqualTo("Sarah").name,
         )
     }
 
@@ -117,8 +114,8 @@ class NameEntryScreenTest {
         state.eventSink(NameEntryScreen.Event.SkipClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is NameEntryScreen.Event.SkipClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is NameEntryScreen.Event.SkipClicked).isTrue()
     }
 
     @Test
@@ -135,7 +132,7 @@ class NameEntryScreenTest {
         state.eventSink(NameEntryScreen.Event.ContinueClicked)
 
         // Then
-        assertNotNull(receivedEvent)
-        assertTrue(receivedEvent is NameEntryScreen.Event.ContinueClicked)
+        assertThat(receivedEvent).isNotNull()
+        assertThat(receivedEvent is NameEntryScreen.Event.ContinueClicked).isTrue()
     }
 }

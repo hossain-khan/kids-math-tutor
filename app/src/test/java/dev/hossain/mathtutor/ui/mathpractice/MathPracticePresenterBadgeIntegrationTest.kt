@@ -1,12 +1,10 @@
 package dev.hossain.mathtutor.ui.mathpractice
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.MathOperation
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -34,9 +32,9 @@ class MathPracticePresenterBadgeIntegrationTest {
             )
 
         // Then
-        assertTrue(state.unlockedBadges.isEmpty())
-        assertFalse(state.showBadgeUnlock)
-        assertEquals(0, state.currentBadgeIndex)
+        assertThat(state.unlockedBadges.isEmpty()).isTrue()
+        assertThat(state.showBadgeUnlock).isFalse()
+        assertThat(state.currentBadgeIndex).isEqualTo(0)
     }
 
     @Test
@@ -68,10 +66,10 @@ class MathPracticePresenterBadgeIntegrationTest {
             )
 
         // Then
-        assertEquals(1, state.unlockedBadges.size)
-        assertEquals("first_steps", state.unlockedBadges[0].id)
-        assertTrue(state.showBadgeUnlock)
-        assertEquals(0, state.currentBadgeIndex)
+        assertThat(state.unlockedBadges.size).isEqualTo(1)
+        assertThat(state.unlockedBadges[0].id).isEqualTo("first_steps")
+        assertThat(state.showBadgeUnlock).isTrue()
+        assertThat(state.currentBadgeIndex).isEqualTo(0)
     }
 
     @Test
@@ -96,12 +94,12 @@ class MathPracticePresenterBadgeIntegrationTest {
             )
 
         // Then - All badges are tracked
-        assertEquals(3, state.unlockedBadges.size)
-        assertEquals("badge1", state.unlockedBadges[0].id)
-        assertEquals("badge2", state.unlockedBadges[1].id)
-        assertEquals("badge3", state.unlockedBadges[2].id)
-        assertTrue(state.showBadgeUnlock)
-        assertEquals(0, state.currentBadgeIndex)
+        assertThat(state.unlockedBadges.size).isEqualTo(3)
+        assertThat(state.unlockedBadges[0].id).isEqualTo("badge1")
+        assertThat(state.unlockedBadges[1].id).isEqualTo("badge2")
+        assertThat(state.unlockedBadges[2].id).isEqualTo("badge3")
+        assertThat(state.showBadgeUnlock).isTrue()
+        assertThat(state.currentBadgeIndex).isEqualTo(0)
     }
 
     @Test
@@ -129,9 +127,9 @@ class MathPracticePresenterBadgeIntegrationTest {
             )
 
         // Then
-        assertEquals(3, state.unlockedBadges.size)
-        assertEquals(1, state.currentBadgeIndex)
-        assertEquals("badge2", state.unlockedBadges[state.currentBadgeIndex].id)
+        assertThat(state.unlockedBadges.size).isEqualTo(3)
+        assertThat(state.currentBadgeIndex).isEqualTo(1)
+        assertThat(state.unlockedBadges[state.currentBadgeIndex].id).isEqualTo("badge2")
     }
 
     @Test
@@ -145,12 +143,12 @@ class MathPracticePresenterBadgeIntegrationTest {
         val dismissBadge = MathPracticeScreen.Event.DismissBadgeDialog
 
         // Verify event values and singleton objects
-        assertEquals(5, numberClicked.number)
-        assertEquals(MathPracticeScreen.Event.ClearAnswer, clearAnswer)
-        assertEquals(MathPracticeScreen.Event.CheckAnswer, checkAnswer)
-        assertEquals(MathPracticeScreen.Event.NextProblem, nextProblem)
-        assertEquals(MathPracticeScreen.Event.NavigateBack, navigateBack)
-        assertEquals(MathPracticeScreen.Event.DismissBadgeDialog, dismissBadge)
+        assertThat(numberClicked.number).isEqualTo(5)
+        assertThat(clearAnswer).isEqualTo(MathPracticeScreen.Event.ClearAnswer)
+        assertThat(checkAnswer).isEqualTo(MathPracticeScreen.Event.CheckAnswer)
+        assertThat(nextProblem).isEqualTo(MathPracticeScreen.Event.NextProblem)
+        assertThat(navigateBack).isEqualTo(MathPracticeScreen.Event.NavigateBack)
+        assertThat(dismissBadge).isEqualTo(MathPracticeScreen.Event.DismissBadgeDialog)
     }
 
     @Test
@@ -179,22 +177,22 @@ class MathPracticePresenterBadgeIntegrationTest {
             )
 
         // Then - First badge should be shown
-        assertEquals(0, state.currentBadgeIndex)
-        assertEquals("badge1", state.unlockedBadges[state.currentBadgeIndex].id)
+        assertThat(state.currentBadgeIndex).isEqualTo(0)
+        assertThat(state.unlockedBadges[state.currentBadgeIndex].id).isEqualTo("badge1")
 
         // When - Moving to second badge
         state = state.copy(currentBadgeIndex = 1)
 
         // Then - Second badge should be shown
-        assertEquals(1, state.currentBadgeIndex)
-        assertEquals("badge2", state.unlockedBadges[state.currentBadgeIndex].id)
+        assertThat(state.currentBadgeIndex).isEqualTo(1)
+        assertThat(state.unlockedBadges[state.currentBadgeIndex].id).isEqualTo("badge2")
 
         // When - Moving to third badge
         state = state.copy(currentBadgeIndex = 2)
 
         // Then - Third badge should be shown
-        assertEquals(2, state.currentBadgeIndex)
-        assertEquals("badge3", state.unlockedBadges[state.currentBadgeIndex].id)
+        assertThat(state.currentBadgeIndex).isEqualTo(2)
+        assertThat(state.unlockedBadges[state.currentBadgeIndex].id).isEqualTo("badge3")
     }
 
     @Test
@@ -218,14 +216,14 @@ class MathPracticePresenterBadgeIntegrationTest {
             )
 
         // Then - Dialog should be showing
-        assertTrue(state.showBadgeUnlock)
+        assertThat(state.showBadgeUnlock).isTrue()
 
         // When - Dialog is dismissed
         showBadgeUnlock = false
         val dismissedState = state.copy(showBadgeUnlock = showBadgeUnlock)
 
         // Then - Dialog should be hidden
-        assertFalse(dismissedState.showBadgeUnlock)
+        assertThat(dismissedState.showBadgeUnlock).isFalse()
     }
 
     private fun createBadge(

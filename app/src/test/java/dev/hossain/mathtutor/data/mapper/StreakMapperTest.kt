@@ -1,9 +1,8 @@
 package dev.hossain.mathtutor.data.mapper
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.entity.StreakEntity
 import dev.hossain.mathtutor.domain.model.DailyStreak
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Test
 import java.time.LocalDate
 
@@ -21,11 +20,11 @@ class StreakMapperTest {
 
         val entity = StreakMapper.toEntity(domain)
 
-        assertEquals(1, entity.id) // Singleton ID
-        assertEquals(5, entity.currentStreak)
-        assertEquals(10, entity.longestStreak)
-        assertEquals(date, entity.lastPracticeDate)
-        assertEquals(20, entity.totalDaysPracticed)
+        assertThat(entity.id).isEqualTo(1) // Singleton ID
+        assertThat(entity.currentStreak).isEqualTo(5)
+        assertThat(entity.longestStreak).isEqualTo(10)
+        assertThat(entity.lastPracticeDate).isEqualTo(date)
+        assertThat(entity.totalDaysPracticed).isEqualTo(20)
     }
 
     @Test
@@ -34,11 +33,11 @@ class StreakMapperTest {
 
         val entity = StreakMapper.toEntity(domain)
 
-        assertEquals(1, entity.id)
-        assertEquals(0, entity.currentStreak)
-        assertEquals(0, entity.longestStreak)
-        assertNull(entity.lastPracticeDate)
-        assertEquals(0, entity.totalDaysPracticed)
+        assertThat(entity.id).isEqualTo(1)
+        assertThat(entity.currentStreak).isEqualTo(0)
+        assertThat(entity.longestStreak).isEqualTo(0)
+        assertThat(entity.lastPracticeDate).isNull()
+        assertThat(entity.totalDaysPracticed).isEqualTo(0)
     }
 
     @Test
@@ -55,10 +54,10 @@ class StreakMapperTest {
 
         val domain = StreakMapper.toDomain(entity)
 
-        assertEquals(7, domain.currentStreak)
-        assertEquals(12, domain.longestStreak)
-        assertEquals(date, domain.lastPracticeDate)
-        assertEquals(25, domain.totalDaysPracticed)
+        assertThat(domain.currentStreak).isEqualTo(7)
+        assertThat(domain.longestStreak).isEqualTo(12)
+        assertThat(domain.lastPracticeDate).isEqualTo(date)
+        assertThat(domain.totalDaysPracticed).isEqualTo(25)
     }
 
     @Test
@@ -74,10 +73,10 @@ class StreakMapperTest {
 
         val domain = StreakMapper.toDomain(entity)
 
-        assertEquals(0, domain.currentStreak)
-        assertEquals(0, domain.longestStreak)
-        assertNull(domain.lastPracticeDate)
-        assertEquals(0, domain.totalDaysPracticed)
+        assertThat(domain.currentStreak).isEqualTo(0)
+        assertThat(domain.longestStreak).isEqualTo(0)
+        assertThat(domain.lastPracticeDate).isNull()
+        assertThat(domain.totalDaysPracticed).isEqualTo(0)
     }
 
     @Test
@@ -88,8 +87,8 @@ class StreakMapperTest {
         val entity1 = StreakMapper.toEntity(domain1)
         val entity2 = StreakMapper.toEntity(domain2)
 
-        assertEquals(1, entity1.id)
-        assertEquals(1, entity2.id)
+        assertThat(entity1.id).isEqualTo(1)
+        assertThat(entity2.id).isEqualTo(1)
     }
 
     @Test
@@ -105,6 +104,6 @@ class StreakMapperTest {
         val entity = StreakMapper.toEntity(original)
         val result = StreakMapper.toDomain(entity)
 
-        assertEquals(original, result)
+        assertThat(result).isEqualTo(original)
     }
 }

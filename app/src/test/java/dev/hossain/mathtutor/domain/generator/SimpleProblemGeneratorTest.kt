@@ -1,9 +1,8 @@
 package dev.hossain.mathtutor.domain.generator
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class SimpleProblemGeneratorTest {
@@ -13,19 +12,19 @@ class SimpleProblemGeneratorTest {
     @Test
     fun `generateProblems returns correct count`() {
         val problems = generator.generateProblems(10, MathOperation.ADDITION, defaultGrade)
-        assertEquals(10, problems.size)
+        assertThat(problems.size).isEqualTo(10)
     }
 
     @Test
     fun `generateProblems returns single problem when count is 1`() {
         val problems = generator.generateProblems(1, MathOperation.ADDITION, defaultGrade)
-        assertEquals(1, problems.size)
+        assertThat(problems.size).isEqualTo(1)
     }
 
     @Test
     fun `generateProblems with large count works correctly`() {
         val problems = generator.generateProblems(100, MathOperation.ADDITION, defaultGrade)
-        assertEquals(100, problems.size)
+        assertThat(problems.size).isEqualTo(100)
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -43,8 +42,8 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(100, MathOperation.ADDITION, defaultGrade)
 
         problems.forEach { problem ->
-            assertTrue("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10)
-            assertTrue("num2 should be 1-10, got: ${problem.num2}", problem.num2 in 1..10)
+            assertThat("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10).isTrue()
+            assertThat("num2 should be 1-10, got: ${problem.num2}", problem.num2 in 1..10).isTrue()
         }
     }
 
@@ -54,11 +53,10 @@ class SimpleProblemGeneratorTest {
 
         problems.forEach { problem ->
             val expectedAnswer = problem.num1 + problem.num2
-            assertEquals(
-                "Problem ${problem.num1} + ${problem.num2} has incorrect answer",
+            assertThat(
                 expectedAnswer,
                 problem.correctAnswer,
-            )
+            ).isEqualTo("Problem ${problem.num1} + ${problem.num2} has incorrect answer")
         }
     }
 
@@ -67,7 +65,7 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(20, MathOperation.ADDITION, defaultGrade)
 
         problems.forEach { problem ->
-            assertEquals(MathOperation.ADDITION, problem.operation)
+            assertThat(problem.operation).isEqualTo(MathOperation.ADDITION)
         }
     }
 
@@ -76,7 +74,7 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(10, MathOperation.ADDITION, defaultGrade)
         val ids = problems.map { it.id }.toSet()
 
-        assertEquals("All problem IDs should be unique", problems.size, ids.size)
+        assertThat(problems.size, ids.size).isEqualTo("All problem IDs should be unique")
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -97,8 +95,8 @@ class SimpleProblemGeneratorTest {
 
         // With 100 problems, we should see multiple different values
         // (not a guarantee due to randomness, but very likely)
-        assertTrue("Should generate variety of num1 values", num1Values.size > 3)
-        assertTrue("Should generate variety of num2 values", num2Values.size > 3)
+        assertThat("Should generate variety of num1 values", num1Values.size > 3).isTrue()
+        assertThat("Should generate variety of num2 values", num2Values.size > 3).isTrue()
     }
 
     // ==================== Subtraction Tests ====================
@@ -106,7 +104,7 @@ class SimpleProblemGeneratorTest {
     @Test
     fun `generateProblems returns correct count for subtraction`() {
         val problems = generator.generateProblems(10, MathOperation.SUBTRACTION, defaultGrade)
-        assertEquals(10, problems.size)
+        assertThat(problems.size).isEqualTo(10)
     }
 
     @Test
@@ -114,8 +112,8 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(100, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
-            assertTrue("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10)
-            assertTrue("num2 should be 1-10, got: ${problem.num2}", problem.num2 in 1..10)
+            assertThat("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10).isTrue()
+            assertThat("num2 should be 1-10, got: ${problem.num2}", problem.num2 in 1..10).isTrue()
         }
     }
 
@@ -124,10 +122,10 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(200, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
-            assertTrue(
+            assertThat(
                 "Answer should not be negative: ${problem.num1} - ${problem.num2} = ${problem.correctAnswer}",
                 problem.correctAnswer >= 0,
-            )
+            ).isTrue()
         }
     }
 
@@ -136,10 +134,10 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(100, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
-            assertTrue(
+            assertThat(
                 "First number should be >= second number: ${problem.num1} >= ${problem.num2}",
                 problem.num1 >= problem.num2,
-            )
+            ).isTrue()
         }
     }
 
@@ -149,11 +147,10 @@ class SimpleProblemGeneratorTest {
 
         problems.forEach { problem ->
             val expectedAnswer = problem.num1 - problem.num2
-            assertEquals(
-                "Problem ${problem.num1} - ${problem.num2} has incorrect answer",
+            assertThat(
                 expectedAnswer,
                 problem.correctAnswer,
-            )
+            ).isEqualTo("Problem ${problem.num1} - ${problem.num2} has incorrect answer")
         }
     }
 
@@ -162,7 +159,7 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(20, MathOperation.SUBTRACTION, defaultGrade)
 
         problems.forEach { problem ->
-            assertEquals(MathOperation.SUBTRACTION, problem.operation)
+            assertThat(problem.operation).isEqualTo(MathOperation.SUBTRACTION)
         }
     }
 
@@ -173,8 +170,8 @@ class SimpleProblemGeneratorTest {
         val num2Values = problems.map { it.num2 }.toSet()
 
         // With 100 problems, we should see multiple different values
-        assertTrue("Should generate variety of num1 values", num1Values.size > 3)
-        assertTrue("Should generate variety of num2 values", num2Values.size > 3)
+        assertThat("Should generate variety of num1 values", num1Values.size > 3).isTrue()
+        assertThat("Should generate variety of num2 values", num2Values.size > 3).isTrue()
     }
 
     // ==================== Mixed Mode Tests ====================
@@ -182,7 +179,7 @@ class SimpleProblemGeneratorTest {
     @Test
     fun `generateProblems returns correct count for mixed mode`() {
         val problems = generator.generateProblems(10, MathOperation.MIXED, defaultGrade)
-        assertEquals(10, problems.size)
+        assertThat(problems.size).isEqualTo(10)
     }
 
     @Test
@@ -192,9 +189,9 @@ class SimpleProblemGeneratorTest {
         val additionCount = problems.count { it.operation == MathOperation.ADDITION }
         val subtractionCount = problems.count { it.operation == MathOperation.SUBTRACTION }
 
-        assertTrue("Should have at least one addition problem, got: $additionCount", additionCount > 0)
-        assertTrue("Should have at least one subtraction problem, got: $subtractionCount", subtractionCount > 0)
-        assertEquals("All problems should be counted", 100, additionCount + subtractionCount)
+        assertThat("Should have at least one addition problem, got: $additionCount", additionCount > 0).isTrue()
+        assertThat("Should have at least one subtraction problem, got: $subtractionCount", subtractionCount > 0).isTrue()
+        assertThat(100, additionCount + subtractionCount).isEqualTo("All problems should be counted")
     }
 
     @Test
@@ -202,8 +199,8 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(100, MathOperation.MIXED, defaultGrade)
 
         problems.forEach { problem ->
-            assertTrue("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10)
-            assertTrue("num2 should be 1-10, got: ${problem.num2}", problem.num2 in 1..10)
+            assertThat("num1 should be 1-10, got: ${problem.num1}", problem.num1 in 1..10).isTrue()
+            assertThat("num2 should be 1-10, got: ${problem.num2}", problem.num2 in 1..10).isTrue()
         }
     }
 
@@ -212,10 +209,10 @@ class SimpleProblemGeneratorTest {
         val problems = generator.generateProblems(200, MathOperation.MIXED, defaultGrade)
 
         problems.forEach { problem ->
-            assertTrue(
+            assertThat(
                 "Answer should not be negative: ${problem.num1} ${problem.operation.symbol} ${problem.num2} = ${problem.correctAnswer}",
                 problem.correctAnswer >= 0,
-            )
+            ).isTrue()
         }
     }
 
@@ -230,11 +227,10 @@ class SimpleProblemGeneratorTest {
                     MathOperation.SUBTRACTION -> problem.num1 - problem.num2
                     else -> throw IllegalStateException("Unexpected operation: ${problem.operation}")
                 }
-            assertEquals(
-                "Problem ${problem.num1} ${problem.operation.symbol} ${problem.num2} has incorrect answer",
+            assertThat(
                 expectedAnswer,
                 problem.correctAnswer,
-            )
+            ).isEqualTo("Problem ${problem.num1} ${problem.operation.symbol} ${problem.num2} has incorrect answer")
         }
     }
 
@@ -247,13 +243,13 @@ class SimpleProblemGeneratorTest {
 
         // With 200 problems and random 50/50, we expect roughly 100 of each
         // Allow a reasonable margin: 30-70% range (60-140 out of 200)
-        assertTrue(
+        assertThat(
             "Addition count should be between 60-140, got: $additionCount",
             additionCount in 60..140,
-        )
-        assertTrue(
+        ).isTrue()
+        assertThat(
             "Subtraction count should be between 60-140, got: $subtractionCount",
             subtractionCount in 60..140,
-        )
+        ).isTrue()
     }
 }

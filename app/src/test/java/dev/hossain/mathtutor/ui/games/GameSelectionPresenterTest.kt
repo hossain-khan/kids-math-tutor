@@ -1,9 +1,7 @@
 package dev.hossain.mathtutor.ui.games
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.Game
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -18,45 +16,45 @@ class GameSelectionPresenterTest {
     fun `Math Race unlocks at 50 problems solved`() {
         // Math Race requires 50 problems
         val game = Game.MATH_RACE
-        assertEquals(50, game.unlockRequirement)
+        assertThat(game.unlockRequirement).isEqualTo(50)
 
         // Under threshold - not unlocked
-        assertFalse(game.isUnlocked(totalProblemsSolved = 0))
-        assertFalse(game.isUnlocked(totalProblemsSolved = 49))
+        assertThat(game.isUnlocked(totalProblemsSolved = 0)).isFalse()
+        assertThat(game.isUnlocked(totalProblemsSolved = 49)).isFalse()
 
         // At or above threshold - unlocked
-        assertTrue(game.isUnlocked(totalProblemsSolved = 50))
-        assertTrue(game.isUnlocked(totalProblemsSolved = 100))
+        assertThat(game.isUnlocked(totalProblemsSolved = 50)).isTrue()
+        assertThat(game.isUnlocked(totalProblemsSolved = 100)).isTrue()
     }
 
     @Test
     fun `Memory Match unlocks at 100 problems solved`() {
         // Memory Match requires 100 problems
         val game = Game.MEMORY_MATCH
-        assertEquals(100, game.unlockRequirement)
+        assertThat(game.unlockRequirement).isEqualTo(100)
 
         // Under threshold - not unlocked
-        assertFalse(game.isUnlocked(totalProblemsSolved = 0))
-        assertFalse(game.isUnlocked(totalProblemsSolved = 99))
+        assertThat(game.isUnlocked(totalProblemsSolved = 0)).isFalse()
+        assertThat(game.isUnlocked(totalProblemsSolved = 99)).isFalse()
 
         // At or above threshold - unlocked
-        assertTrue(game.isUnlocked(totalProblemsSolved = 100))
-        assertTrue(game.isUnlocked(totalProblemsSolved = 150))
+        assertThat(game.isUnlocked(totalProblemsSolved = 100)).isTrue()
+        assertThat(game.isUnlocked(totalProblemsSolved = 150)).isTrue()
     }
 
     @Test
     fun `Number Sequence unlocks at 200 problems solved`() {
         // Number Sequence requires 200 problems
         val game = Game.NUMBER_SEQUENCE
-        assertEquals(200, game.unlockRequirement)
+        assertThat(game.unlockRequirement).isEqualTo(200)
 
         // Under threshold - not unlocked
-        assertFalse(game.isUnlocked(totalProblemsSolved = 0))
-        assertFalse(game.isUnlocked(totalProblemsSolved = 199))
+        assertThat(game.isUnlocked(totalProblemsSolved = 0)).isFalse()
+        assertThat(game.isUnlocked(totalProblemsSolved = 199)).isFalse()
 
         // At or above threshold - unlocked
-        assertTrue(game.isUnlocked(totalProblemsSolved = 200))
-        assertTrue(game.isUnlocked(totalProblemsSolved = 500))
+        assertThat(game.isUnlocked(totalProblemsSolved = 200)).isTrue()
+        assertThat(game.isUnlocked(totalProblemsSolved = 500)).isTrue()
     }
 
     // ==================== Progress Calculation Tests ====================
@@ -65,20 +63,20 @@ class GameSelectionPresenterTest {
     fun `unlock progress calculated correctly`() {
         val game = Game.MATH_RACE // 50 problems required
 
-        assertEquals(0f, game.unlockProgress(0), 0.01f)
-        assertEquals(0.5f, game.unlockProgress(25), 0.01f)
-        assertEquals(1f, game.unlockProgress(50), 0.01f)
-        assertEquals(1f, game.unlockProgress(100), 0.01f) // Capped at 1.0
+        assertThat(game.unlockProgress(0)).isWithin(0.01f).of(0f)
+        assertThat(game.unlockProgress(25)).isWithin(0.01f).of(0.5f)
+        assertThat(game.unlockProgress(50)).isWithin(0.01f).of(1f)
+        assertThat(game.unlockProgress(100)).isWithin(0.01f).of(1f) // Capped at 1.0
     }
 
     @Test
     fun `problems until unlock calculated correctly`() {
         val game = Game.MATH_RACE // 50 problems required
 
-        assertEquals(50, game.problemsUntilUnlock(0))
-        assertEquals(25, game.problemsUntilUnlock(25))
-        assertEquals(0, game.problemsUntilUnlock(50))
-        assertEquals(0, game.problemsUntilUnlock(100)) // Already unlocked
+        assertThat(game.problemsUntilUnlock(0).isEqualTo(50))
+        assertThat(game.problemsUntilUnlock(25).isEqualTo(25))
+        assertThat(game.problemsUntilUnlock(50).isEqualTo(0))
+        assertThat(game.problemsUntilUnlock(100).isEqualTo(0)) // Already unlocked
     }
 
     @Test
@@ -86,33 +84,57 @@ class GameSelectionPresenterTest {
         // All Game enum values should be in the list
         val allGames = Game.entries
 
-        assertEquals(3, allGames.size)
-        assertTrue(allGames.contains(Game.MATH_RACE))
-        assertTrue(allGames.contains(Game.MEMORY_MATCH))
-        assertTrue(allGames.contains(Game.NUMBER_SEQUENCE))
+        assertThat(allGames.size).isEqualTo(3)
+        assertThat(allGames.contains(Game.MATH_RACE)).isTrue()
+        assertThat(allGames.contains(Game.MEMORY_MATCH)).isTrue()
+        assertThat(allGames.contains(Game.NUMBER_SEQUENCE)).isTrue()
     }
 
     // ==================== Game Properties Tests ====================
 
     @Test
     fun `game display names are correct`() {
-        assertEquals("Math Race", Game.MATH_RACE.displayName)
-        assertEquals("Memory Match", Game.MEMORY_MATCH.displayName)
-        assertEquals("Number Sequence", Game.NUMBER_SEQUENCE.displayName)
+        assertThat(Game.MATH_RACE.displayName).isEqualTo("Math Race")
+        assertThat(Game.MEMORY_MATCH.displayName).isEqualTo("Memory Match")
+        assertThat(Game.NUMBER_SEQUENCE.displayName).isEqualTo("Number Sequence")
     }
 
     @Test
     fun `game icons are defined`() {
-        assertTrue(Game.MATH_RACE.icon.isNotEmpty())
-        assertTrue(Game.MEMORY_MATCH.icon.isNotEmpty())
-        assertTrue(Game.NUMBER_SEQUENCE.icon.isNotEmpty())
+        assertThat(
+            Game.MATH_RACE.icon
+                .isNotEmpty()
+                .isTrue(),
+        )
+        assertThat(
+            Game.MEMORY_MATCH.icon
+                .isNotEmpty()
+                .isTrue(),
+        )
+        assertThat(
+            Game.NUMBER_SEQUENCE.icon
+                .isNotEmpty()
+                .isTrue(),
+        )
     }
 
     @Test
     fun `game descriptions are defined`() {
-        assertTrue(Game.MATH_RACE.description.isNotEmpty())
-        assertTrue(Game.MEMORY_MATCH.description.isNotEmpty())
-        assertTrue(Game.NUMBER_SEQUENCE.description.isNotEmpty())
+        assertThat(
+            Game.MATH_RACE.description
+                .isNotEmpty()
+                .isTrue(),
+        )
+        assertThat(
+            Game.MEMORY_MATCH.description
+                .isNotEmpty()
+                .isTrue(),
+        )
+        assertThat(
+            Game.NUMBER_SEQUENCE.description
+                .isNotEmpty()
+                .isTrue(),
+        )
     }
 
     // ==================== State Tests ====================
@@ -125,9 +147,9 @@ class GameSelectionPresenterTest {
         // - Math Race (50) = unlocked
         // - Memory Match (100) = locked
         // - Number Sequence (200) = locked
-        assertTrue(Game.MATH_RACE.isUnlocked(totalProblems))
-        assertFalse(Game.MEMORY_MATCH.isUnlocked(totalProblems))
-        assertFalse(Game.NUMBER_SEQUENCE.isUnlocked(totalProblems))
+        assertThat(Game.MATH_RACE.isUnlocked(totalProblems)).isTrue()
+        assertThat(Game.MEMORY_MATCH.isUnlocked(totalProblems)).isFalse()
+        assertThat(Game.NUMBER_SEQUENCE.isUnlocked(totalProblems)).isFalse()
     }
 
     @Test
@@ -135,9 +157,9 @@ class GameSelectionPresenterTest {
         val totalProblems = 200
 
         // At 200 problems, all games should be unlocked
-        assertTrue(Game.MATH_RACE.isUnlocked(totalProblems))
-        assertTrue(Game.MEMORY_MATCH.isUnlocked(totalProblems))
-        assertTrue(Game.NUMBER_SEQUENCE.isUnlocked(totalProblems))
+        assertThat(Game.MATH_RACE.isUnlocked(totalProblems)).isTrue()
+        assertThat(Game.MEMORY_MATCH.isUnlocked(totalProblems)).isTrue()
+        assertThat(Game.NUMBER_SEQUENCE.isUnlocked(totalProblems)).isTrue()
     }
 
     @Test
@@ -145,15 +167,15 @@ class GameSelectionPresenterTest {
         val totalProblems = 0
 
         // At 0 problems, no games should be unlocked
-        assertFalse(Game.MATH_RACE.isUnlocked(totalProblems))
-        assertFalse(Game.MEMORY_MATCH.isUnlocked(totalProblems))
-        assertFalse(Game.NUMBER_SEQUENCE.isUnlocked(totalProblems))
+        assertThat(Game.MATH_RACE.isUnlocked(totalProblems)).isFalse()
+        assertThat(Game.MEMORY_MATCH.isUnlocked(totalProblems)).isFalse()
+        assertThat(Game.NUMBER_SEQUENCE.isUnlocked(totalProblems)).isFalse()
     }
 
     @Test
     fun `unlock requirements are in ascending order`() {
         // Verify games unlock in order of difficulty/progression
-        assertTrue(Game.MATH_RACE.unlockRequirement < Game.MEMORY_MATCH.unlockRequirement)
-        assertTrue(Game.MEMORY_MATCH.unlockRequirement < Game.NUMBER_SEQUENCE.unlockRequirement)
+        assertThat(Game.MATH_RACE.unlockRequirement < Game.MEMORY_MATCH.unlockRequirement).isTrue()
+        assertThat(Game.MEMORY_MATCH.unlockRequirement < Game.NUMBER_SEQUENCE.unlockRequirement).isTrue()
     }
 }

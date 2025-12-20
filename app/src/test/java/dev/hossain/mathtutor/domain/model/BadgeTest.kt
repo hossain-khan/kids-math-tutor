@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.Instant
 
@@ -20,7 +18,7 @@ class BadgeTest {
                 unlockedAt = Instant.now(),
             )
 
-        assertTrue("Badge should be unlocked when unlockedAt is set", badge.isUnlocked())
+        assertThat("Badge should be unlocked when unlockedAt is set", badge.isUnlocked()).isTrue()
     }
 
     @Test
@@ -36,7 +34,7 @@ class BadgeTest {
                 unlockedAt = null,
             )
 
-        assertFalse("Badge should be locked when unlockedAt is null", badge.isUnlocked())
+        assertThat("Badge should be locked when unlockedAt is null", badge.isUnlocked()).isFalse()
     }
 
     @Test
@@ -53,14 +51,14 @@ class BadgeTest {
                 unlockedAt = unlockedAt,
             )
 
-        assertEquals("first_steps", badge.id)
-        assertEquals("First Steps", badge.name)
-        assertEquals("Solve your first problem", badge.description)
-        assertEquals("🎯", badge.icon)
-        assertEquals(BadgeCategory.GETTING_STARTED, badge.category)
-        assertTrue(badge.requirement is BadgeRequirement.ProblemCount)
-        assertEquals(1, (badge.requirement as BadgeRequirement.ProblemCount).count)
-        assertEquals(unlockedAt, badge.unlockedAt)
+        assertThat(badge.id).isEqualTo("first_steps")
+        assertThat(badge.name).isEqualTo("First Steps")
+        assertThat(badge.description).isEqualTo("Solve your first problem")
+        assertThat(badge.icon).isEqualTo("🎯")
+        assertThat(badge.category).isEqualTo(BadgeCategory.GETTING_STARTED)
+        assertThat(badge.requirement is BadgeRequirement.ProblemCount).isTrue()
+        assertThat((badge.requirement as BadgeRequirement.ProblemCount).isEqualTo(1).count)
+        assertThat(badge.unlockedAt).isEqualTo(unlockedAt)
     }
 
     @Test
@@ -75,6 +73,6 @@ class BadgeTest {
                 requirement = BadgeRequirement.ProblemCount(10),
             )
 
-        assertFalse("Badge should be locked by default", badge.isUnlocked())
+        assertThat("Badge should be locked by default", badge.isUnlocked()).isFalse()
     }
 }

@@ -1,16 +1,12 @@
 package dev.hossain.mathtutor.ui.mathpractice
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionAnswer
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -50,9 +46,9 @@ class MathPracticePresenterTest {
         val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION, GradeLevel.GRADE_1)
 
         // Then - Initial state should be set correctly
-        assertEquals(5, problems.size)
-        assertNotNull(problems[0])
-        assertEquals("1 + 1 = ?", problems[0].getDisplayString())
+        assertThat(problems.size).isEqualTo(5)
+        assertThat(problems[0]).isNotNull()
+        assertThat(problems[0].getDisplayString().isEqualTo("1 + 1 = ?"))
     }
 
     @Test
@@ -65,7 +61,7 @@ class MathPracticePresenterTest {
         currentAnswer += "7"
 
         // Then
-        assertEquals("57", currentAnswer)
+        assertThat(currentAnswer).isEqualTo("57")
     }
 
     @Test
@@ -79,8 +75,8 @@ class MathPracticePresenterTest {
         isCorrect = null
 
         // Then
-        assertEquals("", currentAnswer)
-        assertNull(isCorrect)
+        assertThat(currentAnswer).isEqualTo("")
+        assertThat(isCorrect).isNull()
     }
 
     @Test
@@ -93,7 +89,7 @@ class MathPracticePresenterTest {
         val isCorrect = problem.checkAnswer(userAnswer.toInt())
 
         // Then
-        assertTrue(isCorrect)
+        assertThat(isCorrect).isTrue()
     }
 
     @Test
@@ -106,7 +102,7 @@ class MathPracticePresenterTest {
         val isCorrect = problem.checkAnswer(userAnswer.toInt())
 
         // Then
-        assertFalse(isCorrect)
+        assertThat(isCorrect).isFalse()
     }
 
     @Test
@@ -118,7 +114,7 @@ class MathPracticePresenterTest {
         val userAnswer = currentAnswer.toIntOrNull()
 
         // Then
-        assertNull(userAnswer)
+        assertThat(userAnswer).isNull()
     }
 
     @Test
@@ -133,7 +129,7 @@ class MathPracticePresenterTest {
         }
 
         // Then
-        assertEquals(1, currentProblemIndex)
+        assertThat(currentProblemIndex).isEqualTo(1)
     }
 
     @Test
@@ -148,7 +144,7 @@ class MathPracticePresenterTest {
         }
 
         // Then - Should stay at last problem
-        assertEquals(4, currentProblemIndex)
+        assertThat(currentProblemIndex).isEqualTo(4)
     }
 
     @Test
@@ -164,9 +160,9 @@ class MathPracticePresenterTest {
         isCorrect = null
 
         // Then
-        assertEquals(1, currentProblemIndex)
-        assertEquals("", currentAnswer)
-        assertNull(isCorrect)
+        assertThat(currentProblemIndex).isEqualTo(1)
+        assertThat(currentAnswer).isEqualTo("")
+        assertThat(isCorrect).isNull()
     }
 
     @Test
@@ -178,7 +174,7 @@ class MathPracticePresenterTest {
         val problems = problemGenerator.generateProblems(problemCount, MathOperation.ADDITION, GradeLevel.GRADE_1)
 
         // Then
-        assertEquals(problemCount, problems.size)
+        assertThat(problems.size).isEqualTo(problemCount)
     }
 
     @Test
@@ -188,7 +184,7 @@ class MathPracticePresenterTest {
 
         // Then - All problems should be addition
         problems.forEach { problem ->
-            assertEquals(MathOperation.ADDITION, problem.operation)
+            assertThat(problem.operation).isEqualTo(MathOperation.ADDITION)
         }
     }
 
@@ -206,8 +202,8 @@ class MathPracticePresenterTest {
         }
 
         // Then
-        assertEquals(5, currentProblemIndex)
-        assertEquals(0.6f, (currentProblemIndex + 1).toFloat() / totalProblems, 0.01f)
+        assertThat(currentProblemIndex).isEqualTo(5)
+        assertThat((currentProblemIndex + 1).isEqualTo(0.6f).toFloat() / totalProblems, 0.01f)
     }
 
     @Test
@@ -221,7 +217,7 @@ class MathPracticePresenterTest {
         currentAnswer += "3"
 
         // Then
-        assertEquals("123", currentAnswer)
+        assertThat(currentAnswer).isEqualTo("123")
     }
 
     @Test
@@ -246,16 +242,16 @@ class MathPracticePresenterTest {
         }
 
         // Then - All problems should be recorded
-        assertEquals(3, sessionAnswers.size)
+        assertThat(sessionAnswers.size).isEqualTo(3)
         // First problem (1+1=2): answered correctly
-        assertTrue(sessionAnswers[problems[0].id]?.isCorrect == true)
-        assertEquals(2, sessionAnswers[problems[0].id]?.userAnswer)
+        assertThat(sessionAnswers[problems[0].id]?.isCorrect == true).isTrue()
+        assertThat(sessionAnswers[problems[0].id]?.userAnswer).isEqualTo(2)
         // Second problem (2+2=4): skipped
-        assertFalse(sessionAnswers[problems[1].id]?.isCorrect ?: true)
-        assertNull(sessionAnswers[problems[1].id]?.userAnswer)
+        assertThat(sessionAnswers[problems[1].id]?.isCorrect ?: true).isFalse()
+        assertThat(sessionAnswers[problems[1].id]?.userAnswer).isNull()
         // Third problem (3+3=6): answered correctly
-        assertTrue(sessionAnswers[problems[2].id]?.isCorrect == true)
-        assertEquals(6, sessionAnswers[problems[2].id]?.userAnswer)
+        assertThat(sessionAnswers[problems[2].id]?.isCorrect == true).isTrue()
+        assertThat(sessionAnswers[problems[2].id]?.userAnswer).isEqualTo(6)
     }
 
     @Test
@@ -276,8 +272,8 @@ class MathPracticePresenterTest {
             )
 
         // Then - Should be marked as incorrect with null answer
-        assertFalse(sessionAnswer.isCorrect)
-        assertNull(sessionAnswer.userAnswer)
+        assertThat(sessionAnswer.isCorrect).isFalse()
+        assertThat(sessionAnswer.userAnswer).isNull()
     }
 
     @Test
@@ -293,7 +289,7 @@ class MathPracticePresenterTest {
                 .seconds
 
         // Then - Should be 150 seconds (2 minutes 30 seconds)
-        assertEquals(150L, durationSeconds)
+        assertThat(durationSeconds).isEqualTo(150L)
     }
 
     @Test
@@ -324,12 +320,12 @@ class MathPracticePresenterTest {
             )
 
         // Then - All fields should be set correctly
-        assertEquals(3, practiceSession.totalProblems)
-        assertEquals(MathOperation.ADDITION, practiceSession.operation)
-        assertEquals(120L, practiceSession.durationSeconds)
-        assertEquals(completedAt, practiceSession.completedAt)
-        assertTrue(practiceSession.isComplete())
-        assertEquals(3, practiceSession.getCorrectCount())
+        assertThat(practiceSession.totalProblems).isEqualTo(3)
+        assertThat(practiceSession.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(practiceSession.durationSeconds).isEqualTo(120L)
+        assertThat(practiceSession.completedAt).isEqualTo(completedAt)
+        assertThat(practiceSession.isComplete()).isTrue()
+        assertThat(practiceSession.getCorrectCount().isEqualTo(3))
     }
 
     @Test
@@ -357,9 +353,9 @@ class MathPracticePresenterTest {
         val answeredCount = sessionAnswers.count { it.value.userAnswer != null }
         val correctCount = sessionAnswers.values.count { it.isCorrect }
 
-        assertEquals(5, sessionAnswers.size) // All problems recorded
-        assertEquals(3, answeredCount) // 3 answered
-        assertEquals(3, correctCount) // All answered were correct
+        assertThat(sessionAnswers.size).isEqualTo(5) // All problems recorded
+        assertThat(answeredCount).isEqualTo(3) // 3 answered
+        assertThat(correctCount).isEqualTo(3) // All answered were correct
     }
 
     // ==================== Integration Tests with UserProfileRepository ====================
@@ -398,8 +394,8 @@ class MathPracticePresenterTest {
         val problems = mockProblemGenerator.generateProblems(10, MathOperation.ADDITION, mockProfile.gradeLevel)
 
         // Then - Generator should receive KINDERGARTEN grade
-        assertEquals(GradeLevel.KINDERGARTEN, capturedGradeLevel)
-        assertEquals(10, problems.size)
+        assertThat(capturedGradeLevel).isEqualTo(GradeLevel.KINDERGARTEN)
+        assertThat(problems.size).isEqualTo(10)
     }
 
     @Test
@@ -431,8 +427,8 @@ class MathPracticePresenterTest {
         val problems = mockProblemGenerator.generateProblems(10, MathOperation.ADDITION, defaultGrade)
 
         // Then - Generator should receive GRADE_1 as default
-        assertEquals(GradeLevel.GRADE_1, capturedGradeLevel)
-        assertEquals(10, problems.size)
+        assertThat(capturedGradeLevel).isEqualTo(GradeLevel.GRADE_1)
+        assertThat(problems.size).isEqualTo(10)
     }
 
     @Test
@@ -469,8 +465,8 @@ class MathPracticePresenterTest {
         val problems = mockProblemGenerator.generateProblems(10, MathOperation.MULTIPLICATION, mockProfile.gradeLevel)
 
         // Then - Generator should receive GRADE_2 grade
-        assertEquals(GradeLevel.GRADE_2, capturedGradeLevel)
-        assertEquals(10, problems.size)
+        assertThat(capturedGradeLevel).isEqualTo(GradeLevel.GRADE_2)
+        assertThat(problems.size).isEqualTo(10)
     }
 
     @Test
@@ -484,9 +480,9 @@ class MathPracticePresenterTest {
         val grade2Problems = problemGenerator.generateProblems(5, MathOperation.ADDITION, GradeLevel.GRADE_2)
 
         // Then - All should generate the requested count
-        assertEquals(5, kindergartenProblems.size)
-        assertEquals(5, grade1Problems.size)
-        assertEquals(5, grade2Problems.size)
+        assertThat(kindergartenProblems.size).isEqualTo(5)
+        assertThat(grade1Problems.size).isEqualTo(5)
+        assertThat(grade2Problems.size).isEqualTo(5)
 
         // Note: The actual number ranges are validated in GradeAwareProblemGeneratorTest
         // This test just ensures the grade level parameter is properly used

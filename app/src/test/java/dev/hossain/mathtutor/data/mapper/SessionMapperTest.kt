@@ -1,12 +1,10 @@
 package dev.hossain.mathtutor.data.mapper
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionAnswer
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Test
 
 class SessionMapperTest {
@@ -30,14 +28,14 @@ class SessionMapperTest {
 
         val entity = SessionMapper.toEntity(session, MathOperation.ADDITION, 120L, 1)
 
-        assertEquals(MathOperation.ADDITION, entity.operation)
-        assertEquals(2, entity.totalProblems)
-        assertEquals(2, entity.correctAnswers)
-        assertEquals(0, entity.incorrectAnswers)
-        assertEquals(100f, entity.accuracy)
-        assertEquals(120L, entity.durationSeconds)
-        assertEquals(1, entity.gradeLevel)
-        assertNotNull(entity.timestamp)
+        assertThat(entity.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(entity.totalProblems).isEqualTo(2)
+        assertThat(entity.correctAnswers).isEqualTo(2)
+        assertThat(entity.incorrectAnswers).isEqualTo(0)
+        assertThat(entity.accuracy).isEqualTo(100f)
+        assertThat(entity.durationSeconds).isEqualTo(120L)
+        assertThat(entity.gradeLevel).isEqualTo(1)
+        assertThat(entity.timestamp).isNotNull()
     }
 
     @Test
@@ -62,13 +60,13 @@ class SessionMapperTest {
 
         val entity = SessionMapper.toEntity(session, MathOperation.ADDITION, 180L, 2)
 
-        assertEquals(MathOperation.ADDITION, entity.operation)
-        assertEquals(3, entity.totalProblems)
-        assertEquals(2, entity.correctAnswers)
-        assertEquals(1, entity.incorrectAnswers)
-        assertEquals(66.666664f, entity.accuracy, 0.001f)
-        assertEquals(180L, entity.durationSeconds)
-        assertEquals(2, entity.gradeLevel)
+        assertThat(entity.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(entity.totalProblems).isEqualTo(3)
+        assertThat(entity.correctAnswers).isEqualTo(2)
+        assertThat(entity.incorrectAnswers).isEqualTo(1)
+        assertThat(entity.accuracy).isWithin(0.001f).of(66.666664f)
+        assertThat(entity.durationSeconds).isEqualTo(180L)
+        assertThat(entity.gradeLevel).isEqualTo(2)
     }
 
     @Test
@@ -91,13 +89,13 @@ class SessionMapperTest {
 
         val entity = SessionMapper.toEntity(session, MathOperation.ADDITION, 240L, null)
 
-        assertEquals(MathOperation.ADDITION, entity.operation)
-        assertEquals(2, entity.totalProblems)
-        assertEquals(0, entity.correctAnswers)
-        assertEquals(2, entity.incorrectAnswers)
-        assertEquals(0f, entity.accuracy)
-        assertEquals(240L, entity.durationSeconds)
-        assertNull(entity.gradeLevel)
+        assertThat(entity.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(entity.totalProblems).isEqualTo(2)
+        assertThat(entity.correctAnswers).isEqualTo(0)
+        assertThat(entity.incorrectAnswers).isEqualTo(2)
+        assertThat(entity.accuracy).isEqualTo(0f)
+        assertThat(entity.durationSeconds).isEqualTo(240L)
+        assertThat(entity.gradeLevel).isNull()
     }
 
     @Test
@@ -115,10 +113,10 @@ class SessionMapperTest {
 
         val entity = SessionMapper.toEntity(session, MathOperation.SUBTRACTION, 60L)
 
-        assertEquals(MathOperation.SUBTRACTION, entity.operation)
-        assertEquals(1, entity.totalProblems)
-        assertEquals(1, entity.correctAnswers)
-        assertEquals(0, entity.incorrectAnswers)
+        assertThat(entity.operation).isEqualTo(MathOperation.SUBTRACTION)
+        assertThat(entity.totalProblems).isEqualTo(1)
+        assertThat(entity.correctAnswers).isEqualTo(1)
+        assertThat(entity.incorrectAnswers).isEqualTo(0)
     }
 
     @Test
@@ -149,12 +147,12 @@ class SessionMapperTest {
 
         val entity = SessionMapper.toEntity(session, MathOperation.ADDITION, 300L, 0)
 
-        assertEquals(MathOperation.ADDITION, entity.operation)
-        assertEquals(10, entity.totalProblems)
-        assertEquals(5, entity.correctAnswers) // Every other answer is correct
-        assertEquals(5, entity.incorrectAnswers)
-        assertEquals(50f, entity.accuracy)
-        assertEquals(300L, entity.durationSeconds)
-        assertEquals(0, entity.gradeLevel) // Kindergarten
+        assertThat(entity.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(entity.totalProblems).isEqualTo(10)
+        assertThat(entity.correctAnswers).isEqualTo(5) // Every other answer is correct
+        assertThat(entity.incorrectAnswers).isEqualTo(5)
+        assertThat(entity.accuracy).isEqualTo(50f)
+        assertThat(entity.durationSeconds).isEqualTo(300L)
+        assertThat(entity.gradeLevel).isEqualTo(0) // Kindergarten
     }
 }

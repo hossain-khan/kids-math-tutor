@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.domain.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 /**
@@ -21,7 +19,7 @@ class OperationPerformanceTest {
                 recentAttempts = 20,
             )
 
-        assertTrue(performance.shouldIncreaseDifficulty())
+        assertThat(performance.shouldIncreaseDifficulty()).isTrue()
     }
 
     @Test
@@ -36,7 +34,7 @@ class OperationPerformanceTest {
                 recentAttempts = 20,
             )
 
-        assertFalse(performance.shouldIncreaseDifficulty())
+        assertThat(performance.shouldIncreaseDifficulty()).isFalse()
     }
 
     @Test
@@ -51,7 +49,7 @@ class OperationPerformanceTest {
                 recentAttempts = 15, // Less than 20
             )
 
-        assertFalse(performance.shouldIncreaseDifficulty())
+        assertThat(performance.shouldIncreaseDifficulty()).isFalse()
     }
 
     @Test
@@ -66,7 +64,7 @@ class OperationPerformanceTest {
                 recentAttempts = 25,
             )
 
-        assertFalse(performance.shouldIncreaseDifficulty())
+        assertThat(performance.shouldIncreaseDifficulty()).isFalse()
     }
 
     @Test
@@ -81,7 +79,7 @@ class OperationPerformanceTest {
                 recentAttempts = 10,
             )
 
-        assertTrue(performance.shouldDecreaseDifficulty())
+        assertThat(performance.shouldDecreaseDifficulty()).isTrue()
     }
 
     @Test
@@ -96,7 +94,7 @@ class OperationPerformanceTest {
                 recentAttempts = 15,
             )
 
-        assertFalse(performance.shouldDecreaseDifficulty())
+        assertThat(performance.shouldDecreaseDifficulty()).isFalse()
     }
 
     @Test
@@ -111,7 +109,7 @@ class OperationPerformanceTest {
                 recentAttempts = 5, // Less than 10
             )
 
-        assertFalse(performance.shouldDecreaseDifficulty())
+        assertThat(performance.shouldDecreaseDifficulty()).isFalse()
     }
 
     @Test
@@ -126,7 +124,7 @@ class OperationPerformanceTest {
                 recentAttempts = 15,
             )
 
-        assertFalse(performance.shouldDecreaseDifficulty())
+        assertThat(performance.shouldDecreaseDifficulty()).isFalse()
     }
 
     @Test
@@ -141,7 +139,7 @@ class OperationPerformanceTest {
                 recentAttempts = 20,
             )
 
-        assertEquals(DifficultyAdjustment.HARDER, performance.getRecommendedAdjustment())
+        assertThat(performance.getRecommendedAdjustment().isEqualTo(DifficultyAdjustment.HARDER))
     }
 
     @Test
@@ -156,7 +154,7 @@ class OperationPerformanceTest {
                 recentAttempts = 10,
             )
 
-        assertEquals(DifficultyAdjustment.EASIER, performance.getRecommendedAdjustment())
+        assertThat(performance.getRecommendedAdjustment().isEqualTo(DifficultyAdjustment.EASIER))
     }
 
     @Test
@@ -171,7 +169,7 @@ class OperationPerformanceTest {
                 recentAttempts = 15,
             )
 
-        assertEquals(DifficultyAdjustment.CURRENT, performance.getRecommendedAdjustment())
+        assertThat(performance.getRecommendedAdjustment().isEqualTo(DifficultyAdjustment.CURRENT))
     }
 
     @Test
@@ -186,7 +184,7 @@ class OperationPerformanceTest {
                 recentAttempts = 10,
             )
 
-        assertEquals(75f, performance.overallAccuracy, 0.01f)
+        assertThat(performance.overallAccuracy).isWithin(0.01f).of(75f)
     }
 
     @Test
@@ -201,7 +199,7 @@ class OperationPerformanceTest {
                 recentAttempts = 0,
             )
 
-        assertEquals(0f, performance.overallAccuracy, 0.01f)
+        assertThat(performance.overallAccuracy).isWithin(0.01f).of(0f)
     }
 
     @Test
@@ -212,12 +210,12 @@ class OperationPerformanceTest {
                 gradeLevel = GradeLevel.GRADE_2,
             )
 
-        assertEquals(MathOperation.SUBTRACTION, performance.operation)
-        assertEquals(GradeLevel.GRADE_2, performance.gradeLevel)
-        assertEquals(0, performance.totalAttempts)
-        assertEquals(0, performance.correctAnswers)
-        assertEquals(0f, performance.recentAccuracy, 0.01f)
-        assertEquals(0, performance.recentAttempts)
+        assertThat(performance.operation).isEqualTo(MathOperation.SUBTRACTION)
+        assertThat(performance.gradeLevel).isEqualTo(GradeLevel.GRADE_2)
+        assertThat(performance.totalAttempts).isEqualTo(0)
+        assertThat(performance.correctAnswers).isEqualTo(0)
+        assertThat(performance.recentAccuracy).isWithin(0.01f).of(0f)
+        assertThat(performance.recentAttempts).isEqualTo(0)
     }
 
     @Test
@@ -232,7 +230,7 @@ class OperationPerformanceTest {
                 recentAttempts = 20, // Exactly 20
             )
 
-        assertTrue(performance.shouldIncreaseDifficulty())
+        assertThat(performance.shouldIncreaseDifficulty()).isTrue()
     }
 
     @Test
@@ -247,6 +245,6 @@ class OperationPerformanceTest {
                 recentAttempts = 20,
             )
 
-        assertFalse(performance.shouldIncreaseDifficulty())
+        assertThat(performance.shouldIncreaseDifficulty()).isFalse()
     }
 }

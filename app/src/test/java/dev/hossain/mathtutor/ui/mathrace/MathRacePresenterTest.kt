@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.mathrace
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.Game
@@ -15,10 +16,6 @@ import dev.hossain.mathtutor.haptic.HapticService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -51,14 +48,14 @@ class MathRacePresenterTest {
         val gameState = MathRaceScreen.GameState.NotStarted
 
         // Verify it's the singleton object
-        assertEquals(MathRaceScreen.GameState.NotStarted, gameState)
+        assertThat(gameState).isEqualTo(MathRaceScreen.GameState.NotStarted)
     }
 
     @Test
     fun `countdown state contains countdown value`() {
         val countdownState = MathRaceScreen.GameState.Countdown(countdownValue = 3)
 
-        assertEquals(3, countdownState.countdownValue)
+        assertThat(countdownState.countdownValue).isEqualTo(3)
     }
 
     @Test
@@ -67,12 +64,12 @@ class MathRacePresenterTest {
 
         countdownValues.forEachIndexed { index, expected ->
             val state = MathRaceScreen.GameState.Countdown(countdownValue = expected)
-            assertEquals(expected, state.countdownValue)
+            assertThat(state.countdownValue).isEqualTo(expected)
         }
 
         // Verify 0 represents "GO"
         val goState = MathRaceScreen.GameState.Countdown(countdownValue = 0)
-        assertEquals(0, goState.countdownValue)
+        assertThat(goState.countdownValue).isEqualTo(0)
     }
 
     @Test
@@ -86,11 +83,11 @@ class MathRacePresenterTest {
                 averageTimePerProblem = 3.33f,
             )
 
-        assertEquals(15, finishedState.finalScore)
-        assertEquals(18, finishedState.totalAttempts)
-        assertTrue(finishedState.isNewRecord)
-        assertEquals(83.33f, finishedState.accuracy, 0.01f)
-        assertEquals(3.33f, finishedState.averageTimePerProblem, 0.01f)
+        assertThat(finishedState.finalScore).isEqualTo(15)
+        assertThat(finishedState.totalAttempts).isEqualTo(18)
+        assertThat(finishedState.isNewRecord).isTrue()
+        assertThat(finishedState.accuracy).isWithin(0.01f).of(83.33f)
+        assertThat(finishedState.averageTimePerProblem).isWithin(0.01f).of(3.33f)
     }
 
     // ==================== Answer Checking Tests ====================
@@ -111,9 +108,9 @@ class MathRacePresenterTest {
         }
         totalAttempts++
 
-        assertEquals(1, score)
-        assertEquals(1, correctAnswers)
-        assertEquals(1, totalAttempts)
+        assertThat(score).isEqualTo(1)
+        assertThat(correctAnswers).isEqualTo(1)
+        assertThat(totalAttempts).isEqualTo(1)
     }
 
     @Test
@@ -132,9 +129,9 @@ class MathRacePresenterTest {
         }
         totalAttempts++
 
-        assertEquals(0, score)
-        assertEquals(0, correctAnswers)
-        assertEquals(1, totalAttempts)
+        assertThat(score).isEqualTo(0)
+        assertThat(correctAnswers).isEqualTo(0)
+        assertThat(totalAttempts).isEqualTo(1)
     }
 
     @Test
@@ -161,9 +158,9 @@ class MathRacePresenterTest {
             totalAttempts++
         }
 
-        assertEquals(4, score)
-        assertEquals(4, correctAnswers)
-        assertEquals(6, totalAttempts)
+        assertThat(score).isEqualTo(4)
+        assertThat(correctAnswers).isEqualTo(4)
+        assertThat(totalAttempts).isEqualTo(6)
     }
 
     // ==================== Stats Calculation Tests ====================
@@ -180,7 +177,7 @@ class MathRacePresenterTest {
                 0f
             }
 
-        assertEquals(80f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(80f)
     }
 
     @Test
@@ -195,7 +192,7 @@ class MathRacePresenterTest {
                 0f
             }
 
-        assertEquals(0f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(0f)
     }
 
     @Test
@@ -210,7 +207,7 @@ class MathRacePresenterTest {
                 0f
             }
 
-        assertEquals(100f, accuracy, 0.01f)
+        assertThat(accuracy).isWithin(0.01f).of(100f)
     }
 
     @Test
@@ -225,7 +222,7 @@ class MathRacePresenterTest {
                 0f
             }
 
-        assertEquals(3f, avgTime, 0.01f)
+        assertThat(avgTime).isWithin(0.01f).of(3f)
     }
 
     @Test
@@ -240,7 +237,7 @@ class MathRacePresenterTest {
                 0f
             }
 
-        assertEquals(0f, avgTime, 0.01f)
+        assertThat(avgTime).isWithin(0.01f).of(0f)
     }
 
     @Test
@@ -250,7 +247,7 @@ class MathRacePresenterTest {
 
         val isNewRecord = score > personalBest
 
-        assertTrue(isNewRecord)
+        assertThat(isNewRecord).isTrue()
     }
 
     @Test
@@ -260,7 +257,7 @@ class MathRacePresenterTest {
 
         val isNewRecord = score > personalBest
 
-        assertFalse(isNewRecord)
+        assertThat(isNewRecord).isFalse()
     }
 
     @Test
@@ -270,7 +267,7 @@ class MathRacePresenterTest {
 
         val isNewRecord = score > personalBest
 
-        assertFalse(isNewRecord)
+        assertThat(isNewRecord).isFalse()
     }
 
     // ==================== Input Handling Tests ====================
@@ -284,7 +281,7 @@ class MathRacePresenterTest {
         currentAnswer += "2"
         currentAnswer += "3"
 
-        assertEquals("123", currentAnswer)
+        assertThat(currentAnswer).isEqualTo("123")
     }
 
     @Test
@@ -299,8 +296,8 @@ class MathRacePresenterTest {
             }
         }
 
-        assertEquals("1234", currentAnswer)
-        assertEquals(4, currentAnswer.length)
+        assertThat(currentAnswer).isEqualTo("1234")
+        assertThat(currentAnswer.length).isEqualTo(4)
     }
 
     @Test
@@ -309,7 +306,7 @@ class MathRacePresenterTest {
 
         currentAnswer = currentAnswer.dropLast(1)
 
-        assertEquals("12", currentAnswer)
+        assertThat(currentAnswer).isEqualTo("12")
     }
 
     @Test
@@ -320,7 +317,7 @@ class MathRacePresenterTest {
             currentAnswer = currentAnswer.dropLast(1)
         }
 
-        assertEquals("", currentAnswer)
+        assertThat(currentAnswer).isEqualTo("")
     }
 
     // ==================== Problem Generation Tests ====================
@@ -334,10 +331,10 @@ class MathRacePresenterTest {
                 gradeLevel = GradeLevel.GRADE_1,
             )
 
-        assertEquals(1, problems.size)
+        assertThat(problems.size).isEqualTo(1)
         val problem = problems[0]
-        assertEquals(MathOperation.ADDITION, problem.operation)
-        assertEquals(problem.num1 + problem.num2, problem.correctAnswer)
+        assertThat(problem.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(problem.correctAnswer).isEqualTo(problem.num1 + problem.num2)
     }
 
     @Test
@@ -349,11 +346,11 @@ class MathRacePresenterTest {
                 gradeLevel = GradeLevel.GRADE_1,
             )
 
-        assertEquals(10, problems.size)
+        assertThat(problems.size).isEqualTo(10)
         // With MIXED, problems should be valid regardless of specific operation
         problems.forEach { problem ->
-            assertTrue(problem.num1 > 0)
-            assertTrue(problem.num2 > 0)
+            assertThat(problem.num1 > 0).isTrue()
+            assertThat(problem.num2 > 0).isTrue()
         }
     }
 
@@ -366,7 +363,7 @@ class MathRacePresenterTest {
             gameState == MathRaceScreen.GameState.NotStarted ||
                 gameState is MathRaceScreen.GameState.Finished
 
-        assertTrue(canStartGame)
+        assertThat(canStartGame).isTrue()
     }
 
     @Test
@@ -383,7 +380,7 @@ class MathRacePresenterTest {
             gameState == MathRaceScreen.GameState.NotStarted ||
                 gameState is MathRaceScreen.GameState.Finished
 
-        assertTrue(canStartGame)
+        assertThat(canStartGame).isTrue()
     }
 
     @Test
@@ -392,9 +389,9 @@ class MathRacePresenterTest {
         val countdownState = MathRaceScreen.GameState.Countdown(3)
         val notStartedState = MathRaceScreen.GameState.NotStarted
 
-        assertTrue(playingState == MathRaceScreen.GameState.Playing)
-        assertFalse(countdownState == MathRaceScreen.GameState.Playing)
-        assertFalse(notStartedState == MathRaceScreen.GameState.Playing)
+        assertThat(playingState == MathRaceScreen.GameState.Playing).isTrue()
+        assertThat(countdownState == MathRaceScreen.GameState.Playing).isFalse()
+        assertThat(notStartedState == MathRaceScreen.GameState.Playing).isFalse()
     }
 
     @Test
@@ -409,9 +406,9 @@ class MathRacePresenterTest {
         totalAttempts = 0
         timeRemaining = 60
 
-        assertEquals(0, score)
-        assertEquals(0, totalAttempts)
-        assertEquals(60, timeRemaining)
+        assertThat(score).isEqualTo(0)
+        assertThat(totalAttempts).isEqualTo(0)
+        assertThat(timeRemaining).isEqualTo(60)
     }
 
     // ==================== State Tests ====================
@@ -433,15 +430,15 @@ class MathRacePresenterTest {
                 eventSink = {},
             )
 
-        assertEquals(MathRaceScreen.GameState.Playing, state.gameState)
-        assertEquals("8", state.currentAnswer)
-        assertEquals(10, state.score)
-        assertEquals(45, state.timeRemaining)
-        assertEquals(15, state.personalBest)
-        assertEquals(12, state.totalAttempts)
-        assertEquals(10, state.correctAnswers)
-        assertTrue(state.lastAnswerCorrect == true)
-        assertEquals("Test User", state.userName)
+        assertThat(state.gameState).isEqualTo(MathRaceScreen.GameState.Playing)
+        assertThat(state.currentAnswer).isEqualTo("8")
+        assertThat(state.score).isEqualTo(10)
+        assertThat(state.timeRemaining).isEqualTo(45)
+        assertThat(state.personalBest).isEqualTo(15)
+        assertThat(state.totalAttempts).isEqualTo(12)
+        assertThat(state.correctAnswers).isEqualTo(10)
+        assertThat(state.lastAnswerCorrect == true).isTrue()
+        assertThat(state.userName).isEqualTo("Test User")
     }
 
     @Test
@@ -451,7 +448,7 @@ class MathRacePresenterTest {
                 eventSink = {},
             )
 
-        assertNull(state.lastAnswerCorrect)
+        assertThat(state.lastAnswerCorrect).isNull()
     }
 
     // ==================== Audio Service Tests ====================
@@ -460,42 +457,42 @@ class MathRacePresenterTest {
     fun `countdown plays countdown audio`() {
         fakeAudioService.playCountdown()
 
-        assertEquals(1, fakeAudioService.countdownPlayed)
+        assertThat(fakeAudioService.countdownPlayed).isEqualTo(1)
     }
 
     @Test
     fun `go plays go audio`() {
         fakeAudioService.playGo()
 
-        assertEquals(1, fakeAudioService.goPlayed)
+        assertThat(fakeAudioService.goPlayed).isEqualTo(1)
     }
 
     @Test
     fun `warning plays warning audio`() {
         fakeAudioService.playWarning()
 
-        assertEquals(1, fakeAudioService.warningPlayed)
+        assertThat(fakeAudioService.warningPlayed).isEqualTo(1)
     }
 
     @Test
     fun `correct answer plays success audio`() {
         fakeAudioService.playSuccess()
 
-        assertEquals(1, fakeAudioService.successPlayed)
+        assertThat(fakeAudioService.successPlayed).isEqualTo(1)
     }
 
     @Test
     fun `incorrect answer plays error audio`() {
         fakeAudioService.playError()
 
-        assertEquals(1, fakeAudioService.errorPlayed)
+        assertThat(fakeAudioService.errorPlayed).isEqualTo(1)
     }
 
     @Test
     fun `new record plays perfect score audio`() {
         fakeAudioService.playPerfectScore()
 
-        assertEquals(1, fakeAudioService.perfectScorePlayed)
+        assertThat(fakeAudioService.perfectScorePlayed).isEqualTo(1)
     }
 
     // ==================== Haptic Service Tests ====================
@@ -504,28 +501,28 @@ class MathRacePresenterTest {
     fun `correct answer triggers success haptic`() {
         fakeHapticService.triggerSuccess()
 
-        assertEquals(1, fakeHapticService.successTriggered)
+        assertThat(fakeHapticService.successTriggered).isEqualTo(1)
     }
 
     @Test
     fun `incorrect answer triggers error haptic`() {
         fakeHapticService.triggerError()
 
-        assertEquals(1, fakeHapticService.errorTriggered)
+        assertThat(fakeHapticService.errorTriggered).isEqualTo(1)
     }
 
     @Test
     fun `button click triggers button haptic`() {
         fakeHapticService.triggerButtonClick()
 
-        assertEquals(1, fakeHapticService.buttonClickTriggered)
+        assertThat(fakeHapticService.buttonClickTriggered).isEqualTo(1)
     }
 
     @Test
     fun `warning triggers long press haptic`() {
         fakeHapticService.triggerLongPress()
 
-        assertEquals(1, fakeHapticService.longPressTriggered)
+        assertThat(fakeHapticService.longPressTriggered).isEqualTo(1)
     }
 
     // ==================== Game Repository Tests ====================
@@ -537,7 +534,7 @@ class MathRacePresenterTest {
         // Simulate loading personal best
         val personalBest = 25
 
-        assertEquals(25, personalBest)
+        assertThat(personalBest).isEqualTo(25)
     }
 
     // ==================== Timer Tests ====================
@@ -546,14 +543,14 @@ class MathRacePresenterTest {
     fun `timer starts at 60 seconds`() {
         val initialTime = 60
 
-        assertEquals(60, initialTime)
+        assertThat(initialTime).isEqualTo(60)
     }
 
     @Test
     fun `warning threshold is 10 seconds`() {
         val warningThreshold = 10
 
-        assertEquals(10, warningThreshold)
+        assertThat(warningThreshold).isEqualTo(10)
     }
 
     @Test
@@ -564,7 +561,7 @@ class MathRacePresenterTest {
             timeRemaining--
         }
 
-        assertEquals(0, timeRemaining)
+        assertThat(timeRemaining).isEqualTo(0)
     }
 
     // ==================== Helper Functions ====================

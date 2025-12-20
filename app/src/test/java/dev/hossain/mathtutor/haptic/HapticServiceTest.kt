@@ -1,8 +1,6 @@
 package dev.hossain.mathtutor.haptic
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -28,7 +26,7 @@ class HapticServiceTest {
 
         hapticService.triggerSuccess()
 
-        assertEquals(1, hapticService.successTriggered)
+        assertThat(hapticService.successTriggered).isEqualTo(1)
     }
 
     @Test
@@ -37,7 +35,7 @@ class HapticServiceTest {
 
         hapticService.triggerSuccess()
 
-        assertEquals(0, hapticService.successTriggered)
+        assertThat(hapticService.successTriggered).isEqualTo(0)
     }
 
     // ==================== Error Vibration Tests ====================
@@ -48,7 +46,7 @@ class HapticServiceTest {
 
         hapticService.triggerError()
 
-        assertEquals(1, hapticService.errorTriggered)
+        assertThat(hapticService.errorTriggered).isEqualTo(1)
     }
 
     @Test
@@ -57,7 +55,7 @@ class HapticServiceTest {
 
         hapticService.triggerError()
 
-        assertEquals(0, hapticService.errorTriggered)
+        assertThat(hapticService.errorTriggered).isEqualTo(0)
     }
 
     // ==================== Badge Unlock Vibration Tests ====================
@@ -68,7 +66,7 @@ class HapticServiceTest {
 
         hapticService.triggerBadgeUnlock()
 
-        assertEquals(1, hapticService.badgeUnlockTriggered)
+        assertThat(hapticService.badgeUnlockTriggered).isEqualTo(1)
     }
 
     @Test
@@ -77,7 +75,7 @@ class HapticServiceTest {
 
         hapticService.triggerBadgeUnlock()
 
-        assertEquals(0, hapticService.badgeUnlockTriggered)
+        assertThat(hapticService.badgeUnlockTriggered).isEqualTo(0)
     }
 
     // ==================== Button Click Vibration Tests ====================
@@ -88,7 +86,7 @@ class HapticServiceTest {
 
         hapticService.triggerButtonClick()
 
-        assertEquals(1, hapticService.buttonClickTriggered)
+        assertThat(hapticService.buttonClickTriggered).isEqualTo(1)
     }
 
     @Test
@@ -97,7 +95,7 @@ class HapticServiceTest {
 
         hapticService.triggerButtonClick()
 
-        assertEquals(0, hapticService.buttonClickTriggered)
+        assertThat(hapticService.buttonClickTriggered).isEqualTo(0)
     }
 
     // ==================== Long Press Vibration Tests ====================
@@ -108,7 +106,7 @@ class HapticServiceTest {
 
         hapticService.triggerLongPress()
 
-        assertEquals(1, hapticService.longPressTriggered)
+        assertThat(hapticService.longPressTriggered).isEqualTo(1)
     }
 
     @Test
@@ -117,7 +115,7 @@ class HapticServiceTest {
 
         hapticService.triggerLongPress()
 
-        assertEquals(0, hapticService.longPressTriggered)
+        assertThat(hapticService.longPressTriggered).isEqualTo(0)
     }
 
     // ==================== Settings Tests ====================
@@ -126,14 +124,14 @@ class HapticServiceTest {
     fun `haptics are enabled by default`() {
         val newService = FakeHapticService()
 
-        assertTrue(newService.isHapticsEnabled)
+        assertThat(newService.isHapticsEnabled).isTrue()
     }
 
     @Test
     fun `setHapticsEnabled updates haptics state`() {
         hapticService.setHapticsEnabled(false)
 
-        assertFalse(hapticService.isHapticsEnabled)
+        assertThat(hapticService.isHapticsEnabled).isFalse()
     }
 
     @Test
@@ -141,7 +139,7 @@ class HapticServiceTest {
         hapticService.setHapticsEnabled(false)
         hapticService.setHapticsEnabled(true)
 
-        assertTrue(hapticService.isHapticsEnabled)
+        assertThat(hapticService.isHapticsEnabled).isTrue()
     }
 
     // ==================== Multiple Calls Tests ====================
@@ -154,7 +152,7 @@ class HapticServiceTest {
         hapticService.triggerSuccess()
         hapticService.triggerSuccess()
 
-        assertEquals(3, hapticService.successTriggered)
+        assertThat(hapticService.successTriggered).isEqualTo(3)
     }
 
     @Test
@@ -167,22 +165,22 @@ class HapticServiceTest {
         hapticService.triggerButtonClick()
         hapticService.triggerLongPress()
 
-        assertEquals(1, hapticService.successTriggered)
-        assertEquals(1, hapticService.errorTriggered)
-        assertEquals(1, hapticService.badgeUnlockTriggered)
-        assertEquals(1, hapticService.buttonClickTriggered)
-        assertEquals(1, hapticService.longPressTriggered)
+        assertThat(hapticService.successTriggered).isEqualTo(1)
+        assertThat(hapticService.errorTriggered).isEqualTo(1)
+        assertThat(hapticService.badgeUnlockTriggered).isEqualTo(1)
+        assertThat(hapticService.buttonClickTriggered).isEqualTo(1)
+        assertThat(hapticService.longPressTriggered).isEqualTo(1)
     }
 
     @Test
     fun `enabling haptics after disabling allows vibrations`() {
         hapticService.setHapticsEnabled(false)
         hapticService.triggerSuccess()
-        assertEquals(0, hapticService.successTriggered)
+        assertThat(hapticService.successTriggered).isEqualTo(0)
 
         hapticService.setHapticsEnabled(true)
         hapticService.triggerSuccess()
-        assertEquals(1, hapticService.successTriggered)
+        assertThat(hapticService.successTriggered).isEqualTo(1)
     }
 
     /**

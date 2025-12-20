@@ -1,11 +1,11 @@
 package dev.hossain.mathtutor.domain.usecase
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.repository.StreakRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
@@ -27,11 +27,11 @@ class UpdateStreakUseCaseTest {
 
             val result = useCase.updateStreak(today)
 
-            assertEquals(1, result.currentStreak)
-            assertEquals(1, result.longestStreak)
-            assertEquals(today, result.lastPracticeDate)
-            assertEquals(1, result.totalDaysPracticed)
-            assertEquals(1, fakeRepository.savedStreaks.size)
+            assertThat(result.currentStreak).isEqualTo(1)
+            assertThat(result.longestStreak).isEqualTo(1)
+            assertThat(result.lastPracticeDate).isEqualTo(today)
+            assertThat(result.totalDaysPracticed).isEqualTo(1)
+            assertThat(fakeRepository.savedStreaks.size).isEqualTo(1)
         }
 
     @Test
@@ -49,11 +49,11 @@ class UpdateStreakUseCaseTest {
 
             val result = useCase.updateStreak(today)
 
-            assertEquals(6, result.currentStreak)
-            assertEquals(10, result.longestStreak)
-            assertEquals(today, result.lastPracticeDate)
-            assertEquals(16, result.totalDaysPracticed)
-            assertEquals(1, fakeRepository.savedStreaks.size)
+            assertThat(result.currentStreak).isEqualTo(6)
+            assertThat(result.longestStreak).isEqualTo(10)
+            assertThat(result.lastPracticeDate).isEqualTo(today)
+            assertThat(result.totalDaysPracticed).isEqualTo(16)
+            assertThat(fakeRepository.savedStreaks.size).isEqualTo(1)
         }
 
     @Test
@@ -71,11 +71,11 @@ class UpdateStreakUseCaseTest {
             val result = useCase.updateStreak(today)
 
             // No change expected, no save should occur
-            assertEquals(5, result.currentStreak)
-            assertEquals(10, result.longestStreak)
-            assertEquals(today, result.lastPracticeDate)
-            assertEquals(15, result.totalDaysPracticed)
-            assertEquals(0, fakeRepository.savedStreaks.size) // No save for same-day
+            assertThat(result.currentStreak).isEqualTo(5)
+            assertThat(result.longestStreak).isEqualTo(10)
+            assertThat(result.lastPracticeDate).isEqualTo(today)
+            assertThat(result.totalDaysPracticed).isEqualTo(15)
+            assertThat(fakeRepository.savedStreaks.size).isEqualTo(0) // No save for same-day
         }
 
     @Test
@@ -93,11 +93,11 @@ class UpdateStreakUseCaseTest {
 
             val result = useCase.updateStreak(today)
 
-            assertEquals(1, result.currentStreak) // Reset
-            assertEquals(10, result.longestStreak) // Preserved
-            assertEquals(today, result.lastPracticeDate)
-            assertEquals(16, result.totalDaysPracticed)
-            assertEquals(1, fakeRepository.savedStreaks.size)
+            assertThat(result.currentStreak).isEqualTo(1) // Reset
+            assertThat(result.longestStreak).isEqualTo(10) // Preserved
+            assertThat(result.lastPracticeDate).isEqualTo(today)
+            assertThat(result.totalDaysPracticed).isEqualTo(16)
+            assertThat(fakeRepository.savedStreaks.size).isEqualTo(1)
         }
 
     @Test
@@ -115,11 +115,11 @@ class UpdateStreakUseCaseTest {
 
             val result = useCase.updateStreak(today)
 
-            assertEquals(11, result.currentStreak)
-            assertEquals(11, result.longestStreak) // Updated
-            assertEquals(today, result.lastPracticeDate)
-            assertEquals(21, result.totalDaysPracticed)
-            assertEquals(1, fakeRepository.savedStreaks.size)
+            assertThat(result.currentStreak).isEqualTo(11)
+            assertThat(result.longestStreak).isEqualTo(11) // Updated
+            assertThat(result.lastPracticeDate).isEqualTo(today)
+            assertThat(result.totalDaysPracticed).isEqualTo(21)
+            assertThat(fakeRepository.savedStreaks.size).isEqualTo(1)
         }
 
     @Test
@@ -127,7 +127,7 @@ class UpdateStreakUseCaseTest {
         runTest {
             val result = useCase.getCurrentStreak()
 
-            assertEquals(DailyStreak.EMPTY, result)
+            assertThat(result).isEqualTo(DailyStreak.EMPTY)
         }
 
     @Test
@@ -144,7 +144,7 @@ class UpdateStreakUseCaseTest {
 
             val result = useCase.getCurrentStreak()
 
-            assertEquals(expected, result)
+            assertThat(result).isEqualTo(expected)
         }
 
     @Test
@@ -153,9 +153,9 @@ class UpdateStreakUseCaseTest {
             // Don't pass today parameter - use default
             val result = useCase.updateStreak()
 
-            assertEquals(1, result.currentStreak)
-            assertEquals(LocalDate.now(), result.lastPracticeDate)
-            assertEquals(1, fakeRepository.savedStreaks.size)
+            assertThat(result.currentStreak).isEqualTo(1)
+            assertThat(result.lastPracticeDate).isEqualTo(LocalDate.now())
+            assertThat(fakeRepository.savedStreaks.size).isEqualTo(1)
         }
 
     @Test
@@ -166,18 +166,18 @@ class UpdateStreakUseCaseTest {
             val day3 = LocalDate.of(2025, 1, 3)
 
             val streak1 = useCase.updateStreak(day1)
-            assertEquals(1, streak1.currentStreak)
+            assertThat(streak1.currentStreak).isEqualTo(1)
 
             fakeRepository.currentStreak = streak1
             val streak2 = useCase.updateStreak(day2)
-            assertEquals(2, streak2.currentStreak)
+            assertThat(streak2.currentStreak).isEqualTo(2)
 
             fakeRepository.currentStreak = streak2
             val streak3 = useCase.updateStreak(day3)
-            assertEquals(3, streak3.currentStreak)
-            assertEquals(3, streak3.longestStreak)
+            assertThat(streak3.currentStreak).isEqualTo(3)
+            assertThat(streak3.longestStreak).isEqualTo(3)
 
-            assertEquals(3, fakeRepository.savedStreaks.size)
+            assertThat(fakeRepository.savedStreaks.size).isEqualTo(3)
         }
 
     @Test
@@ -195,9 +195,9 @@ class UpdateStreakUseCaseTest {
             // Practice after gap
             val result = useCase.updateStreak(LocalDate.of(2025, 1, 5))
 
-            assertEquals(1, result.currentStreak)
-            assertEquals(7, result.longestStreak) // Longest preserved
-            assertEquals(8, result.totalDaysPracticed)
+            assertThat(result.currentStreak).isEqualTo(1)
+            assertThat(result.longestStreak).isEqualTo(7) // Longest preserved
+            assertThat(result.totalDaysPracticed).isEqualTo(8)
         }
 }
 

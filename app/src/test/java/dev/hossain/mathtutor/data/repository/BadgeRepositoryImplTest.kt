@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.data.repository
 
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
 import dev.hossain.mathtutor.data.local.entity.BadgeEntity
 import dev.hossain.mathtutor.domain.model.BadgeCategory
@@ -8,10 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.Instant
@@ -35,11 +32,11 @@ class BadgeRepositoryImplTest {
 
             val badges = repository.getAllBadges().first()
 
-            assertEquals(2, badges.size)
-            assertEquals("badge1", badges[0].id)
-            assertEquals("Badge 1", badges[0].name)
-            assertEquals("badge2", badges[1].id)
-            assertEquals("Badge 2", badges[1].name)
+            assertThat(badges.size).isEqualTo(2)
+            assertThat(badges[0].id).isEqualTo("badge1")
+            assertThat(badges[0].name).isEqualTo("Badge 1")
+            assertThat(badges[1].id).isEqualTo("badge2")
+            assertThat(badges[1].name).isEqualTo("Badge 2")
         }
 
     @Test
@@ -49,7 +46,7 @@ class BadgeRepositoryImplTest {
 
             val badges = repository.getAllBadges().first()
 
-            assertTrue(badges.isEmpty())
+            assertThat(badges.isEmpty()).isTrue()
         }
 
     @Test
@@ -63,10 +60,10 @@ class BadgeRepositoryImplTest {
 
             val badges = repository.getRecentlyUnlockedBadges(3).first()
 
-            assertEquals(3, badges.size)
-            assertEquals("badge3", badges[0].id)
-            assertEquals("badge2", badges[1].id)
-            assertEquals("badge1", badges[2].id)
+            assertThat(badges.size).isEqualTo(3)
+            assertThat(badges[0].id).isEqualTo("badge3")
+            assertThat(badges[1].id).isEqualTo("badge2")
+            assertThat(badges[2].id).isEqualTo("badge1")
         }
 
     @Test
@@ -78,8 +75,8 @@ class BadgeRepositoryImplTest {
 
             val badges = repository.getBadgesByCategory(BadgeCategory.GETTING_STARTED).first()
 
-            assertEquals(2, badges.size)
-            assertTrue(badges.all { it.category == BadgeCategory.GETTING_STARTED })
+            assertThat(badges.size).isEqualTo(2)
+            assertThat(badges.all { it.category == BadgeCategory.GETTING_STARTED }).isTrue()
         }
 
     @Test
@@ -92,9 +89,9 @@ class BadgeRepositoryImplTest {
 
             val badges = repository.getUnlockedBadges().first()
 
-            assertEquals(1, badges.size)
-            assertEquals("unlocked", badges[0].id)
-            assertTrue(badges[0].isUnlocked())
+            assertThat(badges.size).isEqualTo(1)
+            assertThat(badges[0].id).isEqualTo("unlocked")
+            assertThat(badges[0].isUnlocked()).isTrue()
         }
 
     @Test
@@ -106,7 +103,7 @@ class BadgeRepositoryImplTest {
 
             val badges = repository.getUnlockedBadges().first()
 
-            assertTrue(badges.isEmpty())
+            assertThat(badges.isEmpty()).isTrue()
         }
 
     @Test
@@ -117,9 +114,9 @@ class BadgeRepositoryImplTest {
 
             val progress = repository.getProgressSummary().first()
 
-            assertEquals(8, progress.unlockedCount)
-            assertEquals(15, progress.totalCount)
-            assertEquals(53.33f, progress.percentage, 0.01f)
+            assertThat(progress.unlockedCount).isEqualTo(8)
+            assertThat(progress.totalCount).isEqualTo(15)
+            assertThat(progress.percentage).isWithin(0.01f).of(53.33f)
         }
 
     @Test
@@ -130,9 +127,9 @@ class BadgeRepositoryImplTest {
 
             val progress = repository.getProgressSummary().first()
 
-            assertEquals(0, progress.unlockedCount)
-            assertEquals(0, progress.totalCount)
-            assertEquals(0f, progress.percentage, 0.01f)
+            assertThat(progress.unlockedCount).isEqualTo(0)
+            assertThat(progress.totalCount).isEqualTo(0)
+            assertThat(progress.percentage).isWithin(0.01f).of(0f)
         }
 
     @Test
@@ -143,9 +140,9 @@ class BadgeRepositoryImplTest {
 
             repository.unlockBadge(badgeId, unlockTime)
 
-            assertEquals(1, fakeDao.unlockCalls.size)
-            assertEquals(badgeId, fakeDao.unlockCalls[0].first)
-            assertEquals(unlockTime, fakeDao.unlockCalls[0].second)
+            assertThat(fakeDao.unlockCalls.size).isEqualTo(1)
+            assertThat(fakeDao.unlockCalls[0].first).isEqualTo(badgeId)
+            assertThat(fakeDao.unlockCalls[0].second).isEqualTo(unlockTime)
         }
 
     @Test
@@ -155,9 +152,9 @@ class BadgeRepositoryImplTest {
 
             repository.initializeBadges()
 
-            assertEquals(1, fakeDao.insertBadgesCalls)
-            assertNotNull(fakeDao.lastInsertedBadges)
-            assertEquals(19, fakeDao.lastInsertedBadges!!.size) // 19 default badges
+            assertThat(fakeDao.insertBadgesCalls).isEqualTo(1)
+            assertThat(fakeDao.lastInsertedBadges).isNotNull()
+            assertThat(fakeDao.lastInsertedBadges!!.size).isEqualTo(19) // 19 default badges
         }
 
     @Test
@@ -168,19 +165,19 @@ class BadgeRepositoryImplTest {
 
             repository.initializeBadges()
 
-            assertEquals(0, fakeDao.insertBadgesCalls)
+            assertThat(fakeDao.insertBadgesCalls).isEqualTo(0)
         }
 
     @Test
     fun `BadgeProgress calculates percentage correctly`() {
         val progress = BadgeProgress(unlockedCount = 12, totalCount = 15)
-        assertEquals(80f, progress.percentage, 0.01f)
+        assertThat(progress.percentage).isWithin(0.01f).of(80f)
     }
 
     @Test
     fun `BadgeProgress handles zero total count`() {
         val progress = BadgeProgress(unlockedCount = 0, totalCount = 0)
-        assertEquals(0f, progress.percentage, 0.01f)
+        assertThat(progress.percentage).isWithin(0.01f).of(0f)
     }
 
     private fun createBadgeEntity(
