@@ -286,7 +286,8 @@ private fun ProgressSection(
 
     // Log only when progress changes (not on every recomposition)
     LaunchedEffect(currentIndex, totalProblems) {
-        Timber.d("[ProgressSection] Rendering progress: $progressDescription")
+        val progressDescriptionForLog = "Problem ${currentIndex + 1} of $totalProblems"
+        Timber.d("[ProgressSection] Rendering progress: $progressDescriptionForLog")
     }
 
     Column(
