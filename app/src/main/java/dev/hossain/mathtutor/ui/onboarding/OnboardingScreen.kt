@@ -138,7 +138,7 @@ class OnboardingPresenter
                     -> {
                         coroutineScope.launch {
                             userPreferencesRepository.setOnboardingCompleted(true)
-                            navigator.goTo(GradeSelectionScreen)
+                            navigator.goTo(GradeSelectionScreen())
                         }
                     }
                 }

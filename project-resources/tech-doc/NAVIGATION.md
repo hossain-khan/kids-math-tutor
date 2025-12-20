@@ -13,7 +13,7 @@ The app contains **13 Circuit screens** organized by feature:
 | # | Screen | Location | Type | Description |
 |---|--------|----------|------|-------------|
 | 1 | `OnboardingScreen` | `ui/onboarding/` | `data object` | Welcome screen for new users |
-| 2 | `GradeSelectionScreen` | `ui/onboarding/` | `data object` | Grade level selection (K-2) |
+| 2 | `GradeSelectionScreen` | `ui/onboarding/` | `data class` | Grade level selection (K-2) |
 | 3 | `NameEntryScreen` | `ui/onboarding/` | `data class` | Child's name input |
 | 4 | `HomeScreen` | `ui/home/` | `data object` | Main hub with activity options |
 | 5 | `OperationSelectorScreen` | `ui/operationselector/` | `data object` | Math operation selection |
@@ -62,15 +62,15 @@ The app has two entry points defined in `MainActivity.kt`:
 │    │Operation │ │ Stats  │ │ Badges │ │Settings│ │    Game     │            │
 │    │ Selector │ │ Screen │ │ Screen │ │ Screen │ │  Selection  │            │
 │    └────┬─────┘ └────────┘ └────────┘ └───┬────┘ └──────┬──────┘            │
-│         │                                 │             │                   │
-│    ┌────┴────┐                          goTo          goTo                  │
-│    │         │                            │             │                   │
-│  goTo      goTo                           ▼             ▼                   │
-│    │         │                    ┌─────────────┐ ┌──────────┐              │
-│    ▼         ▼                    │AudioHaptic │ │ MathRace │              │
-│ ┌──────┐ ┌────────┐               │  Settings  │ │  Screen  │              │
-│ │ Math │ │ Stats  │               └─────────────┘ └──────────┘              │
-│ │Pract.│ │ Screen │                                                         │
+│         │                            ┌────┴────┐        │                   │
+│    ┌────┴────┐                       │         │      goTo                  │
+│    │         │                     goTo      goTo       │                   │
+│  goTo      goTo                      │         │        ▼                   │
+│    │         │                       ▼         ▼   ┌──────────┐             │
+│    ▼         ▼               ┌─────────────┐ ┌───────────┐│ MathRace │      │
+│ ┌──────┐ ┌────────┐          │AudioHaptic │ │   Grade   ││  Screen  │       │
+│ │ Math │ │ Stats  │          │  Settings  │ │ Selection │└──────────┘       │
+│ │Pract.│ │ Screen │          └─────────────┘ └───────────┘                  │
 │ └──┬───┘ └────────┘                                                         │
 │    │                                                                        │
 │  goTo                                                                       │
@@ -101,7 +101,7 @@ The app has two entry points defined in `MainActivity.kt`:
 | Screen | Navigated From | Method | Navigates To |
 |--------|---------------|--------|--------------|
 | `OnboardingScreen` | MainActivity (root) | Initial | `GradeSelectionScreen` |
-| `GradeSelectionScreen` | OnboardingScreen | `goTo` | `NameEntryScreen` |
+| `GradeSelectionScreen` | OnboardingScreen, SettingsScreen | `goTo` | `NameEntryScreen` (onboarding) or back (settings) |
 | `NameEntryScreen` | GradeSelectionScreen | `goTo` | `HomeScreen` |
 | `HomeScreen` | NameEntryScreen, ResultsScreen | `resetRoot` | Multiple screens |
 | `OperationSelectorScreen` | HomeScreen | `goTo` | `MathPracticeScreen`, `StatsScreen` |
@@ -109,7 +109,7 @@ The app has two entry points defined in `MainActivity.kt`:
 | `ResultsScreen` | MathPracticeScreen | `goTo` | `HomeScreen` |
 | `StatsScreen` | HomeScreen, OperationSelectorScreen | `goTo` | — |
 | `BadgesScreen` | HomeScreen | `goTo` | — |
-| `SettingsScreen` | HomeScreen | `goTo` | `AudioHapticSettingsScreen` |
+| `SettingsScreen` | HomeScreen | `goTo` | `AudioHapticSettingsScreen`, `GradeSelectionScreen` |
 | `AudioHapticSettingsScreen` | SettingsScreen | `goTo` | — |
 | `GameSelectionScreen` | HomeScreen | `goTo` | `MathRaceScreen` |
 | `MathRaceScreen` | GameSelectionScreen | `goTo` | — |
