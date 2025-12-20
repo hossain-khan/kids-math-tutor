@@ -8,6 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 6-3: Math Race UI** - Visual UI for the Math Race mini-game (#63)
+  - **MathRaceUi** (`ui/mathrace/MathRaceUi.kt`):
+    - Main UI with `@CircuitInject` routing based on GameState
+    - Routes to appropriate screen for each state (NotStarted, Countdown, Playing, Finished)
+  - **MathRaceStartScreen** (`ui/mathrace/MathRaceStartScreen.kt`):
+    - Game title "Math Race ⏱️" with emoji
+    - Game description explaining 60-second challenge
+    - Personal best display with trophy icon (if > 0)
+    - Large "START GAME" button with Material 3 styling
+    - Back navigation to home
+  - **CountdownScreen** (`ui/mathrace/CountdownScreen.kt`):
+    - Large animated countdown numbers (3, 2, 1, GO!)
+    - Scale animation using animateFloatAsState
+    - displayLarge typography for maximum visibility
+    - Tertiary color for "GO!" text
+    - LiveRegion for TalkBack accessibility
+  - **MathRaceGameScreen** (`ui/mathrace/MathRaceGameScreen.kt`):
+    - Header row with timer and score displays
+    - Timer with pulse animation when ≤10 seconds
+    - Timer color changes from primary to error when ≤10 seconds
+    - Problem display card with spoken content description
+    - Answer field using existing AnswerField component
+    - Number pad using existing NumberPad component
+    - Backspace and Check buttons with haptic feedback
+    - Personal best footer display
+  - **MathRaceResultsScreen** (`ui/mathrace/MathRaceResultsScreen.kt`):
+    - "Game Over! 🎉" animated title
+    - Final score with pulse animation for new records
+    - New Record badge with animated trophy icon
+    - Stats card with correct answers, accuracy %, and average time
+    - Staggered entrance animations for content
+    - "Play Again" and "Home" buttons
+  - **Animations**:
+    - Countdown scale animation (0.5 → 1.2 → 1.0)
+    - Timer pulse animation when warning state (< 10s)
+    - Score pulse animation for new records
+    - Trophy bounce animation for new record badge
+    - Staggered fade-in and slide animations on results screen
+  - **Material 3 Compliance**:
+    - All colors from MaterialTheme.colorScheme
+    - Typography from MaterialTheme.typography
+    - No hardcoded colors used
+  - **Accessibility**:
+    - Content descriptions for all interactive elements
+    - LiveRegion for timer warnings
+    - Semantic headings for screen titles
+    - Role annotations for buttons
 - **Phase 6-2: Math Race Game Logic** - Core game mechanics for the Math Race mini-game (#62)
   - **AudioService Extensions**:
     - Added `playCountdown()` for 3-2-1 countdown audio
