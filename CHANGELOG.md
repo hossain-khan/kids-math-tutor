@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.6.0] - 2025-01-02
+## [1.6.0] - 2025-12-20
 
 ### Added
 - **LeakCanary Integration** - Added LeakCanary 3.0-alpha-8 for memory leak detection in debug builds
