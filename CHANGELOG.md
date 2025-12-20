@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **ANR when pressing system back from Settings screen** - Fixed Application Not Responding issue when using system back button to exit Settings
+  - Added `BackHandler` to SettingsUi to explicitly handle system back navigation
+  - Ensures immediate response to back button press without blocking UI thread
+
 ### Added
 - **Compose Previews for UI Components** - Added comprehensive preview support for better UI development experience
   - Added previews with light and dark mode variants for `GameSelectionUi.kt`, `GradeChangeDialog.kt`, and `NameEditDialog.kt`
