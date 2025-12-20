@@ -359,7 +359,7 @@ class HomeScreenTest {
         assertThat(state.streakData?.currentStreak).isEqualTo(5)
         assertThat(state.streakData?.longestStreak).isEqualTo(7)
         assertThat(state.streakData?.lastPracticeDate).isEqualTo(today)
-        assertThat(state.streakData?.isStreakAlive(today).isTrue() == true)
+        assertThat(state.streakData?.isStreakAlive(today)).isTrue()
     }
 
     @Test
@@ -390,7 +390,7 @@ class HomeScreenTest {
         // Then
         assertThat(state.streakData?.currentStreak).isEqualTo(3)
         assertThat(state.streakData?.lastPracticeDate).isEqualTo(yesterday)
-        assertThat(state.streakData?.isStreakAlive(today).isTrue() == true)
+        assertThat(state.streakData?.isStreakAlive(today)).isTrue()
     }
 
     @Test

@@ -206,7 +206,7 @@ class BadgesScreenTest {
         // Then
         assertThat(receivedEvent).isNotNull()
         assertThat(receivedEvent is BadgesScreen.Event.BadgeClicked).isTrue()
-        assertThat((receivedEvent as BadgesScreen.Event.BadgeClicked).isEqualTo(badge).badge)
+        assertThat((receivedEvent as BadgesScreen.Event.BadgeClicked).badge).isEqualTo(badge)
     }
 
     @Test

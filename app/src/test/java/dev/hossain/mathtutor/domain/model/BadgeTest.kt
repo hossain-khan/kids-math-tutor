@@ -18,7 +18,7 @@ class BadgeTest {
                 unlockedAt = Instant.now(),
             )
 
-        assertThat("Badge should be unlocked when unlockedAt is set", badge.isUnlocked()).isTrue()
+        assertThat(badge.isUnlocked()).isTrue()
     }
 
     @Test
@@ -34,7 +34,7 @@ class BadgeTest {
                 unlockedAt = null,
             )
 
-        assertThat("Badge should be locked when unlockedAt is null", badge.isUnlocked()).isFalse()
+        assertThat(badge.isUnlocked()).isFalse()
     }
 
     @Test
@@ -57,7 +57,7 @@ class BadgeTest {
         assertThat(badge.icon).isEqualTo("🎯")
         assertThat(badge.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assertThat(badge.requirement is BadgeRequirement.ProblemCount).isTrue()
-        assertThat((badge.requirement as BadgeRequirement.ProblemCount).isEqualTo(1).count)
+        assertThat((badge.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(1)
         assertThat(badge.unlockedAt).isEqualTo(unlockedAt)
     }
 
@@ -73,6 +73,6 @@ class BadgeTest {
                 requirement = BadgeRequirement.ProblemCount(10),
             )
 
-        assertThat("Badge should be locked by default", badge.isUnlocked()).isFalse()
+        assertThat(badge.isUnlocked()).isFalse()
     }
 }

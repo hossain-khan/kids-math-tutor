@@ -32,37 +32,37 @@ class GameStatsTest {
     @Test
     fun `getStarRating returns 0 when never played`() {
         val stats = createStats(totalGamesPlayed = 0, bestAccuracy = 100f)
-        assertThat(stats.getStarRating().isEqualTo(0))
+        assertThat(stats.getStarRating()).isEqualTo(0)
     }
 
     @Test
     fun `getStarRating returns 5 for 90+ best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 95f)
-        assertThat(stats.getStarRating().isEqualTo(5))
+        assertThat(stats.getStarRating()).isEqualTo(5)
     }
 
     @Test
     fun `getStarRating returns 4 for 80-89 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 85f)
-        assertThat(stats.getStarRating().isEqualTo(4))
+        assertThat(stats.getStarRating()).isEqualTo(4)
     }
 
     @Test
     fun `getStarRating returns 3 for 70-79 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 75f)
-        assertThat(stats.getStarRating().isEqualTo(3))
+        assertThat(stats.getStarRating()).isEqualTo(3)
     }
 
     @Test
     fun `getStarRating returns 2 for 60-69 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 65f)
-        assertThat(stats.getStarRating().isEqualTo(2))
+        assertThat(stats.getStarRating()).isEqualTo(2)
     }
 
     @Test
     fun `getStarRating returns 1 for less than 60 best accuracy`() {
         val stats = createStats(totalGamesPlayed = 1, bestAccuracy = 50f)
-        assertThat(stats.getStarRating().isEqualTo(1))
+        assertThat(stats.getStarRating()).isEqualTo(1)
     }
 
     @Test

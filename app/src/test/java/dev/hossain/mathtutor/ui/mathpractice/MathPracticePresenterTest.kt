@@ -48,7 +48,7 @@ class MathPracticePresenterTest {
         // Then - Initial state should be set correctly
         assertThat(problems.size).isEqualTo(5)
         assertThat(problems[0]).isNotNull()
-        assertThat(problems[0].getDisplayString().isEqualTo("1 + 1 = ?"))
+        assertThat(problems[0].getDisplayString()).isEqualTo("1 + 1 = ?")
     }
 
     @Test
@@ -76,7 +76,7 @@ class MathPracticePresenterTest {
 
         // Then
         assertThat(currentAnswer).isEqualTo("")
-        assertThat(isCorrect).isNull()
+        assertThat(isCorrect as Boolean?).isNull()
     }
 
     @Test
@@ -162,7 +162,7 @@ class MathPracticePresenterTest {
         // Then
         assertThat(currentProblemIndex).isEqualTo(1)
         assertThat(currentAnswer).isEqualTo("")
-        assertThat(isCorrect).isNull()
+        assertThat(isCorrect as Boolean?).isNull()
     }
 
     @Test
@@ -203,7 +203,7 @@ class MathPracticePresenterTest {
 
         // Then
         assertThat(currentProblemIndex).isEqualTo(5)
-        assertThat((currentProblemIndex + 1).isEqualTo(0.6f).toFloat() / totalProblems, 0.01f)
+        assertThat((currentProblemIndex + 1).toFloat() / totalProblems).isWithin(0.01f).of(0.6f)
     }
 
     @Test
@@ -325,7 +325,7 @@ class MathPracticePresenterTest {
         assertThat(practiceSession.durationSeconds).isEqualTo(120L)
         assertThat(practiceSession.completedAt).isEqualTo(completedAt)
         assertThat(practiceSession.isComplete()).isTrue()
-        assertThat(practiceSession.getCorrectCount().isEqualTo(3))
+        assertThat(practiceSession.getCorrectCount()).isEqualTo(3)
     }
 
     @Test

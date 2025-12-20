@@ -163,19 +163,19 @@ class AdaptiveProblemGeneratorTest {
     @Test
     fun `getNextGradeLevel returns correct next level`() {
         assertThat(
-            adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.KINDERGARTEN).isEqualTo(GradeLevel.GRADE_1),
-        )
-        assertThat(adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_1).isEqualTo(GradeLevel.GRADE_2))
-        assertThat(adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_2).isEqualTo(GradeLevel.GRADE_2)) // Max
+            adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.KINDERGARTEN),
+        ).isEqualTo(GradeLevel.GRADE_1)
+        assertThat(adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_1)).isEqualTo(GradeLevel.GRADE_2)
+        assertThat(adaptiveProblemGenerator.getNextGradeLevel(GradeLevel.GRADE_2)).isEqualTo(GradeLevel.GRADE_2) // Max
     }
 
     @Test
     fun `getPreviousGradeLevel returns correct previous level`() {
         assertThat(
-            adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.KINDERGARTEN).isEqualTo(GradeLevel.KINDERGARTEN),
-        ) // Min
-        assertThat(adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_1).isEqualTo(GradeLevel.KINDERGARTEN))
-        assertThat(adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_2).isEqualTo(GradeLevel.GRADE_1))
+            adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.KINDERGARTEN),
+        ).isEqualTo(GradeLevel.KINDERGARTEN) // Min
+        assertThat(adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_1)).isEqualTo(GradeLevel.KINDERGARTEN)
+        assertThat(adaptiveProblemGenerator.getPreviousGradeLevel(GradeLevel.GRADE_2)).isEqualTo(GradeLevel.GRADE_1)
     }
 
     @Test
