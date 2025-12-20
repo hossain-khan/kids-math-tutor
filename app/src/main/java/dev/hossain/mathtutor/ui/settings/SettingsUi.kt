@@ -173,7 +173,7 @@ private fun ProfileSection(
             // Grade level field
             ProfileField(
                 label = "Grade Level",
-                value = profile?.gradeLevel?.displayName ?: "Loading...",
+                value = profile?.gradeLevel?.displayName ?: "Not set",
                 onEditClick = onChangeGradeClick,
                 actionLabel = "Change",
             )

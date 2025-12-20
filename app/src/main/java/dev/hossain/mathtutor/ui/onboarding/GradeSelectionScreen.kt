@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
@@ -52,6 +54,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import java.time.Instant
 
 /**
  * Circuit screen for grade selection during onboarding or from settings.
@@ -130,6 +133,9 @@ class GradeSelectionPresenter
             val scope = rememberCoroutineScope()
             var selectedGrade by remember { mutableStateOf<GradeLevel?>(null) }
 
+            // Collect current profile to check if it exists (for settings mode)
+            val currentProfile by userProfileRepository.getProfile().collectAsState(initial = null)
+
             return GradeSelectionScreen.State(
                 selectedGrade = selectedGrade,
                 isFromSettings = screen.isFromSettings,
@@ -145,7 +151,21 @@ class GradeSelectionPresenter
                             if (screen.isFromSettings) {
                                 // From settings: save grade and go back
                                 scope.launch {
-                                    userProfileRepository.updateGradeLevel(grade)
+                                    if (currentProfile != null) {
+                                        // Profile exists, just update the grade
+                                        userProfileRepository.updateGradeLevel(grade)
+                                    } else {
+                                        // No profile exists, create a new one
+                                        // This handles edge cases where profile wasn't created properly
+                                        userProfileRepository.saveProfile(
+                                            UserProfile(
+                                                name = null,
+                                                gradeLevel = grade,
+                                                createdAt = Instant.now(),
+                                                adaptiveDifficultyEnabled = true,
+                                            ),
+                                        )
+                                    }
                                     navigator.pop()
                                 }
                             } else {
