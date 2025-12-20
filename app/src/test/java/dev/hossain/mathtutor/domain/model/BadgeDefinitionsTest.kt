@@ -6,10 +6,10 @@ import org.junit.Test
 
 class BadgeDefinitionsTest {
     @Test
-    fun `getAllBadges returns 15 badges`() {
+    fun `getAllBadges returns 19 badges`() {
         val badges = BadgeDefinitions.getAllBadges()
 
-        assertEquals("Should have exactly 15 badges", 15, badges.size)
+        assertEquals("Should have exactly 19 badges", 19, badges.size)
     }
 
     @Test
@@ -29,12 +29,14 @@ class BadgeDefinitionsTest {
         val operationMastery = badges.filter { it.category == BadgeCategory.OPERATION_MASTERY }
         val speedAccuracy = badges.filter { it.category == BadgeCategory.SPEED_ACCURACY }
         val streak = badges.filter { it.category == BadgeCategory.STREAK }
+        val games = badges.filter { it.category == BadgeCategory.GAMES }
 
         assertEquals("Should have 3 Getting Started badges", 3, gettingStarted.size)
         assertEquals("Should have 4 Volume badges", 4, volume.size)
         assertEquals("Should have 3 Operation Mastery badges", 3, operationMastery.size)
         assertEquals("Should have 3 Speed & Accuracy badges", 3, speedAccuracy.size)
         assertEquals("Should have 2 Streak badges", 2, streak.size)
+        assertEquals("Should have 4 Games badges", 4, games.size)
     }
 
     @Test

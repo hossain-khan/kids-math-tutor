@@ -157,7 +157,7 @@ class BadgeRepositoryImplTest {
 
             assertEquals(1, fakeDao.insertBadgesCalls)
             assertNotNull(fakeDao.lastInsertedBadges)
-            assertEquals(15, fakeDao.lastInsertedBadges!!.size) // 15 default badges
+            assertEquals(19, fakeDao.lastInsertedBadges!!.size) // 19 default badges
         }
 
     @Test
