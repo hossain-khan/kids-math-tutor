@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **LeakCanary Integration** - Added LeakCanary 3.0-alpha-8 for memory leak detection in debug builds
+  - Automatically detects leaks of Activities, Fragments, Views, ViewModels, and Services
+  - Only runs in debug builds, no code changes required
+  - Displays leak analysis results in a notification when leaks are detected
 - **Timber logging in Circuit Presenters** - Added comprehensive logging for better debugging and monitoring
   - Added logging to `OperationSelectorPresenter` for session history checks and navigation events
   - Added logging to `StatsPresenter` for data collection and statistics loading

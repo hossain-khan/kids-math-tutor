@@ -147,6 +147,10 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.common)
 
+    // LeakCanary - Memory leak detection (debug builds only)
+    // https://square.github.io/leakcanary/
+    debugImplementation(libs.leakcanary.android)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
