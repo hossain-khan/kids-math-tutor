@@ -13,6 +13,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import timber.log.Timber
 
 /**
  * Presenter for [StatsScreen].
@@ -38,11 +39,16 @@ class StatsPresenter
             val overallStats by sessionRepository.getOverallStats().collectAsState(
                 initial = SessionStats.EMPTY,
             )
+            Timber.d(
+                "StatsScreen: Overall stats loaded - sessionCount=${overallStats.sessionCount}, " +
+                    "totalProblems=${overallStats.totalProblems}, accuracy=${overallStats.accuracy}",
+            )
 
             // Collect recent sessions (last 10)
             val recentSessions by sessionRepository.getRecentSessions(limit = 10).collectAsState(
                 initial = emptyList(),
             )
+            Timber.d("StatsScreen: Loaded ${recentSessions.size} recent sessions")
 
             // Collect statistics for each operation
             val additionStats by sessionRepository.getStatsByOperation(MathOperation.ADDITION).collectAsState(
@@ -62,6 +68,10 @@ class StatsPresenter
                         put(MathOperation.SUBTRACTION, subtractionStats)
                     }
                 }
+            Timber.d(
+                "StatsScreen: Operation stats - Addition(sessions=${additionStats.sessionCount}), " +
+                    "Subtraction(sessions=${subtractionStats.sessionCount})",
+            )
 
             return StatsScreen.State(
                 overallStats = overallStats,
@@ -70,6 +80,7 @@ class StatsPresenter
             ) { event ->
                 when (event) {
                     is StatsScreen.Event.BackPressed -> {
+                        Timber.d("StatsScreen: Back pressed")
                         navigator.pop()
                     }
                 }

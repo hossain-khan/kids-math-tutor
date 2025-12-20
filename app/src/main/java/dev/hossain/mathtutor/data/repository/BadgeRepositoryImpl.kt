@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -60,14 +61,21 @@ class BadgeRepositoryImpl
             badgeId: String,
             unlockedAt: Instant,
         ) {
+            Timber.d("BadgeRepository: Unlocking badge - id=$badgeId, unlockedAt=$unlockedAt")
             badgeDao.unlockBadge(badgeId, unlockedAt)
+            Timber.d("BadgeRepository: Badge unlocked successfully - id=$badgeId")
         }
 
         override suspend fun initializeBadges() {
+            Timber.d("BadgeRepository: Initializing badges")
             val existingBadges = badgeDao.getAllBadges().first()
             if (existingBadges.isEmpty()) {
                 val defaultBadges = BadgeDefinitions.getAllBadges()
+                Timber.d("BadgeRepository: Inserting ${defaultBadges.size} default badges")
                 badgeDao.insertBadges(defaultBadges.map { BadgeMapper.toEntity(it) })
+                Timber.d("BadgeRepository: Badges initialized successfully")
+            } else {
+                Timber.d("BadgeRepository: Badges already initialized (count=${existingBadges.size})")
             }
         }
     }

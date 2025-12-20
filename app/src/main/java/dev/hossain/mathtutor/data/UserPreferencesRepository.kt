@@ -12,6 +12,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 interface UserPreferencesRepository {
     val isOnboardingCompleted: Flow<Boolean>
@@ -66,6 +67,7 @@ class UserPreferencesRepositoryImpl
             }
 
         override suspend fun setOnboardingCompleted(completed: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting onboarding completed = $completed")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.ONBOARDING_COMPLETED] = completed
             }
@@ -77,6 +79,7 @@ class UserPreferencesRepositoryImpl
             }
 
         override suspend fun setHapticsEnabled(enabled: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting haptics enabled = $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.HAPTICS_ENABLED] = enabled
             }
@@ -88,6 +91,7 @@ class UserPreferencesRepositoryImpl
             }
 
         override suspend fun setSoundEffectsEnabled(enabled: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting sound effects enabled = $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.SOUND_EFFECTS_ENABLED] = enabled
             }
@@ -99,6 +103,7 @@ class UserPreferencesRepositoryImpl
             }
 
         override suspend fun setBackgroundMusicEnabled(enabled: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting background music enabled = $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.BACKGROUND_MUSIC_ENABLED] = enabled
             }
@@ -110,6 +115,7 @@ class UserPreferencesRepositoryImpl
             }
 
         override suspend fun setVolume(volume: Float) {
+            Timber.d("UserPreferencesRepository: Setting volume = $volume")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.VOLUME] = volume.coerceIn(0f, 1f)
             }
@@ -121,6 +127,7 @@ class UserPreferencesRepositoryImpl
             }
 
         override suspend fun setHighContrastEnabled(enabled: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting high contrast enabled = $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.HIGH_CONTRAST_ENABLED] = enabled
             }
@@ -132,6 +139,7 @@ class UserPreferencesRepositoryImpl
             }
 
         override suspend fun setLargeTextEnabled(enabled: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting large text enabled = $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.LARGE_TEXT_ENABLED] = enabled
             }

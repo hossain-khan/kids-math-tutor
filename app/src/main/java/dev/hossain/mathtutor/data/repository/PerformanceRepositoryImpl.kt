@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -41,6 +42,10 @@ class PerformanceRepositoryImpl
             isCorrect: Boolean,
             timeSpentSeconds: Long,
         ): Long {
+            Timber.d(
+                "PerformanceRepository: Recording performance - operation=$operation, gradeLevel=$gradeLevel, " +
+                    "problemId=$problemId, isCorrect=$isCorrect, timeSpent=${timeSpentSeconds}s",
+            )
             val entity =
                 PerformanceEntity(
                     operation = operation,
@@ -51,7 +56,9 @@ class PerformanceRepositoryImpl
                     timeSpentSeconds = timeSpentSeconds,
                     timestamp = Instant.now(),
                 )
-            return performanceDao.insertPerformance(entity)
+            val performanceId = performanceDao.insertPerformance(entity)
+            Timber.d("PerformanceRepository: Performance recorded with ID=$performanceId")
+            return performanceId
         }
 
         override fun getPerformance(
@@ -87,6 +94,8 @@ class PerformanceRepositoryImpl
         ): Int = performanceDao.getRecentAttemptCount(operation, limit).first()
 
         override suspend fun clearAll() {
+            Timber.d("PerformanceRepository: Clearing all performance data")
             performanceDao.clearAll()
+            Timber.d("PerformanceRepository: All performance data cleared")
         }
     }

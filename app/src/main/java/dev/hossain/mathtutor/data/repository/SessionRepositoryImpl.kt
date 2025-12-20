@@ -13,6 +13,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import timber.log.Timber
 
 /**
  * Implementation of [SessionRepository] using Room database.
@@ -31,8 +32,14 @@ class SessionRepositoryImpl
             durationSeconds: Long,
             gradeLevel: Int?,
         ): Long {
+            Timber.d(
+                "SessionRepository: Saving session - operation=$operation, " +
+                    "problems=${session.totalProblems}, duration=${durationSeconds}s, gradeLevel=$gradeLevel",
+            )
             val entity = SessionMapper.toEntity(session, operation, durationSeconds, gradeLevel)
-            return sessionDao.insertSession(entity)
+            val sessionId = sessionDao.insertSession(entity)
+            Timber.d("SessionRepository: Session saved with ID=$sessionId")
+            return sessionId
         }
 
         override fun getAllSessions(): Flow<List<PracticeSessionEntity>> = sessionDao.getAllSessions()
@@ -81,6 +88,8 @@ class SessionRepositoryImpl
             }
 
         override suspend fun clearAllSessions() {
+            Timber.d("SessionRepository: Clearing all sessions")
             sessionDao.deleteAllSessions()
+            Timber.d("SessionRepository: All sessions cleared")
         }
     }
