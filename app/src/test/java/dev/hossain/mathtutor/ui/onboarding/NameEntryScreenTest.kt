@@ -95,9 +95,7 @@ class NameEntryScreenTest {
         // Then
         assertThat(receivedEvent).isNotNull()
         assertThat(receivedEvent is NameEntryScreen.Event.NameChanged).isTrue()
-        assertThat(
-            (receivedEvent as NameEntryScreen.Event.NameChanged).isEqualTo("Sarah").name,
-        )
+        assertThat((receivedEvent as NameEntryScreen.Event.NameChanged).name).isEqualTo("Sarah")
     }
 
     @Test

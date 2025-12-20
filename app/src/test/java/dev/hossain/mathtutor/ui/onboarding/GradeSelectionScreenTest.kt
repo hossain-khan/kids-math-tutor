@@ -109,9 +109,7 @@ class GradeSelectionScreenTest {
         // Then
         assertThat(receivedEvent).isNotNull()
         assertThat(receivedEvent is GradeSelectionScreen.Event.GradeSelected).isTrue()
-        assertThat(
-            (receivedEvent as GradeSelectionScreen.Event.GradeSelected).isEqualTo(GradeLevel.GRADE_1).grade,
-        )
+        assertThat((receivedEvent as GradeSelectionScreen.Event.GradeSelected).grade).isEqualTo(GradeLevel.GRADE_1)
     }
 
     @Test

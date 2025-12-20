@@ -246,7 +246,7 @@ class SettingsScreenTest {
         // Then
         assertThat(receivedEvent).isNotNull()
         assertThat(receivedEvent is SettingsScreen.Event.ToggleAdaptiveDifficulty).isTrue()
-        assertThat((receivedEvent as SettingsScreen.Event.ToggleAdaptiveDifficulty).isFalse().enabled)
+        assertThat((receivedEvent as SettingsScreen.Event.ToggleAdaptiveDifficulty).enabled).isFalse()
     }
 
     @Test

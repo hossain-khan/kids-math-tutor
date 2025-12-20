@@ -89,9 +89,7 @@ class OperationSelectorScreenTest {
         // Then
         assertThat(receivedEvent).isNotNull()
         assertThat(receivedEvent is OperationSelectorScreen.Event.OperationSelected).isTrue()
-        assertThat(
-            (receivedEvent as OperationSelectorScreen.Event.OperationSelected).isEqualTo(MathOperation.SUBTRACTION).operation,
-        )
+        assertThat((receivedEvent as OperationSelectorScreen.Event.OperationSelected).operation).isEqualTo(MathOperation.SUBTRACTION)
     }
 
     @Test
