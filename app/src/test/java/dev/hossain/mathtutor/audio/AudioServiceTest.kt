@@ -130,6 +130,62 @@ class AudioServiceTest {
         assertEquals(0, audioService.levelUpPlayed)
     }
 
+    // ==================== Game Sound Effects Tests ====================
+
+    @Test
+    fun `playCountdown plays when sound effects are enabled`() {
+        audioService.setSoundEffectsEnabled(true)
+
+        audioService.playCountdown()
+
+        assertEquals(1, audioService.countdownPlayed)
+    }
+
+    @Test
+    fun `playCountdown does not play when sound effects are disabled`() {
+        audioService.setSoundEffectsEnabled(false)
+
+        audioService.playCountdown()
+
+        assertEquals(0, audioService.countdownPlayed)
+    }
+
+    @Test
+    fun `playGo plays when sound effects are enabled`() {
+        audioService.setSoundEffectsEnabled(true)
+
+        audioService.playGo()
+
+        assertEquals(1, audioService.goPlayed)
+    }
+
+    @Test
+    fun `playGo does not play when sound effects are disabled`() {
+        audioService.setSoundEffectsEnabled(false)
+
+        audioService.playGo()
+
+        assertEquals(0, audioService.goPlayed)
+    }
+
+    @Test
+    fun `playWarning plays when sound effects are enabled`() {
+        audioService.setSoundEffectsEnabled(true)
+
+        audioService.playWarning()
+
+        assertEquals(1, audioService.warningPlayed)
+    }
+
+    @Test
+    fun `playWarning does not play when sound effects are disabled`() {
+        audioService.setSoundEffectsEnabled(false)
+
+        audioService.playWarning()
+
+        assertEquals(0, audioService.warningPlayed)
+    }
+
     // ==================== Background Music Tests ====================
 
     @Test
@@ -283,6 +339,9 @@ class AudioServiceTest {
         var errorPlayed = 0
         var streakContinuePlayed = 0
         var levelUpPlayed = 0
+        var countdownPlayed = 0
+        var goPlayed = 0
+        var warningPlayed = 0
 
         // State
         var isMusicPlaying = false
@@ -317,6 +376,18 @@ class AudioServiceTest {
 
         override fun playLevelUp() {
             if (soundEffectsEnabledState) levelUpPlayed++
+        }
+
+        override fun playCountdown() {
+            if (soundEffectsEnabledState) countdownPlayed++
+        }
+
+        override fun playGo() {
+            if (soundEffectsEnabledState) goPlayed++
+        }
+
+        override fun playWarning() {
+            if (soundEffectsEnabledState) warningPlayed++
         }
 
         override fun startBackgroundMusic() {

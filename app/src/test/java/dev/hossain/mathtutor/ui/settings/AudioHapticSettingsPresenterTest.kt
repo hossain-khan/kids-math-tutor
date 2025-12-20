@@ -263,6 +263,12 @@ class AudioHapticSettingsPresenterTest {
 
         override fun playLevelUp() {}
 
+        override fun playCountdown() {}
+
+        override fun playGo() {}
+
+        override fun playWarning() {}
+
         override fun startBackgroundMusic() {}
 
         override fun stopBackgroundMusic() {}

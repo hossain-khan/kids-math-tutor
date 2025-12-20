@@ -45,6 +45,11 @@ class AudioServiceImpl
         private var streakContinueSoundId: Int = 0
         private var levelUpSoundId: Int = 0
 
+        // Game-specific sound effect IDs
+        private var countdownSoundId: Int = 0
+        private var goSoundId: Int = 0
+        private var warningSoundId: Int = 0
+
         // Settings
         private var soundEffectsEnabled: Boolean = true
         private var musicEnabled: Boolean = true
@@ -90,6 +95,10 @@ class AudioServiceImpl
             errorSoundId = pool.load(context, R.raw.error_gentle, 1)
             streakContinueSoundId = pool.load(context, R.raw.streak_continue, 1)
             levelUpSoundId = pool.load(context, R.raw.level_up, 1)
+            // Game sounds - reuse existing sounds with appropriate variations
+            countdownSoundId = pool.load(context, R.raw.countdown_tick, 1)
+            goSoundId = pool.load(context, R.raw.countdown_go, 1)
+            warningSoundId = pool.load(context, R.raw.time_warning, 1)
             Timber.d("[AudioService] Sound effects loaded")
         }
 
@@ -129,6 +138,20 @@ class AudioServiceImpl
 
         override fun playLevelUp() {
             playSound(levelUpSoundId)
+        }
+
+        // ==================== Game Sound Effects ====================
+
+        override fun playCountdown() {
+            playSound(countdownSoundId)
+        }
+
+        override fun playGo() {
+            playSound(goSoundId)
+        }
+
+        override fun playWarning() {
+            playSound(warningSoundId)
         }
 
         // ==================== Background Music ====================
