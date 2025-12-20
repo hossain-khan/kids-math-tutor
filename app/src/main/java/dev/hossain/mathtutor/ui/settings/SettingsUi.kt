@@ -53,7 +53,16 @@ fun SettingsUi(
     state: SettingsScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    // Handle system back button press
+    /*
+     * IMPORTANT: Explicit BackHandler to prevent ANR on system back button press.
+     *
+     * Without this BackHandler, pressing the system back button causes a 5+ second freeze
+     * with 97-110% CPU usage on the main thread, triggering an ANR (Application Not Responding).
+     * The BackHandler ensures immediate navigation response by handling the back event directly
+     * and triggering navigation without blocking the UI thread.
+     *
+     * See: PR #142 for details on the ANR issue and fix.
+     */
     BackHandler {
         state.eventSink(SettingsScreen.Event.BackClicked)
     }

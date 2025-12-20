@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- **ANR when pressing system back from Settings screen** - Fixed Application Not Responding issue when using system back button to exit Settings
-  - Added `BackHandler` to SettingsUi to explicitly handle system back navigation
+- **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button
+  - Added `BackHandler` to SettingsUi and GameSelectionUi to explicitly handle system back navigation
   - Ensures immediate response to back button press without blocking UI thread
+  - Prevents 5+ second freeze when exiting these screens
 
 ### Added
 - **Compose Previews for UI Components** - Added comprehensive preview support for better UI development experience
