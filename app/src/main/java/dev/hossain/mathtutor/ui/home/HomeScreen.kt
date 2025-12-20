@@ -70,5 +70,10 @@ data object HomeScreen : Screen {
          * User tapped the Music toggle button.
          */
         data object ToggleMusicClicked : Event
+
+        /**
+         * User tapped the Games button.
+         */
+        data object ViewGamesClicked : Event
     }
 }

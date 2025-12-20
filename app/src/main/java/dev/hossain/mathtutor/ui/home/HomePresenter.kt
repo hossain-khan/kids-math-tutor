@@ -17,6 +17,7 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.StreakRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.ui.badges.BadgesScreen
+import dev.hossain.mathtutor.ui.games.GameSelectionScreen
 import dev.hossain.mathtutor.ui.operationselector.OperationSelectorScreen
 import dev.hossain.mathtutor.ui.settings.SettingsScreen
 import dev.hossain.mathtutor.ui.stats.StatsScreen
@@ -119,6 +120,11 @@ class HomePresenter
                             audioService.setMusicEnabled(false)
                             Timber.d("HomeScreen: Stopped background music")
                         }
+                    }
+
+                    is HomeScreen.Event.ViewGamesClicked -> {
+                        Timber.d("HomeScreen: Navigating to GameSelectionScreen")
+                        navigator.goTo(GameSelectionScreen)
                     }
                 }
             }
