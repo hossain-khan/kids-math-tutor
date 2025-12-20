@@ -73,10 +73,10 @@ class GameSelectionPresenterTest {
     fun `problems until unlock calculated correctly`() {
         val game = Game.MATH_RACE // 50 problems required
 
-        assertThat(game.problemsUntilUnlock(0).isEqualTo(50))
-        assertThat(game.problemsUntilUnlock(25).isEqualTo(25))
-        assertThat(game.problemsUntilUnlock(50).isEqualTo(0))
-        assertThat(game.problemsUntilUnlock(100).isEqualTo(0)) // Already unlocked
+        assertThat(game.problemsUntilUnlock(0)).isEqualTo(50)
+        assertThat(game.problemsUntilUnlock(25)).isEqualTo(25)
+        assertThat(game.problemsUntilUnlock(50)).isEqualTo(0)
+        assertThat(game.problemsUntilUnlock(100)).isEqualTo(0) // Already unlocked
     }
 
     @Test
@@ -101,40 +101,16 @@ class GameSelectionPresenterTest {
 
     @Test
     fun `game icons are defined`() {
-        assertThat(
-            Game.MATH_RACE.icon
-                .isNotEmpty()
-                .isTrue(),
-        )
-        assertThat(
-            Game.MEMORY_MATCH.icon
-                .isNotEmpty()
-                .isTrue(),
-        )
-        assertThat(
-            Game.NUMBER_SEQUENCE.icon
-                .isNotEmpty()
-                .isTrue(),
-        )
+        assertThat(Game.MATH_RACE.icon.isNotEmpty()).isTrue()
+        assertThat(Game.MEMORY_MATCH.icon.isNotEmpty()).isTrue()
+        assertThat(Game.NUMBER_SEQUENCE.icon.isNotEmpty()).isTrue()
     }
 
     @Test
     fun `game descriptions are defined`() {
-        assertThat(
-            Game.MATH_RACE.description
-                .isNotEmpty()
-                .isTrue(),
-        )
-        assertThat(
-            Game.MEMORY_MATCH.description
-                .isNotEmpty()
-                .isTrue(),
-        )
-        assertThat(
-            Game.NUMBER_SEQUENCE.description
-                .isNotEmpty()
-                .isTrue(),
-        )
+        assertThat(Game.MATH_RACE.description.isNotEmpty()).isTrue()
+        assertThat(Game.MEMORY_MATCH.description.isNotEmpty()).isTrue()
+        assertThat(Game.NUMBER_SEQUENCE.description.isNotEmpty()).isTrue()
     }
 
     // ==================== State Tests ====================

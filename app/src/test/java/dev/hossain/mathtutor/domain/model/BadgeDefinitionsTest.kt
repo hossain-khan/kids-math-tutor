@@ -8,7 +8,7 @@ class BadgeDefinitionsTest {
     fun `getAllBadges returns 19 badges`() {
         val badges = BadgeDefinitions.getAllBadges()
 
-        assertThat(19, badges.size).isEqualTo("Should have exactly 19 badges")
+        assertThat(badges.size).isEqualTo(19)
     }
 
     @Test
@@ -16,7 +16,7 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
         val ids = badges.map { it.id }
 
-        assertThat(ids.size, ids.distinct().isEqualTo("All badge IDs should be unique").size)
+        assertThat(ids.size).isEqualTo(ids.distinct().size)
     }
 
     @Test
@@ -30,12 +30,12 @@ class BadgeDefinitionsTest {
         val streak = badges.filter { it.category == BadgeCategory.STREAK }
         val games = badges.filter { it.category == BadgeCategory.GAMES }
 
-        assertThat(3, gettingStarted.size).isEqualTo("Should have 3 Getting Started badges")
-        assertThat(4, volume.size).isEqualTo("Should have 4 Volume badges")
-        assertThat(3, operationMastery.size).isEqualTo("Should have 3 Operation Mastery badges")
-        assertThat(3, speedAccuracy.size).isEqualTo("Should have 3 Speed & Accuracy badges")
-        assertThat(2, streak.size).isEqualTo("Should have 2 Streak badges")
-        assertThat(4, games.size).isEqualTo("Should have 4 Games badges")
+        assertThat(gettingStarted.size).isEqualTo(3)
+        assertThat(volume.size).isEqualTo(4)
+        assertThat(operationMastery.size).isEqualTo(3)
+        assertThat(speedAccuracy.size).isEqualTo(3)
+        assertThat(streak.size).isEqualTo(2)
+        assertThat(games.size).isEqualTo(4)
     }
 
     @Test
@@ -43,10 +43,10 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
 
         badges.forEach { badge ->
-            assertThat("Badge ID should not be empty", badge.id.isNotEmpty()).isTrue()
-            assertThat("Badge name should not be empty", badge.name.isNotEmpty()).isTrue()
-            assertThat("Badge description should not be empty", badge.description.isNotEmpty()).isTrue()
-            assertThat("Badge icon should not be empty", badge.icon.isNotEmpty()).isTrue()
+            assertThat(badge.id.isNotEmpty()).isTrue()
+            assertThat(badge.name.isNotEmpty()).isTrue()
+            assertThat(badge.description.isNotEmpty()).isTrue()
+            assertThat(badge.icon.isNotEmpty()).isTrue()
         }
     }
 
@@ -55,7 +55,7 @@ class BadgeDefinitionsTest {
         val badges = BadgeDefinitions.getAllBadges()
 
         badges.forEach { badge ->
-            assertThat(null, badge.unlockedAt).isEqualTo("Badges should not be unlocked by default")
+            assertThat(badge.unlockedAt).isEqualTo(null)
         }
     }
 
@@ -69,7 +69,7 @@ class BadgeDefinitionsTest {
         assertThat(firstSteps?.icon).isEqualTo("🎯")
         assertThat(firstSteps?.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assertThat(firstSteps?.requirement is BadgeRequirement.ProblemCount).isTrue()
-        assertThat((firstSteps?.requirement as BadgeRequirement.ProblemCount).isEqualTo(1).count)
+        assertThat((firstSteps?.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(1)
     }
 
     @Test
@@ -82,7 +82,7 @@ class BadgeDefinitionsTest {
         assertThat(mathLegend?.icon).isEqualTo("🦅")
         assertThat(mathLegend?.category).isEqualTo(BadgeCategory.VOLUME)
         assertThat(mathLegend?.requirement is BadgeRequirement.ProblemCount).isTrue()
-        assertThat((mathLegend?.requirement as BadgeRequirement.ProblemCount).isEqualTo(500).count)
+        assertThat((mathLegend?.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(500)
     }
 
     @Test
@@ -110,6 +110,6 @@ class BadgeDefinitionsTest {
         assertThat(dedication?.icon).isEqualTo("🏆")
         assertThat(dedication?.category).isEqualTo(BadgeCategory.STREAK)
         assertThat(dedication?.requirement is BadgeRequirement.DailyStreak).isTrue()
-        assertThat((dedication?.requirement as BadgeRequirement.DailyStreak).isEqualTo(7).days)
+        assertThat((dedication?.requirement as BadgeRequirement.DailyStreak).days).isEqualTo(7)
     }
 }

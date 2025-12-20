@@ -68,31 +68,31 @@ class GameSessionTest {
     @Test
     fun `getStarRating returns 5 for 90+ accuracy`() {
         val session = createSession(correctAnswers = 9, totalAttempts = 10)
-        assertThat(session.getStarRating().isEqualTo(5))
+        assertThat(session.getStarRating()).isEqualTo(5)
     }
 
     @Test
     fun `getStarRating returns 4 for 80-89 accuracy`() {
         val session = createSession(correctAnswers = 8, totalAttempts = 10)
-        assertThat(session.getStarRating().isEqualTo(4))
+        assertThat(session.getStarRating()).isEqualTo(4)
     }
 
     @Test
     fun `getStarRating returns 3 for 70-79 accuracy`() {
         val session = createSession(correctAnswers = 7, totalAttempts = 10)
-        assertThat(session.getStarRating().isEqualTo(3))
+        assertThat(session.getStarRating()).isEqualTo(3)
     }
 
     @Test
     fun `getStarRating returns 2 for 60-69 accuracy`() {
         val session = createSession(correctAnswers = 6, totalAttempts = 10)
-        assertThat(session.getStarRating().isEqualTo(2))
+        assertThat(session.getStarRating()).isEqualTo(2)
     }
 
     @Test
     fun `getStarRating returns 1 for less than 60 accuracy`() {
         val session = createSession(correctAnswers = 5, totalAttempts = 10)
-        assertThat(session.getStarRating().isEqualTo(1))
+        assertThat(session.getStarRating()).isEqualTo(1)
     }
 
     @Test

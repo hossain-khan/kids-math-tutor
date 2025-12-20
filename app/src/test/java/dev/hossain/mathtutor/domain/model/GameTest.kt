@@ -11,9 +11,9 @@ class GameTest {
 
     @Test
     fun `Game values are correctly named`() {
-        assertThat(Game.valueOf("MATH_RACE").isEqualTo(Game.MATH_RACE))
-        assertThat(Game.valueOf("MEMORY_MATCH").isEqualTo(Game.MEMORY_MATCH))
-        assertThat(Game.valueOf("NUMBER_SEQUENCE").isEqualTo(Game.NUMBER_SEQUENCE))
+        assertThat(Game.valueOf("MATH_RACE")).isEqualTo(Game.MATH_RACE)
+        assertThat(Game.valueOf("MEMORY_MATCH")).isEqualTo(Game.MEMORY_MATCH)
+        assertThat(Game.valueOf("NUMBER_SEQUENCE")).isEqualTo(Game.NUMBER_SEQUENCE)
     }
 
     @Test
@@ -70,40 +70,40 @@ class GameTest {
     // unlockProgress tests
     @Test
     fun `unlockProgress returns 0 when no problems solved`() {
-        assertThat(Game.MATH_RACE.unlockProgress(0).isEqualTo(0f))
+        assertThat(Game.MATH_RACE.unlockProgress(0)).isEqualTo(0f)
     }
 
     @Test
     fun `unlockProgress returns correct fraction`() {
-        assertThat(Game.MATH_RACE.unlockProgress(25).isEqualTo(0.5f))
-        assertThat(Game.MEMORY_MATCH.unlockProgress(50).isEqualTo(0.5f))
-        assertThat(Game.NUMBER_SEQUENCE.unlockProgress(100).isEqualTo(0.5f))
+        assertThat(Game.MATH_RACE.unlockProgress(25)).isEqualTo(0.5f)
+        assertThat(Game.MEMORY_MATCH.unlockProgress(50)).isEqualTo(0.5f)
+        assertThat(Game.NUMBER_SEQUENCE.unlockProgress(100)).isEqualTo(0.5f)
     }
 
     @Test
     fun `unlockProgress caps at 1 when requirement met`() {
-        assertThat(Game.MATH_RACE.unlockProgress(50).isEqualTo(1f))
-        assertThat(Game.MATH_RACE.unlockProgress(100).isEqualTo(1f))
+        assertThat(Game.MATH_RACE.unlockProgress(50)).isEqualTo(1f)
+        assertThat(Game.MATH_RACE.unlockProgress(100)).isEqualTo(1f)
     }
 
     // problemsUntilUnlock tests
     @Test
     fun `problemsUntilUnlock returns requirement when no problems solved`() {
-        assertThat(Game.MATH_RACE.problemsUntilUnlock(0).isEqualTo(50))
-        assertThat(Game.MEMORY_MATCH.problemsUntilUnlock(0).isEqualTo(100))
-        assertThat(Game.NUMBER_SEQUENCE.problemsUntilUnlock(0).isEqualTo(200))
+        assertThat(Game.MATH_RACE.problemsUntilUnlock(0)).isEqualTo(50)
+        assertThat(Game.MEMORY_MATCH.problemsUntilUnlock(0)).isEqualTo(100)
+        assertThat(Game.NUMBER_SEQUENCE.problemsUntilUnlock(0)).isEqualTo(200)
     }
 
     @Test
     fun `problemsUntilUnlock returns remaining problems`() {
-        assertThat(Game.MATH_RACE.problemsUntilUnlock(25).isEqualTo(25))
-        assertThat(Game.MEMORY_MATCH.problemsUntilUnlock(50).isEqualTo(50))
-        assertThat(Game.NUMBER_SEQUENCE.problemsUntilUnlock(100).isEqualTo(100))
+        assertThat(Game.MATH_RACE.problemsUntilUnlock(25)).isEqualTo(25)
+        assertThat(Game.MEMORY_MATCH.problemsUntilUnlock(50)).isEqualTo(50)
+        assertThat(Game.NUMBER_SEQUENCE.problemsUntilUnlock(100)).isEqualTo(100)
     }
 
     @Test
     fun `problemsUntilUnlock returns 0 when requirement met`() {
-        assertThat(Game.MATH_RACE.problemsUntilUnlock(50).isEqualTo(0))
-        assertThat(Game.MATH_RACE.problemsUntilUnlock(100).isEqualTo(0))
+        assertThat(Game.MATH_RACE.problemsUntilUnlock(50)).isEqualTo(0)
+        assertThat(Game.MATH_RACE.problemsUntilUnlock(100)).isEqualTo(0)
     }
 }

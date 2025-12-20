@@ -97,7 +97,7 @@ class UserProfileRepositoryImplTest {
             assertThat(retrievedProfile).isNotNull()
             assertThat(retrievedProfile?.name).isEqualTo("Test User")
             assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
-            assertThat(retrievedProfile?.createdAt?.toEpochMilli().isEqualTo(now.toEpochMilli()))
+            assertThat(retrievedProfile?.createdAt?.toEpochMilli()).isEqualTo(now.toEpochMilli())
             assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
         }
 
@@ -143,7 +143,7 @@ class UserProfileRepositoryImplTest {
             assertThat(retrievedProfile).isNotNull()
             assertThat(retrievedProfile?.name).isEqualTo("Test User")
             assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.GRADE_2)
-            assertThat(retrievedProfile?.createdAt?.toEpochMilli().isEqualTo(now.toEpochMilli()))
+            assertThat(retrievedProfile?.createdAt?.toEpochMilli()).isEqualTo(now.toEpochMilli())
             assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
         }
 
@@ -167,7 +167,7 @@ class UserProfileRepositoryImplTest {
             assertThat(retrievedProfile).isNotNull()
             assertThat(retrievedProfile?.name).isEqualTo("New Name")
             assertThat(retrievedProfile?.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
-            assertThat(retrievedProfile?.createdAt?.toEpochMilli().isEqualTo(now.toEpochMilli()))
+            assertThat(retrievedProfile?.createdAt?.toEpochMilli()).isEqualTo(now.toEpochMilli())
             assertThat(retrievedProfile?.adaptiveDifficultyEnabled ?: false).isTrue()
         }
 
@@ -256,29 +256,26 @@ class UserProfileRepositoryImplTest {
             assertThat(
                 repository
                     .getProfile()
-                    .isEqualTo(GradeLevel.KINDERGARTEN)
                     .first()
                     ?.gradeLevel,
-            )
+            ).isEqualTo(GradeLevel.KINDERGARTEN)
 
             // Test Grade 1
             repository.updateGradeLevel(GradeLevel.GRADE_1)
             assertThat(
                 repository
                     .getProfile()
-                    .isEqualTo(GradeLevel.GRADE_1)
                     .first()
                     ?.gradeLevel,
-            )
+            ).isEqualTo(GradeLevel.GRADE_1)
 
             // Test Grade 2
             repository.updateGradeLevel(GradeLevel.GRADE_2)
             assertThat(
                 repository
                     .getProfile()
-                    .isEqualTo(GradeLevel.GRADE_2)
                     .first()
                     ?.gradeLevel,
-            )
+            ).isEqualTo(GradeLevel.GRADE_2)
         }
 }

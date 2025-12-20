@@ -22,7 +22,7 @@ class PracticeSessionTest {
                 problems = emptyList(),
             )
 
-        assertThat(session.getCorrectCount().isEqualTo(0))
+        assertThat(session.getCorrectCount()).isEqualTo(0)
     }
 
     @Test
@@ -39,7 +39,7 @@ class PracticeSessionTest {
         session.answers["4"] = SessionAnswer("4", 8, isCorrect = true)
         session.answers["5"] = SessionAnswer("5", 7, isCorrect = false)
 
-        assertThat(session.getCorrectCount().isEqualTo(3))
+        assertThat(session.getCorrectCount()).isEqualTo(3)
     }
 
     @Test

@@ -14,7 +14,7 @@ class MathProblemTest {
                 correctAnswer = 8,
             )
 
-        assertThat(problem.getDisplayString().isEqualTo("3 + 5 = ?"))
+        assertThat(problem.getDisplayString()).isEqualTo("3 + 5 = ?")
     }
 
     @Test
@@ -27,7 +27,7 @@ class MathProblemTest {
                 correctAnswer = 6,
             )
 
-        assertThat(problem.getDisplayString().isEqualTo("10 - 4 = ?"))
+        assertThat(problem.getDisplayString()).isEqualTo("10 - 4 = ?")
     }
 
     @Test
@@ -40,7 +40,7 @@ class MathProblemTest {
                 correctAnswer = 21,
             )
 
-        assertThat(problem.getDisplayString().isEqualTo("7 × 3 = ?"))
+        assertThat(problem.getDisplayString()).isEqualTo("7 × 3 = ?")
     }
 
     @Test
@@ -53,7 +53,7 @@ class MathProblemTest {
                 correctAnswer = 4,
             )
 
-        assertThat(problem.getDisplayString().isEqualTo("20 ÷ 5 = ?"))
+        assertThat(problem.getDisplayString()).isEqualTo("20 ÷ 5 = ?")
     }
 
     @Test
@@ -115,7 +115,7 @@ class MathProblemTest {
                 correctAnswer = 8,
             )
 
-        assertThat(problem.getSpokenString().isEqualTo("3 plus 5 equals"))
+        assertThat(problem.getSpokenString()).isEqualTo("3 plus 5 equals")
     }
 
     @Test
@@ -128,7 +128,7 @@ class MathProblemTest {
                 correctAnswer = 6,
             )
 
-        assertThat(problem.getSpokenString().isEqualTo("10 minus 4 equals"))
+        assertThat(problem.getSpokenString()).isEqualTo("10 minus 4 equals")
     }
 
     @Test
@@ -141,7 +141,7 @@ class MathProblemTest {
                 correctAnswer = 21,
             )
 
-        assertThat(problem.getSpokenString().isEqualTo("7 times 3 equals"))
+        assertThat(problem.getSpokenString()).isEqualTo("7 times 3 equals")
     }
 
     @Test
@@ -154,6 +154,6 @@ class MathProblemTest {
                 correctAnswer = 4,
             )
 
-        assertThat(problem.getSpokenString().isEqualTo("20 divided by 5 equals"))
+        assertThat(problem.getSpokenString()).isEqualTo("20 divided by 5 equals")
     }
 }

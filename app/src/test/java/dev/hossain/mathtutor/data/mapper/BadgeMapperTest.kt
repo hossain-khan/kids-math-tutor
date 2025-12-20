@@ -32,7 +32,7 @@ class BadgeMapperTest {
         assertThat(badge.icon).isEqualTo("🎯")
         assertThat(badge.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assert(badge.requirement is BadgeRequirement.ProblemCount)
-        assertThat((badge.requirement as BadgeRequirement.ProblemCount).isEqualTo(10).count)
+        assertThat((badge.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(10)
         assertThat(badge.unlockedAt).isNull()
     }
 
@@ -75,7 +75,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.ConsecutiveCorrect)
-        assertThat((badge.requirement as BadgeRequirement.ConsecutiveCorrect).isEqualTo(5).count)
+        assertThat((badge.requirement as BadgeRequirement.ConsecutiveCorrect).count).isEqualTo(5)
     }
 
     @Test
@@ -117,7 +117,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.DailyStreak)
-        assertThat((badge.requirement as BadgeRequirement.DailyStreak).isEqualTo(7).days)
+        assertThat((badge.requirement as BadgeRequirement.DailyStreak).days).isEqualTo(7)
     }
 
     @Test
@@ -137,7 +137,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.ProblemSpeed)
-        assertThat((badge.requirement as BadgeRequirement.ProblemSpeed).isEqualTo(3).maxSeconds)
+        assertThat((badge.requirement as BadgeRequirement.ProblemSpeed).maxSeconds).isEqualTo(3)
     }
 
     @Test
@@ -157,7 +157,7 @@ class BadgeMapperTest {
         val badge = BadgeMapper.toDomain(entity)
 
         assert(badge.requirement is BadgeRequirement.MixedSessions)
-        assertThat((badge.requirement as BadgeRequirement.MixedSessions).isEqualTo(10).count)
+        assertThat((badge.requirement as BadgeRequirement.MixedSessions).count).isEqualTo(10)
     }
 
     @Test

@@ -139,7 +139,7 @@ class OperationPerformanceTest {
                 recentAttempts = 20,
             )
 
-        assertThat(performance.getRecommendedAdjustment().isEqualTo(DifficultyAdjustment.HARDER))
+        assertThat(performance.getRecommendedAdjustment()).isEqualTo(DifficultyAdjustment.HARDER)
     }
 
     @Test
@@ -154,7 +154,7 @@ class OperationPerformanceTest {
                 recentAttempts = 10,
             )
 
-        assertThat(performance.getRecommendedAdjustment().isEqualTo(DifficultyAdjustment.EASIER))
+        assertThat(performance.getRecommendedAdjustment()).isEqualTo(DifficultyAdjustment.EASIER)
     }
 
     @Test
@@ -169,7 +169,7 @@ class OperationPerformanceTest {
                 recentAttempts = 15,
             )
 
-        assertThat(performance.getRecommendedAdjustment().isEqualTo(DifficultyAdjustment.CURRENT))
+        assertThat(performance.getRecommendedAdjustment()).isEqualTo(DifficultyAdjustment.CURRENT)
     }
 
     @Test
