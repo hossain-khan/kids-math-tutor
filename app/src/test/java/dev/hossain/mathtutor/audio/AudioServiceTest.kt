@@ -287,10 +287,10 @@ class AudioServiceTest {
     }
 
     @Test
-    fun `music is enabled by default`() {
+    fun `music is disabled by default`() {
         val newService = FakeAudioService()
 
-        assertTrue(newService.isMusicEnabled)
+        assertFalse(newService.isMusicEnabled)
     }
 
     @Test
@@ -349,7 +349,7 @@ class AudioServiceTest {
         var isReleased = false
         var currentVolume = 1.0f
         var soundEffectsEnabledState = true
-        var musicEnabledState = true
+        var musicEnabledState = false // Default OFF to match AudioServiceImpl
 
         val isSoundEffectsEnabled: Boolean get() = soundEffectsEnabledState
         val isMusicEnabled: Boolean get() = musicEnabledState

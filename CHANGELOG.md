@@ -44,6 +44,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **AudioServiceTest Updates**:
     - 6 new tests for `playCountdown()`, `playGo()`, `playWarning()` methods
     - FakeAudioService updated with new method implementations
+- **Music Toggle Button on Home Screen** - Quick access to toggle background music
+  - Added music note icon button next to settings icon in TopAppBar
+  - Shows MusicNote icon when music is off, MusicOff icon when playing
+  - Injects AudioService into HomePresenter for music state management
+  - Updated HomeScreen State with `isMusicPlaying` property
+  - Added `ToggleMusicClicked` event for toggling music
+
+### Changed
+- Replaced background music with "Swan Lake" music box version (`swan_lake_music_box.mp3`)
+
+### Fixed
+- **Background Music Auto-Play Bug** - Music no longer plays automatically on app launch
+  - Changed `musicEnabled` default from `true` to `false` in AudioServiceImpl
+  - Users must explicitly enable background music via settings or home screen toggle
+
 - **Phase 6-1: Game Data Layer & Repository** - Foundation for mini-games feature
   - **Domain Models**:
     - `Game` enum with MATH_RACE, MEMORY_MATCH, NUMBER_SEQUENCE including unlock requirements (50, 100, 200 problems)

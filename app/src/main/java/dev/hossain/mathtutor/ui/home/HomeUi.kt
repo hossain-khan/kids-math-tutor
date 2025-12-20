@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.MusicOff
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -69,6 +71,22 @@ fun HomeUi(
                     Text("Math Pup Tutor")
                 },
                 actions = {
+                    IconButton(onClick = { state.eventSink(HomeScreen.Event.ToggleMusicClicked) }) {
+                        Icon(
+                            imageVector =
+                                if (state.isMusicPlaying) {
+                                    Icons.Filled.MusicNote
+                                } else {
+                                    Icons.Filled.MusicOff
+                                },
+                            contentDescription =
+                                if (state.isMusicPlaying) {
+                                    "Turn off music"
+                                } else {
+                                    "Turn on music"
+                                },
+                        )
+                    }
                     IconButton(onClick = { state.eventSink(HomeScreen.Event.ViewSettingsClicked) }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,

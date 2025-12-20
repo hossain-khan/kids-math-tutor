@@ -52,7 +52,7 @@ class AudioServiceImpl
 
         // Settings
         private var soundEffectsEnabled: Boolean = true
-        private var musicEnabled: Boolean = true
+        private var musicEnabled: Boolean = false // Default OFF - user must enable in settings
         private var volume: Float = 1.0f
 
         // Background music volume is 30% of main volume
@@ -164,7 +164,7 @@ class AudioServiceImpl
                 .build()
                 .apply {
                     // Build the raw resource URI
-                    val musicUri = "android.resource://${context.packageName}/${R.raw.background_music}"
+                    val musicUri = "android.resource://${context.packageName}/${R.raw.swan_lake_music_box}"
                     val mediaItem = MediaItem.fromUri(musicUri)
                     setMediaItem(mediaItem)
                     repeatMode = Player.REPEAT_MODE_ALL
