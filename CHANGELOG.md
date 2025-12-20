@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2025-12-19
+
 ### Added
 - **Phase 6-5: Game Badges System** - Badge rewards for mini-game achievements (#65)
   - **GAMES Badge Category** (`domain/model/BadgeCategory.kt`):
@@ -1107,5 +1109,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.0.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.5.0...HEAD
+[1.5.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.4.0...1.5.0
 [1.0.0]: https://github.com/hossain-khan/kids-math-pup-tutor/releases/tag/1.0.0
