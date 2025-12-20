@@ -7,6 +7,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -42,7 +43,10 @@ fun AnswerField(
             digits
         }
 
-    Timber.d("[AnswerField] Answer updated: '$answer', TalkBack will announce: '$answerDescription'")
+    // Log only when answer changes (not on every recomposition)
+    LaunchedEffect(answer) {
+        Timber.d("[AnswerField] Answer updated: '$answer', TalkBack will announce: '$answerDescription'")
+    }
 
     OutlinedTextField(
         value = answer,

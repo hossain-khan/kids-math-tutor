@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **ANR in UI composables during math practice** - Fixed Application Not Responding issue caused by excessive logging during recomposition
+  - Moved Timber.d() logging calls from composition body to `LaunchedEffect` blocks in UI components
+  - Logs now only execute when relevant state changes, not on every recomposition
+  - Fixed in `MathPracticeUi.kt` (`ProgressSection`, `ProblemCard`) and `AnswerField.kt`
+
 ## [1.6.0] - 2025-12-20
 
 ### Added
