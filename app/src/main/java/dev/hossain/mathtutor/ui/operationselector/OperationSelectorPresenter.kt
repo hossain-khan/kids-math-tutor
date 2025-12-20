@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.operationselector
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -41,7 +42,11 @@ class OperationSelectorPresenter
                 initial = dev.hossain.mathtutor.domain.model.SessionStats.EMPTY,
             )
             val hasSessionHistory = overallStats.sessionCount > 0
-            Timber.d("OperationSelector: Session history exists = $hasSessionHistory (sessionCount=${overallStats.sessionCount})")
+
+            // Log only when stats change (not on every recomposition)
+            LaunchedEffect(overallStats.sessionCount) {
+                Timber.d("OperationSelector: Session history exists = $hasSessionHistory (sessionCount=${overallStats.sessionCount})")
+            }
 
             return OperationSelectorScreen.State(
                 hasSessionHistory = hasSessionHistory,

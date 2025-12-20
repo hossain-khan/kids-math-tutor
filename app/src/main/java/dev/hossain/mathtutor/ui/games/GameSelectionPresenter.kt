@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.games
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -46,9 +47,12 @@ class GameSelectionPresenter
             )
             val totalProblemsSolved = sessionStats.totalProblems
 
-            Timber.d(
-                "GameSelection: Total problems solved = $totalProblemsSolved",
-            )
+            // Log only when stats change (not on every recomposition)
+            LaunchedEffect(totalProblemsSolved) {
+                Timber.d(
+                    "GameSelection: Total problems solved = $totalProblemsSolved",
+                )
+            }
 
             // Collect personal bests and game stats for each game
             val mathRacePersonalBest by gameRepository
@@ -95,15 +99,18 @@ class GameSelectionPresenter
                     ),
                 )
 
-            Timber.d(
-                "GameSelection: Games - " +
-                    "MathRace(unlocked=${gameInfoList[0].isUnlocked}, " +
-                    "best=${gameInfoList[0].personalBest}, plays=${gameInfoList[0].totalPlays}), " +
-                    "MemoryMatch(unlocked=${gameInfoList[1].isUnlocked}, " +
-                    "best=${gameInfoList[1].personalBest}, plays=${gameInfoList[1].totalPlays}), " +
-                    "NumberSequence(unlocked=${gameInfoList[2].isUnlocked}, " +
-                    "best=${gameInfoList[2].personalBest}, plays=${gameInfoList[2].totalPlays})",
-            )
+            // Log only when game info changes (not on every recomposition)
+            LaunchedEffect(gameInfoList) {
+                Timber.d(
+                    "GameSelection: Games - " +
+                        "MathRace(unlocked=${gameInfoList[0].isUnlocked}, " +
+                        "best=${gameInfoList[0].personalBest}, plays=${gameInfoList[0].totalPlays}), " +
+                        "MemoryMatch(unlocked=${gameInfoList[1].isUnlocked}, " +
+                        "best=${gameInfoList[1].personalBest}, plays=${gameInfoList[1].totalPlays}), " +
+                        "NumberSequence(unlocked=${gameInfoList[2].isUnlocked}, " +
+                        "best=${gameInfoList[2].personalBest}, plays=${gameInfoList[2].totalPlays})",
+                )
+            }
 
             return GameSelectionScreen.State(
                 gameInfoList = gameInfoList,
