@@ -6,26 +6,30 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
+import dev.hossain.mathtutor.data.local.dao.GameSessionDao
 import dev.hossain.mathtutor.data.local.dao.PerformanceDao
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.dao.StreakDao
 import dev.hossain.mathtutor.data.local.entity.BadgeEntity
+import dev.hossain.mathtutor.data.local.entity.GameSessionEntity
 import dev.hossain.mathtutor.data.local.entity.PerformanceEntity
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.data.local.entity.StreakEntity
 
 /**
  * Room database for Kids Math Tutor app.
- * Stores practice session history, statistics, badge achievements, daily streaks, and performance records.
+ * Stores practice session history, statistics, badge achievements, daily streaks,
+ * performance records, and game session data.
  *
  * Database name: kids_math_tutor.db
- * Version: 4 (added performance tracking system for adaptive difficulty)
+ * Version: 5 (added game sessions for mini-games)
  *
  * Entities:
  * - [PracticeSessionEntity]: Completed practice sessions with statistics
  * - [BadgeEntity]: Badge achievements and unlock status
  * - [StreakEntity]: Daily practice streak tracking
  * - [PerformanceEntity]: Individual problem performance records for adaptive difficulty
+ * - [GameSessionEntity]: Mini-game session data and scores
  *
  * Type Converters:
  * - [Converters]: Handles MathOperation, BadgeCategory, GradeLevel enums, Instant timestamp, and LocalDate conversions
@@ -36,8 +40,9 @@ import dev.hossain.mathtutor.data.local.entity.StreakEntity
         BadgeEntity::class,
         StreakEntity::class,
         PerformanceEntity::class,
+        GameSessionEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -69,6 +74,13 @@ abstract class MathDatabase : RoomDatabase() {
      * @return PerformanceDao instance
      */
     abstract fun performanceDao(): PerformanceDao
+
+    /**
+     * Provides access to game session data operations.
+     *
+     * @return GameSessionDao instance
+     */
+    abstract fun gameSessionDao(): GameSessionDao
 
     companion object {
         /**
@@ -143,6 +155,38 @@ abstract class MathDatabase : RoomDatabase() {
                             timeSpentSeconds INTEGER NOT NULL,
                             timestamp INTEGER NOT NULL
                         )
+                        """.trimIndent(),
+                    )
+                }
+            }
+
+        /**
+         * Migration from database version 4 to version 5.
+         * Adds the game_sessions table for mini-game tracking (Math Race, etc.).
+         */
+        val MIGRATION_4_5 =
+            object : Migration(4, 5) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    // Create game_sessions table
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS game_sessions (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            gameId TEXT NOT NULL,
+                            startTime INTEGER NOT NULL,
+                            endTime INTEGER NOT NULL,
+                            score INTEGER NOT NULL,
+                            correctAnswers INTEGER NOT NULL,
+                            totalAttempts INTEGER NOT NULL,
+                            durationSeconds INTEGER NOT NULL,
+                            gradeLevel TEXT NOT NULL
+                        )
+                        """.trimIndent(),
+                    )
+                    // Create index on gameId for faster lookups
+                    db.execSQL(
+                        """
+                        CREATE INDEX IF NOT EXISTS index_game_sessions_gameId ON game_sessions (gameId)
                         """.trimIndent(),
                     )
                 }

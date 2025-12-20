@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.di
 import androidx.room.Room
 import dev.hossain.mathtutor.data.local.MathDatabase
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
+import dev.hossain.mathtutor.data.local.dao.GameSessionDao
 import dev.hossain.mathtutor.data.local.dao.PerformanceDao
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.dao.StreakDao
@@ -33,6 +34,7 @@ interface DatabaseModule {
                 MathDatabase.MIGRATION_1_2,
                 MathDatabase.MIGRATION_2_3,
                 MathDatabase.MIGRATION_3_4,
+                MathDatabase.MIGRATION_4_5,
             ).fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
@@ -51,4 +53,8 @@ interface DatabaseModule {
     @Provides
     @SingleIn(AppScope::class)
     fun providePerformanceDao(database: MathDatabase): PerformanceDao = database.performanceDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideGameSessionDao(database: MathDatabase): GameSessionDao = database.gameSessionDao()
 }
