@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
@@ -224,9 +225,12 @@ fun GradeSelectionUi(
                     .padding(paddingValues)
                     .then(
                         if (!state.isFromSettings) {
+                            // Onboarding: apply full system bars padding (no TopAppBar)
                             Modifier.padding(systemBarsPadding)
                         } else {
-                            Modifier
+                            // From settings: only apply bottom navigation bar padding
+                            // (TopAppBar handles top padding)
+                            Modifier.padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
                         },
                     ).padding(24.dp)
                     .verticalScroll(rememberScrollState()),
