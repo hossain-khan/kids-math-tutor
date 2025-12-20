@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -283,7 +284,11 @@ private fun ProgressSection(
 ) {
     val progressDescription = "Problem ${currentIndex + 1} of $totalProblems"
 
-    Timber.d("[ProgressSection] Rendering progress: $progressDescription")
+    // Log only when progress changes (not on every recomposition)
+    LaunchedEffect(currentIndex, totalProblems) {
+        val progressDescriptionForLog = "Problem ${currentIndex + 1} of $totalProblems"
+        Timber.d("[ProgressSection] Rendering progress: $progressDescriptionForLog")
+    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -319,7 +324,11 @@ private fun ProblemCard(
 ) {
     val spokenProblem = problem.getSpokenString()
 
-    Timber.d("[ProblemCard] Rendering problem with TalkBack announcement: '$spokenProblem'")
+    // Log only when problem changes (not on every recomposition)
+    LaunchedEffect(problem) {
+        val spokenProblemForLog = problem.getSpokenString()
+        Timber.d("[ProblemCard] Rendering problem with TalkBack announcement: '$spokenProblemForLog'")
+    }
 
     Card(
         modifier =

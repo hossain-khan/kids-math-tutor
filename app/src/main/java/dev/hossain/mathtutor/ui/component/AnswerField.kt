@@ -7,6 +7,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -30,19 +31,25 @@ fun AnswerField(
     answer: String,
     modifier: Modifier = Modifier,
 ) {
-    // Create content description for screen readers
-    // Note: The field label "Your Answer" is already announced by TalkBack,
-    // so we only need to announce the state or digits to avoid redundancy
-    val answerDescription =
-        if (answer.isEmpty()) {
+    // Helper function to create content description for screen readers
+    fun createAnswerDescription(input: String): String =
+        if (input.isEmpty()) {
             "empty"
         } else {
             // Announce each digit separately for clarity
-            val digits = answer.toCharArray().joinToString(" ")
-            digits
+            input.toCharArray().joinToString(" ")
         }
 
-    Timber.d("[AnswerField] Answer updated: '$answer', TalkBack will announce: '$answerDescription'")
+    // Create content description for screen readers
+    // Note: The field label "Your Answer" is already announced by TalkBack,
+    // so we only need to announce the state or digits to avoid redundancy
+    val answerDescription = createAnswerDescription(answer)
+
+    // Log only when answer changes (not on every recomposition)
+    LaunchedEffect(answer) {
+        val answerDescriptionForLog = createAnswerDescription(answer)
+        Timber.d("[AnswerField] Answer updated: '$answer', TalkBack will announce: '$answerDescriptionForLog'")
+    }
 
     OutlinedTextField(
         value = answer,
