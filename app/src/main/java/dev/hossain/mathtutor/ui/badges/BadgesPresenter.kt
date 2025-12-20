@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.badges
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,9 +54,13 @@ class BadgesPresenter
             // Group badges by category
             val badgesByCategory =
                 remember(allBadges) {
-                    Timber.d("Grouping ${allBadges.size} badges by category")
                     allBadges.groupBy { it.category }
                 }
+
+            // Log state changes in LaunchedEffect to avoid recomposition spam
+            LaunchedEffect(allBadges.size) {
+                Timber.d("Grouping ${allBadges.size} badges by category")
+            }
 
             return BadgesScreen.State(
                 badgesByCategory = badgesByCategory,

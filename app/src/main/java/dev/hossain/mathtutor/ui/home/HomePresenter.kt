@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,29 +57,42 @@ class HomePresenter
 
             // Collect user profile
             val userProfile by userProfileRepository.getProfile().collectAsState(initial = null)
-            Timber.d(
-                "HomeScreen: User profile - name=${userProfile?.name}, grade=${userProfile?.gradeLevel}",
-            )
 
             // Collect streak data
             val streakData by streakRepository.getStreak().collectAsState(initial = null)
-            Timber.d(
-                "HomeScreen: Streak data - currentStreak=${streakData?.currentStreak}, lastPracticeDate=${streakData?.lastPracticeDate}",
-            )
 
             // Collect overall stats
             val overallStats by sessionRepository.getOverallStats().collectAsState(
                 initial = SessionStats.EMPTY,
-            )
-            Timber.d(
-                "HomeScreen: Overall stats - sessionCount=${overallStats.sessionCount}, totalProblems=${overallStats.totalProblems}, accuracy=${overallStats.accuracy}",
             )
 
             // Collect 3 most recently unlocked badges
             val recentBadges by badgeRepository.getRecentlyUnlockedBadges(limit = 3).collectAsState(
                 initial = emptyList(),
             )
-            Timber.d("HomeScreen: Recent badges count=${recentBadges.size}")
+
+            // Log state changes in LaunchedEffect to avoid recomposition spam
+            LaunchedEffect(userProfile?.name, userProfile?.gradeLevel) {
+                Timber.d(
+                    "HomeScreen: User profile - name=${userProfile?.name}, grade=${userProfile?.gradeLevel}",
+                )
+            }
+
+            LaunchedEffect(streakData?.currentStreak, streakData?.lastPracticeDate) {
+                Timber.d(
+                    "HomeScreen: Streak data - currentStreak=${streakData?.currentStreak}, lastPracticeDate=${streakData?.lastPracticeDate}",
+                )
+            }
+
+            LaunchedEffect(overallStats.sessionCount, overallStats.totalProblems) {
+                Timber.d(
+                    "HomeScreen: Overall stats - sessionCount=${overallStats.sessionCount}, totalProblems=${overallStats.totalProblems}, accuracy=${overallStats.accuracy}",
+                )
+            }
+
+            LaunchedEffect(recentBadges.size) {
+                Timber.d("HomeScreen: Recent badges count=${recentBadges.size}")
+            }
 
             return HomeScreen.State(
                 userName = userProfile?.name,
