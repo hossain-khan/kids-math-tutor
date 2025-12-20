@@ -215,8 +215,8 @@ class HomeScreenTest {
         // When
         val event = HomeScreen.Event.StartPracticeClicked
 
-        // Then
-        assertTrue(event is HomeScreen.Event.StartPracticeClicked)
+        // Then - verify it's the singleton object
+        assertEquals(HomeScreen.Event.StartPracticeClicked, event)
     }
 
     @Test
@@ -224,8 +224,8 @@ class HomeScreenTest {
         // When
         val event = HomeScreen.Event.ViewStatsClicked
 
-        // Then
-        assertTrue(event is HomeScreen.Event.ViewStatsClicked)
+        // Then - verify it's the singleton object
+        assertEquals(HomeScreen.Event.ViewStatsClicked, event)
     }
 
     @Test
@@ -233,8 +233,8 @@ class HomeScreenTest {
         // When
         val event = HomeScreen.Event.ViewBadgesClicked
 
-        // Then
-        assertTrue(event is HomeScreen.Event.ViewBadgesClicked)
+        // Then - verify it's the singleton object
+        assertEquals(HomeScreen.Event.ViewBadgesClicked, event)
     }
 
     @Test
@@ -242,8 +242,8 @@ class HomeScreenTest {
         // When
         val event = HomeScreen.Event.ViewSettingsClicked
 
-        // Then
-        assertTrue(event is HomeScreen.Event.ViewSettingsClicked)
+        // Then - verify it's the singleton object
+        assertEquals(HomeScreen.Event.ViewSettingsClicked, event)
     }
 
     @Test

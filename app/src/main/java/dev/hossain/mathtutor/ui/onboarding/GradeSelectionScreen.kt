@@ -152,7 +152,8 @@ class GradeSelectionPresenter
                         // Only navigate if grade is selected
                         selectedGrade?.let { grade ->
                             if (screen.isFromSettings) {
-                                // From settings: save grade and go back
+                                // From settings: save grade asynchronously and navigate back immediately
+                                // Don't block navigation on database save to prevent ANR
                                 scope.launch {
                                     if (currentProfile != null) {
                                         // Profile exists, just update the grade
@@ -169,8 +170,9 @@ class GradeSelectionPresenter
                                             ),
                                         )
                                     }
-                                    navigator.pop()
                                 }
+                                // Navigate back immediately without waiting for database save
+                                navigator.pop()
                             } else {
                                 // Onboarding: navigate to name entry
                                 navigator.goTo(NameEntryScreen(gradeLevel = grade))

@@ -161,7 +161,6 @@ class BadgesScreenTest {
         val event = BadgesScreen.Event.BadgeClicked(badge)
 
         // Then
-        assertTrue(event is BadgesScreen.Event.BadgeClicked)
         assertEquals(badge, event.badge)
     }
 
@@ -170,8 +169,8 @@ class BadgesScreenTest {
         // When
         val event = BadgesScreen.Event.CloseDialog
 
-        // Then
-        assertTrue(event is BadgesScreen.Event.CloseDialog)
+        // Then - verify it's the singleton object
+        assertEquals(BadgesScreen.Event.CloseDialog, event)
     }
 
     @Test
@@ -179,8 +178,8 @@ class BadgesScreenTest {
         // When
         val event = BadgesScreen.Event.BackPressed
 
-        // Then
-        assertTrue(event is BadgesScreen.Event.BackPressed)
+        // Then - verify it's the singleton object
+        assertEquals(BadgesScreen.Event.BackPressed, event)
     }
 
     @Test

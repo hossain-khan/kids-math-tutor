@@ -394,14 +394,8 @@ class Phase3EdgeCasesTest {
             )
 
         volumeBadges.forEachIndexed { index, req ->
-            when (req) {
-                is BadgeRequirement.ProblemCount -> {
-                    assertTrue("Badge $index should have positive count", req.count > 0)
-                    assertTrue("Badge $index should be achievable", req.count <= 1000)
-                }
-
-                else -> {}
-            }
+            assertTrue("Badge $index should have positive count", req.count > 0)
+            assertTrue("Badge $index should be achievable", req.count <= 1000)
         }
 
         val streakBadges =
@@ -411,14 +405,8 @@ class Phase3EdgeCasesTest {
             )
 
         streakBadges.forEach { req ->
-            when (req) {
-                is BadgeRequirement.DailyStreak -> {
-                    assertTrue("Streak should be positive", req.days > 0)
-                    assertTrue("Streak should be achievable", req.days <= 30)
-                }
-
-                else -> {}
-            }
+            assertTrue("Streak should be positive", req.days > 0)
+            assertTrue("Streak should be achievable", req.days <= 30)
         }
     }
 

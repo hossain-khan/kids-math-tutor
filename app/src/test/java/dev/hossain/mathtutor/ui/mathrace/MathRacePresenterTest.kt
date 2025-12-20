@@ -50,7 +50,8 @@ class MathRacePresenterTest {
     fun `initial game state is NotStarted`() {
         val gameState = MathRaceScreen.GameState.NotStarted
 
-        assertTrue(gameState is MathRaceScreen.GameState.NotStarted)
+        // Verify it's the singleton object
+        assertEquals(MathRaceScreen.GameState.NotStarted, gameState)
     }
 
     @Test

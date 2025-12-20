@@ -60,7 +60,6 @@ class OperationSelectorScreenTest {
             )
 
         // Then
-        assertTrue(event is OperationSelectorScreen.Event.OperationSelected)
         assertEquals(MathOperation.ADDITION, event.operation)
     }
 
@@ -69,8 +68,8 @@ class OperationSelectorScreenTest {
         // When
         val event = OperationSelectorScreen.Event.ViewStatsClicked
 
-        // Then
-        assertTrue(event is OperationSelectorScreen.Event.ViewStatsClicked)
+        // Then - verify it's the singleton object
+        assertEquals(OperationSelectorScreen.Event.ViewStatsClicked, event)
     }
 
     @Test

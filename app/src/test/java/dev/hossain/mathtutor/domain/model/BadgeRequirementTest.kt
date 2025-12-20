@@ -73,12 +73,15 @@ class BadgeRequirementTest {
         val problemSpeed = BadgeRequirement.ProblemSpeed(5)
         val mixedSessions = BadgeRequirement.MixedSessions(8)
 
-        assert(problemCount is BadgeRequirement.ProblemCount)
-        assert(operationCount is BadgeRequirement.OperationCount)
-        assert(consecutiveCorrect is BadgeRequirement.ConsecutiveCorrect)
-        assert(sessionAccuracy is BadgeRequirement.SessionAccuracy)
-        assert(dailyStreak is BadgeRequirement.DailyStreak)
-        assert(problemSpeed is BadgeRequirement.ProblemSpeed)
-        assert(mixedSessions is BadgeRequirement.MixedSessions)
+        // Verify each subtype can be constructed and has expected values
+        assertEquals(10, problemCount.count)
+        assertEquals(MathOperation.SUBTRACTION, operationCount.operation)
+        assertEquals(20, operationCount.count)
+        assertEquals(5, consecutiveCorrect.count)
+        assertEquals(85f, sessionAccuracy.percentage)
+        assertEquals(2, sessionAccuracy.sessionCount)
+        assertEquals(3, dailyStreak.days)
+        assertEquals(5, problemSpeed.maxSeconds)
+        assertEquals(8, mixedSessions.count)
     }
 }
