@@ -112,9 +112,9 @@ fun SettingsUi(
     }
 
     // Show dialogs when needed
-    if (state.showNameDialog && state.profile != null) {
+    if (state.showNameDialog) {
         NameEditDialog(
-            currentName = state.profile.name,
+            currentName = state.profile?.name,
             onDismiss = { state.eventSink(SettingsScreen.Event.CancelNameEdit) },
             onSave = { name -> state.eventSink(SettingsScreen.Event.SaveName(name)) },
         )
