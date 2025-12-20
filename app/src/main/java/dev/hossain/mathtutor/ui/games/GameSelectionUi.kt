@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.games
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,6 +52,11 @@ fun GameSelectionUi(
     state: GameSelectionScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // Handle system back button press
+    BackHandler {
+        state.eventSink(GameSelectionScreen.Event.NavigateBack)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
