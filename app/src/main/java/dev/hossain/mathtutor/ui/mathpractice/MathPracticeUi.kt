@@ -113,7 +113,11 @@ internal fun MathPracticeUi(
         previousIsCorrect = state.isCorrect
     }
 
-    // Handle system back button
+    /*
+     * Handle system back button to show exit confirmation.
+     * This prevents accidental exits during practice which would lose progress.
+     * Different from Settings/Games BackHandler which prevents ANR - this is intentional UX.
+     */
     BackHandler {
         showExitDialog = true
     }
