@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Saves grade level and navigates back when used from Settings context
   - Updated navigation documentation in `NAVIGATION.md`
 
+### Fixed
+- **ANR when pressing back from settings** - Fixed Application Not Responding issue when navigating back from grade selection in settings
+  - Moved `navigator.pop()` call outside of coroutine block to prevent blocking UI thread
+  - Database save now happens asynchronously without blocking navigation
+  - User experiences immediate navigation response
+
 ## [1.5.0] - 2025-12-19
 
 ### Added
