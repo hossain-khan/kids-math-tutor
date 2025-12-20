@@ -96,9 +96,13 @@ class GameSelectionPresenter
                 )
 
             Timber.d(
-                "GameSelection: Games - MathRace(unlocked=${gameInfoList[0].isUnlocked}, best=${gameInfoList[0].personalBest}, plays=${gameInfoList[0].totalPlays}), " +
-                    "MemoryMatch(unlocked=${gameInfoList[1].isUnlocked}, best=${gameInfoList[1].personalBest}, plays=${gameInfoList[1].totalPlays}), " +
-                    "NumberSequence(unlocked=${gameInfoList[2].isUnlocked}, best=${gameInfoList[2].personalBest}, plays=${gameInfoList[2].totalPlays})",
+                "GameSelection: Games - " +
+                    "MathRace(unlocked=${gameInfoList[0].isUnlocked}, " +
+                    "best=${gameInfoList[0].personalBest}, plays=${gameInfoList[0].totalPlays}), " +
+                    "MemoryMatch(unlocked=${gameInfoList[1].isUnlocked}, " +
+                    "best=${gameInfoList[1].personalBest}, plays=${gameInfoList[1].totalPlays}), " +
+                    "NumberSequence(unlocked=${gameInfoList[2].isUnlocked}, " +
+                    "best=${gameInfoList[2].personalBest}, plays=${gameInfoList[2].totalPlays})",
             )
 
             return GameSelectionScreen.State(

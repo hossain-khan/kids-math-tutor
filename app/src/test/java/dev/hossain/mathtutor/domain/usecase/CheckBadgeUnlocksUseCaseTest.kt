@@ -5,11 +5,15 @@ import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.DailyStreak
+import dev.hossain.mathtutor.domain.model.Game
+import dev.hossain.mathtutor.domain.model.GameSession
+import dev.hossain.mathtutor.domain.model.GameStats
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
+import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.StreakRepository
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +29,7 @@ class CheckBadgeUnlocksUseCaseTest {
     private lateinit var fakeBadgeRepository: FakeBadgeRepository
     private lateinit var fakeSessionRepository: FakeSessionRepository
     private lateinit var fakeStreakRepository: FakeStreakRepository
+    private lateinit var fakeGameRepository: FakeGameRepository
     private lateinit var useCase: CheckBadgeUnlocksUseCase
 
     @Before
@@ -32,7 +37,14 @@ class CheckBadgeUnlocksUseCaseTest {
         fakeBadgeRepository = FakeBadgeRepository()
         fakeSessionRepository = FakeSessionRepository()
         fakeStreakRepository = FakeStreakRepository()
-        useCase = CheckBadgeUnlocksUseCase(fakeBadgeRepository, fakeSessionRepository, fakeStreakRepository)
+        fakeGameRepository = FakeGameRepository()
+        useCase =
+            CheckBadgeUnlocksUseCase(
+                fakeBadgeRepository,
+                fakeSessionRepository,
+                fakeStreakRepository,
+                fakeGameRepository,
+            )
     }
 
     @Test
@@ -375,5 +387,36 @@ class CheckBadgeUnlocksUseCaseTest {
         override suspend fun saveStreak(streak: DailyStreak) {
             currentStreak = streak
         }
+    }
+
+    /**
+     * Fake implementation of GameRepository for testing.
+     */
+    private class FakeGameRepository : GameRepository {
+        var totalGamesPlayed: Int = 0
+        var personalBest: Int = 0
+        var perfectGameCount: Int = 0
+
+        override suspend fun saveGameSession(session: GameSession): Long = 0
+
+        override fun getPersonalBest(game: Game): Flow<Int> = flowOf(personalBest)
+
+        override fun getBestSession(game: Game): Flow<GameSession?> = flowOf(null)
+
+        override fun getGameStats(game: Game): Flow<GameStats> = flowOf(GameStats(game, 0, 0, 0f, 0f, null))
+
+        override fun getTotalGamesPlayed(game: Game): Flow<Int> = flowOf(totalGamesPlayed)
+
+        override fun isGameUnlocked(game: Game): Flow<Boolean> = flowOf(true)
+
+        override fun getSessionsByGame(game: Game): Flow<List<GameSession>> = flowOf(emptyList())
+
+        override fun getRecentSessions(limit: Int): Flow<List<GameSession>> = flowOf(emptyList())
+
+        override fun getAllGameStats(): Flow<Map<Game, GameStats>> = flowOf(emptyMap())
+
+        override fun getPerfectGameCount(game: Game): Flow<Int> = flowOf(perfectGameCount)
+
+        override suspend fun clearAllSessions() {}
     }
 }
