@@ -62,6 +62,7 @@ fun MathRaceUi(
                 averageTimePerProblem = gameState.averageTimePerProblem,
                 personalBest = state.personalBest,
                 userName = state.userName,
+                unlockedBadges = gameState.unlockedBadges,
                 onPlayAgain = { state.eventSink(MathRaceScreen.Event.PlayAgain) },
                 onNavigateHome = { state.eventSink(MathRaceScreen.Event.NavigateHome) },
                 modifier = modifier,

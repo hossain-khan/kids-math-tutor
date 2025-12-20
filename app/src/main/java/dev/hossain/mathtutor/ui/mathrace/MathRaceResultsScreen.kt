@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import kotlinx.coroutines.delay
 
@@ -62,7 +63,7 @@ import kotlinx.coroutines.delay
  * Results screen shown after a Math Race game ends.
  *
  * Displays final score, new record indicator (if applicable),
- * game statistics, and navigation buttons.
+ * game statistics, unlocked badges, and navigation buttons.
  *
  * @param finalScore Final score achieved
  * @param totalAttempts Total problems attempted
@@ -71,6 +72,7 @@ import kotlinx.coroutines.delay
  * @param averageTimePerProblem Average seconds per problem
  * @param personalBest Player's personal best (previous or new)
  * @param userName Player's name
+ * @param unlockedBadges List of badges unlocked during this game
  * @param onPlayAgain Callback to start a new game
  * @param onNavigateHome Callback to return to home
  * @param modifier Optional modifier
@@ -84,6 +86,7 @@ fun MathRaceResultsScreen(
     averageTimePerProblem: Float,
     personalBest: Int,
     userName: String?,
+    unlockedBadges: List<Badge> = emptyList(),
     onPlayAgain: () -> Unit,
     onNavigateHome: () -> Unit,
     modifier: Modifier = Modifier,
@@ -92,6 +95,7 @@ fun MathRaceResultsScreen(
     var showContent by remember { mutableStateOf(false) }
     var showNewRecord by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
+    var showBadges by remember { mutableStateOf(false) }
     var showButtons by remember { mutableStateOf(false) }
 
     // Stagger animations
@@ -102,6 +106,10 @@ fun MathRaceResultsScreen(
         delay(200)
         showStats = true
         delay(200)
+        if (unlockedBadges.isNotEmpty()) {
+            showBadges = true
+            delay(200)
+        }
         showButtons = true
     }
 
@@ -174,6 +182,17 @@ fun MathRaceResultsScreen(
                     accuracy = accuracy,
                     averageTime = averageTimePerProblem,
                 )
+            }
+
+            // Badge unlock section
+            if (unlockedBadges.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(24.dp))
+                AnimatedVisibility(
+                    visible = showBadges,
+                    enter = fadeIn() + slideInVertically { it / 2 },
+                ) {
+                    UnlockedBadgesCard(badges = unlockedBadges)
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -398,6 +417,80 @@ private fun StatRow(
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Medium,
         )
+    }
+}
+
+/**
+ * Card displaying badges unlocked during this game session.
+ */
+@Composable
+private fun UnlockedBadgesCard(
+    badges: List<Badge>,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.semantics { heading() },
+            ) {
+                Text(
+                    text = "🎉",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Badge${if (badges.size > 1) "s" else ""} Unlocked!",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+
+            badges.forEach { badge ->
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = "${badge.name}: ${badge.description}"
+                            },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = badge.icon,
+                        style = MaterialTheme.typography.headlineMedium,
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = badge.name,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            text = badge.description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f),
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

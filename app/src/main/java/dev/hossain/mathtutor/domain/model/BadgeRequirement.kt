@@ -71,4 +71,30 @@ sealed class BadgeRequirement {
     data class MixedSessions(
         val count: Int,
     ) : BadgeRequirement()
+
+    // ==================== Game Badges ====================
+
+    /**
+     * Badge requirement based on total number of games played.
+     *
+     * @property count The number of games that must be played (any game type)
+     */
+    data class GameCount(
+        val count: Int,
+    ) : BadgeRequirement()
+
+    /**
+     * Badge requirement based on Math Race score.
+     *
+     * @property minScore The minimum score required in a single Math Race game
+     */
+    data class MathRaceScore(
+        val minScore: Int,
+    ) : BadgeRequirement()
+
+    /**
+     * Badge requirement for achieving 100% accuracy in any game.
+     * Requires all answers in a single game session to be correct.
+     */
+    data object PerfectGameAccuracy : BadgeRequirement()
 }

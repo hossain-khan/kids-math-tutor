@@ -13,6 +13,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.Game
 import dev.hossain.mathtutor.domain.model.GameSession
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -20,6 +21,7 @@ import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
+import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -52,6 +54,7 @@ class MathRacePresenter
         private val problemGenerator: ProblemGenerator,
         private val gameRepository: GameRepository,
         private val userProfileRepository: UserProfileRepository,
+        private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val audioService: AudioService,
         private val hapticService: HapticService,
     ) : Presenter<MathRaceScreen.State> {
@@ -95,6 +98,7 @@ class MathRacePresenter
             var correctAnswers by remember { mutableIntStateOf(0) }
             var lastAnswerCorrect by remember { mutableStateOf<Boolean?>(null) }
             var userName by remember { mutableStateOf<String?>(null) }
+            var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
 
             // Internal state for game logic
             var gradeLevel by remember { mutableStateOf(GradeLevel.GRADE_1) }
@@ -162,7 +166,7 @@ class MathRacePresenter
                             "Accuracy: $accuracy%, New record: $isNewRecord",
                     )
 
-                    // Save game session
+                    // Save game session and check for badge unlocks
                     coroutineScope.launch(Dispatchers.IO) {
                         try {
                             val session =
@@ -180,28 +184,50 @@ class MathRacePresenter
                             gameRepository.saveGameSession(session)
                             Timber.d("[MathRace] Game session saved successfully")
 
-                            // Play audio based on result
+                            // Check for badge unlocks after saving the session
+                            val newBadges = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
+                            Timber.d("[MathRace] Badge check complete. Unlocked: ${newBadges.size} badges")
+
                             withContext(Dispatchers.Main) {
-                                if (isNewRecord && score > 0) {
+                                unlockedBadges = newBadges
+
+                                // Play audio based on result
+                                if (newBadges.isNotEmpty()) {
+                                    audioService.playBadgeUnlock()
+                                    hapticService.triggerBadgeUnlock()
+                                    Timber.d("[MathRace] Badge(s) unlocked! Playing badge unlock audio")
+                                } else if (isNewRecord && score > 0) {
                                     audioService.playPerfectScore()
                                     hapticService.triggerBadgeUnlock()
                                     Timber.d("[MathRace] New record achieved! Playing celebration audio")
                                 }
+
+                                // Update game state to Finished with unlocked badges
+                                gameState =
+                                    MathRaceScreen.GameState.Finished(
+                                        finalScore = score,
+                                        totalAttempts = totalAttempts,
+                                        isNewRecord = isNewRecord,
+                                        accuracy = accuracy,
+                                        averageTimePerProblem = avgTime,
+                                        unlockedBadges = newBadges,
+                                    )
                             }
                         } catch (e: Exception) {
                             Timber.e(e, "[MathRace] Failed to save game session")
+                            // Still update game state even if save failed
+                            withContext(Dispatchers.Main) {
+                                gameState =
+                                    MathRaceScreen.GameState.Finished(
+                                        finalScore = score,
+                                        totalAttempts = totalAttempts,
+                                        isNewRecord = isNewRecord,
+                                        accuracy = accuracy,
+                                        averageTimePerProblem = avgTime,
+                                    )
+                            }
                         }
                     }
-
-                    // Update game state to Finished
-                    gameState =
-                        MathRaceScreen.GameState.Finished(
-                            finalScore = score,
-                            totalAttempts = totalAttempts,
-                            isNewRecord = isNewRecord,
-                            accuracy = accuracy,
-                            averageTimePerProblem = avgTime,
-                        )
                 }
             }
 

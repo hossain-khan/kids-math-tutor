@@ -143,5 +143,38 @@ object BadgeDefinitions {
                 category = BadgeCategory.STREAK,
                 requirement = BadgeRequirement.DailyStreak(7),
             ),
+            // Game Badges
+            Badge(
+                id = "game_master",
+                name = "Game Master",
+                description = "Play 10 games",
+                icon = "🎮",
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.GameCount(10),
+            ),
+            Badge(
+                id = "speed_demon",
+                name = "Speed Demon",
+                description = "Score 20+ in Math Race",
+                icon = "⚡",
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.MathRaceScore(20),
+            ),
+            Badge(
+                id = "racing_champion",
+                name = "Racing Champion",
+                description = "Score 30+ in Math Race",
+                icon = "🏆",
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.MathRaceScore(30),
+            ),
+            Badge(
+                id = "perfect_race",
+                name = "Perfect Race",
+                description = "100% accuracy in a game",
+                icon = "💯",
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.PerfectGameAccuracy,
+            ),
         )
 }

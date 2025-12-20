@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.mathrace
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
 import kotlinx.parcelize.Parcelize
 
@@ -47,6 +48,7 @@ data object MathRaceScreen : Screen {
          * @property isNewRecord Whether this is a new personal best
          * @property accuracy Percentage of correct answers (0-100)
          * @property averageTimePerProblem Average seconds per problem
+         * @property unlockedBadges List of badges unlocked during this game
          */
         data class Finished(
             val finalScore: Int,
@@ -54,6 +56,7 @@ data object MathRaceScreen : Screen {
             val isNewRecord: Boolean,
             val accuracy: Float,
             val averageTimePerProblem: Float,
+            val unlockedBadges: List<Badge> = emptyList(),
         ) : GameState
     }
 
