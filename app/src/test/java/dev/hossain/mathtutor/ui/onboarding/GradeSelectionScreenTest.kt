@@ -84,7 +84,6 @@ class GradeSelectionScreenTest {
         val event = GradeSelectionScreen.Event.GradeSelected(GradeLevel.KINDERGARTEN)
 
         // Then
-        assertTrue(event is GradeSelectionScreen.Event.GradeSelected)
         assertEquals(GradeLevel.KINDERGARTEN, event.grade)
     }
 
@@ -93,8 +92,8 @@ class GradeSelectionScreenTest {
         // When
         val event = GradeSelectionScreen.Event.ContinueClicked
 
-        // Then
-        assertTrue(event is GradeSelectionScreen.Event.ContinueClicked)
+        // Then - verify it's the singleton object
+        assertEquals(GradeSelectionScreen.Event.ContinueClicked, event)
     }
 
     @Test
