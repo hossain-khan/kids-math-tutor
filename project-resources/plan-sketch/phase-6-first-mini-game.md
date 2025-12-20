@@ -279,42 +279,79 @@ enum class Game(
 
 ### 5. Special Game Badges
 
+#### New Badge Category
+
+```kotlin
+// Add GAMES to existing BadgeCategory enum in BadgeCategory.kt
+enum class BadgeCategory {
+    GETTING_STARTED,
+    VOLUME,
+    OPERATION_MASTERY,
+    SPEED_ACCURACY,
+    STREAK,
+    GAMES, // NEW: Game achievement badges
+}
+```
+
 #### New Badge Definitions
 
 ```kotlin
-// Add to existing BadgeType enum
-enum class BadgeType {
-    // ... existing badges ...
+// Add to BadgeDefinitions.kt getAllBadges() list
+
+// Game badges (GAMES category)
+Badge(
+    id = "game_master",
+    name = "Game Master",
+    description = "Play 10 games",
+    icon = "🎮",
+    category = BadgeCategory.GAMES,
+    requirement = BadgeRequirement.GameCount(10),
+    isUnlocked = false,
+    unlockedAt = null
+),
+Badge(
+    id = "speed_demon",
+    name = "Speed Demon",
+    description = "Score 20+ in Math Race",
+    icon = "⚡",
+    category = BadgeCategory.GAMES,
+    requirement = BadgeRequirement.MathRaceScore(20),
+    isUnlocked = false,
+    unlockedAt = null
+),
+Badge(
+    id = "racing_champion",
+    name = "Racing Champion",
+    description = "Score 30+ in Math Race",
+    icon = "🏆",
+    category = BadgeCategory.GAMES,
+    requirement = BadgeRequirement.MathRaceScore(30),
+    isUnlocked = false,
+    unlockedAt = null
+),
+Badge(
+    id = "perfect_race",
+    name = "Perfect Race",
+    description = "100% accuracy in a game",
+    icon = "💯",
+    category = BadgeCategory.GAMES,
+    requirement = BadgeRequirement.PerfectGameAccuracy,
+    isUnlocked = false,
+    unlockedAt = null
+)
+
+// Add new requirement types to BadgeRequirement.kt
+sealed class BadgeRequirement {
+    // ... existing requirements ...
     
-    // Game badges
-    GAME_MASTER(
-        id = "game_master",
-        name = "Game Master",
-        description = "Play 10 games",
-        icon = "🎮",
-        requirement = BadgeRequirement.GameCount(10)
-    ),
-    SPEED_DEMON(
-        id = "speed_demon",
-        name = "Speed Demon",
-        description = "Score 20+ in Math Race",
-        icon = "⚡",
-        requirement = BadgeRequirement.MathRaceScore(20)
-    ),
-    RACING_CHAMPION(
-        id = "racing_champion",
-        name = "Racing Champion",
-        description = "Score 30+ in Math Race",
-        icon = "🏆",
-        requirement = BadgeRequirement.MathRaceScore(30)
-    ),
-    PERFECT_RACE(
-        id = "perfect_race",
-        name = "Perfect Race",
-        description = "100% accuracy in a game",
-        icon = "💯",
-        requirement = BadgeRequirement.PerfectGameAccuracy
-    );
+    /** Badge requirement based on total games played. */
+    data class GameCount(val count: Int) : BadgeRequirement()
+    
+    /** Badge requirement based on Math Race score. */
+    data class MathRaceScore(val minScore: Int) : BadgeRequirement()
+    
+    /** Badge requirement for 100% accuracy in any game. */
+    data object PerfectGameAccuracy : BadgeRequirement()
 }
 ```
 
@@ -388,7 +425,7 @@ data class GameStats(
 
 ---
 
-### 2. Database Schema (Room v4)
+### 2. Database Schema (Room v5)
 
 #### GameSessionDao.kt
 
@@ -421,7 +458,7 @@ interface GameSessionDao {
 #### Database Migration
 
 ```kotlin
-val MIGRATION_3_4 = object : Migration(3, 4) {
+val MIGRATION_4_5 = object : Migration(4, 5) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("""
             CREATE TABLE IF NOT EXISTS game_sessions (
@@ -508,8 +545,9 @@ class GameRepositoryImpl constructor(
     }
     
     override fun isGameUnlocked(game: Game): Flow<Boolean> {
-        return sessionRepository.getTotalProblemsCompleted().map { total ->
-            game.isUnlocked(total)
+        // Use getOverallStats().totalProblems instead of getTotalProblemsCompleted()
+        return sessionRepository.getOverallStats().map { stats ->
+            game.isUnlocked(stats.totalProblems)
         }
     }
 }
@@ -858,8 +896,9 @@ fun GameSelectionPresenter(
     sessionRepository: SessionRepository
 ): GameSelectionScreen.State {
     
-    val totalProblems by sessionRepository.getTotalProblemsCompleted()
-        .collectAsState(initial = 0)
+    // Use getOverallStats() which exists in current SessionRepository
+    val overallStats by sessionRepository.getOverallStats()
+        .collectAsState(initial = SessionStats.EMPTY)
     
     val games = Game.values().map { game ->
         val personalBest by gameRepository.getPersonalBest(game.id)
@@ -869,7 +908,7 @@ fun GameSelectionPresenter(
         
         GameSelectionScreen.GameInfo(
             game = game,
-            isUnlocked = game.isUnlocked(totalProblems),
+            isUnlocked = game.isUnlocked(overallStats.totalProblems),
             personalBest = personalBest,
             totalPlays = stats?.totalPlays ?: 0
         )
@@ -1275,5 +1314,18 @@ fun `game over shows results when timer expires`() {
 ---
 
 *Document created: December 16, 2025*  
+*Last updated: December 19, 2025*  
 *Phase status: 🔴 Not Started*  
 *Target completion: Week 13 (after Phase 5)*
+
+---
+
+## Notes for Implementation
+
+> **Important**: This document was reviewed on December 19, 2025 after Phase 5 completion.
+> Key updates made:
+> - Database migration updated to v4 → v5 (was v3 → v4)
+> - Badge system aligned with current `BadgeCategory` enum + `BadgeDefinitions` pattern
+> - Added GAMES category to BadgeCategory
+> - Updated GameRepository to use `getOverallStats().totalProblems`
+> - AudioService needs new methods: `playWarning()`, `playCountdown()`, `playGo()` (add in Phase 6)
