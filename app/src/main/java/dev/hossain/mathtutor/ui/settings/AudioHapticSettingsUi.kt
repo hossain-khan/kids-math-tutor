@@ -485,3 +485,22 @@ private fun AudioHapticSettingsUiAllDisabledPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun AudioHapticSettingsUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = true,
+                    hapticsEnabled = true,
+                    volume = 0.8f,
+                    highContrastEnabled = false,
+                    largeTextEnabled = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}

@@ -357,3 +357,25 @@ private fun SettingsUiNoNamePreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Jordan",
+                            gradeLevel = GradeLevel.KINDERGARTEN,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = true,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}

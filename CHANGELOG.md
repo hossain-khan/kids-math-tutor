@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Compose Previews for UI Components** - Added comprehensive preview support for better UI development experience
+  - Added previews with light and dark mode variants for `GameSelectionUi.kt`, `GradeChangeDialog.kt`, and `NameEditDialog.kt`
+  - Added dark mode preview variants to `AudioHapticSettingsUi.kt`, `SettingsUi.kt`, `GradeSelectionScreen.kt`, and `NameEntryScreen.kt`
+  - All key UI components now have both light and dark theme previews for complete design system coverage
+
 ### Fixed
 - **ANR in UI composables during math practice** - Fixed Application Not Responding issue caused by excessive logging during recomposition
   - Moved Timber.d() logging calls from composition body to `LaunchedEffect` blocks in UI components

@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Game
@@ -356,5 +357,75 @@ private fun StatItem(
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GameSelectionUiPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 15,
+                                totalPlays = 5,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.NUMBER_SEQUENCE,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                            ),
+                        ),
+                    totalProblemsSolved = 75,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GameSelectionUiDarkPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme(darkTheme = true) {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 20,
+                                totalPlays = 8,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = true,
+                                personalBest = 12,
+                                totalPlays = 3,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.NUMBER_SEQUENCE,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                            ),
+                        ),
+                    totalProblemsSolved = 150,
+                    eventSink = {},
+                ),
+        )
     }
 }
