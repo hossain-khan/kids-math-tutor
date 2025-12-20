@@ -8,6 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 6-5: Game Badges System** - Badge rewards for mini-game achievements (#65)
+  - **GAMES Badge Category** (`domain/model/BadgeCategory.kt`):
+    - Added `GAMES` enum value for game-specific badges
+  - **New Badge Requirements** (`domain/model/BadgeRequirement.kt`):
+    - `GameCount(count: Int)` - Unlock after playing N games
+    - `MathRaceScore(minScore: Int)` - Unlock for achieving minimum score in Math Race
+    - `PerfectGameAccuracy` - Unlock for 100% accuracy in any game
+  - **4 New Game Badges** (`domain/model/BadgeDefinitions.kt`):
+    - 🎮 "Game Master" - Play 10 games
+    - ⚡ "Speed Demon" - Score 20+ in Math Race  
+    - 🏆 "Racing Champion" - Score 30+ in Math Race
+    - 💯 "Perfect Race" - Get 100% accuracy in a game
+  - **CheckBadgeUnlocksUseCase Updates** (`domain/usecase/CheckBadgeUnlocksUseCase.kt`):
+    - Added GameRepository injection for game session queries
+    - `checkGameCount()` - Queries total game sessions played
+    - `checkMathRaceScore()` - Queries best Math Race score
+    - `checkPerfectGameAccuracy()` - Checks for 100% accuracy games
+  - **MathRacePresenter Integration** (`ui/mathrace/MathRacePresenter.kt`):
+    - Injected CheckBadgeUnlocksUseCase
+    - Calls `checkAndUnlockBadges()` after saving game session
+    - Plays badge unlock audio/haptic when badges earned
+    - Passes unlocked badges to Finished state
+  - **MathRaceScreen State Updates** (`ui/mathrace/MathRaceScreen.kt`):
+    - Added `unlockedBadges: List<Badge>` to Finished GameState
+  - **Results Screen Badge Display** (`ui/mathrace/MathRaceResultsScreen.kt`):
+    - New `UnlockedBadgesCard` composable with celebration styling
+    - Shows badge icon, name, and description for each unlocked badge
+    - Animated reveal with staggered delay
+    - Material 3 tertiary container colors
+  - **Updated Exhaustive When Expressions**:
+    - BadgeMapper serialization/deserialization for new requirements
+    - BadgesUi category name formatting for GAMES
+    - BadgeDetailDialog requirement formatting
+
 - **Phase 6-4: Game Selection Screen** - Game Selection Hub for browsing and launching mini-games (#64)
   - **GameSelectionScreen** (`ui/games/GameSelectionScreen.kt`):
     - Circuit screen definition with State, Event, and GameInfo data classes

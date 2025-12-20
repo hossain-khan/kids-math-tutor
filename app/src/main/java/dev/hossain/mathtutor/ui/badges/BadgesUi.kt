@@ -174,6 +174,7 @@ private fun formatCategoryName(category: BadgeCategory): String =
         BadgeCategory.OPERATION_MASTERY -> "Operation Mastery"
         BadgeCategory.SPEED_ACCURACY -> "Speed & Accuracy"
         BadgeCategory.STREAK -> "Streak"
+        BadgeCategory.GAMES -> "Games"
     }
 
 @Preview(showBackground = true)

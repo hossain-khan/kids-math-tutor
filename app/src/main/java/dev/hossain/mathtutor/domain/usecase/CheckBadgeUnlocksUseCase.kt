@@ -2,8 +2,10 @@ package dev.hossain.mathtutor.domain.usecase
 
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
+import dev.hossain.mathtutor.domain.model.Game
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
+import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.StreakRepository
 import dev.zacsweers.metro.AppScope
@@ -24,6 +26,7 @@ class CheckBadgeUnlocksUseCase
         private val badgeRepository: BadgeRepository,
         private val sessionRepository: SessionRepository,
         private val streakRepository: StreakRepository,
+        private val gameRepository: GameRepository,
     ) {
         /**
          * Checks all locked badges and unlocks any that meet their requirements.
@@ -69,6 +72,9 @@ class CheckBadgeUnlocksUseCase
                 is BadgeRequirement.DailyStreak -> checkDailyStreak(requirement)
                 is BadgeRequirement.ProblemSpeed -> checkProblemSpeed(requirement)
                 is BadgeRequirement.MixedSessions -> checkMixedSessions(requirement)
+                is BadgeRequirement.GameCount -> checkGameCount(requirement)
+                is BadgeRequirement.MathRaceScore -> checkMathRaceScore(requirement)
+                is BadgeRequirement.PerfectGameAccuracy -> checkPerfectGameAccuracy()
             }
 
         /**
@@ -153,5 +159,43 @@ class CheckBadgeUnlocksUseCase
         private suspend fun checkMixedSessions(requirement: BadgeRequirement.MixedSessions): Boolean {
             val mixedSessions = sessionRepository.getSessionsByOperation(MathOperation.MIXED).first()
             return mixedSessions.size >= requirement.count
+        }
+
+        // ==================== Game Badge Checks ====================
+
+        /**
+         * Checks if the total game count requirement is met.
+         * Counts total games played across all game types.
+         */
+        private suspend fun checkGameCount(requirement: BadgeRequirement.GameCount): Boolean {
+            var totalGames = 0
+            Game.entries.forEach { game ->
+                totalGames += gameRepository.getTotalGamesPlayed(game).first()
+            }
+            val meetsRequirement = totalGames >= requirement.count
+            Timber.d("GameCount check - Total: $totalGames, Required: ${requirement.count}, Met: $meetsRequirement")
+            return meetsRequirement
+        }
+
+        /**
+         * Checks if the Math Race score requirement is met.
+         * Uses the player's personal best score for Math Race.
+         */
+        private suspend fun checkMathRaceScore(requirement: BadgeRequirement.MathRaceScore): Boolean {
+            val personalBest = gameRepository.getPersonalBest(Game.MATH_RACE).first()
+            val meetsRequirement = personalBest >= requirement.minScore
+            Timber.d("MathRaceScore check - Best: $personalBest, Required: ${requirement.minScore}, Met: $meetsRequirement")
+            return meetsRequirement
+        }
+
+        /**
+         * Checks if the perfect game accuracy requirement is met.
+         * Returns true if any game session has 100% accuracy (correctAnswers == totalAttempts).
+         */
+        private suspend fun checkPerfectGameAccuracy(): Boolean {
+            val perfectCount = gameRepository.getPerfectGameCount(Game.MATH_RACE).first()
+            val meetsRequirement = perfectCount > 0
+            Timber.d("PerfectGameAccuracy check - Perfect games: $perfectCount, Met: $meetsRequirement")
+            return meetsRequirement
         }
     }

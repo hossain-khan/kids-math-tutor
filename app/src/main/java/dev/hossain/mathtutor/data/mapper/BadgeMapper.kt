@@ -66,6 +66,9 @@ object BadgeMapper {
                 is BadgeRequirement.DailyStreak -> "days=${requirement.days}"
                 is BadgeRequirement.ProblemSpeed -> "maxSeconds=${requirement.maxSeconds}"
                 is BadgeRequirement.MixedSessions -> "count=${requirement.count}"
+                is BadgeRequirement.GameCount -> "count=${requirement.count}"
+                is BadgeRequirement.MathRaceScore -> "minScore=${requirement.minScore}"
+                BadgeRequirement.PerfectGameAccuracy -> ""
             }
         return Pair(type, data)
     }
@@ -150,6 +153,24 @@ object BadgeMapper {
                     params["count"]?.toIntOrNull()
                         ?: throw IllegalArgumentException("Missing or invalid 'count' parameter in requirement data")
                 BadgeRequirement.MixedSessions(count = count)
+            }
+
+            "GameCount" -> {
+                val count =
+                    params["count"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'count' parameter in requirement data")
+                BadgeRequirement.GameCount(count = count)
+            }
+
+            "MathRaceScore" -> {
+                val minScore =
+                    params["minScore"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'minScore' parameter in requirement data")
+                BadgeRequirement.MathRaceScore(minScore = minScore)
+            }
+
+            "PerfectGameAccuracy" -> {
+                BadgeRequirement.PerfectGameAccuracy
             }
 
             else -> {

@@ -9,6 +9,7 @@ package dev.hossain.mathtutor.domain.model
  * @property OPERATION_MASTERY Badges for mastering specific math operations
  * @property SPEED_ACCURACY Badges for speed and accuracy achievements
  * @property STREAK Badges for maintaining daily practice streaks
+ * @property GAMES Badges for mini-game achievements
  */
 enum class BadgeCategory {
     GETTING_STARTED,
@@ -16,4 +17,5 @@ enum class BadgeCategory {
     OPERATION_MASTERY,
     SPEED_ACCURACY,
     STREAK,
+    GAMES,
 }

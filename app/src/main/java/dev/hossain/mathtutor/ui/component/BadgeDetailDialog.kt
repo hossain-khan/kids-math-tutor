@@ -157,6 +157,18 @@ private fun formatRequirement(badge: Badge): String =
         is dev.hossain.mathtutor.domain.model.BadgeRequirement.MixedSessions -> {
             "Complete ${req.count} mixed mode sessions"
         }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.GameCount -> {
+            "Play ${req.count} games"
+        }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.MathRaceScore -> {
+            "Score ${req.minScore}+ in Math Race"
+        }
+
+        dev.hossain.mathtutor.domain.model.BadgeRequirement.PerfectGameAccuracy -> {
+            "Get 100% accuracy in a game"
+        }
     }
 
 @Preview(showBackground = true)
