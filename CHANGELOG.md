@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Phase 6-1: Game Data Layer & Repository** - Foundation for mini-games feature
+  - **Domain Models**:
+    - `Game` enum with MATH_RACE, MEMORY_MATCH, NUMBER_SEQUENCE including unlock requirements (50, 100, 200 problems)
+    - `GameSession` data class with score, accuracy calculation, and star rating
+    - `GameStats` data class for aggregated game statistics (personal best, total plays, averages)
+  - **Database Layer**:
+    - `GameSessionEntity` Room entity with indexed gameId column
+    - `GameSessionDao` with comprehensive queries (personal best, stats aggregation, recent sessions)
+    - Room database migration v4 → v5 for game_sessions table
+    - MathDatabase updated to version 5 with GameSessionEntity
+  - **Repository Layer**:
+    - `GameRepository` interface with Flow-based reactive data access
+    - `GameRepositoryImpl` with Metro DI integration (@ContributesBinding)
+    - Integration with SessionRepository for game unlock checks via `getOverallStats().totalProblems`
+  - **DI Integration**:
+    - DatabaseModule updated with MIGRATION_4_5 and GameSessionDao provider
+  - **Unit Tests**:
+    - `GameTest` - 15 tests covering unlock logic, progress calculation
+    - `GameSessionTest` - 12 tests covering accuracy, star ratings, computed properties
+    - `GameStatsTest` - 9 tests covering aggregation and star ratings
+    - `GameRepositoryImplTest` - 15 tests with FakeGameSessionDao and FakeSessionRepository
+
 ## [1.4.0] - 2025-12-19
 
 ### Added
