@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2025-01-02
+
 ### Added
 - **LeakCanary Integration** - Added LeakCanary 3.0-alpha-8 for memory leak detection in debug builds
   - Automatically detects leaks of Activities, Fragments, Views, ViewModels, and Services
@@ -33,6 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated navigation documentation in `NAVIGATION.md`
 
 ### Fixed
+- **Truth Assertion Syntax in Tests** - Fixed compilation errors in all test files after migrating to Google Truth assertions (#136)
+  - Corrected 20 test files with improper assertion syntax (method chaining inside assertThat())
+  - Fixed type cast assertions to place property access before assertion methods
+  - Resolved nullable Boolean ambiguity with explicit type casts
+  - Removed unsupported message parameters from assertThat()
+  - Files fixed: Phase3EdgeCasesTest, BadgeMapperTest, UserProfileRepositoryImplTest, AdaptiveProblemGeneratorTest, GradeAwareProblemGeneratorTest, SimpleProblemGeneratorTest, domain/model tests (BadgeCategory, BadgeDefinitions, Badge, GameSession, GameStats, Game, MathProblem, OperationPerformance, PracticeSession, SessionStats), UI tests (BadgesScreen, GameSelectionPresenter, HomeScreen, MathPracticePresenter)
 - **ANR when pressing back from settings** - Fixed Application Not Responding issue when navigating back from grade selection in settings
   - Moved `navigator.pop()` call outside of coroutine block to prevent blocking UI thread
   - Database save now happens asynchronously without blocking navigation
@@ -1144,6 +1152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.5.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.6.0...HEAD
+[1.6.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.4.0...1.5.0
 [1.0.0]: https://github.com/hossain-khan/kids-math-pup-tutor/releases/tag/1.0.0
