@@ -8,6 +8,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 6-2: Math Race Game Logic** - Core game mechanics for the Math Race mini-game (#62)
+  - **AudioService Extensions**:
+    - Added `playCountdown()` for 3-2-1 countdown audio
+    - Added `playGo()` for "GO!" start sound
+    - Added `playWarning()` for 10-second warning alert
+    - Created placeholder sound files (countdown_tick.ogg, countdown_go.ogg, time_warning.ogg)
+  - **MathRaceScreen Circuit Definition** (`ui/mathrace/MathRaceScreen.kt`):
+    - `@Parcelize` data object screen for navigation
+    - `GameState` sealed interface: NotStarted, Countdown, Playing, Finished
+    - `State` data class with game stats (score, timeRemaining, personalBest, etc.)
+    - `Event` sealed interface: StartGame, NumberEntered, Backspace, CheckAnswer, PlayAgain, NavigateHome
+  - **MathRacePresenter** (`ui/mathrace/MathRacePresenter.kt`):
+    - Metro DI with `@AssistedInject` and `@CircuitInject`
+    - 3-2-1-GO countdown sequence with audio/haptic feedback
+    - 60-second game timer with LaunchedEffect
+    - 10-second warning with `playWarning()` and haptic feedback
+    - Problem generation using MIXED operation type
+    - Instant answer checking with audio/haptic feedback
+    - Score tracking (score, correctAnswers, totalAttempts)
+    - Stats calculation (accuracy, averageTimePerProblem)
+    - New record detection (score > personalBest)
+    - GameSession saving to repository on game completion
+    - All event handlers implemented
+  - **Unit Tests** (`ui/mathrace/MathRacePresenterTest.kt`):
+    - Game state transition tests (NotStarted, Countdown, Playing, Finished)
+    - Answer checking tests (correct increments score, incorrect doesn't)
+    - Stats calculation tests (accuracy, average time, new record detection)
+    - Input handling tests (number entry, backspace, max digits)
+    - Problem generation tests
+    - Event handling tests
+    - Audio service tests for new methods
+    - Haptic service tests
+    - 45+ test cases covering all game logic
+  - **AudioServiceTest Updates**:
+    - 6 new tests for `playCountdown()`, `playGo()`, `playWarning()` methods
+    - FakeAudioService updated with new method implementations
+- **Music Toggle Button on Home Screen** - Quick access to toggle background music
+  - Added music note icon button next to settings icon in TopAppBar
+  - Shows MusicNote icon when music is off, MusicOff icon when playing
+  - Injects AudioService into HomePresenter for music state management
+  - Updated HomeScreen State with `isMusicPlaying` property
+  - Added `ToggleMusicClicked` event for toggling music
+
+### Changed
+- Replaced background music with "Swan Lake" music box version (`swan_lake_music_box.mp3`)
+
+### Fixed
+- **Background Music Auto-Play Bug** - Music no longer plays automatically on app launch
+  - Changed `musicEnabled` default from `true` to `false` in AudioServiceImpl
+  - Users must explicitly enable background music via settings or home screen toggle
+
 - **Phase 6-1: Game Data Layer & Repository** - Foundation for mini-games feature
   - **Domain Models**:
     - `Game` enum with MATH_RACE, MEMORY_MATCH, NUMBER_SEQUENCE including unlock requirements (50, 100, 200 problems)

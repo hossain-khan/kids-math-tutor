@@ -44,6 +44,24 @@ interface AudioService {
      */
     fun playLevelUp()
 
+    // ==================== Game Sound Effects ====================
+
+    /**
+     * Play the countdown sound effect (3-2-1 countdown before game starts).
+     * Should be called for each countdown tick.
+     */
+    fun playCountdown()
+
+    /**
+     * Play the "GO!" sound effect when the game starts after countdown.
+     */
+    fun playGo()
+
+    /**
+     * Play the warning sound effect (10-second warning during game).
+     */
+    fun playWarning()
+
     // ==================== Background Music ====================
 
     /**

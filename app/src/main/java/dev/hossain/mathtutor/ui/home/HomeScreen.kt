@@ -29,6 +29,7 @@ data object HomeScreen : Screen {
      * @property streakData Current streak data, null if no practice history
      * @property overallStats Overall session statistics
      * @property recentBadges List of 3 most recently unlocked badges
+     * @property isMusicPlaying Whether background music is currently playing
      * @property eventSink Handler for screen events
      */
     data class State(
@@ -37,6 +38,7 @@ data object HomeScreen : Screen {
         val streakData: DailyStreak?,
         val overallStats: SessionStats,
         val recentBadges: List<Badge>,
+        val isMusicPlaying: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -63,5 +65,10 @@ data object HomeScreen : Screen {
          * User tapped the Settings button.
          */
         data object ViewSettingsClicked : Event
+
+        /**
+         * User tapped the Music toggle button.
+         */
+        data object ToggleMusicClicked : Event
     }
 }
