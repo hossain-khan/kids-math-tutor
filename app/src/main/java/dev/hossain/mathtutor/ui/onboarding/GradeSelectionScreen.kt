@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.onboarding
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -197,8 +199,6 @@ fun GradeSelectionUi(
     state: GradeSelectionScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -216,6 +216,31 @@ fun GradeSelectionUi(
                 )
             }
         },
+        bottomBar = {
+            // Floating button at bottom for both onboarding and settings
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shadowElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surface,
+            ) {
+                Button(
+                    onClick = { state.eventSink(GradeSelectionScreen.Event.ContinueClicked) },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
+                            .padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
+                            .height(56.dp),
+                    enabled = state.selectedGrade != null,
+                ) {
+                    Text(
+                        text = if (state.isFromSettings) "Save" else "Continue",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        },
         contentWindowInsets = WindowInsets(0.dp),
     ) { paddingValues ->
         Column(
@@ -225,18 +250,18 @@ fun GradeSelectionUi(
                     .padding(paddingValues)
                     .then(
                         if (!state.isFromSettings) {
-                            // Onboarding: apply full system bars padding (no TopAppBar)
-                            Modifier.padding(systemBarsPadding)
+                            // Onboarding: apply top status bar padding (no TopAppBar)
+                            Modifier.padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
                         } else {
-                            // From settings: only apply bottom navigation bar padding
-                            // (TopAppBar handles top padding)
-                            Modifier.padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
+                            Modifier
                         },
-                    ).padding(24.dp)
+                    ).padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = if (state.isFromSettings) "Select your grade level 🐶" else "Which grade are you in? 🐶",
                 style = MaterialTheme.typography.headlineMedium,
@@ -278,22 +303,6 @@ fun GradeSelectionUi(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Continue/Save Button
-            Button(
-                onClick = { state.eventSink(GradeSelectionScreen.Event.ContinueClicked) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                enabled = state.selectedGrade != null,
-            ) {
-                Text(
-                    text = if (state.isFromSettings) "Save" else "Continue",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
         }
     }
 }
