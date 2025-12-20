@@ -284,3 +284,17 @@ private fun NameEntryUiWithTextPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun NameEntryUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        NameEntryUi(
+            state =
+                NameEntryScreen.State(
+                    name = "Jordan",
+                    eventSink = {},
+                ),
+        )
+    }
+}

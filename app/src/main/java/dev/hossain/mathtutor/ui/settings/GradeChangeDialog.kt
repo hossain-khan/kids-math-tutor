@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.GradeLevel
 
@@ -123,4 +124,28 @@ fun GradeChangeDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         modifier = modifier,
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GradeChangeDialogPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GradeChangeDialog(
+            currentGrade = GradeLevel.GRADE_1,
+            onDismiss = {},
+            onSave = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GradeChangeDialogDarkPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme(darkTheme = true) {
+        GradeChangeDialog(
+            currentGrade = GradeLevel.GRADE_2,
+            onDismiss = {},
+            onSave = {},
+        )
+    }
 }

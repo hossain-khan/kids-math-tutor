@@ -396,3 +396,17 @@ private fun GradeSelectionUiSelectedPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun GradeSelectionUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        GradeSelectionUi(
+            state =
+                GradeSelectionScreen.State(
+                    selectedGrade = GradeLevel.GRADE_2,
+                    eventSink = {},
+                ),
+        )
+    }
+}
