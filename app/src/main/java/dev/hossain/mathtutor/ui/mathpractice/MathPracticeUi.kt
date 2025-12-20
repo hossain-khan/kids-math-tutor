@@ -285,7 +285,7 @@ private fun ProgressSection(
     val progressDescription = "Problem ${currentIndex + 1} of $totalProblems"
 
     // Log only when progress changes (not on every recomposition)
-    LaunchedEffect(currentIndex) {
+    LaunchedEffect(currentIndex, totalProblems) {
         Timber.d("[ProgressSection] Rendering progress: $progressDescription")
     }
 
@@ -325,7 +325,8 @@ private fun ProblemCard(
 
     // Log only when problem changes (not on every recomposition)
     LaunchedEffect(problem) {
-        Timber.d("[ProblemCard] Rendering problem with TalkBack announcement: '$spokenProblem'")
+        val spokenProblemForLog = problem.getSpokenString()
+        Timber.d("[ProblemCard] Rendering problem with TalkBack announcement: '$spokenProblemForLog'")
     }
 
     Card(

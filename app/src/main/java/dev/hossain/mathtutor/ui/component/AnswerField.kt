@@ -45,7 +45,13 @@ fun AnswerField(
 
     // Log only when answer changes (not on every recomposition)
     LaunchedEffect(answer) {
-        Timber.d("[AnswerField] Answer updated: '$answer', TalkBack will announce: '$answerDescription'")
+        val answerDescriptionForLog =
+            if (answer.isEmpty()) {
+                "empty"
+            } else {
+                answer.toCharArray().joinToString(" ")
+            }
+        Timber.d("[AnswerField] Answer updated: '$answer', TalkBack will announce: '$answerDescriptionForLog'")
     }
 
     OutlinedTextField(
