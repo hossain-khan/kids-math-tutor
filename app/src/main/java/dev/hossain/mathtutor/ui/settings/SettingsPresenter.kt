@@ -11,7 +11,9 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
+import dev.hossain.mathtutor.ui.onboarding.GradeSelectionScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -63,8 +65,8 @@ class SettingsPresenter
                     }
 
                     is SettingsScreen.Event.ChangeGradeClicked -> {
-                        Timber.d("SettingsScreen: Change grade clicked")
-                        showGradeDialog = true
+                        Timber.d("SettingsScreen: Change grade clicked - navigating to GradeSelectionScreen")
+                        navigator.goTo(GradeSelectionScreen(isFromSettings = true))
                     }
 
                     is SettingsScreen.Event.ToggleAdaptiveDifficulty -> {
@@ -78,7 +80,19 @@ class SettingsPresenter
                         Timber.d("SettingsScreen: Saving name - ${event.name}")
                         showNameDialog = false
                         scope.launch {
-                            userProfileRepository.updateName(event.name)
+                            if (profile != null) {
+                                userProfileRepository.updateName(event.name)
+                            } else {
+                                // No profile exists, create one with default grade
+                                userProfileRepository.saveProfile(
+                                    UserProfile(
+                                        name = event.name,
+                                        gradeLevel = GradeLevel.KINDERGARTEN,
+                                        createdAt = java.time.Instant.now(),
+                                        adaptiveDifficultyEnabled = true,
+                                    ),
+                                )
+                            }
                         }
                     }
 

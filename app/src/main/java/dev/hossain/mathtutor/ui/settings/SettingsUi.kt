@@ -112,9 +112,9 @@ fun SettingsUi(
     }
 
     // Show dialogs when needed
-    if (state.showNameDialog && state.profile != null) {
+    if (state.showNameDialog) {
         NameEditDialog(
-            currentName = state.profile.name,
+            currentName = state.profile?.name,
             onDismiss = { state.eventSink(SettingsScreen.Event.CancelNameEdit) },
             onSave = { name -> state.eventSink(SettingsScreen.Event.SaveName(name)) },
         )
@@ -173,7 +173,7 @@ private fun ProfileSection(
             // Grade level field
             ProfileField(
                 label = "Grade Level",
-                value = profile?.gradeLevel?.displayName ?: "Loading...",
+                value = profile?.gradeLevel?.displayName ?: "Not set",
                 onEditClick = onChangeGradeClick,
                 actionLabel = "Change",
             )

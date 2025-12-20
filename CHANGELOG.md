@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Grade Selection from Settings** - Users can now change their grade level from the Settings screen (#XX)
+  - Navigate to full GradeSelectionScreen from Settings instead of using a dialog
+  - `GradeSelectionScreen` now accepts `isFromSettings` parameter for dual-mode operation
+  - When accessed from Settings: displays TopAppBar with back button, "Save" button instead of "Continue"
+  - Saves grade level and navigates back when used from Settings context
+  - Updated navigation documentation in `NAVIGATION.md`
+
 ## [1.5.0] - 2025-12-19
 
 ### Added
