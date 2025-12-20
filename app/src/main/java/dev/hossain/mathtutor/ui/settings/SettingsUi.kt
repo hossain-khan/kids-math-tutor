@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,11 @@ fun SettingsUi(
     state: SettingsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // Handle system back button press
+    BackHandler {
+        state.eventSink(SettingsScreen.Event.BackClicked)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(

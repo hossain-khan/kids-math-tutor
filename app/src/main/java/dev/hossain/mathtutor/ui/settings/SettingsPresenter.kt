@@ -121,6 +121,7 @@ class SettingsPresenter
 
                     is SettingsScreen.Event.BackClicked -> {
                         Timber.d("SettingsScreen: Back clicked")
+                        // Navigate immediately without blocking
                         navigator.pop()
                     }
 
