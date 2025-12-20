@@ -153,6 +153,25 @@ fun HomeUi(
                 )
             }
 
+            // Games button
+            Button(
+                onClick = { state.eventSink(HomeScreen.Event.ViewGamesClicked) },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    ),
+            ) {
+                Text(
+                    text = "🎮 Play Games",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+
             // View Full Stats link
             if (state.overallStats.sessionCount > 0) {
                 TextButton(

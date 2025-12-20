@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Phase 6-4: Game Selection Screen** - Game Selection Hub for browsing and launching mini-games (#64)
+  - **GameSelectionScreen** (`ui/games/GameSelectionScreen.kt`):
+    - Circuit screen definition with State, Event, and GameInfo data classes
+    - State includes gameInfoList and totalProblemsSolved for unlock calculations
+    - Events: PlayGame(game) and NavigateBack
+    - GameInfo data class with game, isUnlocked, personalBest, and totalPlays
+  - **GameSelectionPresenter** (`ui/games/GameSelectionPresenter.kt`):
+    - Metro dependency injection with @AssistedInject
+    - Collects session stats using `getOverallStats().totalProblems` for unlock logic
+    - Collects personal bests and game stats for all games
+    - Builds gameInfoList with unlock status based on total problems solved
+    - Handles navigation to MathRaceScreen (other games TODO)
+  - **GameSelectionUi** (`ui/games/GameSelectionUi.kt`):
+    - Scaffold with TopAppBar showing "Games" title and back navigation
+    - Header: "🎮 Play fun math games!" with unlock hint text
+    - LazyColumn with GameCard for each game
+    - **GameCard** composable with locked/unlocked states:
+      - Unlocked: Full opacity, game icon, title, description, stats (🏆 Best, 🎮 Plays), PLAY button
+      - Locked: 60% opacity, lock icon, progress bar, problems needed text, LOCKED button
+    - Progress bar showing unlock progress (e.g., "25 / 50 problems")
+    - LinearProgressIndicator with Material 3 colors
+  - **Home Screen Integration**:
+    - Added `ViewGamesClicked` event to HomeScreen
+    - Added "🎮 Play Games" button to HomeUi (secondary container styling)
+    - Navigation wiring in HomePresenter to GameSelectionScreen
+  - **Unit Tests** (`GameSelectionPresenterTest.kt`):
+    - Tests for unlock logic at 50, 100, 200 problem thresholds
+    - Tests for unlock progress calculation
+    - Tests for problems until unlock calculation
+    - Tests for game properties (display names, icons, descriptions)
+    - Tests for unlock status at various problem counts
 - **Phase 6-3: Math Race UI** - Visual UI for the Math Race mini-game (#63)
   - **MathRaceUi** (`ui/mathrace/MathRaceUi.kt`):
     - Main UI with `@CircuitInject` routing based on GameState
