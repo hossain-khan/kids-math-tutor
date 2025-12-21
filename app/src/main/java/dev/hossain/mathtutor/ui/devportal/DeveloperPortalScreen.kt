@@ -14,15 +14,29 @@ data object DeveloperPortalScreen : Screen {
         val showSeedSection: Boolean = true,
         val showDataOpsSection: Boolean = true,
         val showDiagnosticsSection: Boolean = true,
+        val showClearConfirm: Boolean = false,
+        val clearInProgress: Boolean = false,
+        val clearResultMessage: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
     sealed interface Event : CircuitUiEvent {
         data object ToggleAnalyticsOverride : Event
+
         data object ClearAppDataClicked : Event
+
+        data class ConfirmClear(
+            val confirmationText: String,
+        ) : Event
+
+        data object CancelClear : Event
+
         data object SeedSessionsClicked : Event
+
         data object ForceBadgeCheckClicked : Event
+
         data object PlaySuccessSound : Event
+
         data object NavigateBack : Event
     }
 }

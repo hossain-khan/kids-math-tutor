@@ -47,6 +47,7 @@ class SettingsPresenter
              */
             fun isDevPortalVisible(): Boolean = dev.hossain.mathtutor.BuildConfig.DEBUG
         }
+
         @CircuitInject(SettingsScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {

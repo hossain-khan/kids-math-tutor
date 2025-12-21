@@ -12,11 +12,11 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsService
-import dev.hossain.mathtutor.data.UserPreferencesRepository
-import dev.hossain.mathtutor.domain.repository.SessionRepository
-import dev.hossain.mathtutor.domain.repository.GameRepository
-import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.audio.AudioService
+import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.domain.repository.GameRepository
+import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -25,6 +25,7 @@ import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -63,11 +64,17 @@ class DeveloperPortalPresenter
             var showSeedSection by remember { mutableStateOf(true) }
             var showDataOpsSection by remember { mutableStateOf(true) }
             var showDiagnosticsSection by remember { mutableStateOf(true) }
+            var showClearConfirm by remember { mutableStateOf(false) }
+            var clearInProgress by remember { mutableStateOf(false) }
+            var clearResultMessage by remember { mutableStateOf<String?>(null) }
 
             return DeveloperPortalScreen.State(
                 showSeedSection = showSeedSection,
                 showDataOpsSection = showDataOpsSection,
                 showDiagnosticsSection = showDiagnosticsSection,
+                showClearConfirm = showClearConfirm,
+                clearInProgress = clearInProgress,
+                clearResultMessage = clearResultMessage,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ToggleAnalyticsOverride -> {
@@ -81,28 +88,55 @@ class DeveloperPortalPresenter
                     }
 
                     is DeveloperPortalScreen.Event.ClearAppDataClicked -> {
-                        scope.launch(Dispatchers.IO) {
-                            Timber.d("[DevPortal] Clearing app data (DB, prefs, cache)")
-                            try {
-                                // Clear repositories (use existing API names)
-                                sessionRepository.clearAllSessions()
-                                gameRepository.clearAllSessions()
+                        // Show confirmation dialog instead of clearing immediately
+                        showClearConfirm = true
+                        clearResultMessage = null
+                    }
 
-                                // Reset preferences to sane defaults
-                                userPreferencesRepository.setOnboardingCompleted(false)
-                                userPreferencesRepository.setHapticsEnabled(true)
-                                userPreferencesRepository.setSoundEffectsEnabled(true)
-                                userPreferencesRepository.setBackgroundMusicEnabled(false)
-                                userPreferencesRepository.setVolume(0.7f)
-                                userPreferencesRepository.setHighContrastEnabled(false)
-                                userPreferencesRepository.setLargeTextEnabled(false)
-                                userPreferencesRepository.setAnalyticsEnabled(true)
+                    is DeveloperPortalScreen.Event.ConfirmClear -> {
+                        // Expect user to type "DELETE" (case-sensitive) to confirm
+                        if (event.confirmationText != "DELETE") {
+                            clearResultMessage = "Confirmation text does not match 'DELETE'"
+                            Timber.d("[DevPortal] Clear confirmation failed - wrong text")
+                        } else {
+                            // Perform clear
+                            clearInProgress = true
+                            scope.launch(Dispatchers.IO) {
+                                try {
+                                    Timber.d("[DevPortal] Clearing app data (DB, prefs, cache) - confirmed")
+                                    sessionRepository.clearAllSessions()
+                                    gameRepository.clearAllSessions()
 
-                                Timber.d("[DevPortal] Clear complete")
-                            } catch (e: Exception) {
-                                Timber.e(e, "[DevPortal] Failed to clear data")
+                                    // Reset preferences to defaults
+                                    userPreferencesRepository.setOnboardingCompleted(false)
+                                    userPreferencesRepository.setHapticsEnabled(true)
+                                    userPreferencesRepository.setSoundEffectsEnabled(true)
+                                    userPreferencesRepository.setBackgroundMusicEnabled(false)
+                                    userPreferencesRepository.setVolume(0.7f)
+                                    userPreferencesRepository.setHighContrastEnabled(false)
+                                    userPreferencesRepository.setLargeTextEnabled(false)
+                                    userPreferencesRepository.setAnalyticsEnabled(true)
+
+                                    withContext(Dispatchers.Main) {
+                                        clearResultMessage = "Clear complete"
+                                        showClearConfirm = false
+                                        clearInProgress = false
+                                    }
+                                    Timber.d("[DevPortal] Clear complete")
+                                } catch (e: Exception) {
+                                    Timber.e(e, "[DevPortal] Failed to clear data")
+                                    withContext(Dispatchers.Main) {
+                                        clearResultMessage = "Clear failed: ${e.message}"
+                                        clearInProgress = false
+                                    }
+                                }
                             }
                         }
+                    }
+
+                    is DeveloperPortalScreen.Event.CancelClear -> {
+                        showClearConfirm = false
+                        clearResultMessage = "Clear cancelled"
                     }
 
                     is DeveloperPortalScreen.Event.SeedSessionsClicked -> {

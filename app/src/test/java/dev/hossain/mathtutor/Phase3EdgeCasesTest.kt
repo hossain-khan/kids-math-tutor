@@ -498,7 +498,7 @@ class Phase3EdgeCasesTest {
             id = id,
             name = "Test Badge $id",
             description = "Test description for $id",
-            icon = "🎯",
+            icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
             category = BadgeCategory.GETTING_STARTED,
             requirement = requirement,
             unlockedAt = unlockedAt,
