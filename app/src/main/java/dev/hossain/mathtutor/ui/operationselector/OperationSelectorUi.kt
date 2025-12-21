@@ -141,6 +141,7 @@ fun OperationSelectorUi(
                 title = "Mix It Up!",
                 icon = Icons.Default.Shuffle,
                 examples = listOf("Random problems"),
+                operation = MathOperation.MIXED,
                 onClick = {
                     // Temporary: Using ADDITION until MathOperation.MIXED is implemented
                     state.eventSink(
