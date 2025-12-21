@@ -29,7 +29,7 @@ class BadgeMapperTest {
         assertThat(badge.id).isEqualTo("test_badge")
         assertThat(badge.name).isEqualTo("Test Badge")
         assertThat(badge.description).isEqualTo("Test description")
-        assertThat(badge.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name)
+        assertThat(badge.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS)
         assertThat(badge.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assert(badge.requirement is BadgeRequirement.ProblemCount)
         assertThat((badge.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(10)
@@ -188,7 +188,7 @@ class BadgeMapperTest {
                 id = "test_badge",
                 name = "Test Badge",
                 description = "Test description",
-                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(10),
                 unlockedAt = null,
@@ -213,7 +213,7 @@ class BadgeMapperTest {
                 id = "addition_badge",
                 name = "Addition Badge",
                 description = "Complete addition problems",
-                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.ADDITION_EXPERT.name,
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.ADDITION_EXPERT,
                 category = BadgeCategory.OPERATION_MASTERY,
                 requirement = BadgeRequirement.OperationCount(MathOperation.ADDITION, 50),
                 unlockedAt = null,
@@ -233,7 +233,7 @@ class BadgeMapperTest {
                 id = "accuracy_badge",
                 name = "Accuracy Badge",
                 description = "High accuracy sessions",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirement = BadgeRequirement.SessionAccuracy(90f, 3),
                 unlockedAt = null,
@@ -273,7 +273,7 @@ class BadgeMapperTest {
                 id = "test_badge",
                 name = "Test Badge",
                 description = "Test description",
-                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(25),
                 unlockedAt = null,
