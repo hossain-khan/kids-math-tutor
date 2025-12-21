@@ -11,20 +11,20 @@ on:
 
 jobs:
   android-build:
-    # TEMPORARILY DISABLED
-    if: false
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         # Java JDK versions (LTS: 17, 21 & Non-LTS: 23)
-        java-version: [ '17', '21', '23' ]
+        # java-version: [ '17', '21', '23' ]
+        java-version: [ '23' ]
         # https://adoptium.net/temurin/releases/
         distribution: [ 'temurin' ]
 
     steps:
       - uses: actions/checkout@v6
-      - name: set up JDK
+      
+      - name: Set up JDK
         uses: actions/setup-java@v5
         with:
           java-version: ${{ matrix.java-version }}

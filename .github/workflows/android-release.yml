@@ -22,8 +22,6 @@ on:
 
 jobs:
   build-release:
-    # TEMPORARILY DISABLED
-    if: false
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Required to upload release assets

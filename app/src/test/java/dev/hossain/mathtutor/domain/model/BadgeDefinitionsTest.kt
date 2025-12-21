@@ -5,10 +5,10 @@ import org.junit.Test
 
 class BadgeDefinitionsTest {
     @Test
-    fun `getAllBadges returns 19 badges`() {
+    fun `getAllBadges returns 23 badges`() {
         val badges = BadgeDefinitions.getAllBadges()
 
-        assertThat(badges.size).isEqualTo(19)
+        assertThat(badges.size).isEqualTo(23)
     }
 
     @Test
@@ -35,7 +35,7 @@ class BadgeDefinitionsTest {
         assertThat(operationMastery.size).isEqualTo(3)
         assertThat(speedAccuracy.size).isEqualTo(3)
         assertThat(streak.size).isEqualTo(2)
-        assertThat(games.size).isEqualTo(4)
+        assertThat(games.size).isEqualTo(8) // 4 original + 4 Memory Match badges
     }
 
     @Test
