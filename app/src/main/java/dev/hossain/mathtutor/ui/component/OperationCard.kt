@@ -158,17 +158,10 @@ fun OperationCard(
 private fun getHeroImageForOperation(operation: MathOperation): Int? =
     when (operation) {
         MathOperation.ADDITION -> R.drawable.hero_math_operation_addition
-
         MathOperation.SUBTRACTION -> R.drawable.hero_math_operation_subtraction
-
-        // TODO: Add when image is available
-        MathOperation.MULTIPLICATION -> null
-
-        // TODO: Add when image is available
-        MathOperation.DIVISION -> null
-
-        // TODO: Add when image is available
-        MathOperation.MIXED -> null // TODO: Add when image is available
+        MathOperation.MULTIPLICATION -> R.drawable.hero_math_operation_multiplication
+        MathOperation.DIVISION -> R.drawable.hero_math_operation_division
+        MathOperation.MIXED -> R.drawable.hero_math_operation_mixed
     }
 
 @Preview(showBackground = true)
