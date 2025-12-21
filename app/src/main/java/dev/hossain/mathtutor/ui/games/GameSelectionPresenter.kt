@@ -15,6 +15,7 @@ import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.ui.mathrace.MathRaceScreen
+import dev.hossain.mathtutor.ui.memorymatch.MemoryMatchScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -136,8 +137,8 @@ class GameSelectionPresenter
                             }
 
                             Game.MEMORY_MATCH -> {
-                                // TODO: Navigate to MemoryMatchScreen when implemented
-                                Timber.d("GameSelection: Memory Match not yet implemented")
+                                Timber.d("GameSelection: Navigating to MemoryMatchScreen")
+                                navigator.goTo(MemoryMatchScreen)
                             }
 
                             Game.NUMBER_SEQUENCE -> {
