@@ -97,4 +97,39 @@ sealed class BadgeRequirement {
      * Requires all answers in a single game session to be correct.
      */
     data object PerfectGameAccuracy : BadgeRequirement()
+
+    // ==================== Memory Match Badges ====================
+
+    /**
+     * Badge requirement for completing Memory Match games.
+     *
+     * @property count The number of Memory Match games that must be completed
+     */
+    data class MemoryMatchCount(
+        val count: Int,
+    ) : BadgeRequirement()
+
+    /**
+     * Badge requirement for completing Memory Match with limited moves.
+     *
+     * @property maxMoves The maximum number of moves allowed to unlock this badge
+     */
+    data class MemoryMatchMoves(
+        val maxMoves: Int,
+    ) : BadgeRequirement()
+
+    /**
+     * Badge requirement for completing Memory Match quickly.
+     *
+     * @property maxSeconds The maximum time in seconds to complete the game
+     */
+    data class MemoryMatchTime(
+        val maxSeconds: Int,
+    ) : BadgeRequirement()
+
+    /**
+     * Badge requirement for completing Memory Match with perfect moves (8 moves = minimum possible).
+     * Requires completing the game in exactly 8 moves (matching all 8 pairs on first try).
+     */
+    data object PerfectMemoryMatch : BadgeRequirement()
 }

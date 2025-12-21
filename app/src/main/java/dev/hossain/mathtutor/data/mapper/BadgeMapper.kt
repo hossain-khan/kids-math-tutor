@@ -71,6 +71,10 @@ object BadgeMapper {
                 is BadgeRequirement.GameCount -> "count=${requirement.count}"
                 is BadgeRequirement.MathRaceScore -> "minScore=${requirement.minScore}"
                 BadgeRequirement.PerfectGameAccuracy -> ""
+                is BadgeRequirement.MemoryMatchCount -> "count=${requirement.count}"
+                is BadgeRequirement.MemoryMatchMoves -> "maxMoves=${requirement.maxMoves}"
+                is BadgeRequirement.MemoryMatchTime -> "maxSeconds=${requirement.maxSeconds}"
+                BadgeRequirement.PerfectMemoryMatch -> ""
             }
         return Pair(type, data)
     }
@@ -178,6 +182,31 @@ object BadgeMapper {
 
             "PerfectGameAccuracy" -> {
                 BadgeRequirement.PerfectGameAccuracy
+            }
+
+            "MemoryMatchCount" -> {
+                val count =
+                    params["count"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'count' parameter in requirement data")
+                BadgeRequirement.MemoryMatchCount(count = count)
+            }
+
+            "MemoryMatchMoves" -> {
+                val maxMoves =
+                    params["maxMoves"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'maxMoves' parameter in requirement data")
+                BadgeRequirement.MemoryMatchMoves(maxMoves = maxMoves)
+            }
+
+            "MemoryMatchTime" -> {
+                val maxSeconds =
+                    params["maxSeconds"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("Missing or invalid 'maxSeconds' parameter in requirement data")
+                BadgeRequirement.MemoryMatchTime(maxSeconds = maxSeconds)
+            }
+
+            "PerfectMemoryMatch" -> {
+                BadgeRequirement.PerfectMemoryMatch
             }
 
             else -> {

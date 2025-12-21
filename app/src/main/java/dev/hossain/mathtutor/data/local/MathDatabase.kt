@@ -22,7 +22,7 @@ import dev.hossain.mathtutor.data.local.entity.StreakEntity
  * performance records, and game session data.
  *
  * Database name: kids_math_tutor.db
- * Version: 6 (updated badge icons to use enum for stability across builds)
+ * Version: 7 (added 4 new Memory Match badges)
  *
  * Entities:
  * - [PracticeSessionEntity]: Completed practice sessions with statistics
@@ -42,7 +42,7 @@ import dev.hossain.mathtutor.data.local.entity.StreakEntity
         PerformanceEntity::class,
         GameSessionEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -203,6 +203,45 @@ abstract class MathDatabase : RoomDatabase() {
                 override fun migrate(db: SupportSQLiteDatabase) {
                     // Clear existing badges since we can't migrate emoji strings to enum names
                     db.execSQL("DELETE FROM badges")
+                }
+            }
+
+        /**
+         * Migration from database version 6 to version 7.
+         * Adds 4 new Memory Match badges to the database.
+         */
+        val MIGRATION_6_7 =
+            object : Migration(6, 7) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    // Insert new Memory Match badges
+                    // Memory Master
+                    db.execSQL(
+                        """
+                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
+                        VALUES ('memory_master', 'Memory Master', 'Complete your first Memory Match', 'MEMORY_MASTER', 'GAMES', 'MemoryMatchCount', 'count=1', NULL)
+                        """.trimIndent(),
+                    )
+                    // Sharp Memory
+                    db.execSQL(
+                        """
+                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
+                        VALUES ('sharp_memory', 'Sharp Memory', 'Complete Memory Match in 12 or fewer moves', 'SHARP_MEMORY', 'GAMES', 'MemoryMatchMoves', 'maxMoves=12', NULL)
+                        """.trimIndent(),
+                    )
+                    // Lightning Match
+                    db.execSQL(
+                        """
+                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
+                        VALUES ('lightning_match', 'Lightning Match', 'Complete Memory Match in under 60 seconds', 'LIGHTNING_MATCH', 'GAMES', 'MemoryMatchTime', 'maxSeconds=60', NULL)
+                        """.trimIndent(),
+                    )
+                    // Perfect Memory
+                    db.execSQL(
+                        """
+                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
+                        VALUES ('perfect_memory', 'Perfect Memory', 'Complete with exactly 8 moves (perfect game)', 'PERFECT_MEMORY', 'GAMES', 'PerfectMemoryMatch', '', NULL)
+                        """.trimIndent(),
+                    )
                 }
             }
     }

@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Memory Match Badges** - Added 4 new achievement badges for Memory Match game
+  - **Memory Master**: Complete your first Memory Match game
+  - **Sharp Memory**: Complete Memory Match in 12 or fewer moves (1.5x minimum)
+  - **Lightning Match**: Complete Memory Match in under 60 seconds
+  - **Perfect Memory**: Complete with exactly 8 moves (perfect game)
+  - Added `MemoryMatchCount`, `MemoryMatchMoves`, `MemoryMatchTime`, and `PerfectMemoryMatch` badge requirements
+  - Extended `CheckBadgeUnlocksUseCase` with Memory Match specific checking logic
+  - Badge icons created as placeholders (AI-generated designs to be added)
+  - Total badge count increased from 19 to 23 (4 new in GAMES category)
+  - Database migration (v6 → v7) automatically adds new badges for existing users
 - **Developer Portal (debug-only)** — Scaffolded a debug-only Developer Portal reachable from Settings (visible only in debug builds). Added `DeveloperPortalScreen`, `DeveloperPortalPresenter`, and `DeveloperPortalUi` with initial dev actions: analytics toggle, Clear App Data, Seed Sessions (placeholder), Run Badge Checks, and Play Success Sound/Haptic. (Issue #180, PR #189)
 - **Seed Sessions** — Implemented `SessionSeeder` service and `DevPortalSeeder` helper to generate and persist sample practice sessions from the Developer Portal. Added unit tests for the seeder and presenter-related seeding helper. (Issue #183)
 - **Force Badge Unlock** — Add per-badge "Force Unlock" control to Developer Portal to manually unlock badges for testing purposes. (Issue #184, PR #192)
