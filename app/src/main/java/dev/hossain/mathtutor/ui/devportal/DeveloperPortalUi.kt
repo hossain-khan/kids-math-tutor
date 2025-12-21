@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.devportal
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -180,6 +182,30 @@ fun DeveloperPortalUi(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(text = "Diagnostics", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        // Analytics Override Toggle
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Analytics (override)",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                                Text(
+                                    text = "Debug-only: Immediately toggles analytics collection",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            Switch(
+                                checked = state.isAnalyticsEnabled,
+                                onCheckedChange = { state.eventSink(DeveloperPortalScreen.Event.ToggleAnalyticsOverride) },
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.PlaySuccessSound) }) {
                             Text("Play Success Sound & Haptic")
                         }

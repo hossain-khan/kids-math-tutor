@@ -25,6 +25,7 @@ data object DeveloperPortalScreen : Screen {
         val badges: List<Badge> = emptyList(),
         val forceUnlockInProgress: Boolean = false,
         val forceUnlockResultMessage: String? = null,
+        val isAnalyticsEnabled: Boolean = true,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

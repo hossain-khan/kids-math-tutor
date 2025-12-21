@@ -77,10 +77,19 @@ class DeveloperPortalPresenter
             var seedResultMessage by remember { mutableStateOf<String?>(null) }
 
             var badges by remember { mutableStateOf<List<Badge>>(emptyList()) }
+            var isAnalyticsEnabled by remember { mutableStateOf(true) }
             LaunchedEffect(Unit) {
                 // Collect badges from repository to display in UI
-                badgeRepository.getAllBadges().collect { list ->
-                    badges = list
+                launch {
+                    badgeRepository.getAllBadges().collect { list ->
+                        badges = list
+                    }
+                }
+                // Load current analytics state
+                launch {
+                    userPreferencesRepository.isAnalyticsEnabled.collect { enabled ->
+                        isAnalyticsEnabled = enabled
+                    }
                 }
             }
 
@@ -99,6 +108,7 @@ class DeveloperPortalPresenter
                 badges = badges,
                 forceUnlockInProgress = forceUnlockInProgress,
                 forceUnlockResultMessage = forceUnlockResultMessage,
+                isAnalyticsEnabled = isAnalyticsEnabled,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
