@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Developer Portal (debug-only)** — Scaffolded a debug-only Developer Portal reachable from Settings (visible only in debug builds). Added `DeveloperPortalScreen`, `DeveloperPortalPresenter`, and `DeveloperPortalUi` with initial dev actions: analytics toggle, Clear App Data, Seed Sessions (placeholder), Run Badge Checks, and Play Success Sound/Haptic. (Issue #180, PR #189)
 - **Seed Sessions** — Implemented `SessionSeeder` service and `DevPortalSeeder` helper to generate and persist sample practice sessions from the Developer Portal. Added unit tests for the seeder and presenter-related seeding helper. (Issue #183)
+- **Force Badge Unlock** — Add per-badge "Force Unlock" control to Developer Portal to manually unlock badges for testing purposes. (Issue #184, PR #192)
 
 ## [1.7.0] - 2025-12-21
 
