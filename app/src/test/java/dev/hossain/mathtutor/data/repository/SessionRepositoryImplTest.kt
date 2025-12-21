@@ -293,6 +293,34 @@ class SessionRepositoryImplTest {
         }
 
     @Test
+    fun `saveSession updates total problems solved user property`() =
+        runTest {
+            val problems = listOf(MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8))
+            val session =
+                PracticeSession(
+                    totalProblems = 10,
+                    problems = problems,
+                    answers =
+                        mutableMapOf(
+                            problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 8, isCorrect = true, attemptCount = 1),
+                        ),
+                )
+            // Set up fake DAO to return stats with 25 total problems
+            fakeDao.totalProblems.value = 25
+            fakeDao.totalCorrect.value = 20
+            fakeDao.sessionCount.value = 3
+
+            repository.saveSession(session, MathOperation.ADDITION, 120L, 1)
+
+            // Verify user property updated
+            assertThat(fakeAnalytics.userProperties).isNotEmpty()
+            val totalProblemsProperty =
+                fakeAnalytics.userProperties.find { it.propertyName == "total_problems_solved" }
+            assertThat(totalProblemsProperty).isNotNull()
+            assertThat(totalProblemsProperty?.value).isEqualTo("25")
+        }
+
+    @Test
     fun `clearAllSessions logs error on failure`() =
         runTest {
             fakeDao.shouldThrowOnDelete = true

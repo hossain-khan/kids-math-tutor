@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.data.repository
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsParam
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.analytics.UserProperty
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
 import dev.hossain.mathtutor.data.mapper.BadgeMapper
 import dev.hossain.mathtutor.domain.model.Badge
@@ -82,6 +83,13 @@ class BadgeRepositoryImpl
                         ),
                     )
                 }
+
+                // Update total badges unlocked user property
+                val totalUnlocked = badgeDao.getUnlockedBadges().first().size
+                analyticsService.setUserProperty(
+                    UserProperty.TOTAL_BADGES_UNLOCKED,
+                    totalUnlocked.toString(),
+                )
             } catch (e: Exception) {
                 Timber.e(e, "BadgeRepository: Failed to unlock badge - id=$badgeId")
                 analyticsService.logError(e, "Badge unlock failed", isFatal = false)

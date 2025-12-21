@@ -45,6 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Track all repository errors for monitoring and debugging
   - Events logged after successful data persistence to ensure data integrity
   - Implementation for Issue #149 (Repository Event Tracking)
+- **User Properties Tracking** - Implemented comprehensive analytics user properties for segmentation
+  - Added `LaunchedEffect` in `HomePresenter` to update aggregate user properties on app open
+  - `total_problems_solved` property updated in HomePresenter and after each session save in `SessionRepositoryImpl`
+  - `current_streak` property updated in HomePresenter from streak data
+  - `total_badges_unlocked` property updated in HomePresenter and after badge unlock in `BadgeRepositoryImpl`
+  - `grade_level` and `has_completed_onboarding` properties already set in `UserProfileRepositoryImpl`
+  - User properties persist across sessions and enable powerful audience segmentation in Firebase
+  - Implementation for Issue #150 (User Properties Tracking)
 
 ### Fixed
 - **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button
