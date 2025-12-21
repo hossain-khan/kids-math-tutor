@@ -87,6 +87,14 @@ class DeveloperPortalPresenter
             var forceUnlockInProgress by remember { mutableStateOf(false) }
             var forceUnlockResultMessage by remember { mutableStateOf<String?>(null) }
 
+            var isAnalyticsEnabled by remember { mutableStateOf(true) }
+            LaunchedEffect(Unit) {
+                // Load current analytics state
+                userPreferencesRepository.isAnalyticsEnabled.collect { enabled ->
+                    isAnalyticsEnabled = enabled
+                }
+            }
+
             return DeveloperPortalScreen.State(
                 showSeedSection = showSeedSection,
                 showDataOpsSection = showDataOpsSection,
@@ -99,6 +107,7 @@ class DeveloperPortalPresenter
                 badges = badges,
                 forceUnlockInProgress = forceUnlockInProgress,
                 forceUnlockResultMessage = forceUnlockResultMessage,
+                isAnalyticsEnabled = isAnalyticsEnabled,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
