@@ -1,5 +1,8 @@
 package dev.hossain.mathtutor.data.repository
 
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
 import dev.hossain.mathtutor.data.mapper.BadgeMapper
 import dev.hossain.mathtutor.domain.model.Badge
@@ -28,6 +31,7 @@ import java.time.Instant
 class BadgeRepositoryImpl
     constructor(
         private val badgeDao: BadgeDao,
+        private val analyticsService: AnalyticsService,
     ) : BadgeRepository {
         override fun getAllBadges(): Flow<List<Badge>> =
             badgeDao
@@ -61,9 +65,28 @@ class BadgeRepositoryImpl
             badgeId: String,
             unlockedAt: Instant,
         ) {
-            Timber.d("BadgeRepository: Unlocking badge - id=$badgeId, unlockedAt=$unlockedAt")
-            badgeDao.unlockBadge(badgeId, unlockedAt)
-            Timber.d("BadgeRepository: Badge unlocked successfully - id=$badgeId")
+            try {
+                Timber.d("BadgeRepository: Unlocking badge - id=$badgeId, unlockedAt=$unlockedAt")
+                badgeDao.unlockBadge(badgeId, unlockedAt)
+                Timber.d("BadgeRepository: Badge unlocked successfully - id=$badgeId")
+
+                // Get badge details for analytics after successful unlock
+                val badge = badgeDao.getAllBadges().first().find { it.id == badgeId }
+                if (badge != null) {
+                    analyticsService.logEvent(
+                        AnalyticsEvent.BADGE_UNLOCKED,
+                        mapOf(
+                            AnalyticsParam.BADGE_ID to badgeId,
+                            AnalyticsParam.BADGE_NAME to badge.name,
+                            AnalyticsParam.BADGE_CATEGORY to badge.category.name,
+                        ),
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "BadgeRepository: Failed to unlock badge - id=$badgeId")
+                analyticsService.logError(e, "Badge unlock failed", isFatal = false)
+                throw e
+            }
         }
 
         override suspend fun initializeBadges() {

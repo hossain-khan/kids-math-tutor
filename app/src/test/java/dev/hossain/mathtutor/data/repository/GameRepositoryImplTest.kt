@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.data.repository
 
 import com.google.common.truth.Truth.assertThat
+import dev.hossain.mathtutor.analytics.FakeAnalyticsService
 import dev.hossain.mathtutor.data.local.dao.GameSessionDao
 import dev.hossain.mathtutor.data.local.entity.GameSessionEntity
 import dev.hossain.mathtutor.domain.model.Game
@@ -20,13 +21,15 @@ import java.time.Instant
 class GameRepositoryImplTest {
     private lateinit var fakeGameSessionDao: FakeGameSessionDao
     private lateinit var fakeSessionRepository: FakeSessionRepository
+    private lateinit var fakeAnalytics: FakeAnalyticsService
     private lateinit var repository: GameRepositoryImpl
 
     @Before
     fun setup() {
         fakeGameSessionDao = FakeGameSessionDao()
         fakeSessionRepository = FakeSessionRepository()
-        repository = GameRepositoryImpl(fakeGameSessionDao, fakeSessionRepository)
+        fakeAnalytics = FakeAnalyticsService()
+        repository = GameRepositoryImpl(fakeGameSessionDao, fakeSessionRepository, fakeAnalytics)
     }
 
     // saveGameSession tests
@@ -239,6 +242,41 @@ class GameRepositoryImplTest {
             assertThat(fakeGameSessionDao.deleteAllCalled).isTrue()
         }
 
+    @Test
+    fun `saveGameSession logs error on failure`() =
+        runTest {
+            val session = createGameSession(Game.MATH_RACE, score = 15)
+            fakeGameSessionDao.shouldThrowOnInsert = true
+
+            try {
+                repository.saveGameSession(session)
+            } catch (e: Exception) {
+                // Expected exception
+            }
+
+            // Verify error logged
+            assertThat(fakeAnalytics.errors).hasSize(1)
+            assertThat(fakeAnalytics.errors.first().context).isEqualTo("Game session save failed")
+            assertThat(fakeAnalytics.errors.first().isFatal).isFalse()
+        }
+
+    @Test
+    fun `clearAllSessions logs error on failure`() =
+        runTest {
+            fakeGameSessionDao.shouldThrowOnDelete = true
+
+            try {
+                repository.clearAllSessions()
+            } catch (e: Exception) {
+                // Expected exception
+            }
+
+            // Verify error logged
+            assertThat(fakeAnalytics.errors).hasSize(1)
+            assertThat(fakeAnalytics.errors.first().context).isEqualTo("Game session clear failed")
+            assertThat(fakeAnalytics.errors.first().isFatal).isFalse()
+        }
+
     // Helper methods
     private fun createGameSession(
         game: Game = Game.MATH_RACE,
@@ -297,10 +335,15 @@ class FakeGameSessionDao : GameSessionDao {
     val perfectGameCounts = mutableMapOf<String, MutableStateFlow<Int>>()
     var deleteAllCalled = false
     var deletedGameIds = mutableListOf<String>()
+    var shouldThrowOnInsert = false
+    var shouldThrowOnDelete = false
 
     private var nextId = 1L
 
     override suspend fun insertSession(session: GameSessionEntity): Long {
+        if (shouldThrowOnInsert) {
+            throw RuntimeException("Failed to insert game session")
+        }
         val id = nextId++
         insertedSessions.add(session.copy(id = id))
         return id
@@ -334,6 +377,9 @@ class FakeGameSessionDao : GameSessionDao {
     override fun getPerfectGameCount(gameId: String): Flow<Int> = perfectGameCounts.getOrPut(gameId) { MutableStateFlow(0) }
 
     override suspend fun deleteAllSessions() {
+        if (shouldThrowOnDelete) {
+            throw RuntimeException("Failed to delete game sessions")
+        }
         deleteAllCalled = true
         insertedSessions.clear()
     }

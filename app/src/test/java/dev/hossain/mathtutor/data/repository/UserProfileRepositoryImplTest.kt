@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
+import dev.hossain.mathtutor.analytics.FakeAnalyticsService
+import dev.hossain.mathtutor.analytics.UserProperty
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,6 +31,7 @@ import java.time.Instant
 @Config(sdk = [28])
 class UserProfileRepositoryImplTest {
     private lateinit var testContext: Context
+    private lateinit var fakeAnalytics: FakeAnalyticsService
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher + Job())
     private var testCounter = 0
@@ -36,6 +39,7 @@ class UserProfileRepositoryImplTest {
     @Before
     fun setup() {
         testContext = ApplicationProvider.getApplicationContext()
+        fakeAnalytics = FakeAnalyticsService()
         testCounter++
 
         // Clean up all DataStore files before each test
@@ -73,7 +77,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `a_getProfile returns null when no profile exists`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val profile = repository.getProfile().first()
             assertThat(profile).isNull()
         }
@@ -81,7 +85,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `saveProfile stores profile correctly`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
             val testProfile =
                 UserProfile(
@@ -104,7 +108,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `saveProfile with null name stores empty string and retrieves as empty`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
             val testProfile =
                 UserProfile(
@@ -126,7 +130,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `updateGradeLevel changes only grade level`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
             val testProfile =
                 UserProfile(
@@ -150,7 +154,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `updateName changes only name`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
             val testProfile =
                 UserProfile(
@@ -174,7 +178,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `updateName with null clears name`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
             val testProfile =
                 UserProfile(
@@ -197,7 +201,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `profile persists across multiple reads`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
             val testProfile =
                 UserProfile(
@@ -222,7 +226,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `adaptive difficulty defaults to true when not set`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
             val testProfile =
                 UserProfile(
@@ -241,7 +245,7 @@ class UserProfileRepositoryImplTest {
     @Test
     fun `all three grade levels can be saved and retrieved`() =
         testScope.runTest {
-            val repository = UserProfileRepositoryImpl(testContext)
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
             val now = Instant.now()
 
             // Test Kindergarten
@@ -277,5 +281,58 @@ class UserProfileRepositoryImplTest {
                     .first()
                     ?.gradeLevel,
             ).isEqualTo(GradeLevel.GRADE_2)
+        }
+
+    @Test
+    fun `saveProfile sets analytics user properties`() =
+        testScope.runTest {
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
+            val now = Instant.now()
+            val profile =
+                UserProfile(
+                    name = "Test User",
+                    gradeLevel = GradeLevel.GRADE_1,
+                    createdAt = now,
+                    adaptiveDifficultyEnabled = true,
+                )
+
+            repository.saveProfile(profile)
+
+            // Verify user properties set
+            assertThat(fakeAnalytics.userProperties).hasSize(2)
+            val gradeProperty =
+                fakeAnalytics.userProperties.find { it.propertyName == UserProperty.GRADE_LEVEL }
+            assertThat(gradeProperty).isNotNull()
+            assertThat(gradeProperty?.value).isEqualTo(GradeLevel.GRADE_1.name)
+
+            val onboardingProperty =
+                fakeAnalytics.userProperties.find { it.propertyName == UserProperty.HAS_COMPLETED_ONBOARDING }
+            assertThat(onboardingProperty).isNotNull()
+            assertThat(onboardingProperty?.value).isEqualTo("true")
+        }
+
+    @Test
+    fun `updateGradeLevel sets analytics user property`() =
+        testScope.runTest {
+            val repository = UserProfileRepositoryImpl(testContext, fakeAnalytics)
+            val now = Instant.now()
+            val profile =
+                UserProfile(
+                    name = "Test User",
+                    gradeLevel = GradeLevel.KINDERGARTEN,
+                    createdAt = now,
+                    adaptiveDifficultyEnabled = true,
+                )
+
+            repository.saveProfile(profile)
+            fakeAnalytics.clear() // Clear initial user properties
+
+            repository.updateGradeLevel(GradeLevel.GRADE_2)
+
+            // Verify user property updated
+            assertThat(fakeAnalytics.userProperties).hasSize(1)
+            val gradeProperty = fakeAnalytics.userProperties.first()
+            assertThat(gradeProperty.propertyName).isEqualTo(UserProperty.GRADE_LEVEL)
+            assertThat(gradeProperty.value).isEqualTo(GradeLevel.GRADE_2.name)
         }
 }

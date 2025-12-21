@@ -1,6 +1,9 @@
 package dev.hossain.mathtutor.data.repository
 
 import com.google.common.truth.Truth.assertThat
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.FakeAnalyticsService
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
 import dev.hossain.mathtutor.data.local.entity.BadgeEntity
 import dev.hossain.mathtutor.domain.model.BadgeCategory
@@ -15,12 +18,14 @@ import java.time.Instant
 
 class BadgeRepositoryImplTest {
     private lateinit var fakeDao: FakeBadgeDao
+    private lateinit var fakeAnalytics: FakeAnalyticsService
     private lateinit var repository: BadgeRepositoryImpl
 
     @Before
     fun setup() {
         fakeDao = FakeBadgeDao()
-        repository = BadgeRepositoryImpl(fakeDao)
+        fakeAnalytics = FakeAnalyticsService()
+        repository = BadgeRepositoryImpl(fakeDao, fakeAnalytics)
     }
 
     @Test
@@ -137,12 +142,53 @@ class BadgeRepositoryImplTest {
         runTest {
             val badgeId = "test_badge"
             val unlockTime = Instant.now()
+            val badgeEntity = createBadgeEntity(badgeId, "Test Badge")
+            fakeDao.allBadges.value = listOf(badgeEntity)
 
             repository.unlockBadge(badgeId, unlockTime)
 
             assertThat(fakeDao.unlockCalls.size).isEqualTo(1)
             assertThat(fakeDao.unlockCalls[0].first).isEqualTo(badgeId)
             assertThat(fakeDao.unlockCalls[0].second).isEqualTo(unlockTime)
+        }
+
+    @Test
+    fun `unlockBadge logs analytics event with badge details`() =
+        runTest {
+            val badgeId = "test_badge"
+            val badgeName = "Test Badge"
+            val badgeCategory = BadgeCategory.GETTING_STARTED
+            val unlockTime = Instant.now()
+            val badgeEntity = createBadgeEntity(badgeId, badgeName, category = badgeCategory)
+            fakeDao.allBadges.value = listOf(badgeEntity)
+
+            repository.unlockBadge(badgeId, unlockTime)
+
+            // Verify analytics event logged
+            val events = fakeAnalytics.getEventsWithName(AnalyticsEvent.BADGE_UNLOCKED)
+            assertThat(events).hasSize(1)
+            assertThat(events.first().parameters[AnalyticsParam.BADGE_ID]).isEqualTo(badgeId)
+            assertThat(events.first().parameters[AnalyticsParam.BADGE_NAME]).isEqualTo(badgeName)
+            assertThat(events.first().parameters[AnalyticsParam.BADGE_CATEGORY]).isEqualTo(badgeCategory.name)
+        }
+
+    @Test
+    fun `unlockBadge logs error on failure`() =
+        runTest {
+            val badgeId = "test_badge"
+            val unlockTime = Instant.now()
+            fakeDao.shouldThrowOnUnlock = true
+
+            try {
+                repository.unlockBadge(badgeId, unlockTime)
+            } catch (e: Exception) {
+                // Expected exception
+            }
+
+            // Verify error logged
+            assertThat(fakeAnalytics.errors).hasSize(1)
+            assertThat(fakeAnalytics.errors.first().context).isEqualTo("Badge unlock failed")
+            assertThat(fakeAnalytics.errors.first().isFatal).isFalse()
         }
 
     @Test
@@ -211,6 +257,7 @@ class BadgeRepositoryImplTest {
         val unlockCalls = mutableListOf<Pair<String, Instant>>()
         var insertBadgesCalls = 0
         var lastInsertedBadges: List<BadgeEntity>? = null
+        var shouldThrowOnUnlock = false
 
         override fun getAllBadges(): Flow<List<BadgeEntity>> = allBadges
 
@@ -233,6 +280,9 @@ class BadgeRepositoryImplTest {
             badgeId: String,
             unlockedAt: Instant,
         ) {
+            if (shouldThrowOnUnlock) {
+                throw RuntimeException("Failed to unlock badge")
+            }
             unlockCalls.add(Pair(badgeId, unlockedAt))
         }
 
