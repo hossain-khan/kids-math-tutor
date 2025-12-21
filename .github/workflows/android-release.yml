@@ -22,9 +22,7 @@ on:
 
 jobs:
   build-release:
-    # TEMPORARILY DISABLED
-    if: false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: write  # Required to upload release assets
       actions: read    # Required to read workflow artifacts
