@@ -35,6 +35,7 @@ interface DatabaseModule {
                 MathDatabase.MIGRATION_2_3,
                 MathDatabase.MIGRATION_3_4,
                 MathDatabase.MIGRATION_4_5,
+                MathDatabase.MIGRATION_5_6,
             ).fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 

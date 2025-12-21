@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
 import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
@@ -197,7 +198,7 @@ private fun BadgesUiPreview() {
                                         id = "first_steps",
                                         name = "First Steps",
                                         description = "Solved first problem",
-                                        icon = "🎯",
+                                        icon = BadgeIcon.FIRST_STEPS,
                                         category = BadgeCategory.GETTING_STARTED,
                                         requirement = BadgeRequirement.ProblemCount(1),
                                         unlockedAt = Instant.now(),
@@ -206,19 +207,19 @@ private fun BadgesUiPreview() {
                             BadgeCategory.VOLUME to
                                 listOf(
                                     Badge(
-                                        id = "quick_learner",
-                                        name = "Quick Learner",
-                                        description = "Solved 10 problems",
-                                        icon = "🚀",
+                                        id = "math_rookie",
+                                        name = "Math Rookie",
+                                        description = "Solved 25 problems",
+                                        icon = BadgeIcon.MATH_ROOKIE,
                                         category = BadgeCategory.VOLUME,
-                                        requirement = BadgeRequirement.ProblemCount(10),
+                                        requirement = BadgeRequirement.ProblemCount(25),
                                         unlockedAt = Instant.now(),
                                     ),
                                     Badge(
-                                        id = "math_master",
-                                        name = "Math Master",
+                                        id = "math_champion",
+                                        name = "Math Champion",
                                         description = "Solved 100 problems",
-                                        icon = "🏆",
+                                        icon = BadgeIcon.MATH_CHAMPION,
                                         category = BadgeCategory.VOLUME,
                                         requirement = BadgeRequirement.ProblemCount(100),
                                         unlockedAt = null,
@@ -230,7 +231,7 @@ private fun BadgesUiPreview() {
                                         id = "streak_starter",
                                         name = "Streak Starter",
                                         description = "Practice 3 days in a row",
-                                        icon = "🔥",
+                                        icon = BadgeIcon.STREAK_STARTER,
                                         category = BadgeCategory.STREAK,
                                         requirement = BadgeRequirement.DailyStreak(3),
                                         unlockedAt = Instant.now(),
@@ -264,7 +265,7 @@ private fun BadgesUiDarkPreview() {
                                         id = "first_steps",
                                         name = "First Steps",
                                         description = "Solved first problem",
-                                        icon = "🎯",
+                                        icon = BadgeIcon.FIRST_STEPS,
                                         category = BadgeCategory.GETTING_STARTED,
                                         requirement = BadgeRequirement.ProblemCount(1),
                                         unlockedAt = Instant.now(),
@@ -273,12 +274,12 @@ private fun BadgesUiDarkPreview() {
                             BadgeCategory.VOLUME to
                                 listOf(
                                     Badge(
-                                        id = "quick_learner",
-                                        name = "Quick Learner",
-                                        description = "Solved 10 problems",
-                                        icon = "🚀",
+                                        id = "math_rookie",
+                                        name = "Math Rookie",
+                                        description = "Solved 25 problems",
+                                        icon = BadgeIcon.MATH_ROOKIE,
                                         category = BadgeCategory.VOLUME,
-                                        requirement = BadgeRequirement.ProblemCount(10),
+                                        requirement = BadgeRequirement.ProblemCount(25),
                                         unlockedAt = null,
                                     ),
                                 ),

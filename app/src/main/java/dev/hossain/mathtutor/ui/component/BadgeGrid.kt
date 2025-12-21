@@ -20,12 +20,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import java.time.Instant
@@ -75,25 +77,25 @@ private fun BadgeGridPreview() {
                         id = "first_steps",
                         name = "First Steps",
                         description = "Solved first problem",
-                        icon = "🎯",
+                        icon = BadgeIcon.FIRST_STEPS,
                         category = BadgeCategory.GETTING_STARTED,
                         requirement = BadgeRequirement.ProblemCount(1),
                         unlockedAt = Instant.now(),
                     ),
                     Badge(
-                        id = "quick_learner",
-                        name = "Quick Learner",
-                        description = "Solved 10 problems",
-                        icon = "🚀",
+                        id = "math_rookie",
+                        name = "Math Rookie",
+                        description = "Solved 25 problems",
+                        icon = BadgeIcon.MATH_ROOKIE,
                         category = BadgeCategory.VOLUME,
-                        requirement = BadgeRequirement.ProblemCount(10),
+                        requirement = BadgeRequirement.ProblemCount(25),
                         unlockedAt = null,
                     ),
                     Badge(
-                        id = "math_master",
-                        name = "Math Master",
+                        id = "math_champion",
+                        name = "Math Champion",
                         description = "Solved 100 problems",
-                        icon = "🏆",
+                        icon = BadgeIcon.MATH_CHAMPION,
                         category = BadgeCategory.VOLUME,
                         requirement = BadgeRequirement.ProblemCount(100),
                         unlockedAt = null,
@@ -101,10 +103,10 @@ private fun BadgeGridPreview() {
                     Badge(
                         id = "speed_demon",
                         name = "Speed Demon",
-                        description = "Solved a problem in 5 seconds",
-                        icon = "⚡",
-                        category = BadgeCategory.SPEED_ACCURACY,
-                        requirement = BadgeRequirement.ProblemSpeed(5),
+                        description = "Score 20+ in Math Race",
+                        icon = BadgeIcon.SPEED_DEMON,
+                        category = BadgeCategory.GAMES,
+                        requirement = BadgeRequirement.MathRaceScore(20),
                         unlockedAt = Instant.now(),
                     ),
                 ),
@@ -125,25 +127,25 @@ private fun BadgeGridDarkPreview() {
                         id = "first_steps",
                         name = "First Steps",
                         description = "Solved first problem",
-                        icon = "🎯",
+                        icon = BadgeIcon.FIRST_STEPS,
                         category = BadgeCategory.GETTING_STARTED,
                         requirement = BadgeRequirement.ProblemCount(1),
                         unlockedAt = Instant.now(),
                     ),
                     Badge(
-                        id = "quick_learner",
-                        name = "Quick Learner",
-                        description = "Solved 10 problems",
-                        icon = "🚀",
+                        id = "math_rookie",
+                        name = "Math Rookie",
+                        description = "Solved 25 problems",
+                        icon = BadgeIcon.MATH_ROOKIE,
                         category = BadgeCategory.VOLUME,
-                        requirement = BadgeRequirement.ProblemCount(10),
+                        requirement = BadgeRequirement.ProblemCount(25),
                         unlockedAt = null,
                     ),
                     Badge(
-                        id = "math_master",
-                        name = "Math Master",
+                        id = "math_champion",
+                        name = "Math Champion",
                         description = "Solved 100 problems",
-                        icon = "🏆",
+                        icon = BadgeIcon.MATH_CHAMPION,
                         category = BadgeCategory.VOLUME,
                         requirement = BadgeRequirement.ProblemCount(100),
                         unlockedAt = null,
@@ -191,14 +193,15 @@ private fun BadgeCard(
             ) {
                 // Badge Icon with status indicator
                 Box(contentAlignment = Alignment.TopEnd) {
-                    Text(
-                        text = badge.icon,
-                        style = MaterialTheme.typography.displayMedium,
-                        color =
+                    BadgeIcon(
+                        badgeIcon = badge.icon,
+                        contentDescription = badge.name,
+                        size = 56.dp,
+                        colorFilter =
                             if (isUnlocked) {
-                                MaterialTheme.colorScheme.onPrimaryContainer
+                                null
                             } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
                             },
                     )
 
