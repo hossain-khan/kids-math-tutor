@@ -32,6 +32,7 @@ data object SettingsScreen : Screen {
         val showNameDialog: Boolean,
         val showGradeDialog: Boolean,
         val analyticsEnabled: Boolean,
+        val showDeveloperPortal: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -89,6 +90,11 @@ data object SettingsScreen : Screen {
          * User tapped the Audio & Haptics button.
          */
         data object AudioHapticsClicked : Event
+
+        /**
+         * User tapped the Developer Portal (debug-only)
+         */
+        data object DeveloperPortalClicked : Event
 
         /**
          * User toggled the analytics switch.
