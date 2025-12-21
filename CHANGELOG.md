@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2025-12-21
+
 ### Added
 - **Badge Icons with WebP Images** - Replaced emoji badge icons with AI-generated badge images
   - Added 19 badge images in WebP format (badge_*.webp) for all badges across 6 categories
@@ -1265,7 +1267,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.6.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.7.0...HEAD
+[1.7.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.4.0...1.5.0
 [1.0.0]: https://github.com/hossain-khan/kids-math-pup-tutor/releases/tag/1.0.0
