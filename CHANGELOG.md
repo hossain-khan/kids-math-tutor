@@ -8,58 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Analytics Testing, Documentation & Firebase Dashboard Setup** - Completed comprehensive testing and documentation for analytics system
-  - Enhanced `FakeAnalyticsServiceTest` with 26+ comprehensive test cases covering all analytics scenarios
-  - Created comprehensive `ANALYTICS.md` documentation with architecture, implementation guide, and testing procedures
-  - Documented all tracked events (20+ events), screen views (13 screens), and user properties (6 properties)
-  - Added Firebase Console dashboard configuration instructions with conversion funnels and user audiences
-  - Added Firebase DebugView testing guide with adb commands for local verification
-  - Documented privacy policy implications and user opt-out mechanism
-  - Updated README.md with analytics privacy section explaining data collection practices
-  - Complete manual testing checklist for verifying analytics in production
-  - Implementation for Issue #152 (Analytics Testing, Documentation & Firebase Dashboard Setup)
-- **Memory Match Game** - Implemented second mini-game with card-matching mechanics
-  - 4×4 grid of flippable cards (16 cards = 8 problem-answer pairs)
-  - Flip two cards at a time to find matching math problems and answers
-  - Problems match user's grade level with mixed operations
-  - Track moves, time elapsed, and accuracy
-  - Personal best time tracking (lower is better)
-  - Animated card flip with 3D rotation effect using Material 3 colors
-  - Game unlocks after solving 100 total problems
-  - Full Circuit architecture with Screen, Presenter, and UI components
-  - Session saved to database for badge unlock checks
-  - Implements game flow: Start screen → Countdown → Playing → Results
-- **Analytics Privacy Consent & Settings Toggle** - Implemented user consent mechanism for analytics tracking
-  - Added `isAnalyticsEnabled` preference to `UserPreferencesRepository` (defaults to opt-in: true)
-  - Added analytics toggle in Settings screen under new Privacy section
-  - FirebaseAnalyticsService observes user preference and updates collection state automatically
-  - Analytics toggle includes privacy-friendly description explaining data collection practices
-  - Settings change event tracked when analytics is re-enabled
-  - Preference persists across app restarts
-  - Implementation for Issue #151 (Analytics Privacy Consent & Settings Toggle)
-- **Hero Image for Badges Screen** - Added celebratory hero banner featuring Math Pup mascot
-  - Displays at top of "Your Badges" screen with 200dp height
-  - Gradient fade effect at bottom edge for seamless blending with content
-  - Uses hero_image_your_badges.webp from drawable-xxxhdpi
-  - Enhances visual appeal and encourages badge collection
-
-### Fixed
-- **Operation Selector ANR** - Fixed Application Not Responding issue when pressing back from "Math Time" screen
-  - Added explicit BackHandler to handle system back button press
-  - Added NavigateBack event to OperationSelectorScreen
-  - Prevents 5+ second freeze and high CPU usage on main thread
-  - Ensures immediate navigation response without blocking UI
-  - Similar fix applied in GameSelectionScreen (PR #143)
-- **Kindergarten Problem Difficulty** - Reduced number range for kindergarten level to use single-digit numbers only
-  - Changed kindergarten addition from 1-10 to 1-9 with sum capped at 10 (instead of 18)
-  - Changed kindergarten subtraction from 1-10 to 1-9
-  - Ensures all kindergarten problems use single-digit operands appropriate for K-2 learners
-  - Grade 1 and Grade 2 number ranges remain unchanged (1-20 and 1-100 respectively)
-- **Badge Requirement Deserialization** - Fixed crash when deserializing badges with empty requirement data (e.g., PerfectGameAccuracy badge)
-  - Added empty data string handling in BadgeMapper before parsing parameters
-  - Prevents "Malformed requirement data" IllegalArgumentException on app launch after migration
-
-### Added
 - **Badge Icons with WebP Images** - Replaced emoji badge icons with AI-generated badge images
   - Added 19 badge images in WebP format (badge_*.webp) for all badges across 6 categories
   - Created BadgeIcon enum to represent all badge types for database stability across builds
@@ -113,6 +61,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `grade_level` and `has_completed_onboarding` properties already set in `UserProfileRepositoryImpl`
   - User properties persist across sessions and enable powerful audience segmentation in Firebase
   - Implementation for Issue #150 (User Properties Tracking)
+- **Analytics Testing, Documentation & Firebase Dashboard Setup** - Completed comprehensive testing and documentation for analytics system
+    - Enhanced `FakeAnalyticsServiceTest` with 26+ comprehensive test cases covering all analytics scenarios
+    - Created comprehensive `ANALYTICS.md` documentation with architecture, implementation guide, and testing procedures
+    - Documented all tracked events (20+ events), screen views (13 screens), and user properties (6 properties)
+    - Added Firebase Console dashboard configuration instructions with conversion funnels and user audiences
+    - Added Firebase DebugView testing guide with adb commands for local verification
+    - Documented privacy policy implications and user opt-out mechanism
+    - Updated README.md with analytics privacy section explaining data collection practices
+    - Complete manual testing checklist for verifying analytics in production
+    - Implementation for Issue #152 (Analytics Testing, Documentation & Firebase Dashboard Setup)
+- **Memory Match Game** - Implemented second mini-game with card-matching mechanics
+    - 4×4 grid of flippable cards (16 cards = 8 problem-answer pairs)
+    - Flip two cards at a time to find matching math problems and answers
+    - Problems match user's grade level with mixed operations
+    - Track moves, time elapsed, and accuracy
+    - Personal best time tracking (lower is better)
+    - Animated card flip with 3D rotation effect using Material 3 colors
+    - Game unlocks after solving 100 total problems
+    - Full Circuit architecture with Screen, Presenter, and UI components
+    - Session saved to database for badge unlock checks
+    - Implements game flow: Start screen → Countdown → Playing → Results
+- **Analytics Privacy Consent & Settings Toggle** - Implemented user consent mechanism for analytics tracking
+    - Added `isAnalyticsEnabled` preference to `UserPreferencesRepository` (defaults to opt-in: true)
+    - Added analytics toggle in Settings screen under new Privacy section
+    - FirebaseAnalyticsService observes user preference and updates collection state automatically
+    - Analytics toggle includes privacy-friendly description explaining data collection practices
+    - Settings change event tracked when analytics is re-enabled
+    - Preference persists across app restarts
+    - Implementation for Issue #151 (Analytics Privacy Consent & Settings Toggle)
+- **Hero Image for Badges Screen** - Added celebratory hero banner featuring Math Pup mascot
+    - Displays at top of "Your Badges" screen with 200dp height
+    - Gradient fade effect at bottom edge for seamless blending with content
+    - Uses hero_image_your_badges.webp from drawable-xxxhdpi
+    - Enhances visual appeal and encourages badge collection
 
 ### Fixed
 - **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button
@@ -123,6 +105,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Moved Timber.d() logging calls from composition body to `LaunchedEffect` blocks in UI components
   - Logs now only execute when relevant state changes, not on every recomposition
   - Fixed in `MathPracticeUi.kt` (`ProgressSection`, `ProblemCard`) and `AnswerField.kt`
+- **Operation Selector ANR** - Fixed Application Not Responding issue when pressing back from "Math Time" screen
+    - Added explicit BackHandler to handle system back button press
+    - Added NavigateBack event to OperationSelectorScreen
+    - Prevents 5+ second freeze and high CPU usage on main thread
+    - Ensures immediate navigation response without blocking UI
+    - Similar fix applied in GameSelectionScreen (PR #143)
+- **Kindergarten Problem Difficulty** - Reduced number range for kindergarten level to use single-digit numbers only
+    - Changed kindergarten addition from 1-10 to 1-9 with sum capped at 10 (instead of 18)
+    - Changed kindergarten subtraction from 1-10 to 1-9
+    - Ensures all kindergarten problems use single-digit operands appropriate for K-2 learners
+    - Grade 1 and Grade 2 number ranges remain unchanged (1-20 and 1-100 respectively)
+- **Badge Requirement Deserialization** - Fixed crash when deserializing badges with empty requirement data (e.g., PerfectGameAccuracy badge)
+    - Added empty data string handling in BadgeMapper before parsing parameters
+    - Prevents "Malformed requirement data" IllegalArgumentException on app launch after migration
 
 ## [1.6.0] - 2025-12-20
 
