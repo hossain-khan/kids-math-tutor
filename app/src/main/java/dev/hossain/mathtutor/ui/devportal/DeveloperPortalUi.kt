@@ -89,6 +89,105 @@ fun DeveloperPortalUi(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Profile Controls
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Profile Controls", style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Quick controls for testing profile settings",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Name field
+                    Text(text = "Name: ${state.currentProfileName ?: "Not set"}", style = MaterialTheme.typography.bodyLarge)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    var nameText by remember(state.currentProfileName) { mutableStateOf(state.currentProfileName ?: "") }
+                    TextField(
+                        value = nameText,
+                        onValueChange = { nameText = it },
+                        placeholder = { Text("Enter name") },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Button(onClick = {
+                        state.eventSink(DeveloperPortalScreen.Event.UpdateProfileName(nameText.ifBlank { null }))
+                    }) {
+                        Text("Update Name")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Grade level selector
+                    Text(
+                        text = "Grade Level: ${state.currentGradeLevel?.displayName ?: "Not set"}",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        dev.hossain.mathtutor.domain.model.GradeLevel.values().forEach { grade ->
+                            Button(
+                                onClick = { state.eventSink(DeveloperPortalScreen.Event.UpdateGradeLevel(grade)) },
+                                modifier = Modifier.weight(1f).padding(horizontal = 2.dp),
+                            ) {
+                                Text(
+                                    text =
+                                        when (grade) {
+                                            dev.hossain.mathtutor.domain.model.GradeLevel.KINDERGARTEN -> "K"
+                                            dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_1 -> "G1"
+                                            dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_2 -> "G2"
+                                        },
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Adaptive difficulty toggle
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Adaptive Difficulty",
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Text(
+                                text = "Adjusts problem difficulty based on performance",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Switch(
+                            checked = state.currentAdaptiveDifficulty,
+                            onCheckedChange = { enabled ->
+                                state.eventSink(DeveloperPortalScreen.Event.UpdateAdaptiveDifficulty(enabled))
+                            },
+                        )
+                    }
+
+                    // Show update result message if present
+                    state.profileUpdateResultMessage?.let { msg ->
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = msg,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             // Seed / Simulators
             if (state.showSeedSection) {
                 Card(

@@ -31,6 +31,10 @@ data object DeveloperPortalScreen : Screen {
         val isAnalyticsEnabled: Boolean = true,
         val isBackgroundMusicPlaying: Boolean = false,
         val soundHapticFeedback: String? = null,
+        val currentProfileName: String? = null,
+        val currentGradeLevel: GradeLevel? = null,
+        val currentAdaptiveDifficulty: Boolean = true,
+        val profileUpdateResultMessage: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -78,6 +82,18 @@ data object DeveloperPortalScreen : Screen {
         data object PlayGoSound : Event
 
         data object ToggleBackgroundMusic : Event
+
+        data class UpdateGradeLevel(
+            val gradeLevel: GradeLevel,
+        ) : Event
+
+        data class UpdateAdaptiveDifficulty(
+            val enabled: Boolean,
+        ) : Event
+
+        data class UpdateProfileName(
+            val name: String?,
+        ) : Event
 
         data object NavigateBack : Event
     }

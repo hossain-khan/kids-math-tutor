@@ -20,6 +20,7 @@ import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.zacsweers.metro.AppScope
@@ -42,6 +43,7 @@ class DeveloperPortalPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val userPreferencesRepository: UserPreferencesRepository,
+        private val userProfileRepository: UserProfileRepository,
         private val sessionRepository: SessionRepository,
         private val gameRepository: GameRepository,
         private val badgeRepository: BadgeRepository,
@@ -83,6 +85,10 @@ class DeveloperPortalPresenter
             var isAnalyticsEnabled by remember { mutableStateOf(true) }
             var isBackgroundMusicPlaying by remember { mutableStateOf(false) }
             var soundHapticFeedback by remember { mutableStateOf<String?>(null) }
+            var currentProfileName by remember { mutableStateOf<String?>(null) }
+            var currentGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
+            var currentAdaptiveDifficulty by remember { mutableStateOf(true) }
+            var profileUpdateResultMessage by remember { mutableStateOf<String?>(null) }
             LaunchedEffect(Unit) {
                 // Collect badges from repository to display in UI
                 launch {
@@ -94,6 +100,14 @@ class DeveloperPortalPresenter
                 launch {
                     userPreferencesRepository.isAnalyticsEnabled.collect { enabled ->
                         isAnalyticsEnabled = enabled
+                    }
+                }
+                // Load current user profile
+                launch {
+                    userProfileRepository.getProfile().collect { profile ->
+                        currentProfileName = profile?.name
+                        currentGradeLevel = profile?.gradeLevel
+                        currentAdaptiveDifficulty = profile?.adaptiveDifficultyEnabled ?: true
                     }
                 }
             }
@@ -119,6 +133,10 @@ class DeveloperPortalPresenter
                 isAnalyticsEnabled = isAnalyticsEnabled,
                 isBackgroundMusicPlaying = isBackgroundMusicPlaying,
                 soundHapticFeedback = soundHapticFeedback,
+                currentProfileName = currentProfileName,
+                currentGradeLevel = currentGradeLevel,
+                currentAdaptiveDifficulty = currentAdaptiveDifficulty,
+                profileUpdateResultMessage = profileUpdateResultMessage,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
@@ -353,6 +371,63 @@ class DeveloperPortalPresenter
                             isBackgroundMusicPlaying = true
                             soundHapticFeedback = "Background music started"
                             Timber.d("[DevPortal] Started background music")
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.UpdateGradeLevel -> {
+                        profileUpdateResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                Timber.d("[DevPortal] Updating grade level to ${event.gradeLevel}")
+                                userProfileRepository.updateGradeLevel(event.gradeLevel)
+                                withContext(Dispatchers.Main) {
+                                    profileUpdateResultMessage = "Grade level updated to ${event.gradeLevel.displayName}"
+                                }
+                                Timber.d("[DevPortal] Grade level updated successfully")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to update grade level")
+                                withContext(Dispatchers.Main) {
+                                    profileUpdateResultMessage = "Update failed: ${e.message}"
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.UpdateAdaptiveDifficulty -> {
+                        profileUpdateResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                Timber.d("[DevPortal] Updating adaptive difficulty to ${event.enabled}")
+                                userProfileRepository.updateAdaptiveDifficulty(event.enabled)
+                                withContext(Dispatchers.Main) {
+                                    profileUpdateResultMessage = "Adaptive difficulty ${if (event.enabled) "enabled" else "disabled"}"
+                                }
+                                Timber.d("[DevPortal] Adaptive difficulty updated successfully")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to update adaptive difficulty")
+                                withContext(Dispatchers.Main) {
+                                    profileUpdateResultMessage = "Update failed: ${e.message}"
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.UpdateProfileName -> {
+                        profileUpdateResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                Timber.d("[DevPortal] Updating profile name to '${event.name}'")
+                                userProfileRepository.updateName(event.name)
+                                withContext(Dispatchers.Main) {
+                                    profileUpdateResultMessage = "Name updated"
+                                }
+                                Timber.d("[DevPortal] Profile name updated successfully")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to update profile name")
+                                withContext(Dispatchers.Main) {
+                                    profileUpdateResultMessage = "Update failed: ${e.message}"
+                                }
+                            }
                         }
                     }
 
