@@ -69,6 +69,9 @@ fun OperationCard(
                 containerColor = MaterialTheme.colorScheme.surface,
             ),
     ) {
+        // Get the theme surface color for dark mode awareness
+        val surfaceColor = MaterialTheme.colorScheme.surface
+
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -86,19 +89,21 @@ fun OperationCard(
                                 .height(160.dp)
                                 .drawWithContent {
                                     drawContent()
-                                    // Apply horizontal fade from left (transparent) to right (opaque)
+                                    // Apply horizontal fade from left (opaque surface color) to right (transparent)
+                                    // This blends the image with the card background in both light and dark modes
                                     drawRect(
                                         brush =
                                             Brush.horizontalGradient(
                                                 colors =
                                                     listOf(
-                                                        Color.White,
-                                                        Color.White.copy(alpha = 0.7f),
-                                                        Color.White.copy(alpha = 0.3f),
+                                                        surfaceColor,
+                                                        surfaceColor.copy(alpha = 0.8f),
+                                                        surfaceColor.copy(alpha = 0.5f),
+                                                        surfaceColor.copy(alpha = 0.2f),
                                                         Color.Transparent,
                                                     ),
                                                 startX = 0f,
-                                                endX = size.width * 0.5f,
+                                                endX = size.width * 0.6f,
                                             ),
                                     )
                                 },
