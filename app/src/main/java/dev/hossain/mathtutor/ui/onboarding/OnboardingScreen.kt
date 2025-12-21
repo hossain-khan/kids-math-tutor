@@ -48,7 +48,10 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.R
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
@@ -114,11 +117,21 @@ class OnboardingPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val userPreferencesRepository: UserPreferencesRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<OnboardingScreen.State> {
         @Composable
         override fun present(): OnboardingScreen.State {
             val coroutineScope = rememberCoroutineScope()
             var currentPage = 0
+
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Onboarding",
+                    screenClass = OnboardingScreen::class.java.name,
+                )
+                analyticsService.logEvent(AnalyticsEvent.ONBOARDING_STARTED)
+            }
 
             return OnboardingScreen.State(
                 currentPage = currentPage,
@@ -138,6 +151,8 @@ class OnboardingPresenter
                     -> {
                         coroutineScope.launch {
                             userPreferencesRepository.setOnboardingCompleted(true)
+                            // Track onboarding completed
+                            analyticsService.logEvent(AnalyticsEvent.ONBOARDING_COMPLETED)
                             navigator.goTo(GradeSelectionScreen())
                         }
                     }
