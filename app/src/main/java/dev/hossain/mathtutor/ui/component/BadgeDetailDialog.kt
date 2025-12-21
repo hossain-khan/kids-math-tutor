@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.util.TimeFormatter
@@ -66,9 +67,10 @@ fun BadgeDetailDialog(
                     label = "badge_icon_scale",
                 )
 
-                Text(
-                    text = badge.icon,
-                    style = MaterialTheme.typography.displayLarge,
+                BadgeIcon(
+                    badgeIcon = badge.icon,
+                    contentDescription = badge.name,
+                    size = 80.dp,
                     modifier = Modifier.scale(scale),
                 )
 
@@ -181,7 +183,7 @@ private fun BadgeDetailDialogUnlockedPreview() {
                     id = "first_steps",
                     name = "First Steps",
                     description = "You solved your first math problem! Great job!",
-                    icon = "🎯",
+                    icon = BadgeIcon.FIRST_STEPS,
                     category = BadgeCategory.GETTING_STARTED,
                     requirement = BadgeRequirement.ProblemCount(1),
                     unlockedAt = Instant.now(),
@@ -198,10 +200,10 @@ private fun BadgeDetailDialogLockedPreview() {
         BadgeDetailDialog(
             badge =
                 Badge(
-                    id = "math_master",
-                    name = "Math Master",
+                    id = "math_champion",
+                    name = "Math Champion",
                     description = "You're a true math champion! Keep up the great work!",
-                    icon = "🏆",
+                    icon = BadgeIcon.MATH_CHAMPION,
                     category = BadgeCategory.VOLUME,
                     requirement = BadgeRequirement.ProblemCount(100),
                     unlockedAt = null,
@@ -220,10 +222,10 @@ private fun BadgeDetailDialogDarkPreview() {
                 Badge(
                     id = "speed_demon",
                     name = "Speed Demon",
-                    description = "Lightning fast! You solved a problem in record time!",
-                    icon = "⚡",
-                    category = BadgeCategory.SPEED_ACCURACY,
-                    requirement = BadgeRequirement.ProblemSpeed(5),
+                    description = "Lightning fast! You scored 20+ in Math Race!",
+                    icon = BadgeIcon.SPEED_DEMON,
+                    category = BadgeCategory.GAMES,
+                    requirement = BadgeRequirement.MathRaceScore(20),
                     unlockedAt = Instant.now(),
                 ),
             onDismiss = {},

@@ -12,7 +12,7 @@ import java.time.Instant
  * @property id Unique identifier for the badge (primary key)
  * @property name Display name of the badge
  * @property description Detailed description of what the badge represents
- * @property icon Emoji or icon representation of the badge
+ * @property icon Badge icon enum name (stored as String for database stability)
  * @property category The category this badge belongs to
  * @property requirementType String representing the type of requirement (e.g., "ProblemCount", "SessionAccuracy")
  * @property requirementData JSON string containing requirement parameters

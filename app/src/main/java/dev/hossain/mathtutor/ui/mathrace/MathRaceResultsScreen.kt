@@ -56,6 +56,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.BadgeIcon
+import dev.hossain.mathtutor.ui.component.BadgeIcon
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import kotlinx.coroutines.delay
 
@@ -470,9 +472,10 @@ private fun UnlockedBadgesCard(
                             },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = badge.icon,
-                        style = MaterialTheme.typography.headlineMedium,
+                    BadgeIcon(
+                        badgeIcon = badge.icon,
+                        contentDescription = null,
+                        size = 40.dp,
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {

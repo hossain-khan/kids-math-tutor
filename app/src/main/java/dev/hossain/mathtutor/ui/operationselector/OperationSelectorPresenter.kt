@@ -87,6 +87,11 @@ class OperationSelectorPresenter
                         Timber.d("OperationSelector: View stats clicked")
                         navigator.goTo(StatsScreen)
                     }
+
+                    is OperationSelectorScreen.Event.NavigateBack -> {
+                        Timber.d("OperationSelector: Navigate back")
+                        navigator.pop()
+                    }
                 }
             }
         }

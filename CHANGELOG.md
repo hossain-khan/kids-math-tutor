@@ -16,6 +16,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Settings change event tracked when analytics is re-enabled
   - Preference persists across app restarts
   - Implementation for Issue #151 (Analytics Privacy Consent & Settings Toggle)
+- **Hero Image for Badges Screen** - Added celebratory hero banner featuring Math Pup mascot
+  - Displays at top of "Your Badges" screen with 200dp height
+  - Gradient fade effect at bottom edge for seamless blending with content
+  - Uses hero_image_your_badges.webp from drawable-xxxhdpi
+  - Enhances visual appeal and encourages badge collection
+
+### Fixed
+- **Operation Selector ANR** - Fixed Application Not Responding issue when pressing back from "Math Time" screen
+  - Added explicit BackHandler to handle system back button press
+  - Added NavigateBack event to OperationSelectorScreen
+  - Prevents 5+ second freeze and high CPU usage on main thread
+  - Ensures immediate navigation response without blocking UI
+  - Similar fix applied in GameSelectionScreen (PR #143)
+- **Kindergarten Problem Difficulty** - Reduced number range for kindergarten level to use single-digit numbers only
+  - Changed kindergarten addition from 1-10 to 1-9 with sum capped at 10 (instead of 18)
+  - Changed kindergarten subtraction from 1-10 to 1-9
+  - Ensures all kindergarten problems use single-digit operands appropriate for K-2 learners
+  - Grade 1 and Grade 2 number ranges remain unchanged (1-20 and 1-100 respectively)
+- **Badge Requirement Deserialization** - Fixed crash when deserializing badges with empty requirement data (e.g., PerfectGameAccuracy badge)
+  - Added empty data string handling in BadgeMapper before parsing parameters
+  - Prevents "Malformed requirement data" IllegalArgumentException on app launch after migration
+
+### Added
+- **Badge Icons with WebP Images** - Replaced emoji badge icons with AI-generated badge images
+  - Added 19 badge images in WebP format (badge_*.webp) for all badges across 6 categories
+  - Created BadgeIcon enum to represent all badge types for database stability across builds
+  - Created BadgeIconMapper utility to map enum values to drawable resource IDs at runtime
+  - Created BadgeIcon composable for displaying badge images with Material 3 styling
+  - Updated BadgeGrid, BadgeDetailDialog, HomeUi, and MathRaceResultsScreen to display badge images
+  - Database migration (v5 to v6) clears existing emoji-based badges for enum-based icon population
+  - Badge icons generated using AI with consistent Math Pup mascot theme and child-friendly design
 - **Analytics Foundation** - Created analytics abstraction layer for tracking user engagement
   - Added `AnalyticsService` interface for provider-agnostic analytics integration
   - Added `AnalyticsConstants.kt` with predefined event names, parameter keys, and user properties

@@ -1,7 +1,7 @@
 package dev.hossain.mathtutor.domain.model
 
 /**
- * Defines the initial set of 15 badges available in the app.
+ * Defines the initial set of 19 badges available in the app.
  * Each badge has specific requirements that must be met to unlock it.
  */
 object BadgeDefinitions {
@@ -13,8 +13,9 @@ object BadgeDefinitions {
      * - Operation Mastery (3 badges)
      * - Speed & Accuracy (3 badges)
      * - Streak (2 badges)
+     * - Games (4 badges)
      *
-     * @return List of all 15 badges
+     * @return List of all 19 badges
      */
     fun getAllBadges(): List<Badge> =
         listOf(
@@ -23,7 +24,7 @@ object BadgeDefinitions {
                 id = "first_steps",
                 name = "First Steps",
                 description = "Solve your first problem",
-                icon = "🎯",
+                icon = BadgeIcon.FIRST_STEPS,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
             ),
@@ -31,7 +32,7 @@ object BadgeDefinitions {
                 id = "perfect_start",
                 name = "Perfect Start",
                 description = "Get 5 correct in a row",
-                icon = "🚀",
+                icon = BadgeIcon.PERFECT_START,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ConsecutiveCorrect(5),
             ),
@@ -39,7 +40,7 @@ object BadgeDefinitions {
                 id = "perfect_10",
                 name = "Perfect 10",
                 description = "Complete a session with 10/10 correct",
-                icon = "🌟",
+                icon = BadgeIcon.PERFECT_10,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.SessionAccuracy(100f, 1),
             ),
@@ -48,7 +49,7 @@ object BadgeDefinitions {
                 id = "math_rookie",
                 name = "Math Rookie",
                 description = "Solve 25 total problems",
-                icon = "🐣",
+                icon = BadgeIcon.MATH_ROOKIE,
                 category = BadgeCategory.VOLUME,
                 requirement = BadgeRequirement.ProblemCount(25),
             ),
@@ -56,7 +57,7 @@ object BadgeDefinitions {
                 id = "math_explorer",
                 name = "Math Explorer",
                 description = "Solve 50 total problems",
-                icon = "🐤",
+                icon = BadgeIcon.MATH_EXPLORER,
                 category = BadgeCategory.VOLUME,
                 requirement = BadgeRequirement.ProblemCount(50),
             ),
@@ -64,7 +65,7 @@ object BadgeDefinitions {
                 id = "math_champion",
                 name = "Math Champion",
                 description = "Solve 100 total problems",
-                icon = "🐥",
+                icon = BadgeIcon.MATH_CHAMPION,
                 category = BadgeCategory.VOLUME,
                 requirement = BadgeRequirement.ProblemCount(100),
             ),
@@ -72,7 +73,7 @@ object BadgeDefinitions {
                 id = "math_legend",
                 name = "Math Legend",
                 description = "Solve 500 total problems",
-                icon = "🦅",
+                icon = BadgeIcon.MATH_LEGEND,
                 category = BadgeCategory.VOLUME,
                 requirement = BadgeRequirement.ProblemCount(500),
             ),
@@ -81,7 +82,7 @@ object BadgeDefinitions {
                 id = "addition_expert",
                 name = "Addition Expert",
                 description = "Solve 50 addition problems",
-                icon = "➕",
+                icon = BadgeIcon.ADDITION_EXPERT,
                 category = BadgeCategory.OPERATION_MASTERY,
                 requirement = BadgeRequirement.OperationCount(MathOperation.ADDITION, 50),
             ),
@@ -89,7 +90,7 @@ object BadgeDefinitions {
                 id = "subtraction_star",
                 name = "Subtraction Star",
                 description = "Solve 50 subtraction problems",
-                icon = "➖",
+                icon = BadgeIcon.SUBTRACTION_STAR,
                 category = BadgeCategory.OPERATION_MASTERY,
                 requirement = BadgeRequirement.OperationCount(MathOperation.SUBTRACTION, 50),
             ),
@@ -97,7 +98,7 @@ object BadgeDefinitions {
                 id = "mix_master",
                 name = "Mix Master",
                 description = "Complete 10 mixed mode sessions",
-                icon = "🔢",
+                icon = BadgeIcon.MIX_MASTER,
                 category = BadgeCategory.OPERATION_MASTERY,
                 requirement = BadgeRequirement.MixedSessions(10),
             ),
@@ -106,7 +107,7 @@ object BadgeDefinitions {
                 id = "quick_thinker",
                 name = "Quick Thinker",
                 description = "Solve a problem in under 3 seconds",
-                icon = "⚡",
+                icon = BadgeIcon.QUICK_THINKER,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirement = BadgeRequirement.ProblemSpeed(3),
             ),
@@ -114,7 +115,7 @@ object BadgeDefinitions {
                 id = "sharp_shooter",
                 name = "Sharp Shooter",
                 description = "Get 90%+ accuracy in a session",
-                icon = "🎯",
+                icon = BadgeIcon.SHARP_SHOOTER,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirement = BadgeRequirement.SessionAccuracy(90f, 1),
             ),
@@ -122,7 +123,7 @@ object BadgeDefinitions {
                 id = "perfectionist",
                 name = "Perfectionist",
                 description = "Get 100% accuracy in 3 sessions",
-                icon = "💯",
+                icon = BadgeIcon.PERFECTIONIST,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirement = BadgeRequirement.SessionAccuracy(100f, 3),
             ),
@@ -131,7 +132,7 @@ object BadgeDefinitions {
                 id = "streak_starter",
                 name = "Streak Starter",
                 description = "Practice 3 days in a row",
-                icon = "🔥",
+                icon = BadgeIcon.STREAK_STARTER,
                 category = BadgeCategory.STREAK,
                 requirement = BadgeRequirement.DailyStreak(3),
             ),
@@ -139,7 +140,7 @@ object BadgeDefinitions {
                 id = "dedication_award",
                 name = "Dedication Award",
                 description = "Practice 7 days in a row",
-                icon = "🏆",
+                icon = BadgeIcon.DEDICATION_AWARD,
                 category = BadgeCategory.STREAK,
                 requirement = BadgeRequirement.DailyStreak(7),
             ),
@@ -148,7 +149,7 @@ object BadgeDefinitions {
                 id = "game_master",
                 name = "Game Master",
                 description = "Play 10 games",
-                icon = "🎮",
+                icon = BadgeIcon.GAME_MASTER,
                 category = BadgeCategory.GAMES,
                 requirement = BadgeRequirement.GameCount(10),
             ),
@@ -156,7 +157,7 @@ object BadgeDefinitions {
                 id = "speed_demon",
                 name = "Speed Demon",
                 description = "Score 20+ in Math Race",
-                icon = "⚡",
+                icon = BadgeIcon.SPEED_DEMON,
                 category = BadgeCategory.GAMES,
                 requirement = BadgeRequirement.MathRaceScore(20),
             ),
@@ -164,7 +165,7 @@ object BadgeDefinitions {
                 id = "racing_champion",
                 name = "Racing Champion",
                 description = "Score 30+ in Math Race",
-                icon = "🏆",
+                icon = BadgeIcon.RACING_CHAMPION,
                 category = BadgeCategory.GAMES,
                 requirement = BadgeRequirement.MathRaceScore(30),
             ),
@@ -172,7 +173,7 @@ object BadgeDefinitions {
                 id = "perfect_race",
                 name = "Perfect Race",
                 description = "100% accuracy in a game",
-                icon = "💯",
+                icon = BadgeIcon.PERFECT_RACE,
                 category = BadgeCategory.GAMES,
                 requirement = BadgeRequirement.PerfectGameAccuracy,
             ),

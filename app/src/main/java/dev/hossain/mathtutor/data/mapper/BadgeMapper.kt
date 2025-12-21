@@ -2,27 +2,29 @@ package dev.hossain.mathtutor.data.mapper
 
 import dev.hossain.mathtutor.data.local.entity.BadgeEntity
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.MathOperation
 
 /**
  * Mapper for converting between Badge domain model and BadgeEntity database model.
- * Handles serialization and deserialization of badge requirements using simple string formatting.
+ * Handles serialization and deserialization of badge requirements and icon enum.
  */
 object BadgeMapper {
     /**
      * Converts a database [BadgeEntity] to a domain [Badge].
      *
      * @param entity The badge entity from the database
-     * @return Domain badge model with deserialized requirement
+     * @return Domain badge model with deserialized requirement and icon enum
      */
     fun toDomain(entity: BadgeEntity): Badge {
         val requirement = deserializeRequirement(entity.requirementType, entity.requirementData)
+        val icon = BadgeIcon.valueOf(entity.icon)
         return Badge(
             id = entity.id,
             name = entity.name,
             description = entity.description,
-            icon = entity.icon,
+            icon = icon,
             category = entity.category,
             requirement = requirement,
             unlockedAt = entity.unlockedAt,
@@ -33,7 +35,7 @@ object BadgeMapper {
      * Converts a domain [Badge] to a database [BadgeEntity].
      *
      * @param badge The domain badge to convert
-     * @return Database entity with serialized requirement
+     * @return Database entity with serialized requirement and icon enum name
      */
     fun toEntity(badge: Badge): BadgeEntity {
         val (requirementType, requirementData) = serializeRequirement(badge.requirement)
@@ -41,7 +43,7 @@ object BadgeMapper {
             id = badge.id,
             name = badge.name,
             description = badge.description,
-            icon = badge.icon,
+            icon = badge.icon.name,
             category = badge.category,
             requirementType = requirementType,
             requirementData = requirementData,
@@ -85,13 +87,18 @@ object BadgeMapper {
         type: String,
         data: String,
     ): BadgeRequirement {
+        // Handle empty data string (for requirements with no parameters like PerfectGameAccuracy)
         val params =
-            data.split(",").associate {
-                val parts = it.split("=")
-                if (parts.size != 2) {
-                    throw IllegalArgumentException("Malformed requirement data: $it")
+            if (data.isEmpty()) {
+                emptyMap()
+            } else {
+                data.split(",").associate {
+                    val parts = it.split("=")
+                    if (parts.size != 2) {
+                        throw IllegalArgumentException("Malformed requirement data: $it")
+                    }
+                    parts[0] to parts[1]
                 }
-                parts[0] to parts[1]
             }
 
         return when (type) {

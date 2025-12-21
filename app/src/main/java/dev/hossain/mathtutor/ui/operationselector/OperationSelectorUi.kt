@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.operationselector
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -46,6 +47,20 @@ fun OperationSelectorUi(
     state: OperationSelectorScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    /*
+     * IMPORTANT: Explicit BackHandler to prevent ANR on system back button press.
+     *
+     * Without this BackHandler, pressing the system back button causes a 5+ second freeze
+     * with high CPU usage on the main thread, triggering an ANR (Application Not Responding).
+     * The BackHandler ensures immediate navigation response by handling the back event directly
+     * and triggering navigation without blocking the UI thread.
+     *
+     * See: Similar fix in GameSelectionUi (PR #143) for the same ANR issue.
+     */
+    BackHandler {
+        state.eventSink(OperationSelectorScreen.Event.NavigateBack)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -94,6 +109,7 @@ fun OperationSelectorUi(
                 title = "Addition",
                 icon = Icons.Default.Add,
                 examples = listOf("1 + 1 = ?", "5 + 3 = ?"),
+                operation = MathOperation.ADDITION,
                 onClick = {
                     state.eventSink(
                         OperationSelectorScreen.Event.OperationSelected(
@@ -108,6 +124,7 @@ fun OperationSelectorUi(
                 title = "Subtraction",
                 icon = Icons.Default.Remove,
                 examples = listOf("10 - 5 = ?", "7 - 2 = ?"),
+                operation = MathOperation.SUBTRACTION,
                 onClick = {
                     state.eventSink(
                         OperationSelectorScreen.Event.OperationSelected(
@@ -124,6 +141,7 @@ fun OperationSelectorUi(
                 title = "Mix It Up!",
                 icon = Icons.Default.Shuffle,
                 examples = listOf("Random problems"),
+                operation = MathOperation.MIXED,
                 onClick = {
                     // Temporary: Using ADDITION until MathOperation.MIXED is implemented
                     state.eventSink(

@@ -8,7 +8,7 @@ import java.time.Instant
  * @property id Unique identifier for the badge
  * @property name Display name of the badge
  * @property description Detailed description of what the badge represents
- * @property icon Emoji or icon representation of the badge
+ * @property icon Badge icon enum (maps to drawable resource at runtime)
  * @property category The category this badge belongs to
  * @property requirement The criteria that must be met to unlock this badge
  * @property unlockedAt Timestamp when the badge was unlocked, null if still locked
@@ -17,7 +17,7 @@ data class Badge(
     val id: String,
     val name: String,
     val description: String,
-    val icon: String,
+    val icon: BadgeIcon,
     val category: BadgeCategory,
     val requirement: BadgeRequirement,
     val unlockedAt: Instant? = null,

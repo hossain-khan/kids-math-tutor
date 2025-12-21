@@ -15,9 +15,9 @@ import kotlin.random.Random
  * appropriate for each grade level (K, 1, 2).
  *
  * Grade specifications:
- * - **Kindergarten**: Numbers 1-10, addition/subtraction only
- *   - Addition: 1-10 + 1-10, results 2-18
- *   - Subtraction: 1-10 - 1-10, results 0-9, no negatives
+ * - **Kindergarten**: Numbers 1-9, addition/subtraction only
+ *   - Addition: 1-9 + 1-9, results capped at 10 (sum <= 10)
+ *   - Subtraction: 1-9 - 1-9, results 0-8, no negatives
  * - **Grade 1**: Numbers 1-20, limited multiplication
  *   - Addition: 1-20 + 1-20, results 2-40
  *   - Subtraction: 1-20 - 1-20, results 0-19
@@ -35,9 +35,9 @@ class GradeAwareProblemGenerator constructor() : ProblemGenerator {
     companion object {
         /**
          * Maximum allowed sum for Kindergarten addition problems.
-         * This ensures results stay within an appropriate range for young learners.
+         * This ensures results stay within single digits (<=10) for young learners.
          */
-        private const val KINDERGARTEN_MAX_ADDITION_RESULT = 18
+        private const val KINDERGARTEN_MAX_ADDITION_RESULT = 10
     }
 
     override fun generateProblems(
@@ -67,14 +67,14 @@ class GradeAwareProblemGenerator constructor() : ProblemGenerator {
     /**
      * Generates an addition problem appropriate for the grade level.
      *
-     * - K: 1-10 + 1-10 = 2-18 (ensures result doesn't exceed 18)
+     * - K: 1-9 + 1-9, sum capped at 10 (e.g., 1+9, 5+5, 3+4, etc.)
      * - Grade 1: 1-20 + 1-20 = 2-40
      * - Grade 2: 1-100 + 1-100
      */
     private fun generateAddition(gradeLevel: GradeLevel): MathProblem {
         val (min, max) =
             when (gradeLevel) {
-                GradeLevel.KINDERGARTEN -> 1 to 10
+                GradeLevel.KINDERGARTEN -> 1 to 9
                 GradeLevel.GRADE_1 -> 1 to 20
                 GradeLevel.GRADE_2 -> 1 to 100
             }
@@ -104,14 +104,14 @@ class GradeAwareProblemGenerator constructor() : ProblemGenerator {
      * Generates a subtraction problem appropriate for the grade level.
      * Always ensures num1 >= num2 to avoid negative results.
      *
-     * - K: 1-10 - 1-10 = 0-9
+     * - K: 1-9 - 1-9 = 0-8 (single digit operands only)
      * - Grade 1: 1-20 - 1-20 = 0-19
      * - Grade 2: 1-100 - 1-100
      */
     private fun generateSubtraction(gradeLevel: GradeLevel): MathProblem {
         val (min, max) =
             when (gradeLevel) {
-                GradeLevel.KINDERGARTEN -> 1 to 10
+                GradeLevel.KINDERGARTEN -> 1 to 9
                 GradeLevel.GRADE_1 -> 1 to 20
                 GradeLevel.GRADE_2 -> 1 to 100
             }

@@ -22,7 +22,7 @@ import dev.hossain.mathtutor.data.local.entity.StreakEntity
  * performance records, and game session data.
  *
  * Database name: kids_math_tutor.db
- * Version: 5 (added game sessions for mini-games)
+ * Version: 6 (updated badge icons to use enum for stability across builds)
  *
  * Entities:
  * - [PracticeSessionEntity]: Completed practice sessions with statistics
@@ -42,7 +42,7 @@ import dev.hossain.mathtutor.data.local.entity.StreakEntity
         PerformanceEntity::class,
         GameSessionEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -189,6 +189,20 @@ abstract class MathDatabase : RoomDatabase() {
                         CREATE INDEX IF NOT EXISTS index_game_sessions_gameId ON game_sessions (gameId)
                         """.trimIndent(),
                     )
+                }
+            }
+
+        /**
+         * Migration from database version 5 to version 6.
+         * Updates badge icons from emoji strings to BadgeIcon enum names.
+         * This migration clears existing badges as emoji values cannot be mapped to enum.
+         * Badges will be repopulated with proper enum values on next app launch.
+         */
+        val MIGRATION_5_6 =
+            object : Migration(5, 6) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    // Clear existing badges since we can't migrate emoji strings to enum names
+                    db.execSQL("DELETE FROM badges")
                 }
             }
     }
