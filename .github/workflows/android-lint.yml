@@ -22,6 +22,8 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      # ubuntu-slim runners don't have Android SDK pre-installed (unlike ubuntu-latest)
+      # Manually setup Android SDK for Gradle Android builds
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
