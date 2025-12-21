@@ -10,6 +10,9 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
@@ -38,6 +41,7 @@ class ResultsPresenter
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val updateStreakUseCase: UpdateStreakUseCase,
         private val userProfileRepository: UserProfileRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<ResultsScreen.State> {
         @CircuitInject(ResultsScreen::class, AppScope::class)
         @AssistedFactory
@@ -50,6 +54,14 @@ class ResultsPresenter
 
         @Composable
         override fun present(): ResultsScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Practice Results",
+                    screenClass = ResultsScreen::class.java.name,
+                )
+            }
+
             val coroutineScope = rememberCoroutineScope()
             var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var showBadgeUnlock by remember { mutableStateOf(false) }

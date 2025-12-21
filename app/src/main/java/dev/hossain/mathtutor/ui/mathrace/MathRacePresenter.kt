@@ -11,6 +11,10 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.model.Badge
@@ -57,6 +61,7 @@ class MathRacePresenter
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val audioService: AudioService,
         private val hapticService: HapticService,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<MathRaceScreen.State> {
         @CircuitInject(MathRaceScreen::class, AppScope::class)
         @AssistedFactory
@@ -83,6 +88,14 @@ class MathRacePresenter
 
         @Composable
         override fun present(): MathRaceScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Math Race",
+                    screenClass = MathRaceScreen::class.java.name,
+                )
+            }
+
             val coroutineScope = rememberCoroutineScope()
 
             // Game state

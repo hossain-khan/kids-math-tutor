@@ -7,6 +7,8 @@ import androidx.compose.runtime.getValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.Game
 import dev.hossain.mathtutor.domain.model.GameStats
 import dev.hossain.mathtutor.domain.model.SessionStats
@@ -32,6 +34,7 @@ class GameSelectionPresenter
         @Assisted private val navigator: Navigator,
         private val gameRepository: GameRepository,
         private val sessionRepository: SessionRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<GameSelectionScreen.State> {
         @CircuitInject(GameSelectionScreen::class, AppScope::class)
         @AssistedFactory
@@ -41,6 +44,14 @@ class GameSelectionPresenter
 
         @Composable
         override fun present(): GameSelectionScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Game Selection",
+                    screenClass = GameSelectionScreen::class.java.name,
+                )
+            }
+
             // Collect overall stats to get total problems solved for unlock logic
             val sessionStats by sessionRepository.getOverallStats().collectAsState(
                 initial = SessionStats.EMPTY,

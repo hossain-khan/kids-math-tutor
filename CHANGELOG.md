@@ -32,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Track `name_entered` event with skipped status
   - Uses Circuit's `LaunchedImpressionEffect` for automatic screen view tracking
   - Implementation for Issue #147 (Onboarding Screen Tracking)
+- **Main App Analytics Tracking** - Added analytics tracking to 10 main application screens
+  - Track screen views for all main screens: Home, Stats, Badges, Settings, Operation Selector, Audio/Haptic Settings, Game Selection, Math Practice, Practice Results, Math Race
+  - Track key user interactions: operation selection, badge viewing, settings changes, audio/haptics toggles
+  - Math Practice screen includes operation type and problem count parameters
+  - Uses Circuit's `LaunchedImpressionEffect` for consistent screen view tracking across all screens
+  - Implementation for Issue #148 (Main App Screen Tracking)
 
 ### Fixed
 - **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button

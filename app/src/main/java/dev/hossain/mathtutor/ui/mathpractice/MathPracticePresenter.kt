@@ -10,6 +10,10 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
@@ -58,6 +62,7 @@ class MathPracticePresenter
         private val updateStreakUseCase: UpdateStreakUseCase,
         private val audioService: AudioService,
         private val hapticService: HapticService,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -70,6 +75,19 @@ class MathPracticePresenter
 
         @Composable
         override fun present(): MathPracticeScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Math Practice",
+                    screenClass = MathPracticeScreen::class.java.name,
+                    parameters =
+                        mapOf(
+                            AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                            AnalyticsParam.PROBLEM_COUNT to screen.problemCount,
+                        ),
+                )
+            }
+
             // Track session start time
             val sessionStartTime = remember { Instant.now() }
             // Use lifecycle-aware coroutine scope
