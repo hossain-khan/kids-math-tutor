@@ -7,19 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Analytics Foundation** - Created analytics abstraction layer for tracking user engagement
+  - Added `AnalyticsService` interface for provider-agnostic analytics integration
+  - Added `AnalyticsConstants.kt` with predefined event names, parameter keys, and user properties
+  - Supports screen views, custom events, user properties, and error tracking
+  - Foundation for Issue #144 (Analytics Interface & Constants)
+
 ### Fixed
 - **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button
   - Added `BackHandler` to SettingsUi and GameSelectionUi to explicitly handle system back navigation
   - Ensures immediate response to back button press without blocking UI thread
   - Prevents 5+ second freeze when exiting these screens
-
-### Added
-- **Compose Previews for UI Components** - Added comprehensive preview support for better UI development experience
-  - Added previews with light and dark mode variants for `GameSelectionUi.kt`, `GradeChangeDialog.kt`, and `NameEditDialog.kt`
-  - Added dark mode preview variants to `AudioHapticSettingsUi.kt`, `SettingsUi.kt`, `GradeSelectionScreen.kt`, and `NameEntryScreen.kt`
-  - All key UI components now have both light and dark theme previews for complete design system coverage
-
-### Fixed
 - **ANR in UI composables during math practice** - Fixed Application Not Responding issue caused by excessive logging during recomposition
   - Moved Timber.d() logging calls from composition body to `LaunchedEffect` blocks in UI components
   - Logs now only execute when relevant state changes, not on every recomposition
