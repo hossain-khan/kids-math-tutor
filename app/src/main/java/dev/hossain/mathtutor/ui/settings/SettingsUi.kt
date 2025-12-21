@@ -124,6 +124,14 @@ fun SettingsUi(
                 onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
             )
 
+            // Developer Portal (debug-only)
+            if (state.showDeveloperPortal) {
+                SettingsLinkItem(
+                    text = "Developer Portal",
+                    onClick = { state.eventSink(SettingsScreen.Event.DeveloperPortalClicked) },
+                )
+            }
+
             // Divider
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp),
@@ -427,6 +435,7 @@ private fun SettingsUiPreview() {
                     showNameDialog = false,
                     showGradeDialog = false,
                     analyticsEnabled = true,
+                    showDeveloperPortal = true,
                     eventSink = {},
                 ),
         )
@@ -450,6 +459,7 @@ private fun SettingsUiNoNamePreview() {
                     showNameDialog = false,
                     showGradeDialog = false,
                     analyticsEnabled = false,
+                    showDeveloperPortal = true,
                     eventSink = {},
                 ),
         )
@@ -473,6 +483,7 @@ private fun SettingsUiDarkPreview() {
                     showNameDialog = false,
                     showGradeDialog = false,
                     analyticsEnabled = true,
+                    showDeveloperPortal = true,
                     eventSink = {},
                 ),
         )
