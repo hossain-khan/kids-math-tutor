@@ -11,10 +11,7 @@ on:
 
 jobs:
   android-build:
-    # Using ubuntu-slim (1 vCPU, 5GB RAM) for cost-effective CI execution
-    # Suitable for lightweight tasks like linting and builds with 15-min time limit
-    # See: https://github.blog/changelog/2025-10-28-1-vcpu-linux-runner-now-available-in-github-actions-in-public-preview/
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -32,11 +29,6 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: ${{ matrix.distribution }}
-
-      # ubuntu-slim runners don't have Android SDK pre-installed (unlike ubuntu-latest)
-      # Manually setup Android SDK for Gradle Android builds
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
 
       # Automatic gradle caching using `actions/cache@v4`
       # https://github.com/gradle/actions/tree/main/setup-gradle
