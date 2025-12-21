@@ -73,6 +73,9 @@ class DeveloperPortalPresenter
             var showClearConfirm by remember { mutableStateOf(false) }
             var clearInProgress by remember { mutableStateOf(false) }
             var clearResultMessage by remember { mutableStateOf<String?>(null) }
+            var showResetOnboardingConfirm by remember { mutableStateOf(false) }
+            var resetOnboardingInProgress by remember { mutableStateOf(false) }
+            var resetOnboardingResultMessage by remember { mutableStateOf<String?>(null) }
             var seedInProgress by remember { mutableStateOf(false) }
             var seedResultMessage by remember { mutableStateOf<String?>(null) }
 
@@ -105,6 +108,9 @@ class DeveloperPortalPresenter
                 showClearConfirm = showClearConfirm,
                 clearInProgress = clearInProgress,
                 clearResultMessage = clearResultMessage,
+                showResetOnboardingConfirm = showResetOnboardingConfirm,
+                resetOnboardingInProgress = resetOnboardingInProgress,
+                resetOnboardingResultMessage = resetOnboardingResultMessage,
                 seedInProgress = seedInProgress,
                 seedResultMessage = seedResultMessage,
                 badges = badges,
@@ -196,6 +202,43 @@ class DeveloperPortalPresenter
                     is DeveloperPortalScreen.Event.CancelClear -> {
                         showClearConfirm = false
                         clearResultMessage = "Clear cancelled"
+                    }
+
+                    is DeveloperPortalScreen.Event.ResetOnboardingClicked -> {
+                        // Show confirmation dialog instead of resetting immediately
+                        showResetOnboardingConfirm = true
+                        resetOnboardingResultMessage = null
+                    }
+
+                    is DeveloperPortalScreen.Event.ConfirmResetOnboarding -> {
+                        // Perform reset onboarding
+                        resetOnboardingInProgress = true
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                Timber.d("[DevPortal] Resetting onboarding state")
+                                // Reset onboarding completed flag to trigger onboarding on next launch
+                                userPreferencesRepository.setOnboardingCompleted(false)
+
+                                withContext(Dispatchers.Main) {
+                                    resetOnboardingResultMessage =
+                                        "Onboarding reset. App will show onboarding on next launch."
+                                    showResetOnboardingConfirm = false
+                                    resetOnboardingInProgress = false
+                                }
+                                Timber.d("[DevPortal] Onboarding reset complete")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to reset onboarding")
+                                withContext(Dispatchers.Main) {
+                                    resetOnboardingResultMessage = "Reset failed: ${e.message}"
+                                    resetOnboardingInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.CancelResetOnboarding -> {
+                        showResetOnboardingConfirm = false
+                        resetOnboardingResultMessage = "Reset cancelled"
                     }
 
                     is DeveloperPortalScreen.Event.SeedSessionsRequested -> {

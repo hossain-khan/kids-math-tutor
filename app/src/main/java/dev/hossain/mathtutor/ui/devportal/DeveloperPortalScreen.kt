@@ -20,6 +20,9 @@ data object DeveloperPortalScreen : Screen {
         val showClearConfirm: Boolean = false,
         val clearInProgress: Boolean = false,
         val clearResultMessage: String? = null,
+        val showResetOnboardingConfirm: Boolean = false,
+        val resetOnboardingInProgress: Boolean = false,
+        val resetOnboardingResultMessage: String? = null,
         val seedInProgress: Boolean = false,
         val seedResultMessage: String? = null,
         val badges: List<Badge> = emptyList(),
@@ -41,6 +44,12 @@ data object DeveloperPortalScreen : Screen {
         ) : Event
 
         data object CancelClear : Event
+
+        data object ResetOnboardingClicked : Event
+
+        data object ConfirmResetOnboarding : Event
+
+        data object CancelResetOnboarding : Event
 
         data class SeedSessionsRequested(
             val count: Int,
