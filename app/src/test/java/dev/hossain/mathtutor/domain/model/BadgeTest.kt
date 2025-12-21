@@ -12,7 +12,7 @@ class BadgeTest {
                 id = "test_badge",
                 name = "Test Badge",
                 description = "Test description",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(10),
                 unlockedAt = Instant.now(),
@@ -28,7 +28,7 @@ class BadgeTest {
                 id = "test_badge",
                 name = "Test Badge",
                 description = "Test description",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(10),
                 unlockedAt = null,
@@ -45,7 +45,7 @@ class BadgeTest {
                 id = "first_steps",
                 name = "First Steps",
                 description = "Solve your first problem",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
                 unlockedAt = unlockedAt,
@@ -54,7 +54,7 @@ class BadgeTest {
         assertThat(badge.id).isEqualTo("first_steps")
         assertThat(badge.name).isEqualTo("First Steps")
         assertThat(badge.description).isEqualTo("Solve your first problem")
-        assertThat(badge.icon).isEqualTo("🎯")
+        assertThat(badge.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name)
         assertThat(badge.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assertThat(badge.requirement is BadgeRequirement.ProblemCount).isTrue()
         assertThat((badge.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(1)

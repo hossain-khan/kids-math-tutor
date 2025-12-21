@@ -22,7 +22,7 @@ class BadgesScreenTest {
                 id = "test_badge_1",
                 name = "Test Badge 1",
                 description = "Test description",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(10),
                 unlockedAt = Instant.now(),
@@ -32,7 +32,7 @@ class BadgesScreenTest {
                 id = "test_badge_2",
                 name = "Test Badge 2",
                 description = "Test description 2",
-                icon = "🚀",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PERFECT_RACE.name,
                 category = BadgeCategory.VOLUME,
                 requirement = BadgeRequirement.ProblemCount(25),
             )
@@ -95,7 +95,7 @@ class BadgesScreenTest {
                 id = "first_steps",
                 name = "First Steps",
                 description = "Solve your first problem",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
             )
@@ -104,7 +104,7 @@ class BadgesScreenTest {
                 id = "math_rookie",
                 name = "Math Rookie",
                 description = "Solve 25 total problems",
-                icon = "🐣",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.MATH_ROOKIE.name,
                 category = BadgeCategory.VOLUME,
                 requirement = BadgeRequirement.ProblemCount(25),
             )
@@ -113,7 +113,7 @@ class BadgesScreenTest {
                 id = "quick_thinker",
                 name = "Quick Thinker",
                 description = "Solve a problem in under 3 seconds",
-                icon = "⚡",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.QUICK_THINKER.name,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirement = BadgeRequirement.ProblemSpeed(3),
             )
@@ -149,7 +149,7 @@ class BadgesScreenTest {
                 id = "test",
                 name = "Test",
                 description = "Test",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
             )
@@ -187,7 +187,7 @@ class BadgesScreenTest {
                 id = "test",
                 name = "Test",
                 description = "Test",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
             )

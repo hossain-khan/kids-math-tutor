@@ -66,7 +66,7 @@ class BadgeDefinitionsTest {
 
         assertThat(firstSteps?.name).isEqualTo("First Steps")
         assertThat(firstSteps?.description).isEqualTo("Solve your first problem")
-        assertThat(firstSteps?.icon).isEqualTo("🎯")
+        assertThat(firstSteps?.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name)
         assertThat(firstSteps?.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assertThat(firstSteps?.requirement is BadgeRequirement.ProblemCount).isTrue()
         assertThat((firstSteps?.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(1)
@@ -79,7 +79,7 @@ class BadgeDefinitionsTest {
 
         assertThat(mathLegend?.name).isEqualTo("Math Legend")
         assertThat(mathLegend?.description).isEqualTo("Solve 500 total problems")
-        assertThat(mathLegend?.icon).isEqualTo("🦅")
+        assertThat(mathLegend?.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.MATH_LEGEND.name)
         assertThat(mathLegend?.category).isEqualTo(BadgeCategory.VOLUME)
         assertThat(mathLegend?.requirement is BadgeRequirement.ProblemCount).isTrue()
         assertThat((mathLegend?.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(500)
@@ -92,7 +92,7 @@ class BadgeDefinitionsTest {
 
         assertThat(additionExpert?.name).isEqualTo("Addition Expert")
         assertThat(additionExpert?.description).isEqualTo("Solve 50 addition problems")
-        assertThat(additionExpert?.icon).isEqualTo("➕")
+        assertThat(additionExpert?.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.ADDITION_EXPERT.name)
         assertThat(additionExpert?.category).isEqualTo(BadgeCategory.OPERATION_MASTERY)
         assertThat(additionExpert?.requirement is BadgeRequirement.OperationCount).isTrue()
         val requirement = additionExpert?.requirement as BadgeRequirement.OperationCount
@@ -107,7 +107,7 @@ class BadgeDefinitionsTest {
 
         assertThat(dedication?.name).isEqualTo("Dedication Award")
         assertThat(dedication?.description).isEqualTo("Practice 7 days in a row")
-        assertThat(dedication?.icon).isEqualTo("🏆")
+        assertThat(dedication?.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.DEDICATION_AWARD.name)
         assertThat(dedication?.category).isEqualTo(BadgeCategory.STREAK)
         assertThat(dedication?.requirement is BadgeRequirement.DailyStreak).isTrue()
         assertThat((dedication?.requirement as BadgeRequirement.DailyStreak).days).isEqualTo(7)

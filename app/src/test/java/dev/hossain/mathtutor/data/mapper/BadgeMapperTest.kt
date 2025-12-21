@@ -17,7 +17,7 @@ class BadgeMapperTest {
                 id = "test_badge",
                 name = "Test Badge",
                 description = "Test description",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirementType = "ProblemCount",
                 requirementData = "count=10",
@@ -29,7 +29,7 @@ class BadgeMapperTest {
         assertThat(badge.id).isEqualTo("test_badge")
         assertThat(badge.name).isEqualTo("Test Badge")
         assertThat(badge.description).isEqualTo("Test description")
-        assertThat(badge.icon).isEqualTo("🎯")
+        assertThat(badge.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name)
         assertThat(badge.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assert(badge.requirement is BadgeRequirement.ProblemCount)
         assertThat((badge.requirement as BadgeRequirement.ProblemCount).count).isEqualTo(10)
@@ -43,7 +43,7 @@ class BadgeMapperTest {
                 id = "addition_badge",
                 name = "Addition Badge",
                 description = "Complete addition problems",
-                icon = "➕",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.ADDITION_EXPERT.name,
                 category = BadgeCategory.OPERATION_MASTERY,
                 requirementType = "OperationCount",
                 requirementData = "operation=ADDITION,count=50",
@@ -65,7 +65,7 @@ class BadgeMapperTest {
                 id = "streak_badge",
                 name = "Streak Badge",
                 description = "Get consecutive correct answers",
-                icon = "🔥",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.STREAK_STARTER.name,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirementType = "ConsecutiveCorrect",
                 requirementData = "count=5",
@@ -85,7 +85,7 @@ class BadgeMapperTest {
                 id = "accuracy_badge",
                 name = "Accuracy Badge",
                 description = "High accuracy sessions",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirementType = "SessionAccuracy",
                 requirementData = "percentage=90.0,sessionCount=3",
@@ -107,7 +107,7 @@ class BadgeMapperTest {
                 id = "daily_badge",
                 name = "Daily Badge",
                 description = "Practice daily",
-                icon = "🔥",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.STREAK_STARTER.name,
                 category = BadgeCategory.STREAK,
                 requirementType = "DailyStreak",
                 requirementData = "days=7",
@@ -127,7 +127,7 @@ class BadgeMapperTest {
                 id = "speed_badge",
                 name = "Speed Badge",
                 description = "Solve quickly",
-                icon = "⚡",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.QUICK_THINKER.name,
                 category = BadgeCategory.SPEED_ACCURACY,
                 requirementType = "ProblemSpeed",
                 requirementData = "maxSeconds=3",
@@ -147,7 +147,7 @@ class BadgeMapperTest {
                 id = "mixed_badge",
                 name = "Mixed Badge",
                 description = "Complete mixed sessions",
-                icon = "🔢",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.MIX_MASTER.name,
                 category = BadgeCategory.OPERATION_MASTERY,
                 requirementType = "MixedSessions",
                 requirementData = "count=10",
@@ -168,7 +168,7 @@ class BadgeMapperTest {
                 id = "unlocked_badge",
                 name = "Unlocked Badge",
                 description = "Already unlocked",
-                icon = "✅",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PERFECT_START.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirementType = "ProblemCount",
                 requirementData = "count=1",
@@ -188,7 +188,7 @@ class BadgeMapperTest {
                 id = "test_badge",
                 name = "Test Badge",
                 description = "Test description",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(10),
                 unlockedAt = null,
@@ -199,7 +199,7 @@ class BadgeMapperTest {
         assertThat(entity.id).isEqualTo("test_badge")
         assertThat(entity.name).isEqualTo("Test Badge")
         assertThat(entity.description).isEqualTo("Test description")
-        assertThat(entity.icon).isEqualTo("🎯")
+        assertThat(entity.icon).isEqualTo(dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name)
         assertThat(entity.category).isEqualTo(BadgeCategory.GETTING_STARTED)
         assertThat(entity.requirementType).isEqualTo("ProblemCount")
         assert(entity.requirementData.contains("count=10"))
@@ -213,7 +213,7 @@ class BadgeMapperTest {
                 id = "addition_badge",
                 name = "Addition Badge",
                 description = "Complete addition problems",
-                icon = "➕",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.ADDITION_EXPERT.name,
                 category = BadgeCategory.OPERATION_MASTERY,
                 requirement = BadgeRequirement.OperationCount(MathOperation.ADDITION, 50),
                 unlockedAt = null,
@@ -254,7 +254,7 @@ class BadgeMapperTest {
                 id = "unlocked_badge",
                 name = "Unlocked Badge",
                 description = "Already unlocked",
-                icon = "✅",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PERFECT_START.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
                 unlockedAt = unlockTime,
@@ -273,7 +273,7 @@ class BadgeMapperTest {
                 id = "test_badge",
                 name = "Test Badge",
                 description = "Test description",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(25),
                 unlockedAt = null,
@@ -301,7 +301,7 @@ class BadgeMapperTest {
                 id = "invalid_badge",
                 name = "Invalid Badge",
                 description = "Invalid requirement type",
-                icon = "❌",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PERFECTIONIST.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirementType = "UnknownType",
                 requirementData = "count=10",
@@ -318,7 +318,7 @@ class BadgeMapperTest {
                 id = "malformed_badge",
                 name = "Malformed Badge",
                 description = "Malformed requirement data",
-                icon = "❌",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PERFECTIONIST.name,
                 category = BadgeCategory.GETTING_STARTED,
                 requirementType = "ProblemCount",
                 requirementData = "invalid_data_without_equals_sign",
