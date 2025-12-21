@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Memory Match Badge Images** - Added AI-generated badge icons for Memory Match game achievements
+  - Created 4 high-quality badge designs with Math Pup mascot theme
+  - Memory Master: Puppy with brain/lightbulb celebrating first memory game
+  - Sharp Memory: Focused puppy with puzzle pieces for ≤12 moves achievement
+  - Lightning Match: Puppy with lightning bolt for sub-60-second completion
+  - Perfect Memory: Puppy with trophy for perfect 8-move game
+  - All badges feature solid white backgrounds and no text (names displayed in UI)
+  - Source .pxd files saved to `project-resources/badges-exported/`
+  - WebP exports at 512x512px, 85-90% quality in `drawable-xxxhdpi/`
 - **Developer Portal (debug-only)** — Scaffolded a debug-only Developer Portal reachable from Settings (visible only in debug builds). Added `DeveloperPortalScreen`, `DeveloperPortalPresenter`, and `DeveloperPortalUi` with initial dev actions: analytics toggle, Clear App Data, Seed Sessions (placeholder), Run Badge Checks, and Play Success Sound/Haptic. (Issue #180, PR #189)
 - **Seed Sessions** — Implemented `SessionSeeder` service and `DevPortalSeeder` helper to generate and persist sample practice sessions from the Developer Portal. Added unit tests for the seeder and presenter-related seeding helper. (Issue #183)
 - **Force Badge Unlock** — Add per-badge "Force Unlock" control to Developer Portal to manually unlock badges for testing purposes. (Issue #184, PR #192)
