@@ -116,6 +116,43 @@ fun HomeUi(
                 accuracy = state.overallStats.accuracy,
             )
 
+            // Primary action: Start Practice button
+            Button(
+                onClick = { state.eventSink(HomeScreen.Event.StartPracticeClicked) },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+            ) {
+                Text(
+                    text = "🐶 Start Practice",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+
+            // Games button
+            Button(
+                onClick = { state.eventSink(HomeScreen.Event.ViewGamesClicked) },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    ),
+            ) {
+                Text(
+                    text = "🎮 Play Games",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+
             // Streak card
             StreakCard(
                 streakData = state.streakData,
@@ -136,43 +173,6 @@ fun HomeUi(
             }
 
             Spacer(modifier = Modifier.weight(1f))
-
-            // Primary action: Start Practice button
-            Button(
-                onClick = { state.eventSink(HomeScreen.Event.StartPracticeClicked) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                    ),
-            ) {
-                Text(
-                    text = "🐶 Start Practice",
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-
-            // Games button
-            Button(
-                onClick = { state.eventSink(HomeScreen.Event.ViewGamesClicked) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    ),
-            ) {
-                Text(
-                    text = "🎮 Play Games",
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
 
             // View Full Stats link
             if (state.overallStats.sessionCount > 0) {
