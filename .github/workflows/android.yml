@@ -11,6 +11,9 @@ on:
 
 jobs:
   android-build:
+    # Using ubuntu-slim (1 vCPU, 5GB RAM) for cost-effective CI execution
+    # Suitable for lightweight tasks like linting and builds with 15-min time limit
+    # See: https://github.blog/changelog/2025-10-28-1-vcpu-linux-runner-now-available-in-github-actions-in-public-preview/
     runs-on: ubuntu-slim
 
     strategy:
