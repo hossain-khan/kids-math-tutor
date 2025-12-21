@@ -1,6 +1,8 @@
 package dev.hossain.mathtutor.ui.badges
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -20,11 +22,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeIcon
@@ -71,16 +80,21 @@ fun BadgesUi(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
+                    .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            contentPadding = PaddingValues(vertical = 16.dp),
+            contentPadding = PaddingValues(bottom = 16.dp),
         ) {
+            // Hero Image with fade effect
+            item {
+                HeroImageSection()
+            }
+
             // Progress Summary
             item {
                 ProgressSummarySection(
                     unlockedCount = state.progressSummary.unlockedCount,
                     totalCount = state.progressSummary.totalCount,
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
 
@@ -95,6 +109,7 @@ fun BadgesUi(
                             onBadgeClick = { badge ->
                                 state.eventSink(BadgesScreen.Event.BadgeClicked(badge))
                             },
+                            modifier = Modifier.padding(horizontal = 16.dp),
                         )
                     }
                 }
@@ -108,6 +123,48 @@ fun BadgesUi(
                 onDismiss = { state.eventSink(BadgesScreen.Event.CloseDialog) },
             )
         }
+    }
+}
+
+/**
+ * Hero image section with fade effect at edges for seamless blending.
+ */
+@Composable
+private fun HeroImageSection(modifier: Modifier = Modifier) {
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(200.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.hero_image_your_badges),
+            contentDescription = "Your Badges Hero",
+            contentScale = ContentScale.Crop,
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .drawWithContent {
+                        drawContent()
+                        // Apply vertical gradient fade at bottom edge
+                        drawRect(
+                            brush =
+                                Brush.verticalGradient(
+                                    colors =
+                                        listOf(
+                                            Color.Transparent,
+                                            Color.Transparent,
+                                            Color.White.copy(alpha = 0.3f),
+                                            Color.White.copy(alpha = 0.7f),
+                                            Color.White,
+                                        ),
+                                    startY = 0f,
+                                    endY = size.height,
+                                ),
+                        )
+                    },
+        )
     }
 }
 

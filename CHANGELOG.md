@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Hero Image for Badges Screen** - Added celebratory hero banner featuring Math Pup mascot
+  - Displays at top of "Your Badges" screen with 200dp height
+  - Gradient fade effect at bottom edge for seamless blending with content
+  - Uses hero_image_your_badges.webp from drawable-xxxhdpi
+  - Enhances visual appeal and encourages badge collection
+
 ### Fixed
 - **Kindergarten Problem Difficulty** - Reduced number range for kindergarten level to use single-digit numbers only
   - Changed kindergarten addition from 1-10 to 1-9 with sum capped at 10 (instead of 18)
