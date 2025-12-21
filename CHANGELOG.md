@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Automatic binding via `@ContributesBinding` for seamless dependency injection
   - Supports all Firebase Analytics event types with type-safe Bundle parameter handling
   - Production-ready implementation for Issue #145 (Firebase Analytics Service)
+- **Analytics Test Implementations** - Added test doubles for analytics service
+  - Added `FakeAnalyticsService` for unit testing with event recording and verification
+  - Added `LoggingAnalyticsService` for debug builds with console-only logging
+  - Comprehensive unit tests for `FakeAnalyticsService` with 23 test cases
+  - Helper methods for querying recorded events in tests
+  - Implementation for Issue #146 (Test Implementations)
 
 ### Fixed
 - **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button
