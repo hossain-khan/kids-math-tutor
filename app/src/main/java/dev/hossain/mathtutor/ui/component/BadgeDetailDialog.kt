@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,7 +71,13 @@ fun BadgeDetailDialog(
                 BadgeIcon(
                     badgeIcon = badge.icon,
                     contentDescription = badge.name,
-                    size = 80.dp,
+                    size = 120.dp,
+                    colorFilter =
+                        if (!badge.isUnlocked()) {
+                            ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                        } else {
+                            null
+                        },
                     modifier = Modifier.scale(scale),
                 )
 
