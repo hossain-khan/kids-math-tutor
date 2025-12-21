@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Badge Requirement Deserialization** - Fixed crash when deserializing badges with empty requirement data (e.g., PerfectGameAccuracy badge)
+  - Added empty data string handling in BadgeMapper before parsing parameters
+  - Prevents "Malformed requirement data" IllegalArgumentException on app launch after migration
+
 ### Added
 - **Badge Icons with WebP Images** - Replaced emoji badge icons with AI-generated badge images
   - Added 19 badge images in WebP format (badge_*.webp) for all badges across 6 categories

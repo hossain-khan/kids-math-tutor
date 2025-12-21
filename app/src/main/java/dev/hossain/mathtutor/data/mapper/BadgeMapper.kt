@@ -87,13 +87,18 @@ object BadgeMapper {
         type: String,
         data: String,
     ): BadgeRequirement {
+        // Handle empty data string (for requirements with no parameters like PerfectGameAccuracy)
         val params =
-            data.split(",").associate {
-                val parts = it.split("=")
-                if (parts.size != 2) {
-                    throw IllegalArgumentException("Malformed requirement data: $it")
+            if (data.isEmpty()) {
+                emptyMap()
+            } else {
+                data.split(",").associate {
+                    val parts = it.split("=")
+                    if (parts.size != 2) {
+                        throw IllegalArgumentException("Malformed requirement data: $it")
+                    }
+                    parts[0] to parts[1]
                 }
-                parts[0] to parts[1]
             }
 
         return when (type) {
