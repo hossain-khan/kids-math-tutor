@@ -219,7 +219,7 @@ class BadgeRepositoryImplTest {
 
             assertThat(fakeDao.insertBadgesCalls).isEqualTo(1)
             assertThat(fakeDao.lastInsertedBadges).isNotNull()
-            assertThat(fakeDao.lastInsertedBadges!!.size).isEqualTo(19) // 19 default badges
+            assertThat(fakeDao.lastInsertedBadges!!.size).isEqualTo(23) // 23 default badges (19 original + 4 Memory Match)
         }
 
     @Test
