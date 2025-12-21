@@ -14,8 +14,10 @@ import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
@@ -42,6 +44,7 @@ class DeveloperPortalPresenter
         private val userPreferencesRepository: UserPreferencesRepository,
         private val sessionRepository: SessionRepository,
         private val gameRepository: GameRepository,
+        private val badgeRepository: BadgeRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val audioService: AudioService,
         private val hapticService: HapticService,
@@ -73,6 +76,17 @@ class DeveloperPortalPresenter
             var seedInProgress by remember { mutableStateOf(false) }
             var seedResultMessage by remember { mutableStateOf<String?>(null) }
 
+            var badges by remember { mutableStateOf<List<Badge>>(emptyList()) }
+            LaunchedEffect(Unit) {
+                // Collect badges from repository to display in UI
+                badgeRepository.getAllBadges().collect { list ->
+                    badges = list
+                }
+            }
+
+            var forceUnlockInProgress by remember { mutableStateOf(false) }
+            var forceUnlockResultMessage by remember { mutableStateOf<String?>(null) }
+
             return DeveloperPortalScreen.State(
                 showSeedSection = showSeedSection,
                 showDataOpsSection = showDataOpsSection,
@@ -82,8 +96,32 @@ class DeveloperPortalPresenter
                 clearResultMessage = clearResultMessage,
                 seedInProgress = seedInProgress,
                 seedResultMessage = seedResultMessage,
+                badges = badges,
+                forceUnlockInProgress = forceUnlockInProgress,
+                forceUnlockResultMessage = forceUnlockResultMessage,
             ) { event ->
                 when (event) {
+                    is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
+                        forceUnlockInProgress = true
+                        forceUnlockResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                badgeRepository.unlockBadge(event.badgeId)
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Badge unlocked"
+                                    forceUnlockInProgress = false
+                                }
+                                Timber.d("[DevPortal] Force unlocked badge: ${event.badgeId}")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to force unlock badge: ${event.badgeId}")
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Unlock failed: ${e.message}"
+                                    forceUnlockInProgress = false
+                                }
+                            }
+                        }
+                    }
+
                     is DeveloperPortalScreen.Event.ToggleAnalyticsOverride -> {
                         // Toggle analytics immediately (debug-only)
                         scope.launch(Dispatchers.IO) {

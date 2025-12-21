@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.devportal
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import kotlinx.parcelize.Parcelize
@@ -21,6 +22,9 @@ data object DeveloperPortalScreen : Screen {
         val clearResultMessage: String? = null,
         val seedInProgress: Boolean = false,
         val seedResultMessage: String? = null,
+        val badges: List<Badge> = emptyList(),
+        val forceUnlockInProgress: Boolean = false,
+        val forceUnlockResultMessage: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -44,6 +48,10 @@ data object DeveloperPortalScreen : Screen {
         data object SeedSessionsClicked : Event
 
         data object ForceBadgeCheckClicked : Event
+
+        data class ForceUnlockBadge(
+            val badgeId: String,
+        ) : Event
 
         data object PlaySuccessSound : Event
 

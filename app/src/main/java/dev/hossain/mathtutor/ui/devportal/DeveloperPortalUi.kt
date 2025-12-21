@@ -133,6 +133,38 @@ fun DeveloperPortalUi(
                         Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceBadgeCheckClicked) }) {
                             Text("Run Badge Checks")
                         }
+
+                        // Force unlock per-badge controls
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = "Force Unlock Badges", style = MaterialTheme.typography.bodyLarge)
+                        Spacer(modifier = Modifier.height(6.dp))
+                        if (state.badges.isEmpty()) {
+                            Text(text = "No badges available")
+                        } else {
+                            state.badges.forEach { badge ->
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Text(text = badge.name)
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Button(
+                                        onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
+                                        enabled = !badge.isUnlocked(),
+                                    ) {
+                                        Text(if (badge.isUnlocked()) "Unlocked" else "Force Unlock")
+                                    }
+                                }
+                            }
+                        }
+
+                        // Show force unlock progress/result
+                        state.forceUnlockResultMessage?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = msg)
+                        }
+                        if (state.forceUnlockInProgress) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            CircularProgressIndicator()
+                        }
                     }
                 }
             }
