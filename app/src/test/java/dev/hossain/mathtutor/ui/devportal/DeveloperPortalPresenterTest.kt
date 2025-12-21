@@ -111,6 +111,69 @@ class DeveloperPortalPresenterTest {
             assertThat(isEnabled).isTrue()
         }
 
+    // ==================== Reset Onboarding Tests ====================
+
+    @Test
+    fun `resetOnboarding - when onboarding completed - sets to false`() =
+        runTest {
+            // Given - Onboarding is currently completed
+            fakeUserPreferencesRepository.setOnboardingCompleted(true)
+            assertThat(fakeUserPreferencesRepository.getOnboardingCompleted()).isTrue()
+
+            // When - Reset onboarding
+            fakeUserPreferencesRepository.setOnboardingCompleted(false)
+
+            // Then - Onboarding should be marked as not completed
+            assertThat(fakeUserPreferencesRepository.getOnboardingCompleted()).isFalse()
+        }
+
+    @Test
+    fun `resetOnboarding - preserves other preferences`() =
+        runTest {
+            // Given - Set various preferences
+            fakeUserPreferencesRepository.setOnboardingCompleted(true)
+            fakeUserPreferencesRepository.setHapticsEnabled(false)
+            fakeUserPreferencesRepository.setSoundEffectsEnabled(false)
+            fakeUserPreferencesRepository.setVolume(0.5f)
+
+            // When - Reset only onboarding
+            fakeUserPreferencesRepository.setOnboardingCompleted(false)
+
+            // Then - Other preferences should remain unchanged
+            assertThat(fakeUserPreferencesRepository.getOnboardingCompleted()).isFalse()
+            assertThat(fakeUserPreferencesRepository.getHapticsEnabled()).isFalse()
+            assertThat(fakeUserPreferencesRepository.getSoundEffectsEnabled()).isFalse()
+            assertThat(fakeUserPreferencesRepository.getVolume()).isEqualTo(0.5f)
+        }
+
+    @Test
+    fun `resetOnboarding - allows re-setting to completed`() =
+        runTest {
+            // Given - Onboarding was completed then reset
+            fakeUserPreferencesRepository.setOnboardingCompleted(true)
+            fakeUserPreferencesRepository.setOnboardingCompleted(false)
+            assertThat(fakeUserPreferencesRepository.getOnboardingCompleted()).isFalse()
+
+            // When - Set onboarding as completed again
+            fakeUserPreferencesRepository.setOnboardingCompleted(true)
+
+            // Then - Should be marked as completed
+            assertThat(fakeUserPreferencesRepository.getOnboardingCompleted()).isTrue()
+        }
+
+    @Test
+    fun `onboarding state - defaults to false when not set`() =
+        runTest {
+            // Given - Fresh fake repository (default state)
+            val freshRepo = FakeUserPreferencesRepository()
+
+            // When - Reading the default value
+            val isCompleted = freshRepo.getOnboardingCompleted()
+
+            // Then - Should default to false (onboarding not completed)
+            assertThat(isCompleted).isFalse()
+        }
+
     // ==================== Sound & Haptic Tests ====================
 
     @Test
@@ -356,6 +419,14 @@ class DeveloperPortalPresenterTest {
         }
 
         fun getAnalyticsEnabled(): Boolean = analyticsEnabledFlow.value
+
+        fun getOnboardingCompleted(): Boolean = onboardingCompletedFlow.value
+
+        fun getHapticsEnabled(): Boolean = hapticsEnabledFlow.value
+
+        fun getSoundEffectsEnabled(): Boolean = soundEffectsEnabledFlow.value
+
+        fun getVolume(): Float = volumeFlow.value
 
         // Other UserPreferencesRepository methods (minimal implementation for testing)
         override val isOnboardingCompleted: Flow<Boolean> = onboardingCompletedFlow

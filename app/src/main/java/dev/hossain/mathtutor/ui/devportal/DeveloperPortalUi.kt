@@ -62,6 +62,18 @@ fun DeveloperPortalUi(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(text = "Data Operations", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ResetOnboardingClicked) }) {
+                            Text("Reset Onboarding")
+                        }
+
+                        // Show result message if present
+                        state.resetOnboardingResultMessage?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = msg)
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
                         Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ClearAppDataClicked) }) {
                             Text("Clear App Data")
                         }
@@ -352,6 +364,41 @@ fun DeveloperPortalUi(
                 },
                 dismissButton = {
                     TextButton(onClick = { state.eventSink(DeveloperPortalScreen.Event.CancelClear) }) {
+                        Text("Cancel")
+                    }
+                },
+            )
+        }
+
+        // Reset Onboarding confirmation dialog
+        if (state.showResetOnboardingConfirm) {
+            AlertDialog(
+                onDismissRequest = { state.eventSink(DeveloperPortalScreen.Event.CancelResetOnboarding) },
+                title = { Text("Confirm Reset Onboarding") },
+                text = {
+                    Column {
+                        Text(
+                            "This will reset the onboarding state so the app shows onboarding " +
+                                "screens on the next launch.\n\n" +
+                                "This is useful for testing the first-run experience.\n\n" +
+                                "Your user profile, progress, and settings will be preserved.",
+                        )
+                        if (state.resetOnboardingInProgress) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            CircularProgressIndicator()
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.ConfirmResetOnboarding) },
+                        enabled = !state.resetOnboardingInProgress,
+                    ) {
+                        Text("Reset")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { state.eventSink(DeveloperPortalScreen.Event.CancelResetOnboarding) }) {
                         Text("Cancel")
                     }
                 },
