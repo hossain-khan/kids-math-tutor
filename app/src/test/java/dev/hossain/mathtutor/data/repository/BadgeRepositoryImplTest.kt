@@ -192,6 +192,25 @@ class BadgeRepositoryImplTest {
         }
 
     @Test
+    fun `unlockBadge updates total badges unlocked user property`() =
+        runTest {
+            val badgeId = "test_badge"
+            val unlockTime = Instant.now()
+            val badgeEntity = createBadgeEntity(badgeId, "Test Badge")
+            fakeDao.allBadges.value = listOf(badgeEntity)
+            fakeDao.unlockedBadges.value = listOf(badgeEntity) // Simulate 1 unlocked badge
+
+            repository.unlockBadge(badgeId, unlockTime)
+
+            // Verify user property updated
+            assertThat(fakeAnalytics.userProperties).isNotEmpty()
+            val totalBadgesProperty =
+                fakeAnalytics.userProperties.find { it.propertyName == "total_badges_unlocked" }
+            assertThat(totalBadgesProperty).isNotNull()
+            assertThat(totalBadgesProperty?.value).isEqualTo("1")
+        }
+
+    @Test
     fun `initializeBadges inserts default badges when database is empty`() =
         runTest {
             fakeDao.allBadges.value = emptyList()
