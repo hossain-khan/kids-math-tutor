@@ -37,6 +37,9 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
@@ -105,6 +108,7 @@ class NameEntryPresenter
         @Assisted private val screen: NameEntryScreen,
         @Assisted private val navigator: Navigator,
         private val userProfileRepository: UserProfileRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<NameEntryScreen.State> {
         @CircuitInject(NameEntryScreen::class, AppScope::class)
         @AssistedFactory
@@ -120,6 +124,14 @@ class NameEntryPresenter
             var name by remember { mutableStateOf("") }
             val coroutineScope = rememberCoroutineScope()
 
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Name Entry",
+                    screenClass = NameEntryScreen::class.java.name,
+                )
+            }
+
             return NameEntryScreen.State(
                 name = name,
             ) { event ->
@@ -129,6 +141,11 @@ class NameEntryPresenter
                     }
 
                     is NameEntryScreen.Event.SkipClicked -> {
+                        // Track name skipped
+                        analyticsService.logEvent(
+                            AnalyticsEvent.NAME_ENTERED,
+                            mapOf("skipped" to true),
+                        )
                         // Save profile without name
                         coroutineScope.launch {
                             userProfileRepository.saveProfile(
@@ -144,6 +161,12 @@ class NameEntryPresenter
                     }
 
                     is NameEntryScreen.Event.ContinueClicked -> {
+                        // Track name entered
+                        val hasName = name.trim().isNotBlank()
+                        analyticsService.logEvent(
+                            AnalyticsEvent.NAME_ENTERED,
+                            mapOf("skipped" to !hasName),
+                        )
                         // Save profile with name (or null if empty)
                         coroutineScope.launch {
                             userProfileRepository.saveProfile(

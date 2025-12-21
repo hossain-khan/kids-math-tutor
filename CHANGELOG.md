@@ -24,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive unit tests for `FakeAnalyticsService` with 23 test cases
   - Helper methods for querying recorded events in tests
   - Implementation for Issue #146 (Test Implementations)
+- **Onboarding Analytics Tracking** - Added analytics tracking to onboarding flow
+  - Track screen views for all 3 onboarding screens (Onboarding, GradeSelection, NameEntry)
+  - Track `onboarding_started` event when onboarding begins
+  - Track `onboarding_completed` event when user completes or skips onboarding
+  - Track `grade_selected` event with grade level parameter
+  - Track `name_entered` event with skipped status
+  - Uses Circuit's `LaunchedImpressionEffect` for automatic screen view tracking
+  - Implementation for Issue #147 (Onboarding Screen Tracking)
 
 ### Fixed
 - **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button

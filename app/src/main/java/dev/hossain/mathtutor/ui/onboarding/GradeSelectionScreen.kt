@@ -47,6 +47,10 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
@@ -121,6 +125,7 @@ class GradeSelectionPresenter
         @Assisted private val screen: GradeSelectionScreen,
         @Assisted private val navigator: Navigator,
         private val userProfileRepository: UserProfileRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<GradeSelectionScreen.State> {
         @CircuitInject(GradeSelectionScreen::class, AppScope::class)
         @AssistedFactory
@@ -136,6 +141,18 @@ class GradeSelectionPresenter
             val scope = rememberCoroutineScope()
             var selectedGrade by remember { mutableStateOf<GradeLevel?>(null) }
 
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Grade Selection",
+                    screenClass = GradeSelectionScreen::class.java.name,
+                    parameters =
+                        mapOf(
+                            "is_from_settings" to screen.isFromSettings,
+                        ),
+                )
+            }
+
             // Collect current profile to check if it exists (for settings mode)
             val currentProfile by userProfileRepository.getProfile().collectAsState(initial = null)
 
@@ -146,6 +163,13 @@ class GradeSelectionPresenter
                 when (event) {
                     is GradeSelectionScreen.Event.GradeSelected -> {
                         selectedGrade = event.grade
+                        // Track grade selection
+                        analyticsService.logEvent(
+                            AnalyticsEvent.GRADE_SELECTED,
+                            mapOf(
+                                AnalyticsParam.GRADE_LEVEL to event.grade.name,
+                            ),
+                        )
                     }
 
                     is GradeSelectionScreen.Event.ContinueClicked -> {
