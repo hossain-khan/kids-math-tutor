@@ -7,6 +7,8 @@ import androidx.compose.runtime.getValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.SessionRepository
@@ -27,6 +29,7 @@ class StatsPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val sessionRepository: SessionRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<StatsScreen.State> {
         @CircuitInject(StatsScreen::class, AppScope::class)
         @AssistedFactory
@@ -36,6 +39,14 @@ class StatsPresenter
 
         @Composable
         override fun present(): StatsScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Stats",
+                    screenClass = StatsScreen::class.java.name,
+                )
+            }
+
             // Collect overall statistics
             val overallStats by sessionRepository.getOverallStats().collectAsState(
                 initial = SessionStats.EMPTY,

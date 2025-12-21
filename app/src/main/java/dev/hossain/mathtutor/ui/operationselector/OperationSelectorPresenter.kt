@@ -7,6 +7,10 @@ import androidx.compose.runtime.getValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
@@ -28,6 +32,7 @@ class OperationSelectorPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val sessionRepository: SessionRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<OperationSelectorScreen.State> {
         @CircuitInject(OperationSelectorScreen::class, AppScope::class)
         @AssistedFactory
@@ -37,6 +42,14 @@ class OperationSelectorPresenter
 
         @Composable
         override fun present(): OperationSelectorScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Operation Selector",
+                    screenClass = OperationSelectorScreen::class.java.name,
+                )
+            }
+
             // Check if session history exists
             val overallStats by sessionRepository.getOverallStats().collectAsState(
                 initial = dev.hossain.mathtutor.domain.model.SessionStats.EMPTY,
@@ -54,6 +67,13 @@ class OperationSelectorPresenter
                 when (event) {
                     is OperationSelectorScreen.Event.OperationSelected -> {
                         Timber.d("OperationSelector: Operation selected - ${event.operation}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.OPERATION_SELECTED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.OPERATION_TYPE to event.operation.name.lowercase(),
+                                ),
+                        )
                         // Navigate to MathPracticeScreen with selected operation
                         navigator.goTo(
                             MathPracticeScreen(

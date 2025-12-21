@@ -11,6 +11,10 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
@@ -33,6 +37,7 @@ class SettingsPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val userProfileRepository: UserProfileRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<SettingsScreen.State> {
         @CircuitInject(SettingsScreen::class, AppScope::class)
         @AssistedFactory
@@ -42,6 +47,14 @@ class SettingsPresenter
 
         @Composable
         override fun present(): SettingsScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Settings",
+                    screenClass = SettingsScreen::class.java.name,
+                )
+            }
+
             val scope = rememberCoroutineScope()
 
             // Collect user profile
@@ -76,6 +89,14 @@ class SettingsPresenter
 
                     is SettingsScreen.Event.ToggleAdaptiveDifficulty -> {
                         Timber.d("SettingsScreen: Toggle adaptive difficulty - enabled=${event.enabled}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.SETTINGS_CHANGED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.SETTING_NAME to "adaptive_difficulty",
+                                    AnalyticsParam.SETTING_VALUE to event.enabled.toString(),
+                                ),
+                        )
                         scope.launch {
                             userProfileRepository.updateAdaptiveDifficulty(event.enabled)
                         }
@@ -83,6 +104,14 @@ class SettingsPresenter
 
                     is SettingsScreen.Event.SaveName -> {
                         Timber.d("SettingsScreen: Saving name - ${event.name}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.SETTINGS_CHANGED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.SETTING_NAME to "user_name",
+                                    AnalyticsParam.SETTING_VALUE to (event.name ?: ""),
+                                ),
+                        )
                         showNameDialog = false
                         scope.launch {
                             if (profile != null) {

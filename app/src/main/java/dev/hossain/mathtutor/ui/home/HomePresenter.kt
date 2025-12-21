@@ -10,6 +10,10 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.SessionStats
@@ -43,6 +47,7 @@ class HomePresenter
         private val badgeRepository: BadgeRepository,
         private val userProfileRepository: UserProfileRepository,
         private val audioService: AudioService,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<HomeScreen.State> {
         @CircuitInject(HomeScreen::class, AppScope::class)
         @AssistedFactory
@@ -52,6 +57,14 @@ class HomePresenter
 
         @Composable
         override fun present(): HomeScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Home",
+                    screenClass = HomeScreen::class.java.name,
+                )
+            }
+
             // Track music playing state
             var isMusicPlaying by remember { mutableStateOf(false) }
 
@@ -125,6 +138,14 @@ class HomePresenter
 
                     is HomeScreen.Event.ToggleMusicClicked -> {
                         isMusicPlaying = !isMusicPlaying
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.AUDIO_TOGGLED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.SETTING_NAME to "background_music",
+                                    AnalyticsParam.SETTING_VALUE to isMusicPlaying.toString(),
+                                ),
+                        )
                         if (isMusicPlaying) {
                             audioService.setMusicEnabled(true)
                             audioService.startBackgroundMusic()

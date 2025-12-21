@@ -8,6 +8,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.haptic.HapticService
@@ -31,6 +35,7 @@ class AudioHapticSettingsPresenter
         private val userPreferencesRepository: UserPreferencesRepository,
         private val audioService: AudioService,
         private val hapticService: HapticService,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<AudioHapticSettingsScreen.State> {
         @CircuitInject(AudioHapticSettingsScreen::class, AppScope::class)
         @AssistedFactory
@@ -40,6 +45,14 @@ class AudioHapticSettingsPresenter
 
         @Composable
         override fun present(): AudioHapticSettingsScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Audio & Haptic Settings",
+                    screenClass = AudioHapticSettingsScreen::class.java.name,
+                )
+            }
+
             val scope = rememberCoroutineScope()
 
             // Collect all preferences
@@ -69,6 +82,14 @@ class AudioHapticSettingsPresenter
                 when (event) {
                     is AudioHapticSettingsScreen.Event.ToggleSoundEffects -> {
                         Timber.d("[AudioHapticSettings] Toggle sound effects - enabled=${event.enabled}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.AUDIO_TOGGLED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.SETTING_NAME to "sound_effects",
+                                    AnalyticsParam.SETTING_VALUE to event.enabled.toString(),
+                                ),
+                        )
                         audioService.setSoundEffectsEnabled(event.enabled)
                         scope.launch {
                             userPreferencesRepository.setSoundEffectsEnabled(event.enabled)
@@ -77,6 +98,14 @@ class AudioHapticSettingsPresenter
 
                     is AudioHapticSettingsScreen.Event.ToggleBackgroundMusic -> {
                         Timber.d("[AudioHapticSettings] Toggle background music - enabled=${event.enabled}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.AUDIO_TOGGLED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.SETTING_NAME to "background_music",
+                                    AnalyticsParam.SETTING_VALUE to event.enabled.toString(),
+                                ),
+                        )
                         audioService.setMusicEnabled(event.enabled)
                         if (event.enabled) {
                             audioService.startBackgroundMusic()
@@ -90,6 +119,14 @@ class AudioHapticSettingsPresenter
 
                     is AudioHapticSettingsScreen.Event.ToggleHaptics -> {
                         Timber.d("[AudioHapticSettings] Toggle haptics - enabled=${event.enabled}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.HAPTICS_TOGGLED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.SETTING_NAME to "haptics",
+                                    AnalyticsParam.SETTING_VALUE to event.enabled.toString(),
+                                ),
+                        )
                         hapticService.setHapticsEnabled(event.enabled)
                         scope.launch {
                             userPreferencesRepository.setHapticsEnabled(event.enabled)

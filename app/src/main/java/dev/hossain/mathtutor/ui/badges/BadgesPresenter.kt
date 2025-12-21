@@ -10,6 +10,10 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
@@ -31,6 +35,7 @@ class BadgesPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val badgeRepository: BadgeRepository,
+        private val analyticsService: AnalyticsService,
     ) : Presenter<BadgesScreen.State> {
         @CircuitInject(BadgesScreen::class, AppScope::class)
         @AssistedFactory
@@ -40,6 +45,14 @@ class BadgesPresenter
 
         @Composable
         override fun present(): BadgesScreen.State {
+            // Track screen view
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Badges",
+                    screenClass = BadgesScreen::class.java.name,
+                )
+            }
+
             // Track selected badge for detail dialog
             var selectedBadge by remember { mutableStateOf<Badge?>(null) }
 
@@ -70,6 +83,14 @@ class BadgesPresenter
                 when (event) {
                     is BadgesScreen.Event.BadgeClicked -> {
                         Timber.d("Badge clicked: ${event.badge.name} (${event.badge.id})")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.BADGES_VIEWED,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.BADGE_ID to event.badge.id,
+                                    AnalyticsParam.BADGE_NAME to event.badge.name,
+                                ),
+                        )
                         selectedBadge = event.badge
                     }
 
