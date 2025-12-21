@@ -255,7 +255,7 @@ class BadgeRepositoryImplTest {
             id = id,
             name = name,
             description = "Test description",
-            icon = "🎯",
+            icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
             category = category,
             requirementType = "ProblemCount",
             requirementData = "count=10",

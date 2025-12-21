@@ -41,6 +41,13 @@ class SettingsPresenter
         private val userPreferencesRepository: dev.hossain.mathtutor.data.UserPreferencesRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<SettingsScreen.State> {
+        companion object {
+            /**
+             * Exposed for testing: whether the developer portal should be visible.
+             */
+            fun isDevPortalVisible(): Boolean = dev.hossain.mathtutor.BuildConfig.DEBUG
+        }
+
         @CircuitInject(SettingsScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {
@@ -76,11 +83,15 @@ class SettingsPresenter
             var showNameDialog by remember { mutableStateOf(false) }
             var showGradeDialog by remember { mutableStateOf(false) }
 
+            // Developer Portal visible only in debug builds
+            val showDeveloperPortal = dev.hossain.mathtutor.BuildConfig.DEBUG
+
             return SettingsScreen.State(
                 profile = profile,
                 showNameDialog = showNameDialog,
                 showGradeDialog = showGradeDialog,
                 analyticsEnabled = analyticsEnabled,
+                showDeveloperPortal = showDeveloperPortal,
             ) { event ->
                 when (event) {
                     is SettingsScreen.Event.EditNameClicked -> {
@@ -91,6 +102,11 @@ class SettingsPresenter
                     is SettingsScreen.Event.ChangeGradeClicked -> {
                         Timber.d("SettingsScreen: Change grade clicked - navigating to GradeSelectionScreen")
                         navigator.goTo(GradeSelectionScreen(isFromSettings = true))
+                    }
+
+                    is SettingsScreen.Event.DeveloperPortalClicked -> {
+                        Timber.d("SettingsScreen: Developer Portal clicked - navigating to DeveloperPortalScreen")
+                        navigator.goTo(dev.hossain.mathtutor.ui.devportal.DeveloperPortalScreen)
                     }
 
                     is SettingsScreen.Event.ToggleAdaptiveDifficulty -> {

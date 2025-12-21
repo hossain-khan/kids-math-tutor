@@ -1,0 +1,322 @@
+package dev.hossain.mathtutor.ui.devportal
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.Navigator
+import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.audio.AudioService
+import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.domain.repository.BadgeRepository
+import dev.hossain.mathtutor.domain.repository.GameRepository
+import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
+import dev.hossain.mathtutor.haptic.HapticService
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
+
+/**
+ * Basic scaffold presenter for `DeveloperPortalScreen`.
+ * Implements placeholder actions used by dev tools. Concrete implementations of actions
+ * will be added later as separate tasks.
+ */
+@AssistedInject
+class DeveloperPortalPresenter
+    constructor(
+        @Assisted private val navigator: Navigator,
+        private val userPreferencesRepository: UserPreferencesRepository,
+        private val sessionRepository: SessionRepository,
+        private val gameRepository: GameRepository,
+        private val badgeRepository: BadgeRepository,
+        private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
+        private val audioService: AudioService,
+        private val hapticService: HapticService,
+        private val analyticsService: AnalyticsService,
+        private val sessionSeeder: dev.hossain.mathtutor.devtools.SessionSeeder,
+    ) : Presenter<DeveloperPortalScreen.State> {
+        @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
+        @AssistedFactory
+        interface Factory {
+            fun create(navigator: Navigator): DeveloperPortalPresenter
+        }
+
+        @Composable
+        override fun present(): DeveloperPortalScreen.State {
+            LaunchedImpressionEffect {
+                analyticsService.logScreenView(
+                    screenName = "Developer Portal",
+                    screenClass = DeveloperPortalScreen::class.java.name,
+                )
+            }
+
+            val scope = rememberCoroutineScope()
+            var showSeedSection by remember { mutableStateOf(true) }
+            var showDataOpsSection by remember { mutableStateOf(true) }
+            var showDiagnosticsSection by remember { mutableStateOf(true) }
+            var showClearConfirm by remember { mutableStateOf(false) }
+            var clearInProgress by remember { mutableStateOf(false) }
+            var clearResultMessage by remember { mutableStateOf<String?>(null) }
+            var seedInProgress by remember { mutableStateOf(false) }
+            var seedResultMessage by remember { mutableStateOf<String?>(null) }
+
+            var badges by remember { mutableStateOf<List<Badge>>(emptyList()) }
+            var isAnalyticsEnabled by remember { mutableStateOf(true) }
+            var isBackgroundMusicPlaying by remember { mutableStateOf(false) }
+            var soundHapticFeedback by remember { mutableStateOf<String?>(null) }
+            LaunchedEffect(Unit) {
+                // Collect badges from repository to display in UI
+                launch {
+                    badgeRepository.getAllBadges().collect { list ->
+                        badges = list
+                    }
+                }
+                // Load current analytics state
+                launch {
+                    userPreferencesRepository.isAnalyticsEnabled.collect { enabled ->
+                        isAnalyticsEnabled = enabled
+                    }
+                }
+            }
+
+            var forceUnlockInProgress by remember { mutableStateOf(false) }
+            var forceUnlockResultMessage by remember { mutableStateOf<String?>(null) }
+
+            return DeveloperPortalScreen.State(
+                showSeedSection = showSeedSection,
+                showDataOpsSection = showDataOpsSection,
+                showDiagnosticsSection = showDiagnosticsSection,
+                showClearConfirm = showClearConfirm,
+                clearInProgress = clearInProgress,
+                clearResultMessage = clearResultMessage,
+                seedInProgress = seedInProgress,
+                seedResultMessage = seedResultMessage,
+                badges = badges,
+                forceUnlockInProgress = forceUnlockInProgress,
+                forceUnlockResultMessage = forceUnlockResultMessage,
+                isAnalyticsEnabled = isAnalyticsEnabled,
+                isBackgroundMusicPlaying = isBackgroundMusicPlaying,
+                soundHapticFeedback = soundHapticFeedback,
+            ) { event ->
+                when (event) {
+                    is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
+                        forceUnlockInProgress = true
+                        forceUnlockResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                badgeRepository.unlockBadge(event.badgeId)
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Badge unlocked"
+                                    forceUnlockInProgress = false
+                                }
+                                Timber.d("[DevPortal] Force unlocked badge: ${event.badgeId}")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to force unlock badge: ${event.badgeId}")
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Unlock failed: ${e.message}"
+                                    forceUnlockInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.ToggleAnalyticsOverride -> {
+                        // Toggle analytics immediately (debug-only)
+                        scope.launch(Dispatchers.IO) {
+                            val current = userPreferencesRepository.isAnalyticsEnabled.firstOrNull() ?: true
+                            userPreferencesRepository.setAnalyticsEnabled(!current)
+                            analyticsService.setAnalyticsEnabled(!current)
+                            Timber.d("[DevPortal] Toggled analytics to ${!current}")
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.ClearAppDataClicked -> {
+                        // Show confirmation dialog instead of clearing immediately
+                        showClearConfirm = true
+                        clearResultMessage = null
+                    }
+
+                    is DeveloperPortalScreen.Event.ConfirmClear -> {
+                        // Expect user to type "DELETE" (case-sensitive) to confirm
+                        if (event.confirmationText != "DELETE") {
+                            clearResultMessage = "Confirmation text does not match 'DELETE'"
+                            Timber.d("[DevPortal] Clear confirmation failed - wrong text")
+                        } else {
+                            // Perform clear
+                            clearInProgress = true
+                            scope.launch(Dispatchers.IO) {
+                                try {
+                                    Timber.d("[DevPortal] Clearing app data (DB, prefs, cache) - confirmed")
+                                    sessionRepository.clearAllSessions()
+                                    gameRepository.clearAllSessions()
+
+                                    // Reset preferences to defaults
+                                    userPreferencesRepository.setOnboardingCompleted(false)
+                                    userPreferencesRepository.setHapticsEnabled(true)
+                                    userPreferencesRepository.setSoundEffectsEnabled(true)
+                                    userPreferencesRepository.setBackgroundMusicEnabled(false)
+                                    userPreferencesRepository.setVolume(0.7f)
+                                    userPreferencesRepository.setHighContrastEnabled(false)
+                                    userPreferencesRepository.setLargeTextEnabled(false)
+                                    userPreferencesRepository.setAnalyticsEnabled(true)
+
+                                    withContext(Dispatchers.Main) {
+                                        clearResultMessage = "Clear complete"
+                                        showClearConfirm = false
+                                        clearInProgress = false
+                                    }
+                                    Timber.d("[DevPortal] Clear complete")
+                                } catch (e: Exception) {
+                                    Timber.e(e, "[DevPortal] Failed to clear data")
+                                    withContext(Dispatchers.Main) {
+                                        clearResultMessage = "Clear failed: ${e.message}"
+                                        clearInProgress = false
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.CancelClear -> {
+                        showClearConfirm = false
+                        clearResultMessage = "Clear cancelled"
+                    }
+
+                    is DeveloperPortalScreen.Event.SeedSessionsRequested -> {
+                        // Trigger seeding with provided parameters
+                        seedInProgress = true
+                        seedResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val seeded =
+                                    sessionSeeder.seedSampleSessions(
+                                        count = event.count,
+                                        operation = event.operation,
+                                        grade = event.grade,
+                                        avgAccuracy = 0.8f,
+                                    )
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seeded $seeded sessions"
+                                    seedInProgress = false
+                                }
+                                Timber.d("[DevPortal] Seeded $seeded sessions")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to seed sessions")
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seed failed: ${e.message}"
+                                    seedInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.SeedSessionsClicked -> {
+                        // Backwards-compat: run default seeding (10 mixed grade1)
+                        seedInProgress = true
+                        seedResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val seeded =
+                                    sessionSeeder.seedSampleSessions(
+                                        count = 10,
+                                        operation = MathOperation.MIXED,
+                                        grade = dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_1,
+                                    )
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seeded $seeded sessions"
+                                    seedInProgress = false
+                                }
+                            } catch (e: Exception) {
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seed failed: ${e.message}"
+                                    seedInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.ForceBadgeCheckClicked -> {
+                        scope.launch(Dispatchers.IO) {
+                            val unlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
+                            Timber.d("[DevPortal] Force badge check unlocked ${unlocked.size} badges")
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.PlaySuccessSound -> {
+                        audioService.playSuccess()
+                        hapticService.triggerSuccess()
+                        soundHapticFeedback = "Success sound & haptic played"
+                        Timber.d("[DevPortal] Played success sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayErrorSound -> {
+                        audioService.playError()
+                        hapticService.triggerError()
+                        soundHapticFeedback = "Error sound & haptic played"
+                        Timber.d("[DevPortal] Played error sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayLevelUpSound -> {
+                        audioService.playLevelUp()
+                        hapticService.triggerSuccess()
+                        soundHapticFeedback = "Level-up sound & haptic played"
+                        Timber.d("[DevPortal] Played level-up sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayBadgeUnlockSound -> {
+                        audioService.playBadgeUnlock()
+                        hapticService.triggerBadgeUnlock()
+                        soundHapticFeedback = "Badge unlock sound & haptic played"
+                        Timber.d("[DevPortal] Played badge unlock sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayCountdownSound -> {
+                        audioService.playCountdown()
+                        soundHapticFeedback = "Countdown sound played"
+                        Timber.d("[DevPortal] Played countdown sound")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayGoSound -> {
+                        audioService.playGo()
+                        hapticService.triggerSuccess()
+                        soundHapticFeedback = "GO! sound & haptic played"
+                        Timber.d("[DevPortal] Played GO! sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.ToggleBackgroundMusic -> {
+                        if (isBackgroundMusicPlaying) {
+                            audioService.stopBackgroundMusic()
+                            isBackgroundMusicPlaying = false
+                            soundHapticFeedback = "Background music stopped"
+                            Timber.d("[DevPortal] Stopped background music")
+                        } else {
+                            audioService.startBackgroundMusic()
+                            isBackgroundMusicPlaying = true
+                            soundHapticFeedback = "Background music started"
+                            Timber.d("[DevPortal] Started background music")
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.NavigateBack -> {
+                        navigator.pop()
+                    }
+                }
+            }
+        }
+    }

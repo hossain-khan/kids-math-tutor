@@ -290,7 +290,7 @@ class CheckBadgeUnlocksUseCaseTest {
             id = id,
             name = "Test Badge",
             description = "Test description",
-            icon = "🎯",
+            icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
             category = BadgeCategory.GETTING_STARTED,
             requirement = requirement,
             unlockedAt = unlockedAt,
