@@ -62,5 +62,14 @@ object BadgeIconMapper {
             BadgeIcon.RACING_CHAMPION -> R.drawable.badge_racing_champion
 
             BadgeIcon.PERFECT_RACE -> R.drawable.badge_perfect_race
+
+            // Memory Match badges
+            BadgeIcon.MEMORY_MASTER -> R.drawable.badge_memory_master
+
+            BadgeIcon.SHARP_MEMORY -> R.drawable.badge_sharp_memory
+
+            BadgeIcon.LIGHTNING_MATCH -> R.drawable.badge_lightning_match
+
+            BadgeIcon.PERFECT_MEMORY -> R.drawable.badge_perfect_memory
         }
 }

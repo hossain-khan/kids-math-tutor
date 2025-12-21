@@ -39,4 +39,10 @@ enum class BadgeIcon {
     SPEED_DEMON,
     RACING_CHAMPION,
     PERFECT_RACE,
+
+    // Memory Match badges
+    MEMORY_MASTER,
+    SHARP_MEMORY,
+    LIGHTNING_MATCH,
+    PERFECT_MEMORY,
 }

@@ -8,19 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Memory Match Badge Images** - Added AI-generated badge icons for Memory Match game achievements
-  - Created 4 high-quality badge designs with Math Pup mascot theme
-  - Memory Master: Puppy with brain/lightbulb celebrating first memory game
-  - Sharp Memory: Focused puppy with puzzle pieces for ≤12 moves achievement
-  - Lightning Match: Puppy with lightning bolt for sub-60-second completion
-  - Perfect Memory: Puppy with trophy for perfect 8-move game
-  - All badges feature solid white backgrounds and no text (names displayed in UI)
-  - Source .pxd files saved to `project-resources/badges-exported/`
-  - WebP exports at 512x512px, 85-90% quality in `drawable-xxxhdpi/`
+- **Memory Match Badges** - Added 4 new achievement badges for Memory Match game
+  - **Memory Master**: Complete your first Memory Match game
+  - **Sharp Memory**: Complete Memory Match in 12 or fewer moves (1.5x minimum)
+  - **Lightning Match**: Complete Memory Match in under 60 seconds
+  - **Perfect Memory**: Complete with exactly 8 moves (perfect game)
+  - Added `MemoryMatchCount`, `MemoryMatchMoves`, `MemoryMatchTime`, and `PerfectMemoryMatch` badge requirements
+  - Extended `CheckBadgeUnlocksUseCase` with Memory Match specific checking logic
+  - Badge icons created as placeholders (AI-generated designs to be added)
+  - Total badge count increased from 19 to 23 (4 new in GAMES category)
+  - Database migration (v6 → v7) automatically adds new badges for existing users
 - **Developer Portal (debug-only)** — Scaffolded a debug-only Developer Portal reachable from Settings (visible only in debug builds). Added `DeveloperPortalScreen`, `DeveloperPortalPresenter`, and `DeveloperPortalUi` with initial dev actions: analytics toggle, Clear App Data, Seed Sessions (placeholder), Run Badge Checks, and Play Success Sound/Haptic. (Issue #180, PR #189)
 - **Seed Sessions** — Implemented `SessionSeeder` service and `DevPortalSeeder` helper to generate and persist sample practice sessions from the Developer Portal. Added unit tests for the seeder and presenter-related seeding helper. (Issue #183)
 - **Force Badge Unlock** — Add per-badge "Force Unlock" control to Developer Portal to manually unlock badges for testing purposes. (Issue #184, PR #192)
 - **Analytics Toggle in Developer Portal** — Added debug-only toggle control in Developer Portal to immediately enable/disable analytics collection. Toggle updates persisted preference via `UserPreferencesRepository` and immediately applies to `AnalyticsService` for testing without polluting production analytics. (Issue #194)
+- **Sounds & Haptics Test Panel** — Added comprehensive test panel in Developer Portal for testing audio and haptic feedback. Includes labeled buttons for Success, Error, Level-up, Badge unlock, Countdown, GO!, and Background music with immediate feedback display. All buttons trigger appropriate `AudioService` and `HapticService` methods with visual confirmation. (Issue #196)
 
 ## [1.7.0] - 2025-12-21
 

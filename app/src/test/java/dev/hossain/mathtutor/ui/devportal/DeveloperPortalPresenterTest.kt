@@ -111,6 +111,230 @@ class DeveloperPortalPresenterTest {
             assertThat(isEnabled).isTrue()
         }
 
+    // ==================== Sound & Haptic Tests ====================
+
+    @Test
+    fun `playSuccessSound - calls audioService playSuccess and hapticService triggerSuccess`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+            val fakeHapticService = FakeHapticService()
+
+            // When
+            fakeAudioService.playSuccess()
+            fakeHapticService.triggerSuccess()
+
+            // Then
+            assertThat(fakeAudioService.successPlayed).isEqualTo(1)
+            assertThat(fakeHapticService.successTriggered).isEqualTo(1)
+        }
+
+    @Test
+    fun `playErrorSound - calls audioService playError and hapticService triggerError`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+            val fakeHapticService = FakeHapticService()
+
+            // When
+            fakeAudioService.playError()
+            fakeHapticService.triggerError()
+
+            // Then
+            assertThat(fakeAudioService.errorPlayed).isEqualTo(1)
+            assertThat(fakeHapticService.errorTriggered).isEqualTo(1)
+        }
+
+    @Test
+    fun `playLevelUpSound - calls audioService playLevelUp and hapticService triggerSuccess`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+            val fakeHapticService = FakeHapticService()
+
+            // When
+            fakeAudioService.playLevelUp()
+            fakeHapticService.triggerSuccess()
+
+            // Then
+            assertThat(fakeAudioService.levelUpPlayed).isEqualTo(1)
+            assertThat(fakeHapticService.successTriggered).isEqualTo(1)
+        }
+
+    @Test
+    fun `playBadgeUnlockSound - calls audioService playBadgeUnlock and hapticService triggerBadgeUnlock`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+            val fakeHapticService = FakeHapticService()
+
+            // When
+            fakeAudioService.playBadgeUnlock()
+            fakeHapticService.triggerBadgeUnlock()
+
+            // Then
+            assertThat(fakeAudioService.badgeUnlockPlayed).isEqualTo(1)
+            assertThat(fakeHapticService.badgeUnlockTriggered).isEqualTo(1)
+        }
+
+    @Test
+    fun `playCountdownSound - calls audioService playCountdown`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+
+            // When
+            fakeAudioService.playCountdown()
+
+            // Then
+            assertThat(fakeAudioService.countdownPlayed).isEqualTo(1)
+        }
+
+    @Test
+    fun `playGoSound - calls audioService playGo and hapticService triggerSuccess`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+            val fakeHapticService = FakeHapticService()
+
+            // When
+            fakeAudioService.playGo()
+            fakeHapticService.triggerSuccess()
+
+            // Then
+            assertThat(fakeAudioService.goPlayed).isEqualTo(1)
+            assertThat(fakeHapticService.successTriggered).isEqualTo(1)
+        }
+
+    @Test
+    fun `toggleBackgroundMusic - when not playing - starts background music`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+            fakeAudioService.setMusicEnabled(true)
+
+            // When
+            fakeAudioService.startBackgroundMusic()
+
+            // Then
+            assertThat(fakeAudioService.isMusicPlaying).isTrue()
+        }
+
+    @Test
+    fun `toggleBackgroundMusic - when playing - stops background music`() =
+        runTest {
+            // Given
+            val fakeAudioService = FakeAudioService()
+            fakeAudioService.setMusicEnabled(true)
+            fakeAudioService.startBackgroundMusic()
+            assertThat(fakeAudioService.isMusicPlaying).isTrue()
+
+            // When
+            fakeAudioService.stopBackgroundMusic()
+
+            // Then
+            assertThat(fakeAudioService.isMusicPlaying).isFalse()
+        }
+
+    /**
+     * Fake implementation of AudioService for testing.
+     */
+    private class FakeAudioService : dev.hossain.mathtutor.audio.AudioService {
+        var successPlayed = 0
+        var errorPlayed = 0
+        var levelUpPlayed = 0
+        var badgeUnlockPlayed = 0
+        var countdownPlayed = 0
+        var goPlayed = 0
+        var isMusicPlaying = false
+        private var musicEnabled = false
+        private var soundEffectsEnabled = true
+
+        override fun playSuccess() {
+            if (soundEffectsEnabled) successPlayed++
+        }
+
+        override fun playPerfectScore() {}
+
+        override fun playBadgeUnlock() {
+            if (soundEffectsEnabled) badgeUnlockPlayed++
+        }
+
+        override fun playError() {
+            if (soundEffectsEnabled) errorPlayed++
+        }
+
+        override fun playStreakContinue() {}
+
+        override fun playLevelUp() {
+            if (soundEffectsEnabled) levelUpPlayed++
+        }
+
+        override fun playCountdown() {
+            if (soundEffectsEnabled) countdownPlayed++
+        }
+
+        override fun playGo() {
+            if (soundEffectsEnabled) goPlayed++
+        }
+
+        override fun playWarning() {}
+
+        override fun startBackgroundMusic() {
+            if (musicEnabled) isMusicPlaying = true
+        }
+
+        override fun stopBackgroundMusic() {
+            isMusicPlaying = false
+        }
+
+        override fun pauseBackgroundMusic() {}
+
+        override fun resumeBackgroundMusic() {}
+
+        override fun setMusicEnabled(enabled: Boolean) {
+            musicEnabled = enabled
+        }
+
+        override fun setSoundEffectsEnabled(enabled: Boolean) {
+            soundEffectsEnabled = enabled
+        }
+
+        override fun setVolume(volume: Float) {}
+
+        override fun release() {}
+    }
+
+    /**
+     * Fake implementation of HapticService for testing.
+     */
+    private class FakeHapticService : dev.hossain.mathtutor.haptic.HapticService {
+        var successTriggered = 0
+        var errorTriggered = 0
+        var badgeUnlockTriggered = 0
+        private var hapticsEnabled = true
+
+        override fun triggerSuccess() {
+            if (hapticsEnabled) successTriggered++
+        }
+
+        override fun triggerError() {
+            if (hapticsEnabled) errorTriggered++
+        }
+
+        override fun triggerBadgeUnlock() {
+            if (hapticsEnabled) badgeUnlockTriggered++
+        }
+
+        override fun triggerButtonClick() {}
+
+        override fun triggerLongPress() {}
+
+        override fun setHapticsEnabled(enabled: Boolean) {
+            hapticsEnabled = enabled
+        }
+    }
+
     /**
      * Fake implementation of [UserPreferencesRepository] for testing.
      * Provides in-memory storage for preferences with Flow support.

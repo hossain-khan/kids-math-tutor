@@ -178,6 +178,22 @@ private fun formatRequirement(badge: Badge): String =
         dev.hossain.mathtutor.domain.model.BadgeRequirement.PerfectGameAccuracy -> {
             "Get 100% accuracy in a game"
         }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.MemoryMatchCount -> {
+            "Complete ${req.count} Memory Match game${if (req.count > 1) "s" else ""}"
+        }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.MemoryMatchMoves -> {
+            "Complete Memory Match in ${req.maxMoves} or fewer moves"
+        }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.MemoryMatchTime -> {
+            "Complete Memory Match in under ${req.maxSeconds} seconds"
+        }
+
+        dev.hossain.mathtutor.domain.model.BadgeRequirement.PerfectMemoryMatch -> {
+            "Complete Memory Match with exactly 8 moves"
+        }
     }
 
 @Preview(showBackground = true)
