@@ -195,6 +195,7 @@ private fun OperationCardDarkPreview() {
             title = "Subtraction",
             icon = Icons.Default.Add,
             examples = listOf("10 - 5 = ?", "7 - 2 = ?"),
+            operation = MathOperation.SUBTRACTION,
             onClick = {},
             modifier = Modifier.padding(16.dp),
         )
