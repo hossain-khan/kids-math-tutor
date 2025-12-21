@@ -31,5 +31,7 @@ data object OperationSelectorScreen : Screen {
         ) : Event
 
         data object ViewStatsClicked : Event
+
+        data object NavigateBack : Event
     }
 }

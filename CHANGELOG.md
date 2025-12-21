@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Enhances visual appeal and encourages badge collection
 
 ### Fixed
+- **Operation Selector ANR** - Fixed Application Not Responding issue when pressing back from "Math Time" screen
+  - Added explicit BackHandler to handle system back button press
+  - Added NavigateBack event to OperationSelectorScreen
+  - Prevents 5+ second freeze and high CPU usage on main thread
+  - Ensures immediate navigation response without blocking UI
+  - Similar fix applied in GameSelectionScreen (PR #143)
 - **Kindergarten Problem Difficulty** - Reduced number range for kindergarten level to use single-digit numbers only
   - Changed kindergarten addition from 1-10 to 1-9 with sum capped at 10 (instead of 18)
   - Changed kindergarten subtraction from 1-10 to 1-9
