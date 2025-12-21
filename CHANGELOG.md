@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Kindergarten Problem Difficulty** - Reduced number range for kindergarten level to use single-digit numbers only
+  - Changed kindergarten addition from 1-10 to 1-9 with sum capped at 10 (instead of 18)
+  - Changed kindergarten subtraction from 1-10 to 1-9
+  - Ensures all kindergarten problems use single-digit operands appropriate for K-2 learners
+  - Grade 1 and Grade 2 number ranges remain unchanged (1-20 and 1-100 respectively)
 - **Badge Requirement Deserialization** - Fixed crash when deserializing badges with empty requirement data (e.g., PerfectGameAccuracy badge)
   - Added empty data string handling in BadgeMapper before parsing parameters
   - Prevents "Malformed requirement data" IllegalArgumentException on app launch after migration
