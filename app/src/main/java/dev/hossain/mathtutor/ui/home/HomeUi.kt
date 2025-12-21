@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -45,6 +46,7 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
 import java.time.LocalDate
+import dev.hossain.mathtutor.ui.component.BadgeIcon as BadgeIconImage
 
 /**
  * UI for [HomeScreen].
@@ -401,10 +403,10 @@ private fun BadgeItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text(
-            text = badge.icon,
-            style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier.size(48.dp),
+        BadgeIconImage(
+            badgeIcon = badge.icon,
+            contentDescription = badge.name,
+            size = 48.dp,
         )
         Text(
             text = badge.name,
@@ -445,18 +447,18 @@ private fun HomeUiWithDataPreview() {
                                 id = "first_steps",
                                 name = "First Steps",
                                 description = "Solved first problem",
-                                icon = "🎯",
+                                icon = BadgeIcon.FIRST_STEPS,
                                 category = BadgeCategory.GETTING_STARTED,
                                 requirement = BadgeRequirement.ProblemCount(1),
                                 unlockedAt = Instant.now(),
                             ),
                             Badge(
-                                id = "quick_learner",
-                                name = "Quick Learner",
-                                description = "Solved 10 problems",
-                                icon = "🚀",
-                                category = BadgeCategory.VOLUME,
-                                requirement = BadgeRequirement.ProblemCount(10),
+                                id = "streak_starter",
+                                name = "Streak Starter",
+                                description = "Practice 3 days in a row",
+                                icon = BadgeIcon.STREAK_STARTER,
+                                category = BadgeCategory.STREAK,
+                                requirement = BadgeRequirement.DailyStreak(3),
                                 unlockedAt = Instant.now(),
                             ),
                         ),

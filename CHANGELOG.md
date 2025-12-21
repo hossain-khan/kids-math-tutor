@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Badge Icons with WebP Images** - Replaced emoji badge icons with AI-generated badge images
+  - Added 19 badge images in WebP format (badge_*.webp) for all badges across 6 categories
+  - Created BadgeIcon enum to represent all badge types for database stability across builds
+  - Created BadgeIconMapper utility to map enum values to drawable resource IDs at runtime
+  - Created BadgeIcon composable for displaying badge images with Material 3 styling
+  - Updated BadgeGrid, BadgeDetailDialog, HomeUi, and MathRaceResultsScreen to display badge images
+  - Database migration (v5 to v6) clears existing emoji-based badges for enum-based icon population
+  - Badge icons generated using AI with consistent Math Pup mascot theme and child-friendly design
 - **Analytics Foundation** - Created analytics abstraction layer for tracking user engagement
   - Added `AnalyticsService` interface for provider-agnostic analytics integration
   - Added `AnalyticsConstants.kt` with predefined event names, parameter keys, and user properties
