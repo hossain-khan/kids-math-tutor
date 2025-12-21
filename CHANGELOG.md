@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Analytics Privacy Consent & Settings Toggle** - Implemented user consent mechanism for analytics tracking
+  - Added `isAnalyticsEnabled` preference to `UserPreferencesRepository` (defaults to opt-in: true)
+  - Added analytics toggle in Settings screen under new Privacy section
+  - FirebaseAnalyticsService observes user preference and updates collection state automatically
+  - Analytics toggle includes privacy-friendly description explaining data collection practices
+  - Settings change event tracked when analytics is re-enabled
+  - Preference persists across app restarts
+  - Implementation for Issue #151 (Analytics Privacy Consent & Settings Toggle)
 - **Analytics Foundation** - Created analytics abstraction layer for tracking user engagement
   - Added `AnalyticsService` interface for provider-agnostic analytics integration
   - Added `AnalyticsConstants.kt` with predefined event names, parameter keys, and user properties

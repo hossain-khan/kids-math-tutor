@@ -24,12 +24,14 @@ data object SettingsScreen : Screen {
      * @property profile The current user profile, null if loading
      * @property showNameDialog Whether the name edit dialog is visible
      * @property showGradeDialog Whether the grade change dialog is visible
+     * @property analyticsEnabled Whether analytics collection is enabled
      * @property eventSink Handler for screen events
      */
     data class State(
         val profile: UserProfile?,
         val showNameDialog: Boolean,
         val showGradeDialog: Boolean,
+        val analyticsEnabled: Boolean,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -87,5 +89,12 @@ data object SettingsScreen : Screen {
          * User tapped the Audio & Haptics button.
          */
         data object AudioHapticsClicked : Event
+
+        /**
+         * User toggled the analytics switch.
+         */
+        data class AnalyticsToggled(
+            val enabled: Boolean,
+        ) : Event
     }
 }

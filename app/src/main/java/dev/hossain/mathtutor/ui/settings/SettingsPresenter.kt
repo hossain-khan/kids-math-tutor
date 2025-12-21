@@ -30,13 +30,15 @@ import timber.log.Timber
  * Presenter for [SettingsScreen].
  *
  * Manages the state and business logic for user settings and profile management.
- * Handles profile loading, name editing, grade level changes, and adaptive difficulty toggle.
+ * Handles profile loading, name editing, grade level changes, adaptive difficulty toggle,
+ * and analytics consent.
  */
 @AssistedInject
 class SettingsPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val userProfileRepository: UserProfileRepository,
+        private val userPreferencesRepository: dev.hossain.mathtutor.data.UserPreferencesRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<SettingsScreen.State> {
         @CircuitInject(SettingsScreen::class, AppScope::class)
@@ -60,6 +62,9 @@ class SettingsPresenter
             // Collect user profile
             val profile by userProfileRepository.getProfile().collectAsState(initial = null)
 
+            // Collect analytics preference
+            val analyticsEnabled by userPreferencesRepository.isAnalyticsEnabled.collectAsState(initial = true)
+
             // Log state changes in LaunchedEffect to avoid recomposition spam
             LaunchedEffect(profile?.name, profile?.gradeLevel, profile?.adaptiveDifficultyEnabled) {
                 Timber.d(
@@ -75,6 +80,7 @@ class SettingsPresenter
                 profile = profile,
                 showNameDialog = showNameDialog,
                 showGradeDialog = showGradeDialog,
+                analyticsEnabled = analyticsEnabled,
             ) { event ->
                 when (event) {
                     is SettingsScreen.Event.EditNameClicked -> {
@@ -157,6 +163,26 @@ class SettingsPresenter
                     is SettingsScreen.Event.AudioHapticsClicked -> {
                         Timber.d("SettingsScreen: Audio & Haptics clicked")
                         navigator.goTo(AudioHapticSettingsScreen)
+                    }
+
+                    is SettingsScreen.Event.AnalyticsToggled -> {
+                        Timber.d("SettingsScreen: Analytics toggled - enabled=${event.enabled}")
+                        scope.launch {
+                            userPreferencesRepository.setAnalyticsEnabled(event.enabled)
+                            analyticsService.setAnalyticsEnabled(event.enabled)
+
+                            // Track analytics toggle (only if enabled)
+                            if (event.enabled) {
+                                analyticsService.logEvent(
+                                    eventName = AnalyticsEvent.SETTINGS_CHANGED,
+                                    parameters =
+                                        mapOf(
+                                            AnalyticsParam.SETTING_NAME to "analytics",
+                                            AnalyticsParam.SETTING_VALUE to event.enabled.toString(),
+                                        ),
+                                )
+                            }
+                        }
                     }
                 }
             }

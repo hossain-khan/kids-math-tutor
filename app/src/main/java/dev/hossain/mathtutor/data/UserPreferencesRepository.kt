@@ -42,6 +42,10 @@ interface UserPreferencesRepository {
     val isLargeTextEnabled: Flow<Boolean>
 
     suspend fun setLargeTextEnabled(enabled: Boolean)
+
+    val isAnalyticsEnabled: Flow<Boolean>
+
+    suspend fun setAnalyticsEnabled(enabled: Boolean)
 }
 
 @SingleIn(AppScope::class)
@@ -59,6 +63,7 @@ class UserPreferencesRepositoryImpl
             val VOLUME = floatPreferencesKey("volume")
             val HIGH_CONTRAST_ENABLED = booleanPreferencesKey("high_contrast_enabled")
             val LARGE_TEXT_ENABLED = booleanPreferencesKey("large_text_enabled")
+            val ANALYTICS_ENABLED = booleanPreferencesKey("analytics_enabled")
         }
 
         override val isOnboardingCompleted: Flow<Boolean> =
@@ -142,6 +147,18 @@ class UserPreferencesRepositoryImpl
             Timber.d("UserPreferencesRepository: Setting large text enabled = $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.LARGE_TEXT_ENABLED] = enabled
+            }
+        }
+
+        override val isAnalyticsEnabled: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.ANALYTICS_ENABLED] ?: true
+            }
+
+        override suspend fun setAnalyticsEnabled(enabled: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting analytics enabled = $enabled")
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.ANALYTICS_ENABLED] = enabled
             }
         }
     }
