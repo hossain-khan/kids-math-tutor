@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Extended `CheckBadgeUnlocksUseCase` with Memory Match specific checking logic
   - Badge icons created as placeholders (AI-generated designs to be added)
   - Total badge count increased from 19 to 23 (4 new in GAMES category)
+  - Database migration (v6 → v7) automatically adds new badges for existing users
 
 ## [1.7.0] - 2025-12-21
 
