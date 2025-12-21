@@ -161,7 +161,7 @@ class HomeScreenTest {
                 id = "badge1",
                 name = "Badge 1",
                 description = "Test badge 1",
-                icon = "🎯",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
                 unlockedAt = Instant.now(),

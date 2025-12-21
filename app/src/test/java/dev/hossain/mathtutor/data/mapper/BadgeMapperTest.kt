@@ -254,7 +254,7 @@ class BadgeMapperTest {
                 id = "unlocked_badge",
                 name = "Unlocked Badge",
                 description = "Already unlocked",
-                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PERFECT_START.name,
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PERFECT_START,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
                 unlockedAt = unlockTime,

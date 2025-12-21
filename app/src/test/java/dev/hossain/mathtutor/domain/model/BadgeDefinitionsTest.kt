@@ -46,7 +46,7 @@ class BadgeDefinitionsTest {
             assertThat(badge.id.isNotEmpty()).isTrue()
             assertThat(badge.name.isNotEmpty()).isTrue()
             assertThat(badge.description.isNotEmpty()).isTrue()
-            assertThat(badge.icon.isNotEmpty()).isTrue()
+            assertThat(badge.icon).isNotNull()
         }
     }
 

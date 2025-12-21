@@ -149,7 +149,7 @@ class BadgesScreenTest {
                 id = "test",
                 name = "Test",
                 description = "Test",
-                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
             )
@@ -187,7 +187,7 @@ class BadgesScreenTest {
                 id = "test",
                 name = "Test",
                 description = "Test",
-                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS.name,
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.FIRST_STEPS,
                 category = BadgeCategory.GETTING_STARTED,
                 requirement = BadgeRequirement.ProblemCount(1),
             )
