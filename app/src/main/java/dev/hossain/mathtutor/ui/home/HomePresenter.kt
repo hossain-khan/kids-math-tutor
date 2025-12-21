@@ -14,6 +14,7 @@ import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsParam
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.analytics.UserProperty
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.SessionStats
@@ -30,6 +31,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 /**
@@ -63,6 +65,39 @@ class HomePresenter
                     screenName = "Home",
                     screenClass = HomeScreen::class.java.name,
                 )
+            }
+
+            // Update aggregate user properties on home screen load
+            LaunchedEffect(Unit) {
+                try {
+                    // Update total problems solved
+                    sessionRepository.getOverallStats().first().let { stats ->
+                        analyticsService.setUserProperty(
+                            UserProperty.TOTAL_PROBLEMS_SOLVED,
+                            stats.totalProblems.toString(),
+                        )
+                    }
+
+                    // Update current streak
+                    streakRepository.getStreak().first()?.let { streak ->
+                        analyticsService.setUserProperty(
+                            UserProperty.CURRENT_STREAK,
+                            streak.currentStreak.toString(),
+                        )
+                    }
+
+                    // Update total badges unlocked
+                    badgeRepository.getUnlockedBadges().first().let { badges ->
+                        analyticsService.setUserProperty(
+                            UserProperty.TOTAL_BADGES_UNLOCKED,
+                            badges.size.toString(),
+                        )
+                    }
+
+                    Timber.d("Analytics: Aggregate user properties updated")
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to update analytics user properties")
+                }
             }
 
             // Track music playing state

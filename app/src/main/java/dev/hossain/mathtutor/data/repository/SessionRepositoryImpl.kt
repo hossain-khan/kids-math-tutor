@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.data.repository
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsParam
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.analytics.UserProperty
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.data.mapper.SessionMapper
@@ -16,6 +17,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 /**
@@ -64,6 +66,14 @@ class SessionRepositoryImpl
                         AnalyticsParam.SESSION_DURATION to durationSeconds,
                     ),
                 )
+
+                // Update total problems solved user property
+                getOverallStats().first().let { stats ->
+                    analyticsService.setUserProperty(
+                        UserProperty.TOTAL_PROBLEMS_SOLVED,
+                        stats.totalProblems.toString(),
+                    )
+                }
 
                 return sessionId
             } catch (e: Exception) {
