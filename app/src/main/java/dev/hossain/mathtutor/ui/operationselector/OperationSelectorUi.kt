@@ -109,6 +109,7 @@ fun OperationSelectorUi(
                 title = "Addition",
                 icon = Icons.Default.Add,
                 examples = listOf("1 + 1 = ?", "5 + 3 = ?"),
+                operation = MathOperation.ADDITION,
                 onClick = {
                     state.eventSink(
                         OperationSelectorScreen.Event.OperationSelected(
@@ -123,6 +124,7 @@ fun OperationSelectorUi(
                 title = "Subtraction",
                 icon = Icons.Default.Remove,
                 examples = listOf("10 - 5 = ?", "7 - 2 = ?"),
+                operation = MathOperation.SUBTRACTION,
                 onClick = {
                     state.eventSink(
                         OperationSelectorScreen.Event.OperationSelected(
