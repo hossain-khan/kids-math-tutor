@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Memory Match Badges** - Added 4 new achievement badges for Memory Match game
+  - **Memory Master**: Complete your first Memory Match game
+  - **Sharp Memory**: Complete Memory Match in 12 or fewer moves (1.5x minimum)
+  - **Lightning Match**: Complete Memory Match in under 60 seconds
+  - **Perfect Memory**: Complete with exactly 8 moves (perfect game)
+  - Added `MemoryMatchCount`, `MemoryMatchMoves`, `MemoryMatchTime`, and `PerfectMemoryMatch` badge requirements
+  - Extended `CheckBadgeUnlocksUseCase` with Memory Match specific checking logic
+  - Badge icons created as placeholders (AI-generated designs to be added)
+  - Total badge count increased from 19 to 23 (4 new in GAMES category)
+
 ## [1.7.0] - 2025-12-21
 
 ### Added

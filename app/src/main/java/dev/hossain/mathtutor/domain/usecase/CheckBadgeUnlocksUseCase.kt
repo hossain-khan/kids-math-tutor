@@ -75,6 +75,10 @@ class CheckBadgeUnlocksUseCase
                 is BadgeRequirement.GameCount -> checkGameCount(requirement)
                 is BadgeRequirement.MathRaceScore -> checkMathRaceScore(requirement)
                 is BadgeRequirement.PerfectGameAccuracy -> checkPerfectGameAccuracy()
+                is BadgeRequirement.MemoryMatchCount -> checkMemoryMatchCount(requirement)
+                is BadgeRequirement.MemoryMatchMoves -> checkMemoryMatchMoves(requirement)
+                is BadgeRequirement.MemoryMatchTime -> checkMemoryMatchTime(requirement)
+                is BadgeRequirement.PerfectMemoryMatch -> checkPerfectMemoryMatch()
             }
 
         /**
@@ -197,5 +201,54 @@ class CheckBadgeUnlocksUseCase
             val meetsRequirement = perfectCount > 0
             Timber.d("PerfectGameAccuracy check - Perfect games: $perfectCount, Met: $meetsRequirement")
             return meetsRequirement
+        }
+
+        // ==================== Memory Match Badge Checks ====================
+
+        /**
+         * Checks if the Memory Match count requirement is met.
+         */
+        private suspend fun checkMemoryMatchCount(requirement: BadgeRequirement.MemoryMatchCount): Boolean {
+            val gamesPlayed = gameRepository.getTotalGamesPlayed(Game.MEMORY_MATCH).first()
+            val meetsRequirement = gamesPlayed >= requirement.count
+            Timber.d("MemoryMatchCount check - Played: $gamesPlayed, Required: ${requirement.count}, Met: $meetsRequirement")
+            return meetsRequirement
+        }
+
+        /**
+         * Checks if the Memory Match moves requirement is met.
+         * Checks if any Memory Match session was completed with moves <= maxMoves.
+         * Note: In Memory Match, totalAttempts field stores the number of moves.
+         */
+        private suspend fun checkMemoryMatchMoves(requirement: BadgeRequirement.MemoryMatchMoves): Boolean {
+            val sessions = gameRepository.getSessionsByGame(Game.MEMORY_MATCH).first()
+            val bestMoves = sessions.minOfOrNull { it.totalAttempts } ?: Int.MAX_VALUE
+            val meetsRequirement = bestMoves <= requirement.maxMoves
+            Timber.d("MemoryMatchMoves check - Best: $bestMoves, Required: <=${requirement.maxMoves}, Met: $meetsRequirement")
+            return meetsRequirement
+        }
+
+        /**
+         * Checks if the Memory Match time requirement is met.
+         * Checks if any Memory Match session was completed within maxSeconds.
+         */
+        private suspend fun checkMemoryMatchTime(requirement: BadgeRequirement.MemoryMatchTime): Boolean {
+            val sessions = gameRepository.getSessionsByGame(Game.MEMORY_MATCH).first()
+            val bestTime = sessions.minOfOrNull { it.durationSeconds } ?: Int.MAX_VALUE
+            val meetsRequirement = bestTime <= requirement.maxSeconds
+            Timber.d("MemoryMatchTime check - Best: ${bestTime}s, Required: <=${requirement.maxSeconds}s, Met: $meetsRequirement")
+            return meetsRequirement
+        }
+
+        /**
+         * Checks if the perfect Memory Match requirement is met.
+         * Requires completing the game with exactly 8 moves (minimum possible - one move per pair).
+         * Note: In Memory Match, totalAttempts field stores the number of moves.
+         */
+        private suspend fun checkPerfectMemoryMatch(): Boolean {
+            val sessions = gameRepository.getSessionsByGame(Game.MEMORY_MATCH).first()
+            val hasPerfectGame = sessions.any { it.totalAttempts == 8 }
+            Timber.d("PerfectMemoryMatch check - Has 8-move game: $hasPerfectGame")
+            return hasPerfectGame
         }
     }

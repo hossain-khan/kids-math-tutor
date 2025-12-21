@@ -177,5 +177,38 @@ object BadgeDefinitions {
                 category = BadgeCategory.GAMES,
                 requirement = BadgeRequirement.PerfectGameAccuracy,
             ),
+            // Memory Match Badges
+            Badge(
+                id = "memory_master",
+                name = "Memory Master",
+                description = "Complete your first Memory Match",
+                icon = BadgeIcon.MEMORY_MASTER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.MemoryMatchCount(1),
+            ),
+            Badge(
+                id = "sharp_memory",
+                name = "Sharp Memory",
+                description = "Complete Memory Match in 12 or fewer moves",
+                icon = BadgeIcon.SHARP_MEMORY,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.MemoryMatchMoves(12),
+            ),
+            Badge(
+                id = "lightning_match",
+                name = "Lightning Match",
+                description = "Complete Memory Match in under 60 seconds",
+                icon = BadgeIcon.LIGHTNING_MATCH,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.MemoryMatchTime(60),
+            ),
+            Badge(
+                id = "perfect_memory",
+                name = "Perfect Memory",
+                description = "Complete with exactly 8 moves (perfect game)",
+                icon = BadgeIcon.PERFECT_MEMORY,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.PerfectMemoryMatch,
+            ),
         )
 }
