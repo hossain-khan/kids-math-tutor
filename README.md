@@ -10,7 +10,13 @@ A comprehensive K-2 math learning app that makes practice fun and accessible for
 - **Four operations**: Addition, Subtraction, Multiplication, Division
 - **Personalized feedback** with encouraging messages
 
-### 🎵 Sensory Feedback
+### � Mini-Games
+- **Math Race** - 60-second challenge to solve as many problems as possible (unlocks at 50 problems)
+- **Memory Match** - 4×4 card matching game pairing problems with answers (unlocks at 100 problems)
+- **Game Hub** - Central location to discover and play mini-games
+- **Personal Best Tracking** - High scores and fastest times for each game
+
+### �🎵 Sensory Feedback
 - **Audio system** with 7 distinct sound effects and background music
 - **Haptic feedback** with 5 vibration patterns for different interactions
 - **Lifecycle-aware** audio management (auto-pauses on background)

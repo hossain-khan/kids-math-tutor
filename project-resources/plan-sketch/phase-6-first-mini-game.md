@@ -1288,11 +1288,13 @@ fun `game over shows results when timer expires`() {
 
 ## Future Game Ideas (Phase 7+)
 
-### Memory Match
+### Memory Match ✅ Implemented
 - Match math problems with answers
 - 4×4 grid of cards
 - Flip two cards at a time
 - Find all matching pairs
+- **Status**: Implemented December 21, 2025
+- **Features**: Animated 3D flips, move tracking, time tracking, personal best
 
 ### Number Sequence
 - Fill in the missing number

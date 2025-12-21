@@ -18,6 +18,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated README.md with analytics privacy section explaining data collection practices
   - Complete manual testing checklist for verifying analytics in production
   - Implementation for Issue #152 (Analytics Testing, Documentation & Firebase Dashboard Setup)
+- **Memory Match Game** - Implemented second mini-game with card-matching mechanics
+  - 4×4 grid of flippable cards (16 cards = 8 problem-answer pairs)
+  - Flip two cards at a time to find matching math problems and answers
+  - Problems match user's grade level with mixed operations
+  - Track moves, time elapsed, and accuracy
+  - Personal best time tracking (lower is better)
+  - Animated card flip with 3D rotation effect using Material 3 colors
+  - Game unlocks after solving 100 total problems
+  - Full Circuit architecture with Screen, Presenter, and UI components
+  - Session saved to database for badge unlock checks
+  - Implements game flow: Start screen → Countdown → Playing → Results
 - **Analytics Privacy Consent & Settings Toggle** - Implemented user consent mechanism for analytics tracking
   - Added `isAnalyticsEnabled` preference to `UserPreferencesRepository` (defaults to opt-in: true)
   - Added analytics toggle in Settings screen under new Privacy section
