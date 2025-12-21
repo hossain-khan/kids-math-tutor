@@ -77,9 +77,26 @@ A comprehensive K-2 math learning app that makes practice fun and accessible for
 - **Run tests**: `./gradlew test`
 - **Run linter**: `./gradlew lintKotlin`
 
+## 📊 Analytics
+
+The app uses Firebase Analytics to track user engagement and improve the learning experience. We collect:
+- Screen views and navigation patterns
+- Feature usage (practice sessions, badges, games)
+- Performance metrics (accuracy, session duration)
+
+**Privacy**: We do NOT collect:
+- User names or personal information
+- Exact locations
+- Any personally identifiable information (PII)
+
+Users can opt-out of analytics in **Settings → Privacy → Analytics toggle**.
+
+For developers: See [ANALYTICS.md](project-resources/tech-doc/ANALYTICS.md) for implementation details.
+
 ## 📚 Documentation
 
 - [ACCESSIBILITY.md](ACCESSIBILITY.md) - Comprehensive accessibility guide
+- [ANALYTICS.md](project-resources/tech-doc/ANALYTICS.md) - Analytics implementation guide
 - [CHANGELOG.md](CHANGELOG.md) - Detailed version history
 - [RELEASE.md](RELEASE.md) - Release process guide
 

@@ -250,4 +250,44 @@ class FakeAnalyticsServiceTest {
         assertThat(event.parameters["double_param"]).isEqualTo(2.718)
         assertThat(event.parameters["boolean_param"]).isEqualTo(true)
     }
+
+    @Test
+    fun `logScreenView with empty parameters works`() {
+        analyticsService.logScreenView(
+            screenName = "Test Screen",
+            screenClass = "TestScreen",
+            parameters = emptyMap(),
+        )
+
+        assertThat(analyticsService.screenViews).hasSize(1)
+        val screenView = analyticsService.screenViews.first()
+        assertThat(screenView.screenName).isEqualTo("Test Screen")
+        assertThat(screenView.screenClass).isEqualTo("TestScreen")
+        assertThat(screenView.parameters).isEmpty()
+    }
+
+    @Test
+    fun `multiple events are recorded in order`() {
+        analyticsService.logEvent(AnalyticsEvent.PROBLEM_CORRECT, mapOf("problem" to 1))
+        analyticsService.logEvent(AnalyticsEvent.PROBLEM_INCORRECT, mapOf("problem" to 2))
+        analyticsService.logEvent(AnalyticsEvent.PROBLEM_CORRECT, mapOf("problem" to 3))
+
+        assertThat(analyticsService.events).hasSize(3)
+        assertThat(analyticsService.events[0].eventName).isEqualTo(AnalyticsEvent.PROBLEM_CORRECT)
+        assertThat(analyticsService.events[0].parameters["problem"]).isEqualTo(1)
+        assertThat(analyticsService.events[1].eventName).isEqualTo(AnalyticsEvent.PROBLEM_INCORRECT)
+        assertThat(analyticsService.events[1].parameters["problem"]).isEqualTo(2)
+        assertThat(analyticsService.events[2].eventName).isEqualTo(AnalyticsEvent.PROBLEM_CORRECT)
+        assertThat(analyticsService.events[2].parameters["problem"]).isEqualTo(3)
+    }
+
+    @Test
+    fun `logEvent with empty parameters works`() {
+        analyticsService.logEvent(AnalyticsEvent.PRACTICE_SESSION_STARTED, emptyMap())
+
+        assertThat(analyticsService.events).hasSize(1)
+        val event = analyticsService.events.first()
+        assertThat(event.eventName).isEqualTo(AnalyticsEvent.PRACTICE_SESSION_STARTED)
+        assertThat(event.parameters).isEmpty()
+    }
 }
