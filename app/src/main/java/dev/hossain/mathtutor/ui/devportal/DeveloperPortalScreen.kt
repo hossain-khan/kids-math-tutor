@@ -3,6 +3,8 @@ package dev.hossain.mathtutor.ui.devportal
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.domain.model.MathOperation
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -17,6 +19,8 @@ data object DeveloperPortalScreen : Screen {
         val showClearConfirm: Boolean = false,
         val clearInProgress: Boolean = false,
         val clearResultMessage: String? = null,
+        val seedInProgress: Boolean = false,
+        val seedResultMessage: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -30,6 +34,12 @@ data object DeveloperPortalScreen : Screen {
         ) : Event
 
         data object CancelClear : Event
+
+        data class SeedSessionsRequested(
+            val count: Int,
+            val operation: MathOperation,
+            val grade: GradeLevel,
+        ) : Event
 
         data object SeedSessionsClicked : Event
 

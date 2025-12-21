@@ -14,6 +14,8 @@ import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
@@ -44,6 +46,7 @@ class DeveloperPortalPresenter
         private val audioService: AudioService,
         private val hapticService: HapticService,
         private val analyticsService: AnalyticsService,
+        private val sessionSeeder: dev.hossain.mathtutor.devtools.SessionSeeder,
     ) : Presenter<DeveloperPortalScreen.State> {
         @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
         @AssistedFactory
@@ -67,6 +70,8 @@ class DeveloperPortalPresenter
             var showClearConfirm by remember { mutableStateOf(false) }
             var clearInProgress by remember { mutableStateOf(false) }
             var clearResultMessage by remember { mutableStateOf<String?>(null) }
+            var seedInProgress by remember { mutableStateOf(false) }
+            var seedResultMessage by remember { mutableStateOf<String?>(null) }
 
             return DeveloperPortalScreen.State(
                 showSeedSection = showSeedSection,
@@ -75,6 +80,8 @@ class DeveloperPortalPresenter
                 showClearConfirm = showClearConfirm,
                 clearInProgress = clearInProgress,
                 clearResultMessage = clearResultMessage,
+                seedInProgress = seedInProgress,
+                seedResultMessage = seedResultMessage,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ToggleAnalyticsOverride -> {
@@ -139,10 +146,56 @@ class DeveloperPortalPresenter
                         clearResultMessage = "Clear cancelled"
                     }
 
-                    is DeveloperPortalScreen.Event.SeedSessionsClicked -> {
+                    is DeveloperPortalScreen.Event.SeedSessionsRequested -> {
+                        // Trigger seeding with provided parameters
+                        seedInProgress = true
+                        seedResultMessage = null
                         scope.launch(Dispatchers.IO) {
-                            Timber.d("[DevPortal] Seeding sample sessions (placeholder)")
-                            // Placeholder: Actual seed implementation will be in a follow-up task
+                            try {
+                                val seeded =
+                                    sessionSeeder.seedSampleSessions(
+                                        count = event.count,
+                                        operation = event.operation,
+                                        grade = event.grade,
+                                        avgAccuracy = 0.8f,
+                                    )
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seeded $seeded sessions"
+                                    seedInProgress = false
+                                }
+                                Timber.d("[DevPortal] Seeded $seeded sessions")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to seed sessions")
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seed failed: ${e.message}"
+                                    seedInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.SeedSessionsClicked -> {
+                        // Backwards-compat: run default seeding (10 mixed grade1)
+                        seedInProgress = true
+                        seedResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val seeded =
+                                    sessionSeeder.seedSampleSessions(
+                                        count = 10,
+                                        operation = MathOperation.MIXED,
+                                        grade = dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_1,
+                                    )
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seeded $seeded sessions"
+                                    seedInProgress = false
+                                }
+                            } catch (e: Exception) {
+                                withContext(Dispatchers.Main) {
+                                    seedResultMessage = "Seed failed: ${e.message}"
+                                    seedInProgress = false
+                                }
+                            }
                         }
                     }
 
