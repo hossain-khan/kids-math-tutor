@@ -71,7 +71,7 @@ fun BadgeDetailDialog(
                 BadgeIcon(
                     badgeIcon = badge.icon,
                     contentDescription = badge.name,
-                    size = 80.dp,
+                    size = 120.dp,
                     colorFilter =
                         if (!badge.isUnlocked()) {
                             ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
