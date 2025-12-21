@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -83,13 +84,15 @@ fun OperationCard(
                         painter = painterResource(id = imageRes),
                         contentDescription = null,
                         contentScale = ContentScale.FillHeight,
+                        alignment = Alignment.CenterEnd,
                         modifier =
                             Modifier
+                                .matchParentSize()
                                 .align(Alignment.CenterEnd)
-                                .height(160.dp)
                                 .drawWithContent {
                                     drawContent()
                                     // Apply horizontal fade from left (opaque surface color) to right (transparent)
+                                    // Since image is right-aligned, start gradient from right edge
                                     // This blends the image with the card background in both light and dark modes
                                     drawRect(
                                         brush =
@@ -102,8 +105,8 @@ fun OperationCard(
                                                         surfaceColor.copy(alpha = 0.2f),
                                                         Color.Transparent,
                                                     ),
-                                                startX = 0f,
-                                                endX = size.width * 0.6f,
+                                                startX = size.width * 0.4f,
+                                                endX = size.width,
                                             ),
                                     )
                                 },
