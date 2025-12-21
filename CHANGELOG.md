@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Analytics Privacy Consent & Settings Toggle** - Implemented user consent mechanism for analytics tracking
+  - Added `isAnalyticsEnabled` preference to `UserPreferencesRepository` (defaults to opt-in: true)
+  - Added analytics toggle in Settings screen under new Privacy section
+  - FirebaseAnalyticsService observes user preference and updates collection state automatically
+  - Analytics toggle includes privacy-friendly description explaining data collection practices
+  - Settings change event tracked when analytics is re-enabled
+  - Preference persists across app restarts
+  - Implementation for Issue #151 (Analytics Privacy Consent & Settings Toggle)
 - **Hero Image for Badges Screen** - Added celebratory hero banner featuring Math Pup mascot
   - Displays at top of "Your Badges" screen with 200dp height
   - Gradient fade effect at bottom edge for seamless blending with content

@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +31,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -119,6 +122,34 @@ fun SettingsUi(
             SettingsLinkItem(
                 text = "Audio & Haptics",
                 onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
+            )
+
+            // Divider
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+
+            // Privacy section header
+            Text(
+                text = "Privacy",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(horizontal = 8.dp),
+            )
+
+            // Analytics toggle
+            AnalyticsToggleRow(
+                checked = state.analyticsEnabled,
+                onCheckedChange = { enabled ->
+                    state.eventSink(SettingsScreen.Event.AnalyticsToggled(enabled))
+                },
+            )
+
+            // Divider
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.outlineVariant,
             )
 
             // Additional sections
@@ -289,6 +320,56 @@ private fun AdaptiveDifficultySection(
 }
 
 /**
+ * Analytics toggle row with icon, description, and switch.
+ */
+@Composable
+private fun AnalyticsToggleRow(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { onCheckedChange(!checked) }
+                .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Analytics,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Analytics",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text =
+                    "Help improve the app by sharing usage data. " +
+                        "We collect screen views and feature usage, but never personal information like names or locations.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+        )
+    }
+}
+
+/**
  * Additional settings links (About, Privacy, Help).
  */
 @Composable
@@ -345,6 +426,7 @@ private fun SettingsUiPreview() {
                         ),
                     showNameDialog = false,
                     showGradeDialog = false,
+                    analyticsEnabled = true,
                     eventSink = {},
                 ),
         )
@@ -367,6 +449,7 @@ private fun SettingsUiNoNamePreview() {
                         ),
                     showNameDialog = false,
                     showGradeDialog = false,
+                    analyticsEnabled = false,
                     eventSink = {},
                 ),
         )
@@ -389,6 +472,7 @@ private fun SettingsUiDarkPreview() {
                         ),
                     showNameDialog = false,
                     showGradeDialog = false,
+                    analyticsEnabled = true,
                     eventSink = {},
                 ),
         )

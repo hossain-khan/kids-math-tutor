@@ -3,11 +3,18 @@ package dev.hossain.mathtutor.analytics
 import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
+import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ApplicationContext
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 /**
@@ -17,7 +24,10 @@ import timber.log.Timber
  * Uses Metro DI with [ContributesBinding] to automatically provide this implementation
  * when [AnalyticsService] is injected.
  *
+ * Observes user analytics preferences and updates collection state accordingly.
+ *
  * @param context Application context for Firebase initialization
+ * @param userPreferencesRepository Repository for accessing user preferences
  */
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
@@ -25,9 +35,29 @@ import timber.log.Timber
 class FirebaseAnalyticsService
     constructor(
         @ApplicationContext private val context: Context,
+        private val userPreferencesRepository: UserPreferencesRepository,
     ) : AnalyticsService {
         private val firebaseAnalytics: FirebaseAnalytics by lazy {
             FirebaseAnalytics.getInstance(context)
+        }
+
+        private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+        init {
+            // Initialize analytics collection state based on user preference
+            userPreferencesRepository.isAnalyticsEnabled
+                .onEach { enabled ->
+                    firebaseAnalytics.setAnalyticsCollectionEnabled(enabled)
+                    Timber.d("Analytics collection enabled: $enabled")
+                }.launchIn(scope)
+        }
+
+        /**
+         * Cancels the coroutine scope when the service is no longer needed.
+         * Note: Since this is a singleton with AppScope, it will live for the app's lifetime.
+         */
+        fun cleanup() {
+            scope.cancel()
         }
 
         override fun logScreenView(

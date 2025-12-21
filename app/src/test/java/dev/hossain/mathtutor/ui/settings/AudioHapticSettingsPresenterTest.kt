@@ -162,6 +162,7 @@ class AudioHapticSettingsPresenterTest {
         private val volumeFlow = MutableStateFlow(0.7f)
         private val highContrastEnabledFlow = MutableStateFlow(false)
         private val largeTextEnabledFlow = MutableStateFlow(false)
+        private val analyticsEnabledFlow = MutableStateFlow(true)
 
         override val isOnboardingCompleted: Flow<Boolean> = MutableStateFlow(false)
 
@@ -201,6 +202,12 @@ class AudioHapticSettingsPresenterTest {
 
         override suspend fun setLargeTextEnabled(enabled: Boolean) {
             largeTextEnabledFlow.value = enabled
+        }
+
+        override val isAnalyticsEnabled: Flow<Boolean> = analyticsEnabledFlow
+
+        override suspend fun setAnalyticsEnabled(enabled: Boolean) {
+            analyticsEnabledFlow.value = enabled
         }
 
         // Test helper methods

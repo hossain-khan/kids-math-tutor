@@ -33,6 +33,7 @@ class SettingsScreenTest {
                 profile = profile,
                 showNameDialog = false,
                 showGradeDialog = false,
+                analyticsEnabled = true,
                 eventSink = eventSink,
             )
 
@@ -54,6 +55,7 @@ class SettingsScreenTest {
                 profile = null,
                 showNameDialog = false,
                 showGradeDialog = false,
+                analyticsEnabled = true,
                 eventSink = eventSink,
             )
 
@@ -79,6 +81,7 @@ class SettingsScreenTest {
                 profile = profile,
                 showNameDialog = true,
                 showGradeDialog = false,
+                analyticsEnabled = true,
                 eventSink = eventSink,
             )
 
@@ -105,6 +108,7 @@ class SettingsScreenTest {
                 profile = profile,
                 showNameDialog = false,
                 showGradeDialog = true,
+                analyticsEnabled = true,
                 eventSink = eventSink,
             )
 
@@ -210,6 +214,7 @@ class SettingsScreenTest {
                 profile = profile,
                 showNameDialog = false,
                 showGradeDialog = false,
+                analyticsEnabled = true,
                 eventSink = { event -> receivedEvent = event },
             )
 
@@ -237,6 +242,7 @@ class SettingsScreenTest {
                 profile = profile,
                 showNameDialog = false,
                 showGradeDialog = false,
+                analyticsEnabled = true,
                 eventSink = { event -> receivedEvent = event },
             )
 
@@ -267,6 +273,7 @@ class SettingsScreenTest {
                 profile = profile,
                 showNameDialog = false,
                 showGradeDialog = false,
+                analyticsEnabled = true,
                 eventSink = eventSink,
             )
 
@@ -292,6 +299,7 @@ class SettingsScreenTest {
                 profile = profile,
                 showNameDialog = false,
                 showGradeDialog = false,
+                analyticsEnabled = true,
                 eventSink = eventSink,
             )
 
