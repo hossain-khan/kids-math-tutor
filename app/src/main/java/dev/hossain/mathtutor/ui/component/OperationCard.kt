@@ -92,6 +92,7 @@ fun OperationCard(
                                 .drawWithContent {
                                     drawContent()
                                     // Apply horizontal fade from left (opaque surface color) to right (transparent)
+                                    // Since image is right-aligned, start gradient from right edge
                                     // This blends the image with the card background in both light and dark modes
                                     drawRect(
                                         brush =
@@ -104,8 +105,8 @@ fun OperationCard(
                                                         surfaceColor.copy(alpha = 0.2f),
                                                         Color.Transparent,
                                                     ),
-                                                startX = 0f,
-                                                endX = size.width * 0.6f,
+                                                startX = size.width * 0.4f,
+                                                endX = size.width,
                                             ),
                                     )
                                 },
