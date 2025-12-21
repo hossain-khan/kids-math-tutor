@@ -5,6 +5,7 @@ import dev.hossain.mathtutor.analytics.FakeAnalyticsService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -469,6 +470,139 @@ class DeveloperPortalPresenterTest {
 
         override suspend fun setLargeTextEnabled(enabled: Boolean) {
             largeTextEnabledFlow.value = enabled
+        }
+    }
+
+    // ==================== Profile Update Tests ====================
+
+    @Test
+    fun `updateGradeLevel - calls repository with correct grade level`() =
+        runTest {
+            // Given
+            val fakeProfileRepo = FakeUserProfileRepository()
+
+            // When - Update grade level to GRADE_2
+            fakeProfileRepo.updateGradeLevel(dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_2)
+
+            // Then - Grade level should be updated
+            assertThat(fakeProfileRepo.lastUpdatedGradeLevel).isEqualTo(dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_2)
+        }
+
+    @Test
+    fun `updateAdaptiveDifficulty - calls repository with enabled true`() =
+        runTest {
+            // Given
+            val fakeProfileRepo = FakeUserProfileRepository()
+
+            // When - Enable adaptive difficulty
+            fakeProfileRepo.updateAdaptiveDifficulty(true)
+
+            // Then - Adaptive difficulty should be enabled
+            assertThat(fakeProfileRepo.lastUpdatedAdaptiveDifficulty).isTrue()
+        }
+
+    @Test
+    fun `updateAdaptiveDifficulty - calls repository with enabled false`() =
+        runTest {
+            // Given
+            val fakeProfileRepo = FakeUserProfileRepository()
+
+            // When - Disable adaptive difficulty
+            fakeProfileRepo.updateAdaptiveDifficulty(false)
+
+            // Then - Adaptive difficulty should be disabled
+            assertThat(fakeProfileRepo.lastUpdatedAdaptiveDifficulty).isFalse()
+        }
+
+    @Test
+    fun `updateName - calls repository with correct name`() =
+        runTest {
+            // Given
+            val fakeProfileRepo = FakeUserProfileRepository()
+
+            // When - Update name
+            fakeProfileRepo.updateName("Test User")
+
+            // Then - Name should be updated
+            assertThat(fakeProfileRepo.lastUpdatedName).isEqualTo("Test User")
+        }
+
+    @Test
+    fun `updateName - calls repository with null name`() =
+        runTest {
+            // Given
+            val fakeProfileRepo = FakeUserProfileRepository()
+
+            // When - Clear name
+            fakeProfileRepo.updateName(null)
+
+            // Then - Name should be null
+            assertThat(fakeProfileRepo.lastUpdatedName).isNull()
+        }
+
+    @Test
+    fun `profile state - reflects loaded profile data`() =
+        runTest {
+            // Given
+            val fakeProfileRepo = FakeUserProfileRepository()
+            val testProfile =
+                dev.hossain.mathtutor.domain.model.UserProfile(
+                    name = "Test Child",
+                    gradeLevel = dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_1,
+                    createdAt = java.time.Instant.now(),
+                    adaptiveDifficultyEnabled = false,
+                )
+            fakeProfileRepo.setProfile(testProfile)
+
+            // When - Collect profile
+            val profile = fakeProfileRepo.getProfile().firstOrNull()
+
+            // Then - Profile data should match
+            assertThat(profile).isNotNull()
+            assertThat(profile?.name).isEqualTo("Test Child")
+            assertThat(profile?.gradeLevel).isEqualTo(dev.hossain.mathtutor.domain.model.GradeLevel.GRADE_1)
+            assertThat(profile?.adaptiveDifficultyEnabled).isFalse()
+        }
+
+    /**
+     * Fake implementation of [dev.hossain.mathtutor.domain.repository.UserProfileRepository] for testing.
+     */
+    private class FakeUserProfileRepository : dev.hossain.mathtutor.domain.repository.UserProfileRepository {
+        private val profileFlow =
+            MutableStateFlow<dev.hossain.mathtutor.domain.model.UserProfile?>(null)
+        var lastUpdatedGradeLevel: dev.hossain.mathtutor.domain.model.GradeLevel? = null
+        var lastUpdatedAdaptiveDifficulty: Boolean? = null
+        var lastUpdatedName: String? = null
+
+        override fun getProfile(): Flow<dev.hossain.mathtutor.domain.model.UserProfile?> = profileFlow
+
+        override suspend fun saveProfile(profile: dev.hossain.mathtutor.domain.model.UserProfile) {
+            profileFlow.value = profile
+        }
+
+        override suspend fun updateGradeLevel(gradeLevel: dev.hossain.mathtutor.domain.model.GradeLevel) {
+            lastUpdatedGradeLevel = gradeLevel
+            profileFlow.value?.let { profile ->
+                profileFlow.value = profile.copy(gradeLevel = gradeLevel)
+            }
+        }
+
+        override suspend fun updateName(name: String?) {
+            lastUpdatedName = name
+            profileFlow.value?.let { profile ->
+                profileFlow.value = profile.copy(name = name)
+            }
+        }
+
+        override suspend fun updateAdaptiveDifficulty(enabled: Boolean) {
+            lastUpdatedAdaptiveDifficulty = enabled
+            profileFlow.value?.let { profile ->
+                profileFlow.value = profile.copy(adaptiveDifficultyEnabled = enabled)
+            }
+        }
+
+        fun setProfile(profile: dev.hossain.mathtutor.domain.model.UserProfile) {
+            profileFlow.value = profile
         }
     }
 }

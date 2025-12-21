@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Analytics Toggle in Developer Portal** — Added debug-only toggle control in Developer Portal to immediately enable/disable analytics collection. Toggle updates persisted preference via `UserPreferencesRepository` and immediately applies to `AnalyticsService` for testing without polluting production analytics. (Issue #194)
 - **Sounds & Haptics Test Panel** — Added comprehensive test panel in Developer Portal for testing audio and haptic feedback. Includes labeled buttons for Success, Error, Level-up, Badge unlock, Countdown, GO!, and Background music with immediate feedback display. All buttons trigger appropriate `AudioService` and `HapticService` methods with visual confirmation. (Issue #196)
 - **Reset Onboarding Action** — Added "Reset Onboarding" action to Developer Portal for testing first-run experience. Action resets onboarding state with confirmation dialog, preserving user data while triggering onboarding flow on next app launch. Includes unit tests for state management and preference updates.
+- **Profile Controls in Developer Portal** — Added quick controls to Developer Portal for rapid testing of profile settings. Provides grade level selector (K, Grade 1, Grade 2), adaptive difficulty toggle, and optional name field. Changes take effect immediately for subsequent practice sessions. Includes unit tests validating repository method calls.
 
 ## [1.7.0] - 2025-12-21
 
