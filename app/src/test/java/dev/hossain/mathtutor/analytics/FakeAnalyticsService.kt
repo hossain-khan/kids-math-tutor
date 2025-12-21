@@ -62,7 +62,7 @@ class FakeAnalyticsService : AnalyticsService {
     val events = mutableListOf<LoggedEvent>()
     val userProperties = mutableListOf<UserPropertySet>()
     val errors = mutableListOf<ErrorLogged>()
-    
+
     private var _analyticsEnabled = true
     val analyticsEnabled: Boolean get() = _analyticsEnabled
 
