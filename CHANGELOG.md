@@ -38,6 +38,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Math Practice screen includes operation type and problem count parameters
   - Uses Circuit's `LaunchedImpressionEffect` for consistent screen view tracking across all screens
   - Implementation for Issue #148 (Main App Screen Tracking)
+- **Repository Analytics Tracking** - Added analytics event tracking to data layer repositories
+  - Track badge unlock events with badge ID, name, and category details in `BadgeRepositoryImpl`
+  - Track practice session completion with operation type, problem count, correct answers, accuracy, and duration in `SessionRepositoryImpl`
+  - Track user profile updates with grade level user property in `UserProfileRepositoryImpl`
+  - Track all repository errors for monitoring and debugging
+  - Events logged after successful data persistence to ensure data integrity
+  - Implementation for Issue #149 (Repository Event Tracking)
 
 ### Fixed
 - **ANR when pressing system back from Settings and Games screens** - Fixed Application Not Responding issue when using system back button

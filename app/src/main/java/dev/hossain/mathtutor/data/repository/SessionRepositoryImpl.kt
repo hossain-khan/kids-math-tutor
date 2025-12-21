@@ -46,18 +46,20 @@ class SessionRepositoryImpl
                 Timber.d("SessionRepository: Session saved with ID=$sessionId")
 
                 // Track session completion in analytics
-                val accuracy = if (session.totalProblems > 0) {
-                    (session.correctAnswers.toFloat() / session.totalProblems) * 100f
-                } else {
-                    0f
-                }
+                val correctCount = session.getCorrectCount()
+                val accuracy =
+                    if (session.totalProblems > 0) {
+                        (correctCount.toFloat() / session.totalProblems) * 100f
+                    } else {
+                        0f
+                    }
 
                 analyticsService.logEvent(
                     AnalyticsEvent.PRACTICE_SESSION_COMPLETED,
                     mapOf(
                         AnalyticsParam.OPERATION_TYPE to operation.name,
                         AnalyticsParam.PROBLEM_COUNT to session.totalProblems,
-                        AnalyticsParam.CORRECT_ANSWERS to session.correctAnswers,
+                        AnalyticsParam.CORRECT_ANSWERS to correctCount,
                         AnalyticsParam.ACCURACY to accuracy,
                         AnalyticsParam.SESSION_DURATION to durationSeconds,
                     ),
