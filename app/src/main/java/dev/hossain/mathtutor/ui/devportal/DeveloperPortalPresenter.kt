@@ -78,6 +78,8 @@ class DeveloperPortalPresenter
 
             var badges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var isAnalyticsEnabled by remember { mutableStateOf(true) }
+            var isBackgroundMusicPlaying by remember { mutableStateOf(false) }
+            var soundHapticFeedback by remember { mutableStateOf<String?>(null) }
             LaunchedEffect(Unit) {
                 // Collect badges from repository to display in UI
                 launch {
@@ -109,6 +111,8 @@ class DeveloperPortalPresenter
                 forceUnlockInProgress = forceUnlockInProgress,
                 forceUnlockResultMessage = forceUnlockResultMessage,
                 isAnalyticsEnabled = isAnalyticsEnabled,
+                isBackgroundMusicPlaying = isBackgroundMusicPlaying,
+                soundHapticFeedback = soundHapticFeedback,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
@@ -257,6 +261,56 @@ class DeveloperPortalPresenter
                     is DeveloperPortalScreen.Event.PlaySuccessSound -> {
                         audioService.playSuccess()
                         hapticService.triggerSuccess()
+                        soundHapticFeedback = "Success sound & haptic played"
+                        Timber.d("[DevPortal] Played success sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayErrorSound -> {
+                        audioService.playError()
+                        hapticService.triggerError()
+                        soundHapticFeedback = "Error sound & haptic played"
+                        Timber.d("[DevPortal] Played error sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayLevelUpSound -> {
+                        audioService.playLevelUp()
+                        hapticService.triggerSuccess()
+                        soundHapticFeedback = "Level-up sound & haptic played"
+                        Timber.d("[DevPortal] Played level-up sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayBadgeUnlockSound -> {
+                        audioService.playBadgeUnlock()
+                        hapticService.triggerBadgeUnlock()
+                        soundHapticFeedback = "Badge unlock sound & haptic played"
+                        Timber.d("[DevPortal] Played badge unlock sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayCountdownSound -> {
+                        audioService.playCountdown()
+                        soundHapticFeedback = "Countdown sound played"
+                        Timber.d("[DevPortal] Played countdown sound")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayGoSound -> {
+                        audioService.playGo()
+                        hapticService.triggerSuccess()
+                        soundHapticFeedback = "GO! sound & haptic played"
+                        Timber.d("[DevPortal] Played GO! sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.ToggleBackgroundMusic -> {
+                        if (isBackgroundMusicPlaying) {
+                            audioService.stopBackgroundMusic()
+                            isBackgroundMusicPlaying = false
+                            soundHapticFeedback = "Background music stopped"
+                            Timber.d("[DevPortal] Stopped background music")
+                        } else {
+                            audioService.startBackgroundMusic()
+                            isBackgroundMusicPlaying = true
+                            soundHapticFeedback = "Background music started"
+                            Timber.d("[DevPortal] Started background music")
+                        }
                     }
 
                     is DeveloperPortalScreen.Event.NavigateBack -> {

@@ -26,6 +26,8 @@ data object DeveloperPortalScreen : Screen {
         val forceUnlockInProgress: Boolean = false,
         val forceUnlockResultMessage: String? = null,
         val isAnalyticsEnabled: Boolean = true,
+        val isBackgroundMusicPlaying: Boolean = false,
+        val soundHapticFeedback: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -55,6 +57,18 @@ data object DeveloperPortalScreen : Screen {
         ) : Event
 
         data object PlaySuccessSound : Event
+
+        data object PlayErrorSound : Event
+
+        data object PlayLevelUpSound : Event
+
+        data object PlayBadgeUnlockSound : Event
+
+        data object PlayCountdownSound : Event
+
+        data object PlayGoSound : Event
+
+        data object ToggleBackgroundMusic : Event
 
         data object NavigateBack : Event
     }
