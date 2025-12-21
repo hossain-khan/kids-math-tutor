@@ -1,5 +1,8 @@
 package dev.hossain.mathtutor.data.repository
 
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.data.mapper.SessionMapper
@@ -25,6 +28,7 @@ import timber.log.Timber
 class SessionRepositoryImpl
     constructor(
         private val sessionDao: SessionDao,
+        private val analyticsService: AnalyticsService,
     ) : SessionRepository {
         override suspend fun saveSession(
             session: PracticeSession,
@@ -32,14 +36,39 @@ class SessionRepositoryImpl
             durationSeconds: Long,
             gradeLevel: Int?,
         ): Long {
-            Timber.d(
-                "SessionRepository: Saving session - operation=$operation, " +
-                    "problems=${session.totalProblems}, duration=${durationSeconds}s, gradeLevel=$gradeLevel",
-            )
-            val entity = SessionMapper.toEntity(session, operation, durationSeconds, gradeLevel)
-            val sessionId = sessionDao.insertSession(entity)
-            Timber.d("SessionRepository: Session saved with ID=$sessionId")
-            return sessionId
+            try {
+                Timber.d(
+                    "SessionRepository: Saving session - operation=$operation, " +
+                        "problems=${session.totalProblems}, duration=${durationSeconds}s, gradeLevel=$gradeLevel",
+                )
+                val entity = SessionMapper.toEntity(session, operation, durationSeconds, gradeLevel)
+                val sessionId = sessionDao.insertSession(entity)
+                Timber.d("SessionRepository: Session saved with ID=$sessionId")
+
+                // Track session completion in analytics
+                val accuracy = if (session.totalProblems > 0) {
+                    (session.correctAnswers.toFloat() / session.totalProblems) * 100f
+                } else {
+                    0f
+                }
+
+                analyticsService.logEvent(
+                    AnalyticsEvent.PRACTICE_SESSION_COMPLETED,
+                    mapOf(
+                        AnalyticsParam.OPERATION_TYPE to operation.name,
+                        AnalyticsParam.PROBLEM_COUNT to session.totalProblems,
+                        AnalyticsParam.CORRECT_ANSWERS to session.correctAnswers,
+                        AnalyticsParam.ACCURACY to accuracy,
+                        AnalyticsParam.SESSION_DURATION to durationSeconds,
+                    ),
+                )
+
+                return sessionId
+            } catch (e: Exception) {
+                Timber.e(e, "SessionRepository: Failed to save session")
+                analyticsService.logError(e, "Session save failed", isFatal = false)
+                throw e
+            }
         }
 
         override fun getAllSessions(): Flow<List<PracticeSessionEntity>> = sessionDao.getAllSessions()
@@ -88,8 +117,14 @@ class SessionRepositoryImpl
             }
 
         override suspend fun clearAllSessions() {
-            Timber.d("SessionRepository: Clearing all sessions")
-            sessionDao.deleteAllSessions()
-            Timber.d("SessionRepository: All sessions cleared")
+            try {
+                Timber.d("SessionRepository: Clearing all sessions")
+                sessionDao.deleteAllSessions()
+                Timber.d("SessionRepository: All sessions cleared")
+            } catch (e: Exception) {
+                Timber.e(e, "SessionRepository: Failed to clear sessions")
+                analyticsService.logError(e, "Session clear failed", isFatal = false)
+                throw e
+            }
         }
     }

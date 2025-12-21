@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.analytics.UserProperty
 import dev.hossain.mathtutor.data.local.userPreferencesDataStore
 import dev.hossain.mathtutor.di.ApplicationContext
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -29,6 +31,7 @@ import java.time.Instant
 class UserProfileRepositoryImpl
     constructor(
         @param:ApplicationContext private val context: Context,
+        private val analyticsService: AnalyticsService,
     ) : UserProfileRepository {
         private object PreferencesKeys {
             val NAME_KEY = stringPreferencesKey("profile_name")
@@ -61,42 +64,82 @@ class UserProfileRepositoryImpl
             }
 
         override suspend fun saveProfile(profile: UserProfile) {
-            Timber.d(
-                "UserProfileRepository: Saving profile - name=${profile.name}, " +
-                    "gradeLevel=${profile.gradeLevel}, adaptive=${profile.adaptiveDifficultyEnabled}",
-            )
-            context.userPreferencesDataStore.edit { preferences ->
-                preferences[PreferencesKeys.NAME_KEY] =
-                    profile.name
-                        ?: "" // Store empty string instead of null
-                preferences[PreferencesKeys.GRADE_KEY] = profile.gradeLevel.name
-                preferences[PreferencesKeys.CREATED_AT_KEY] = profile.createdAt.toEpochMilli()
-                preferences[PreferencesKeys.ADAPTIVE_KEY] = profile.adaptiveDifficultyEnabled
+            try {
+                Timber.d(
+                    "UserProfileRepository: Saving profile - name=${profile.name}, " +
+                        "gradeLevel=${profile.gradeLevel}, adaptive=${profile.adaptiveDifficultyEnabled}",
+                )
+                context.userPreferencesDataStore.edit { preferences ->
+                    preferences[PreferencesKeys.NAME_KEY] =
+                        profile.name
+                            ?: "" // Store empty string instead of null
+                    preferences[PreferencesKeys.GRADE_KEY] = profile.gradeLevel.name
+                    preferences[PreferencesKeys.CREATED_AT_KEY] = profile.createdAt.toEpochMilli()
+                    preferences[PreferencesKeys.ADAPTIVE_KEY] = profile.adaptiveDifficultyEnabled
+                }
+                Timber.d("UserProfileRepository: Profile saved successfully")
+
+                // Update analytics user properties
+                analyticsService.setUserProperty(
+                    UserProperty.GRADE_LEVEL,
+                    profile.gradeLevel.name,
+                )
+                analyticsService.setUserProperty(
+                    UserProperty.HAS_COMPLETED_ONBOARDING,
+                    "true",
+                )
+            } catch (e: Exception) {
+                Timber.e(e, "UserProfileRepository: Failed to save profile")
+                analyticsService.logError(e, "Profile save failed", isFatal = false)
+                throw e
             }
-            Timber.d("UserProfileRepository: Profile saved successfully")
         }
 
         override suspend fun updateGradeLevel(gradeLevel: GradeLevel) {
-            Timber.d("UserProfileRepository: Updating grade level to $gradeLevel")
-            context.userPreferencesDataStore.edit { preferences ->
-                preferences[PreferencesKeys.GRADE_KEY] = gradeLevel.name
+            try {
+                Timber.d("UserProfileRepository: Updating grade level to $gradeLevel")
+                context.userPreferencesDataStore.edit { preferences ->
+                    preferences[PreferencesKeys.GRADE_KEY] = gradeLevel.name
+                }
+                Timber.d("UserProfileRepository: Grade level updated successfully")
+
+                // Update analytics user property
+                analyticsService.setUserProperty(
+                    UserProperty.GRADE_LEVEL,
+                    gradeLevel.name,
+                )
+            } catch (e: Exception) {
+                Timber.e(e, "UserProfileRepository: Failed to update grade level")
+                analyticsService.logError(e, "Grade level update failed", isFatal = false)
+                throw e
             }
-            Timber.d("UserProfileRepository: Grade level updated successfully")
         }
 
         override suspend fun updateName(name: String?) {
-            Timber.d("UserProfileRepository: Updating name to '$name'")
-            context.userPreferencesDataStore.edit { preferences ->
-                preferences[PreferencesKeys.NAME_KEY] = name ?: ""
+            try {
+                Timber.d("UserProfileRepository: Updating name to '$name'")
+                context.userPreferencesDataStore.edit { preferences ->
+                    preferences[PreferencesKeys.NAME_KEY] = name ?: ""
+                }
+                Timber.d("UserProfileRepository: Name updated successfully")
+            } catch (e: Exception) {
+                Timber.e(e, "UserProfileRepository: Failed to update name")
+                analyticsService.logError(e, "Name update failed", isFatal = false)
+                throw e
             }
-            Timber.d("UserProfileRepository: Name updated successfully")
         }
 
         override suspend fun updateAdaptiveDifficulty(enabled: Boolean) {
-            Timber.d("UserProfileRepository: Updating adaptive difficulty to $enabled")
-            context.userPreferencesDataStore.edit { preferences ->
-                preferences[PreferencesKeys.ADAPTIVE_KEY] = enabled
+            try {
+                Timber.d("UserProfileRepository: Updating adaptive difficulty to $enabled")
+                context.userPreferencesDataStore.edit { preferences ->
+                    preferences[PreferencesKeys.ADAPTIVE_KEY] = enabled
+                }
+                Timber.d("UserProfileRepository: Adaptive difficulty updated successfully")
+            } catch (e: Exception) {
+                Timber.e(e, "UserProfileRepository: Failed to update adaptive difficulty")
+                analyticsService.logError(e, "Adaptive difficulty update failed", isFatal = false)
+                throw e
             }
-            Timber.d("UserProfileRepository: Adaptive difficulty updated successfully")
         }
     }

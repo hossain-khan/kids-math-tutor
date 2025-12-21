@@ -1,6 +1,9 @@
 package dev.hossain.mathtutor.data.repository
 
 import com.google.common.truth.Truth.assertThat
+import dev.hossain.mathtutor.analytics.AnalyticsEvent
+import dev.hossain.mathtutor.analytics.AnalyticsParam
+import dev.hossain.mathtutor.analytics.FakeAnalyticsService
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
@@ -19,12 +22,14 @@ import java.time.Instant
 
 class SessionRepositoryImplTest {
     private lateinit var fakeDao: FakeSessionDao
+    private lateinit var fakeAnalytics: FakeAnalyticsService
     private lateinit var repository: SessionRepositoryImpl
 
     @Before
     fun setup() {
         fakeDao = FakeSessionDao()
-        repository = SessionRepositoryImpl(fakeDao)
+        fakeAnalytics = FakeAnalyticsService()
+        repository = SessionRepositoryImpl(fakeDao, fakeAnalytics)
     }
 
     @Test
@@ -235,6 +240,75 @@ class SessionRepositoryImplTest {
             assertThat(stats.sessionCount).isEqualTo(3)
         }
 
+    @Test
+    fun `saveSession logs analytics event with session details`() =
+        runTest {
+            val problems = listOf(MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8))
+            val session =
+                PracticeSession(
+                    totalProblems = 10,
+                    problems = problems,
+                    answers =
+                        mutableMapOf(
+                            problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 8, isCorrect = true, attemptCount = 1),
+                        ),
+                )
+
+            repository.saveSession(session, MathOperation.ADDITION, 120L, 1)
+
+            // Verify analytics event logged
+            val events = fakeAnalytics.getEventsWithName(AnalyticsEvent.PRACTICE_SESSION_COMPLETED)
+            assertThat(events).hasSize(1)
+            assertThat(events.first().parameters[AnalyticsParam.OPERATION_TYPE]).isEqualTo(MathOperation.ADDITION.name)
+            assertThat(events.first().parameters[AnalyticsParam.PROBLEM_COUNT]).isEqualTo(10)
+            assertThat(events.first().parameters[AnalyticsParam.CORRECT_ANSWERS]).isEqualTo(1)
+            assertThat(events.first().parameters[AnalyticsParam.SESSION_DURATION]).isEqualTo(120L)
+        }
+
+    @Test
+    fun `saveSession logs error on failure`() =
+        runTest {
+            val problems = listOf(MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3))
+            val session =
+                PracticeSession(
+                    totalProblems = 1,
+                    problems = problems,
+                    answers =
+                        mutableMapOf(
+                            problems[0].id to SessionAnswer(problemId = problems[0].id, userAnswer = 3, isCorrect = true, attemptCount = 1),
+                        ),
+                )
+            fakeDao.shouldThrowOnInsert = true
+
+            try {
+                repository.saveSession(session, MathOperation.ADDITION, 60L, 1)
+            } catch (e: Exception) {
+                // Expected exception
+            }
+
+            // Verify error logged
+            assertThat(fakeAnalytics.errors).hasSize(1)
+            assertThat(fakeAnalytics.errors.first().context).isEqualTo("Session save failed")
+            assertThat(fakeAnalytics.errors.first().isFatal).isFalse()
+        }
+
+    @Test
+    fun `clearAllSessions logs error on failure`() =
+        runTest {
+            fakeDao.shouldThrowOnDelete = true
+
+            try {
+                repository.clearAllSessions()
+            } catch (e: Exception) {
+                // Expected exception
+            }
+
+            // Verify error logged
+            assertThat(fakeAnalytics.errors).hasSize(1)
+            assertThat(fakeAnalytics.errors.first().context).isEqualTo("Session clear failed")
+            assertThat(fakeAnalytics.errors.first().isFatal).isFalse()
+        }
+
     private fun createSessionEntity(
         id: Long,
         operation: MathOperation,
@@ -266,10 +340,15 @@ class FakeSessionDao : SessionDao {
     val totalCorrect = MutableStateFlow<Int?>(null)
     val sessionCount = MutableStateFlow(0)
     var deleteAllCalled = false
+    var shouldThrowOnInsert = false
+    var shouldThrowOnDelete = false
 
     private var nextId = 1L
 
     override suspend fun insertSession(session: PracticeSessionEntity): Long {
+        if (shouldThrowOnInsert) {
+            throw RuntimeException("Failed to insert session")
+        }
         val id = nextId++
         insertedSessions.add(session.copy(id = id))
         return id
@@ -289,6 +368,9 @@ class FakeSessionDao : SessionDao {
     override fun getSessionCount(): Flow<Int> = sessionCount
 
     override suspend fun deleteAllSessions() {
+        if (shouldThrowOnDelete) {
+            throw RuntimeException("Failed to delete sessions")
+        }
         deleteAllCalled = true
         insertedSessions.clear()
     }

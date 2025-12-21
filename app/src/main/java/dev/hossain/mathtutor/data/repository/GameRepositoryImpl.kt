@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.data.repository
 
+import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.local.dao.GameSessionDao
 import dev.hossain.mathtutor.data.local.entity.GameSessionEntity
 import dev.hossain.mathtutor.domain.model.Game
@@ -40,17 +41,24 @@ class GameRepositoryImpl
     constructor(
         private val gameSessionDao: GameSessionDao,
         private val sessionRepository: SessionRepository,
+        private val analyticsService: AnalyticsService,
     ) : GameRepository {
         override suspend fun saveGameSession(session: GameSession): Long {
-            Timber.d(
-                "GameRepository: Saving game session - game=${session.game}, score=${session.score}, " +
-                    "correctAnswers=${session.correctAnswers}, totalAttempts=${session.totalAttempts}, " +
-                    "isNewRecord=${session.isNewRecord}",
-            )
-            val entity = GameSessionEntity.fromDomainModel(session)
-            val sessionId = gameSessionDao.insertSession(entity)
-            Timber.d("GameRepository: Game session saved with ID=$sessionId")
-            return sessionId
+            try {
+                Timber.d(
+                    "GameRepository: Saving game session - game=${session.game}, score=${session.score}, " +
+                        "correctAnswers=${session.correctAnswers}, totalAttempts=${session.totalAttempts}, " +
+                        "isNewRecord=${session.isNewRecord}",
+                )
+                val entity = GameSessionEntity.fromDomainModel(session)
+                val sessionId = gameSessionDao.insertSession(entity)
+                Timber.d("GameRepository: Game session saved with ID=$sessionId")
+                return sessionId
+            } catch (e: Exception) {
+                Timber.e(e, "GameRepository: Failed to save game session")
+                analyticsService.logError(e, "Game session save failed", isFatal = false)
+                throw e
+            }
         }
 
         override fun getPersonalBest(game: Game): Flow<Int> = gameSessionDao.getPersonalBest(game.name).map { it ?: 0 }
@@ -134,8 +142,14 @@ class GameRepositoryImpl
         override fun getPerfectGameCount(game: Game): Flow<Int> = gameSessionDao.getPerfectGameCount(game.name)
 
         override suspend fun clearAllSessions() {
-            Timber.d("GameRepository: Clearing all game sessions")
-            gameSessionDao.deleteAllSessions()
-            Timber.d("GameRepository: All game sessions cleared")
+            try {
+                Timber.d("GameRepository: Clearing all game sessions")
+                gameSessionDao.deleteAllSessions()
+                Timber.d("GameRepository: All game sessions cleared")
+            } catch (e: Exception) {
+                Timber.e(e, "GameRepository: Failed to clear game sessions")
+                analyticsService.logError(e, "Game session clear failed", isFatal = false)
+                throw e
+            }
         }
     }
