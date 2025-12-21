@@ -26,11 +26,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - name: set up JDK
+      
+      - name: Set up JDK
         uses: actions/setup-java@v5
         with:
           java-version: ${{ matrix.java-version }}
           distribution: ${{ matrix.distribution }}
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       # Automatic gradle caching using `actions/cache@v4`
       # https://github.com/gradle/actions/tree/main/setup-gradle
