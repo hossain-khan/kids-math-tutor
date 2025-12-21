@@ -50,7 +50,7 @@ data object DeveloperPortalScreen : Screen {
         data object ForceBadgeCheckClicked : Event
 
         data class ForceUnlockBadge(
-            val badgeId: String
+            val badgeId: String,
         ) : Event
 
         data object PlaySuccessSound : Event

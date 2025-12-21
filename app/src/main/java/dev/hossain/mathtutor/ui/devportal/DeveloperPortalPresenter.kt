@@ -121,6 +121,7 @@ class DeveloperPortalPresenter
                             }
                         }
                     }
+
                     is DeveloperPortalScreen.Event.ToggleAnalyticsOverride -> {
                         // Toggle analytics immediately (debug-only)
                         scope.launch(Dispatchers.IO) {
