@@ -84,7 +84,49 @@ fun DeveloperPortalUi(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(text = "Seed & Simulators", style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.SeedSessionsClicked) }) {
+                        var countText by remember { mutableStateOf("10") }
+                        var opIndex by remember { mutableStateOf(0) }
+                        var gradeIndex by remember { mutableStateOf(1) } // default Grade 1
+
+                        TextField(
+                            value = countText,
+                            onValueChange = { countText = it.filter { ch -> ch.isDigit() } },
+                            placeholder = { Text("Number of sessions (e.g., 10)") },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = "Operation: ${dev.hossain.mathtutor.domain.model.MathOperation.values()[opIndex].displayName}")
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(onClick = {
+                            opIndex = (opIndex + 1) %
+                                dev.hossain.mathtutor.domain.model.MathOperation
+                                    .values()
+                                    .size
+                        }) {
+                            Text("Change Operation")
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = "Grade: ${dev.hossain.mathtutor.domain.model.GradeLevel.values()[gradeIndex].displayName}")
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(onClick = {
+                            gradeIndex = (gradeIndex + 1) %
+                                dev.hossain.mathtutor.domain.model.GradeLevel
+                                    .values()
+                                    .size
+                        }) {
+                            Text("Change Grade")
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = {
+                            val count = countText.toIntOrNull() ?: 0
+                            val op =
+                                dev.hossain.mathtutor.domain.model.MathOperation
+                                    .values()[opIndex]
+                            val grade =
+                                dev.hossain.mathtutor.domain.model.GradeLevel
+                                    .values()[gradeIndex]
+                            state.eventSink(DeveloperPortalScreen.Event.SeedSessionsRequested(count, op, grade))
+                        }) {
                             Text("Seed Sample Sessions")
                         }
                         Spacer(modifier = Modifier.height(8.dp))
