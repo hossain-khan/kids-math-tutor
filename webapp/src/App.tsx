@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Builder from './pages/Builder'
-import Result from './pages/Result'
-import Help from './pages/Help'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Builder from "./pages/Builder";
+import Result from "./pages/Result";
+import Help from "./pages/Help";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <Route path="/help" element={<Help />} />
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
