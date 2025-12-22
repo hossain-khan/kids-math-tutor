@@ -15,6 +15,7 @@ import dev.hossain.mathtutor.data.local.entity.GameSessionEntity
 import dev.hossain.mathtutor.data.local.entity.PerformanceEntity
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.data.local.entity.StreakEntity
+import timber.log.Timber
 
 /**
  * Room database for Kids Math Tutor app.
@@ -95,6 +96,7 @@ abstract class MathDatabase : RoomDatabase() {
         val MIGRATION_1_2 =
             object : Migration(1, 2) {
                 override fun migrate(db: SupportSQLiteDatabase) {
+                    Timber.d("MathDatabase: Migrating 1 -> 2")
                     // Create badges table
                     db.execSQL(
                         """
@@ -120,6 +122,7 @@ abstract class MathDatabase : RoomDatabase() {
         val MIGRATION_2_3 =
             object : Migration(2, 3) {
                 override fun migrate(db: SupportSQLiteDatabase) {
+                    Timber.d("MathDatabase: Migrating 2 -> 3")
                     // Create streak table
                     db.execSQL(
                         """
@@ -142,6 +145,7 @@ abstract class MathDatabase : RoomDatabase() {
         val MIGRATION_3_4 =
             object : Migration(3, 4) {
                 override fun migrate(db: SupportSQLiteDatabase) {
+                    Timber.d("MathDatabase: Migrating 3 -> 4")
                     // Create performance_records table
                     db.execSQL(
                         """
@@ -167,6 +171,7 @@ abstract class MathDatabase : RoomDatabase() {
         val MIGRATION_4_5 =
             object : Migration(4, 5) {
                 override fun migrate(db: SupportSQLiteDatabase) {
+                    Timber.d("MathDatabase: Migrating 4 -> 5")
                     // Create game_sessions table
                     db.execSQL(
                         """
@@ -201,6 +206,7 @@ abstract class MathDatabase : RoomDatabase() {
         val MIGRATION_5_6 =
             object : Migration(5, 6) {
                 override fun migrate(db: SupportSQLiteDatabase) {
+                    Timber.d("MathDatabase: Migrating 5 -> 6 - clearing badges table")
                     // Clear existing badges since we can't migrate emoji strings to enum names
                     db.execSQL("DELETE FROM badges")
                 }
@@ -213,6 +219,7 @@ abstract class MathDatabase : RoomDatabase() {
         val MIGRATION_6_7 =
             object : Migration(6, 7) {
                 override fun migrate(db: SupportSQLiteDatabase) {
+                    Timber.d("MathDatabase: Migrating 6 -> 7 - inserting memory match badges")
                     // Insert new Memory Match badges
                     // Memory Master
                     db.execSQL(
