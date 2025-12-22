@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Adaptive Layout Support** - Implemented tablet and adaptive layouts across all screens
+  - Added Material 3 Adaptive dependencies for responsive layouts
+  - Created WindowStateUtils for foldable device posture detection
+  - Created AdaptiveLayoutTypes for navigation and content type enums
+  - Implemented AdaptiveNavigationWrapper with:
+    - Bottom navigation bar for compact (phone) devices
+    - Navigation rail for medium (tablet) devices
+    - Permanent navigation drawer for expanded (large tablet/desktop) devices
+  - Updated MainActivity to integrate adaptive navigation with Circuit
+  - HomeScreen: Side-by-side buttons and cards on tablets
+  - MathPracticeScreen: Side-by-side problem/input layout on landscape tablets
+  - StatsScreen: 2-column grid for operation stats on wide screens
+  - BadgesScreen: Centered content with max width on tablets
+  - GameSelectionScreen: Centered game cards on wide screens
+  - SettingsScreen: Centered settings with max width on tablets
+  - ResultsScreen: Centered results with max width on tablets
+  - All screens center content on wide screens with appropriate max widths
 - **Adaptive Layout Implementation Plan** - Comprehensive technical documentation for tablet and adaptive layout support
   - Created `ADAPTIVE_LAYOUT.md` in `project-resources/tech-doc/`
   - Analyzed Reply sample from Google's compose-samples for best practices

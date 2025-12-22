@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.practiceresults
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -35,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
@@ -43,10 +46,17 @@ import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
+
 /**
  * UI for [ResultsScreen].
  *
  * Displays practice session results including summary statistics and problem list.
+ *
+ * Adaptive Layout:
+ * - Compact: Full width results
+ * - Medium/Expanded: Centered content with max width
  */
 @CircuitInject(ResultsScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,44 +83,57 @@ fun ResultsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        LazyColumn(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(paddingValues),
         ) {
-            // Summary statistics
-            item {
-                SummaryCard(
-                    totalProblems = state.totalProblems,
-                    correctCount = state.correctCount,
-                    accuracyPercentage = state.accuracyPercentage,
-                    userName = state.userName,
-                )
-            }
+            // Center content on wide screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    // Summary statistics
+                    item {
+                        SummaryCard(
+                            totalProblems = state.totalProblems,
+                            correctCount = state.correctCount,
+                            accuracyPercentage = state.accuracyPercentage,
+                            userName = state.userName,
+                        )
+                    }
 
-            // Problem results list
-            item {
-                Text(
-                    text = "Problem Review",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp),
-                )
-            }
+                    // Problem results list
+                    item {
+                        Text(
+                            text = "Problem Review",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp),
+                        )
+                    }
 
-            items(state.problemResults) { result ->
-                ProblemResultCard(result = result)
-            }
+                    items(state.problemResults) { result ->
+                        ProblemResultCard(result = result)
+                    }
 
-            // Action buttons
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                ActionButtonsSection(
-                    onTryAgain = { state.eventSink(ResultsScreen.Event.TryAgain) },
-                )
+                    // Action buttons
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        ActionButtonsSection(
+                            onTryAgain = { state.eventSink(ResultsScreen.Event.TryAgain) },
+                        )
+                    }
+                }
             }
         }
 

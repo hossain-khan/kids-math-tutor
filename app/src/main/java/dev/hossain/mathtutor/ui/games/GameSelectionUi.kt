@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -40,11 +42,22 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Game
 import dev.zacsweers.metro.AppScope
 
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
+
+/**
+ * Game selection screen with adaptive layout.
+ *
+ * Adaptive Layout:
+ * - Compact: Full width game cards
+ * - Medium/Expanded: Centered content with max width
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @CircuitInject(GameSelectionScreen::class, AppScope::class)
 @Composable
@@ -87,37 +100,50 @@ fun GameSelectionUi(
         },
         modifier = modifier,
     ) { paddingValues ->
-        LazyColumn(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(paddingValues),
         ) {
-            item {
-                // Header
-                Text(
-                    text = "🎮 Play fun math games!",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
-                Text(
-                    text = "Solve more problems to unlock new games",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
-            }
+            // Center content on wide screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    item {
+                        // Header
+                        Text(
+                            text = "🎮 Play fun math games!",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(bottom = 8.dp),
+                        )
+                        Text(
+                            text = "Solve more problems to unlock new games",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(bottom = 8.dp),
+                        )
+                    }
 
-            items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
-                GameCard(
-                    gameInfo = gameInfo,
-                    totalProblemsSolved = state.totalProblemsSolved,
-                    onPlayClicked = { state.eventSink(GameSelectionScreen.Event.PlayGame(gameInfo.game)) },
-                )
+                    items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
+                        GameCard(
+                            gameInfo = gameInfo,
+                            totalProblemsSolved = state.totalProblemsSolved,
+                            onPlayClicked = { state.eventSink(GameSelectionScreen.Event.PlayGame(gameInfo.game)) },
+                        )
+                    }
+                }
             }
         }
     }
