@@ -17,6 +17,8 @@ data class ResultsScreen(
     val problems: List<MathProblem>,
     val userAnswers: List<Int?>,
     val badgesAlreadyChecked: Boolean = false,
+    val customChallengeId: String? = null,
+    val customChallengeTitle: String? = null,
 ) : Screen {
     /**
      * State for the Results screen.
@@ -29,6 +31,7 @@ data class ResultsScreen(
      * @property unlockedBadges List of badges unlocked during this session
      * @property showBadgeUnlock Whether to show badge unlock dialog
      * @property currentBadgeIndex Index of current badge being shown
+     * @property customChallengeTitle Optional title if this was a custom challenge
      * @property eventSink Handler for user events
      */
     data class State(
@@ -40,6 +43,7 @@ data class ResultsScreen(
         val unlockedBadges: List<Badge> = emptyList(),
         val showBadgeUnlock: Boolean = false,
         val currentBadgeIndex: Int = 0,
+        val customChallengeTitle: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

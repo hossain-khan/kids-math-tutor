@@ -141,6 +141,7 @@ class ResultsPresenter
                 unlockedBadges = unlockedBadges,
                 showBadgeUnlock = showBadgeUnlock,
                 currentBadgeIndex = currentBadgeIndex,
+                customChallengeTitle = screen.customChallengeTitle,
             ) { event ->
                 when (event) {
                     is ResultsScreen.Event.TryAgain -> {

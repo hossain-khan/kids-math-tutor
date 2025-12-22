@@ -103,8 +103,7 @@ class ParentChallengesPresenter
                                             .toString(),
                                 ),
                         )
-                        // Navigate to practice screen with first operation from challenge
-                        // For custom challenges, we'll use the operation from the first problem
+                        // Navigate to practice screen with custom challenge ID
                         val operation =
                             event.challenge.problems
                                 .firstOrNull()
@@ -114,6 +113,7 @@ class ParentChallengesPresenter
                             MathPracticeScreen(
                                 operation = operation,
                                 problemCount = event.challenge.problems.size,
+                                customChallengeId = event.challenge.id,
                             ),
                         )
                     }

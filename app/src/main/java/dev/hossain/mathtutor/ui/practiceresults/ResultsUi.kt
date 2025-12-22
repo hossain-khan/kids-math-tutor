@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -110,6 +111,7 @@ fun ResultsUi(
                             correctCount = state.correctCount,
                             accuracyPercentage = state.accuracyPercentage,
                             userName = state.userName,
+                            customChallengeTitle = state.customChallengeTitle,
                         )
                     }
 
@@ -157,6 +159,7 @@ private fun SummaryCard(
     correctCount: Int,
     accuracyPercentage: Float,
     userName: String?,
+    customChallengeTitle: String? = null,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -171,8 +174,43 @@ private fun SummaryCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Show custom challenge completion message if applicable
+            if (customChallengeTitle != null) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.EmojiEvents,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp),
+                    )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(
+                        text = "Parent Challenge Complete!",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                Text(
+                    text = customChallengeTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             // Personalized congratulations message
-            val congratsMessage = getCongratsMessage(accuracyPercentage, userName)
+            val congratsMessage =
+                if (customChallengeTitle != null) {
+                    getCustomChallengeCongratsMessage(accuracyPercentage, userName)
+                } else {
+                    getCongratsMessage(accuracyPercentage, userName)
+                }
             Text(
                 text = congratsMessage,
                 style = MaterialTheme.typography.headlineMedium,
@@ -412,6 +450,50 @@ private fun getCongratsMessage(
 
         else -> {
             "Keep practicing$nameSuffix! 📚"
+        }
+    }
+}
+
+/**
+ * Returns a custom challenge-specific congratulations message based on accuracy.
+ */
+private fun getCustomChallengeCongratsMessage(
+    accuracyPercentage: Float,
+    userName: String?,
+): String {
+    val nameSuffix = if (userName != null) ", $userName" else ""
+
+    return when {
+        accuracyPercentage == 100f -> {
+            if (userName != null) {
+                "Perfect, $userName! 🌟"
+            } else {
+                "Perfect! 🌟"
+            }
+        }
+
+        accuracyPercentage >= 90f -> {
+            if (userName != null) {
+                "Awesome, $userName! 🎯"
+            } else {
+                "Awesome! 🎯"
+            }
+        }
+
+        accuracyPercentage >= 75f -> {
+            if (userName != null) {
+                "Well done, $userName! 👏"
+            } else {
+                "Well done! 👏"
+            }
+        }
+
+        accuracyPercentage >= 50f -> {
+            "Nice try$nameSuffix! 💫"
+        }
+
+        else -> {
+            "Good effort$nameSuffix! 🌈"
         }
     }
 }
