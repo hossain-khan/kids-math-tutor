@@ -19,6 +19,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 
 /**
@@ -69,63 +70,67 @@ class GameSelectionPresenter
                         totalProblemsSolved = 0,
                     ),
             ) {
-                // Collect overall stats for unlock logic
-                sessionRepository.getOverallStats().collect { sessionStats ->
+                // Combine all flows - emits whenever any flow updates
+                // Using nested combine since we have more than 5 flows
+                combine(
+                    sessionRepository.getOverallStats(),
+                    combine(
+                        gameRepository.getPersonalBest(Game.MATH_RACE),
+                        gameRepository.getGameStats(Game.MATH_RACE),
+                    ) { best, stats -> Pair(best, stats) },
+                    combine(
+                        gameRepository.getPersonalBest(Game.MEMORY_MATCH),
+                        gameRepository.getGameStats(Game.MEMORY_MATCH),
+                    ) { best, stats -> Pair(best, stats) },
+                    combine(
+                        gameRepository.getPersonalBest(Game.NUMBER_SEQUENCE),
+                        gameRepository.getGameStats(Game.NUMBER_SEQUENCE),
+                    ) { best, stats -> Pair(best, stats) },
+                ) { sessionStats, mathRaceData, memoryMatchData, numberSequenceData ->
                     val totalProblems = sessionStats.totalProblems
+                    val (mathRaceBest, mathRaceStats) = mathRaceData
+                    val (memoryMatchBest, memoryMatchStats) = memoryMatchData
+                    val (numberSequenceBest, numberSequenceStats) = numberSequenceData
 
-                    // Collect Math Race data
-                    gameRepository.getPersonalBest(Game.MATH_RACE).collect { mathRaceBest ->
-                        gameRepository.getGameStats(Game.MATH_RACE).collect { mathRaceStats ->
-                            // Collect Memory Match data
-                            gameRepository.getPersonalBest(Game.MEMORY_MATCH).collect { memoryMatchBest ->
-                                gameRepository.getGameStats(Game.MEMORY_MATCH).collect { memoryMatchStats ->
-                                    // Collect Number Sequence data
-                                    gameRepository.getPersonalBest(Game.NUMBER_SEQUENCE).collect { numberSequenceBest ->
-                                        gameRepository.getGameStats(Game.NUMBER_SEQUENCE).collect { numberSequenceStats ->
-                                            // Build game info list
-                                            val games =
-                                                listOf(
-                                                    GameSelectionScreen.GameInfo(
-                                                        game = Game.MATH_RACE,
-                                                        isUnlocked = Game.MATH_RACE.isUnlocked(totalProblems),
-                                                        personalBest = mathRaceBest,
-                                                        totalPlays = mathRaceStats.totalGamesPlayed,
-                                                    ),
-                                                    GameSelectionScreen.GameInfo(
-                                                        game = Game.MEMORY_MATCH,
-                                                        isUnlocked = Game.MEMORY_MATCH.isUnlocked(totalProblems),
-                                                        personalBest = memoryMatchBest,
-                                                        totalPlays = memoryMatchStats.totalGamesPlayed,
-                                                    ),
-                                                    GameSelectionScreen.GameInfo(
-                                                        game = Game.NUMBER_SEQUENCE,
-                                                        isUnlocked = Game.NUMBER_SEQUENCE.isUnlocked(totalProblems),
-                                                        personalBest = numberSequenceBest,
-                                                        totalPlays = numberSequenceStats.totalGamesPlayed,
-                                                    ),
-                                                )
+                    // Build game info list
+                    val games =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = Game.MATH_RACE.isUnlocked(totalProblems),
+                                personalBest = mathRaceBest,
+                                totalPlays = mathRaceStats.totalGamesPlayed,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = Game.MEMORY_MATCH.isUnlocked(totalProblems),
+                                personalBest = memoryMatchBest,
+                                totalPlays = memoryMatchStats.totalGamesPlayed,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.NUMBER_SEQUENCE,
+                                isUnlocked = Game.NUMBER_SEQUENCE.isUnlocked(totalProblems),
+                                personalBest = numberSequenceBest,
+                                totalPlays = numberSequenceStats.totalGamesPlayed,
+                            ),
+                        )
 
-                                            Timber.d(
-                                                "GameSelectionPresenter: Loaded data - totalProblems=$totalProblems, " +
-                                                    "MathRace(unlocked=${games[0].isUnlocked}, " +
-                                                    "best=${games[0].personalBest}, plays=${games[0].totalPlays}), " +
-                                                    "MemoryMatch(unlocked=${games[1].isUnlocked}, " +
-                                                    "best=${games[1].personalBest}, plays=${games[1].totalPlays}), " +
-                                                    "NumberSequence(unlocked=${games[2].isUnlocked}, " +
-                                                    "best=${games[2].personalBest}, plays=${games[2].totalPlays})",
-                                            )
+                    Timber.d(
+                        "GameSelectionPresenter: Loaded data - totalProblems=$totalProblems, " +
+                            "MathRace(unlocked=${games[0].isUnlocked}, " +
+                            "best=${games[0].personalBest}, plays=${games[0].totalPlays}), " +
+                            "MemoryMatch(unlocked=${games[1].isUnlocked}, " +
+                            "best=${games[1].personalBest}, plays=${games[1].totalPlays}), " +
+                            "NumberSequence(unlocked=${games[2].isUnlocked}, " +
+                            "best=${games[2].personalBest}, plays=${games[2].totalPlays})",
+                    )
 
-                                            value =
-                                                GameSelectionData(
-                                                    gameInfoList = games,
-                                                    totalProblemsSolved = totalProblems,
-                                                )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    GameSelectionData(
+                        gameInfoList = games,
+                        totalProblemsSolved = totalProblems,
+                    )
+                }.collect { data ->
+                    value = data
                 }
             }
 

@@ -16,6 +16,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 
 /**
@@ -66,39 +67,37 @@ class StatsPresenter
                         operationStats = emptyMap(),
                     ),
             ) {
-                // Collect overall statistics
-                sessionRepository.getOverallStats().collect { overall ->
-                    // Collect recent sessions
-                    sessionRepository.getRecentSessions(limit = 10).collect { sessions ->
-                        // Collect operation-specific stats
-                        sessionRepository.getStatsByOperation(MathOperation.ADDITION).collect { addition ->
-                            sessionRepository.getStatsByOperation(MathOperation.SUBTRACTION).collect { subtraction ->
-                                // Build operation stats map
-                                val operationStatsMap =
-                                    buildMap {
-                                        if (addition.sessionCount > 0) {
-                                            put(MathOperation.ADDITION, addition)
-                                        }
-                                        if (subtraction.sessionCount > 0) {
-                                            put(MathOperation.SUBTRACTION, subtraction)
-                                        }
-                                    }
-
-                                Timber.d(
-                                    "StatsPresenter: Loaded stats - sessions=${overall.sessionCount}, " +
-                                        "totalProblems=${overall.totalProblems}, accuracy=${overall.accuracy}, " +
-                                        "recentSessions=${sessions.size}, operations=${operationStatsMap.size}",
-                                )
-
-                                value =
-                                    StatsData(
-                                        overallStats = overall,
-                                        recentSessions = sessions,
-                                        operationStats = operationStatsMap,
-                                    )
+                // Combine all flows - emits whenever any flow updates
+                combine(
+                    sessionRepository.getOverallStats(),
+                    sessionRepository.getRecentSessions(limit = 10),
+                    sessionRepository.getStatsByOperation(MathOperation.ADDITION),
+                    sessionRepository.getStatsByOperation(MathOperation.SUBTRACTION),
+                ) { overall, sessions, addition, subtraction ->
+                    // Build operation stats map
+                    val operationStatsMap =
+                        buildMap {
+                            if (addition.sessionCount > 0) {
+                                put(MathOperation.ADDITION, addition)
+                            }
+                            if (subtraction.sessionCount > 0) {
+                                put(MathOperation.SUBTRACTION, subtraction)
                             }
                         }
-                    }
+
+                    Timber.d(
+                        "StatsPresenter: Loaded stats - sessions=${overall.sessionCount}, " +
+                            "totalProblems=${overall.totalProblems}, accuracy=${overall.accuracy}, " +
+                            "recentSessions=${sessions.size}, operations=${operationStatsMap.size}",
+                    )
+
+                    StatsData(
+                        overallStats = overall,
+                        recentSessions = sessions,
+                        operationStats = operationStatsMap,
+                    )
+                }.collect { data ->
+                    value = data
                 }
             }
 
