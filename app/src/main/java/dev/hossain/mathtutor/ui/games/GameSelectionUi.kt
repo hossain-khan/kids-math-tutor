@@ -136,7 +136,7 @@ fun GameSelectionUi(
                                 painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
                                 contentDescription = "Math Pup juggling numbers",
                                 contentScale = ContentScale.Fit,
-                                modifier = Modifier.size(80.dp),
+                                modifier = Modifier.size(100.dp),
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
