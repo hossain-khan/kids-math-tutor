@@ -108,6 +108,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Analytics events: challenge import started, challenge started, challenge archived, challenge deleted
   - Metro DI integration with `CustomChallengeService` and `AnalyticsService`
   - Comprehensive unit tests covering challenge filtering, statistics, and operations grouping
+- **Test Data Factory and Utilities** - Created comprehensive test data utilities for Custom Challenges testing
+  - `TestDataFactory` utility object for creating test domain models with sensible defaults
+  - Factory methods for `ChallengeImportSpec.Generated` and `ChallengeImportSpec.Explicit`
+  - Factory methods for `CustomChallenge`, `MathProblem`, and `ChallengePracticeSession`
+  - `JsonTestSamples` utility object with 20+ JSON test samples for parser testing
+  - Valid JSON samples for generated and explicit challenges
+  - Invalid JSON samples covering all validation error cases
+  - Edge case samples: email with embedded JSON, multiple JSON objects, malformed JSON
+  - Overflow and division validation test samples
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual
