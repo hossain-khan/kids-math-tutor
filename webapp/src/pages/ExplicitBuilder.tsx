@@ -112,11 +112,11 @@ export default function ExplicitBuilder() {
 
       <main className="container mx-auto px-4 py-8 max-w-3xl">
         {/* Intro Card */}
-        <Card className="mb-6 bg-gradient-to-br from-secondary-50 to-purple-50 border-2 border-secondary-200">
-          <div className="flex items-start gap-3">
-            <div className="text-3xl">✏️</div>
-            <div>
-              <h2 className="font-display font-bold text-lg mb-1">Create Each Problem</h2>
+        <Card className="mb-6 bg-gradient-to-br from-secondary-50 to-purple-50 border-2 border-secondary-200 p-6">
+          <div className="flex items-start gap-4">
+            <div className="text-3xl flex-shrink-0">✏️</div>
+            <div className="flex-1">
+              <h2 className="font-display font-bold text-lg mb-2">Create Each Problem</h2>
               <p className="text-sm text-gray-600">
                 Enter each math problem exactly how you want it. Perfect for targeting specific skills!
               </p>
@@ -125,7 +125,7 @@ export default function ExplicitBuilder() {
         </Card>
 
         {/* Form */}
-        <Card>
+        <Card className="p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <Input
@@ -270,10 +270,10 @@ export default function ExplicitBuilder() {
         </Card>
 
         {/* Tips Card */}
-        <Card className="mt-6 bg-amber-50 border-amber-200">
-          <div className="flex items-start gap-3">
-            <div className="text-2xl">💡</div>
-            <div>
+        <Card className="mt-6 bg-amber-50 border-amber-200 p-6">
+          <div className="flex items-start gap-4">
+            <div className="text-2xl flex-shrink-0">💡</div>
+            <div className="flex-1">
               <h3 className="font-bold text-gray-900 mb-2">Problem Tips</h3>
               <ul className="text-sm text-gray-700 space-y-1">
                 <li>• <strong>Division:</strong> Make sure the first number divides evenly (no decimals)</li>

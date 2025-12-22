@@ -84,11 +84,11 @@ export default function GeneratedBuilder() {
 
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         {/* Intro Card */}
-        <Card className="mb-6 bg-gradient-to-br from-primary-50 to-blue-50 border-2 border-primary-200">
-          <div className="flex items-start gap-3">
-            <div className="text-3xl">✨</div>
-            <div>
-              <h2 className="font-display font-bold text-lg mb-1">Auto-Generate Problems</h2>
+        <Card className="mb-6 bg-gradient-to-br from-primary-50 to-blue-50 border-2 border-primary-200 p-6">
+          <div className="flex items-start gap-4">
+            <div className="text-3xl flex-shrink-0">✨</div>
+            <div className="flex-1">
+              <h2 className="font-display font-bold text-lg mb-2">Auto-Generate Problems</h2>
               <p className="text-sm text-gray-600">
                 Set your rules and we'll create random problems for you. Perfect for quick practice!
               </p>
@@ -97,7 +97,7 @@ export default function GeneratedBuilder() {
         </Card>
 
         {/* Form */}
-        <Card>
+        <Card className="p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <Input
@@ -190,10 +190,10 @@ export default function GeneratedBuilder() {
         </Card>
 
         {/* Tips Card */}
-        <Card className="mt-6 bg-amber-50 border-amber-200">
-          <div className="flex items-start gap-3">
-            <div className="text-2xl">💡</div>
-            <div>
+        <Card className="mt-6 bg-amber-50 border-amber-200 p-6">
+          <div className="flex items-start gap-4">
+            <div className="text-2xl flex-shrink-0">💡</div>
+            <div className="flex-1">
               <h3 className="font-bold text-gray-900 mb-2">Quick Tips</h3>
               <ul className="text-sm text-gray-700 space-y-1">
                 <li>• Start with smaller ranges (0-10) for younger children</li>
