@@ -73,6 +73,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Navigation integration with back button support
   - Metro DI integration for `ChallengeJsonParser`, `CustomChallengeService`, and `CustomChallengeRepository`
   - Comprehensive unit tests for presenter logic with fake implementations
+- **Parent Challenges List Screen** - New Circuit screen for managing custom challenges with challenge management actions
+  - `ParentChallengesScreen` with Circuit UDF architecture (Screen, Presenter, UI)
+  - Challenge list displaying all custom challenges with Material 3 Card components
+  - Challenge statistics: problem count, operations breakdown, estimated completion time
+  - Practice history display showing total sessions and best score percentage
+  - Archive/delete functionality with confirmation dialog for delete action
+  - Toggle between active and archived challenges
+  - Empty state with call-to-action to import new challenges
+  - Loading state with Material 3 CircularProgressIndicator
+  - FloatingActionButton for quick access to import new challenges
+  - Navigation integration: back button, import challenge screen, practice screen
+  - Analytics events: challenge import started, challenge started, challenge archived, challenge deleted
+  - Metro DI integration with `CustomChallengeService` and `AnalyticsService`
+  - Comprehensive unit tests covering challenge filtering, statistics, and operations grouping
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual
