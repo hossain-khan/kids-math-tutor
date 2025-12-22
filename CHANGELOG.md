@@ -28,6 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `ChallengeImportSpec` sealed class with Generated and Explicit variants for challenge import specifications
   - `ChallengePracticeSession` data class for tracking practice session history with metrics
   - `CustomChallenge` data class as main model with problems, metadata, and practice history
+- **Custom Challenge Database Schema** - Complete database implementation for persisting Custom Challenges locally
+  - Room entities: `CustomChallengeEntity`, `ChallengeProblemsEntity`, `ChallengePracticeSessionEntity`
+  - `CustomChallengeWithDetails` relation class for efficient data loading
+  - `CustomChallengeDao` with CRUD operations and Flow-based observations
+  - `CustomChallengeRepository` interface and `CustomChallengeRepositoryImpl` implementation
+  - `CustomChallengeMapper` for entity ↔ domain model conversion
+  - Database migration from version 7 to 8
+  - Support for `ChallengeType` enum in Room type converters
+  - Comprehensive unit tests for mapper, repository, and converters
   - All models are Parcelable for Android navigation and include comprehensive unit tests
 - **JSON Parser for Custom Challenges** - Implemented JSON parsing and validation for custom challenge import specifications
   - `ChallengeJsonParser` interface with `DefaultChallengeJsonParser` implementation using kotlinx-serialization
