@@ -4,6 +4,10 @@ name: Post Merge Check
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'webapp/**'
+      - '**.md'
+      - 'project-resources/**'
 
 jobs:
   android-post-check:
