@@ -4,7 +4,40 @@
 
 @layer base {
   body {
-    @apply font-body bg-gradient-to-br from-primary-50 to-secondary-50 min-h-screen;
+    @apply font-body min-h-screen;
+    background: linear-gradient(135deg, #f0f9ff 0%, #fae8ff 100%);
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='15' y='60' font-size='40' font-weight='bold' fill='%230ea5e9'%3E%2B%3C/text%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='15' y='60' font-size='40' font-weight='bold' fill='%23ec4899'%3E%E2%88%92%3C/text%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='12' y='60' font-size='40' font-weight='bold' fill='%2310b981'%3E%C3%97%3C/text%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='15' y='60' font-size='40' font-weight='bold' fill='%23f59e0b'%3E%C3%B7%3C/text%3E%3C/svg%3E");
+    background-size: 240px 240px;
+    background-position:
+      0 0,
+      120px 0,
+      0 120px,
+      120px 120px;
+    background-repeat: repeat;
+    transform: rotate(45deg) scale(1.5);
+    transform-origin: center;
+  }
+
+  body > * {
+    position: relative;
+    z-index: 1;
   }
 
   h1,
