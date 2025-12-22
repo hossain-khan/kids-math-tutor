@@ -1,0 +1,210 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import Select from '@/components/Select';
+import Card from '@/components/Card';
+import { GeneratedChallengeSpecSchema, type MathOperation } from '@/lib/schemas/challenge-schema';
+import { z } from 'zod';
+
+export default function GeneratedBuilder() {
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formData, setFormData] = useState({
+    title: '',
+    subtitle: '',
+    operation: 'addition' as MathOperation,
+    problemCount: 10,
+    minNumber: 0,
+    maxNumber: 20,
+  });
+
+  const operationOptions = [
+    { value: 'addition', label: '➕ Addition' },
+    { value: 'subtraction', label: '➖ Subtraction' },
+    { value: 'multiplication', label: '✖️ Multiplication' },
+    { value: 'division', label: '➗ Division' },
+  ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+
+    try {
+      // Validate the form data
+      const challengeData = {
+        type: 'generated' as const,
+        title: formData.title,
+        subtitle: formData.subtitle || undefined,
+        operation: formData.operation,
+        problemCount: formData.problemCount,
+        numberRange: {
+          min: formData.minNumber,
+          max: formData.maxNumber,
+        },
+      };
+
+      GeneratedChallengeSpecSchema.parse(challengeData);
+
+      // Store the data and navigate to result page
+      sessionStorage.setItem('challengeData', JSON.stringify(challengeData));
+      navigate('/result');
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          const path = err.path.join('.');
+          newErrors[path] = err.message;
+        });
+        setErrors(newErrors);
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link to="/" className="text-2xl hover:scale-110 transition-transform">
+                🐶
+              </Link>
+              <h1 className="text-2xl font-display font-bold text-gray-900">
+                Quick Generator
+              </h1>
+            </div>
+            <Link to="/help" className="text-primary-600 hover:underline text-sm">
+              Need Help?
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8 max-w-2xl">
+        {/* Intro Card */}
+        <Card className="mb-6 bg-gradient-to-br from-primary-50 to-blue-50 border-2 border-primary-200">
+          <div className="flex items-start gap-3">
+            <div className="text-3xl">✨</div>
+            <div>
+              <h2 className="font-display font-bold text-lg mb-1">Auto-Generate Problems</h2>
+              <p className="text-sm text-gray-600">
+                Set your rules and we'll create random problems for you. Perfect for quick practice!
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Form */}
+        <Card>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Title */}
+            <Input
+              label="Challenge Title"
+              placeholder="e.g., Addition Practice 1-20"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              error={errors.title}
+              required
+            />
+
+            {/* Subtitle */}
+            <Input
+              label="Subtitle (Optional)"
+              placeholder="e.g., Master basic addition skills"
+              value={formData.subtitle}
+              onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+              error={errors.subtitle}
+              helperText="Add extra description to help your child"
+            />
+
+            {/* Operation */}
+            <Select
+              label="Math Operation"
+              options={operationOptions}
+              value={formData.operation}
+              onChange={(e) => setFormData({ ...formData, operation: e.target.value as MathOperation })}
+              error={errors.operation}
+            />
+
+            {/* Problem Count */}
+            <div>
+              <Input
+                label="Number of Problems"
+                type="number"
+                min={1}
+                max={50}
+                value={formData.problemCount}
+                onChange={(e) => setFormData({ ...formData, problemCount: parseInt(e.target.value) || 0 })}
+                error={errors.problemCount}
+                helperText="Between 1 and 50 problems"
+              />
+            </div>
+
+            {/* Number Range */}
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Number Range
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  label="Minimum"
+                  type="number"
+                  min={0}
+                  max={9999}
+                  value={formData.minNumber}
+                  onChange={(e) => setFormData({ ...formData, minNumber: parseInt(e.target.value) || 0 })}
+                  error={errors['numberRange.min']}
+                />
+                <Input
+                  label="Maximum"
+                  type="number"
+                  min={0}
+                  max={9999}
+                  value={formData.maxNumber}
+                  onChange={(e) => setFormData({ ...formData, maxNumber: parseInt(e.target.value) || 0 })}
+                  error={errors['numberRange.max']}
+                />
+              </div>
+              <p className="text-sm text-gray-500">
+                Problems will use random numbers between {formData.minNumber} and {formData.maxNumber}
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 pt-4">
+              <Button type="submit" variant="primary" size="lg" className="flex-1">
+                Generate Worksheet 🎉
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                onClick={() => navigate('/')}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </Card>
+
+        {/* Tips Card */}
+        <Card className="mt-6 bg-amber-50 border-amber-200">
+          <div className="flex items-start gap-3">
+            <div className="text-2xl">💡</div>
+            <div>
+              <h3 className="font-bold text-gray-900 mb-2">Quick Tips</h3>
+              <ul className="text-sm text-gray-700 space-y-1">
+                <li>• Start with smaller ranges (0-10) for younger children</li>
+                <li>• For division, the app ensures all answers are whole numbers</li>
+                <li>• For subtraction, results will always be positive</li>
+                <li>• Try 5-10 problems for quick practice sessions</li>
+              </ul>
+            </div>
+          </div>
+        </Card>
+      </main>
+    </div>
+  );
+}
