@@ -23,6 +23,8 @@ import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ActivityKey
 import dev.hossain.mathtutor.ui.home.HomeScreen
+import dev.hossain.mathtutor.ui.navigation.AdaptiveNavigationWrapper
+import dev.hossain.mathtutor.ui.navigation.isTopLevelDestination
 import dev.hossain.mathtutor.ui.onboarding.OnboardingScreen
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
@@ -111,20 +113,55 @@ class MainActivity
                     val backStack = rememberSaveableBackStack(root = initialScreen)
                     val navigator = rememberCircuitNavigator(backStack)
 
+                    // Get the current screen for adaptive navigation highlighting
+                    val currentScreen = backStack.topRecord?.screen
+
                     // See https://slackhq.github.io/circuit/circuit-content/
                     CircuitCompositionLocals(circuit) {
                         // See https://slackhq.github.io/circuit/shared-elements/
                         SharedElementTransitionLayout {
                             // See https://slackhq.github.io/circuit/overlays/
                             ContentWithOverlays {
-                                NavigableCircuitContent(
-                                    navigator = navigator,
-                                    backStack = backStack,
-                                    decoratorFactory =
-                                        remember(navigator) {
-                                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                                // Only show adaptive navigation for top-level destinations
+                                // Hide it during onboarding and for non-top-level screens
+                                val showAdaptiveNav =
+                                    isOnboardingCompleted &&
+                                        currentScreen?.isTopLevelDestination() == true
+
+                                if (showAdaptiveNav) {
+                                    AdaptiveNavigationWrapper(
+                                        currentScreen = currentScreen,
+                                        onDestinationSelected = { destination ->
+                                            // Navigate to the selected destination
+                                            // Use resetRoot to avoid stacking top-level destinations
+                                            navigator.resetRoot(destination.screen)
                                         },
-                                )
+                                    ) {
+                                        NavigableCircuitContent(
+                                            navigator = navigator,
+                                            backStack = backStack,
+                                            decoratorFactory =
+                                                remember(navigator) {
+                                                    GestureNavigationDecorationFactory(
+                                                        onBackInvoked = navigator::pop,
+                                                    )
+                                                },
+                                        )
+                                    }
+                                } else {
+                                    // Show content without adaptive navigation
+                                    // (during onboarding or non-top-level screens)
+                                    NavigableCircuitContent(
+                                        navigator = navigator,
+                                        backStack = backStack,
+                                        decoratorFactory =
+                                            remember(navigator) {
+                                                GestureNavigationDecorationFactory(
+                                                    onBackInvoked = navigator::pop,
+                                                )
+                                            },
+                                    )
+                                }
                             }
                         }
                     }

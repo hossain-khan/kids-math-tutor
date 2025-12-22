@@ -148,6 +148,15 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.common)
 
+    // Material 3 Adaptive layouts for tablet support
+    // https://developer.android.com/develop/ui/compose/layouts/adaptive
+    implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.layout)
+    implementation(libs.androidx.compose.material3.adaptive.navigation)
+    implementation(libs.androidx.compose.material3.adaptive.navigationSuite)
+    implementation(libs.androidx.compose.materialWindow)
+    implementation(libs.androidx.window)
+
     // LeakCanary - Memory leak detection (debug builds only)
     // https://square.github.io/leakcanary/
     debugImplementation(libs.leakcanary.android)

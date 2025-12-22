@@ -3,6 +3,8 @@ package dev.hossain.mathtutor.ui.settings
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -33,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -41,6 +45,9 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
 
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 600.dp
+
 /**
  * UI for [SettingsScreen].
  *
@@ -48,6 +55,10 @@ import java.time.Instant
  * - Profile section (name, grade level with edit buttons)
  * - Adaptive difficulty toggle switch
  * - About, Privacy, Help sections
+ *
+ * Adaptive Layout:
+ * - Compact: Full width settings
+ * - Medium/Expanded: Centered content with max width
  */
 @CircuitInject(SettingsScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,80 +99,93 @@ fun SettingsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+                    .padding(paddingValues),
         ) {
-            // Profile section
-            ProfileSection(
-                profile = state.profile,
-                onEditNameClick = { state.eventSink(SettingsScreen.Event.EditNameClicked) },
-                onChangeGradeClick = { state.eventSink(SettingsScreen.Event.ChangeGradeClicked) },
-            )
+            // Center content on wide screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                ) {
+                    // Profile section
+                    ProfileSection(
+                        profile = state.profile,
+                        onEditNameClick = { state.eventSink(SettingsScreen.Event.EditNameClicked) },
+                        onChangeGradeClick = { state.eventSink(SettingsScreen.Event.ChangeGradeClicked) },
+                    )
 
-            // Adaptive difficulty section
-            AdaptiveDifficultySection(
-                enabled = state.profile?.adaptiveDifficultyEnabled ?: true,
-                onToggle = { enabled ->
-                    state.eventSink(SettingsScreen.Event.ToggleAdaptiveDifficulty(enabled))
-                },
-            )
+                    // Adaptive difficulty section
+                    AdaptiveDifficultySection(
+                        enabled = state.profile?.adaptiveDifficultyEnabled ?: true,
+                        onToggle = { enabled ->
+                            state.eventSink(SettingsScreen.Event.ToggleAdaptiveDifficulty(enabled))
+                        },
+                    )
 
-            // Divider
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.outlineVariant,
-            )
+                    // Divider
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
 
-            // Audio & Haptics link
-            SettingsLinkItem(
-                text = "Audio & Haptics",
-                onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
-            )
+                    // Audio & Haptics link
+                    SettingsLinkItem(
+                        text = "Audio & Haptics",
+                        onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
+                    )
 
-            // Developer Portal (debug-only)
-            if (state.showDeveloperPortal) {
-                SettingsLinkItem(
-                    text = "Developer Portal",
-                    onClick = { state.eventSink(SettingsScreen.Event.DeveloperPortalClicked) },
-                )
+                    // Developer Portal (debug-only)
+                    if (state.showDeveloperPortal) {
+                        SettingsLinkItem(
+                            text = "Developer Portal",
+                            onClick = { state.eventSink(SettingsScreen.Event.DeveloperPortalClicked) },
+                        )
+                    }
+
+                    // Divider
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+
+                    // Privacy section header
+                    Text(
+                        text = "Privacy",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                    )
+
+                    // Analytics toggle
+                    AnalyticsToggleRow(
+                        checked = state.analyticsEnabled,
+                        onCheckedChange = { enabled ->
+                            state.eventSink(SettingsScreen.Event.AnalyticsToggled(enabled))
+                        },
+                    )
+
+                    // Divider
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+
+                    // Additional sections
+                    SettingsLinks()
+                }
             }
-
-            // Divider
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.outlineVariant,
-            )
-
-            // Privacy section header
-            Text(
-                text = "Privacy",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(horizontal = 8.dp),
-            )
-
-            // Analytics toggle
-            AnalyticsToggleRow(
-                checked = state.analyticsEnabled,
-                onCheckedChange = { enabled ->
-                    state.eventSink(SettingsScreen.Event.AnalyticsToggled(enabled))
-                },
-            )
-
-            // Divider
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.outlineVariant,
-            )
-
-            // Additional sections
-            SettingsLinks()
         }
     }
 

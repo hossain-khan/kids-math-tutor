@@ -1,6 +1,8 @@
 package dev.hossain.mathtutor.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Badge
@@ -48,6 +51,10 @@ import java.time.Instant
 import java.time.LocalDate
 import dev.hossain.mathtutor.ui.component.BadgeIcon as BadgeIconImage
 
+// Width breakpoints for adaptive layouts
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val MAX_CONTENT_WIDTH: Dp = 840.dp
+
 /**
  * UI for [HomeScreen].
  *
@@ -58,6 +65,10 @@ import dev.hossain.mathtutor.ui.component.BadgeIcon as BadgeIconImage
  * - Latest badges section (3 badges)
  * - Start Practice button (primary action)
  * - View Full Stats and View All Badges links
+ *
+ * Adaptive Layout:
+ * - Compact: Single column, full width
+ * - Medium/Expanded: Centered content with max width, side-by-side action buttons
  */
 @CircuitInject(HomeScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,94 +111,173 @@ fun HomeUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+                    .padding(paddingValues),
         ) {
-            // Welcome message
-            WelcomeSection(
-                userName = state.userName,
-                gradeLevel = state.gradeLevel,
-                accuracy = state.overallStats.accuracy,
-            )
+            val isWideScreen = maxWidth >= MEDIUM_WIDTH_BREAKPOINT
 
-            // Primary action: Start Practice button
-            Button(
-                onClick = { state.eventSink(HomeScreen.Event.StartPracticeClicked) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                    ),
+            // Center content with max width on larger screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                Text(
-                    text = "🐶 Start Practice",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
-
-            // Games button
-            Button(
-                onClick = { state.eventSink(HomeScreen.Event.ViewGamesClicked) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    ),
-            ) {
-                Text(
-                    text = "🎮 Play Games",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
-
-            // Streak card
-            StreakCard(
-                streakData = state.streakData,
-                userName = state.userName,
-            )
-
-            // Quick stats card
-            if (state.overallStats.sessionCount > 0) {
-                QuickStatsCard(stats = state.overallStats)
-            }
-
-            // Latest badges section
-            if (state.recentBadges.isNotEmpty()) {
-                LatestBadgesSection(
-                    badges = state.recentBadges,
-                    onViewAllClicked = { state.eventSink(HomeScreen.Event.ViewBadgesClicked) },
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // View Full Stats link
-            if (state.overallStats.sessionCount > 0) {
-                TextButton(
-                    onClick = { state.eventSink(HomeScreen.Event.ViewStatsClicked) },
-                    modifier = Modifier.fillMaxWidth(),
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
-                    Text(
-                        text = "View Full Stats",
-                        style = MaterialTheme.typography.labelLarge,
+                    // Welcome message
+                    WelcomeSection(
+                        userName = state.userName,
+                        gradeLevel = state.gradeLevel,
+                        accuracy = state.overallStats.accuracy,
                     )
+
+                    // Action buttons - side by side on wider screens
+                    if (isWideScreen) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            // Primary action: Start Practice button
+                            Button(
+                                onClick = { state.eventSink(HomeScreen.Event.StartPracticeClicked) },
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .height(56.dp),
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                    ),
+                            ) {
+                                Text(
+                                    text = "🐶 Start Practice",
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                            }
+
+                            // Games button
+                            Button(
+                                onClick = { state.eventSink(HomeScreen.Event.ViewGamesClicked) },
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .height(56.dp),
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    ),
+                            ) {
+                                Text(
+                                    text = "🎮 Play Games",
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                            }
+                        }
+                    } else {
+                        // Stacked buttons on compact screens
+                        Button(
+                            onClick = { state.eventSink(HomeScreen.Event.StartPracticeClicked) },
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                ),
+                        ) {
+                            Text(
+                                text = "🐶 Start Practice",
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+
+                        Button(
+                            onClick = { state.eventSink(HomeScreen.Event.ViewGamesClicked) },
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                ),
+                        ) {
+                            Text(
+                                text = "🎮 Play Games",
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                        }
+                    }
+
+                    // Cards layout - side by side on wider screens
+                    if (isWideScreen && state.overallStats.sessionCount > 0) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            // Streak card
+                            Box(modifier = Modifier.weight(1f)) {
+                                StreakCard(
+                                    streakData = state.streakData,
+                                    userName = state.userName,
+                                )
+                            }
+
+                            // Quick stats card
+                            Box(modifier = Modifier.weight(1f)) {
+                                QuickStatsCard(stats = state.overallStats)
+                            }
+                        }
+                    } else {
+                        // Stacked cards on compact screens
+                        StreakCard(
+                            streakData = state.streakData,
+                            userName = state.userName,
+                        )
+
+                        if (state.overallStats.sessionCount > 0) {
+                            QuickStatsCard(stats = state.overallStats)
+                        }
+                    }
+
+                    // Latest badges section
+                    if (state.recentBadges.isNotEmpty()) {
+                        LatestBadgesSection(
+                            badges = state.recentBadges,
+                            onViewAllClicked = { state.eventSink(HomeScreen.Event.ViewBadgesClicked) },
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // View Full Stats link
+                    if (state.overallStats.sessionCount > 0) {
+                        TextButton(
+                            onClick = { state.eventSink(HomeScreen.Event.ViewStatsClicked) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = "View Full Stats",
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -508,6 +598,89 @@ private fun HomeUiDarkPreview() {
                             correctCount = 42,
                             accuracy = 84f,
                             sessionCount = 5,
+                        ),
+                    recentBadges = emptyList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Tablet previews for adaptive layout testing
+
+@Preview(
+    showBackground = true,
+    widthDp = 700,
+    heightDp = 500,
+    name = "Tablet Landscape",
+)
+@Composable
+private fun HomeUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Alex",
+                    gradeLevel = GradeLevel.GRADE_1,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 5,
+                            longestStreak = 7,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 10,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 150,
+                            correctCount = 135,
+                            accuracy = 90f,
+                            sessionCount = 15,
+                        ),
+                    recentBadges =
+                        listOf(
+                            Badge(
+                                id = "first_steps",
+                                name = "First Steps",
+                                description = "Solved first problem",
+                                icon = BadgeIcon.FIRST_STEPS,
+                                category = BadgeCategory.GETTING_STARTED,
+                                requirement = BadgeRequirement.ProblemCount(1),
+                                unlockedAt = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 500,
+    heightDp = 700,
+    name = "Tablet Portrait",
+)
+@Composable
+private fun HomeUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Alex",
+                    gradeLevel = GradeLevel.GRADE_1,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 5,
+                            longestStreak = 7,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 10,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 150,
+                            correctCount = 135,
+                            accuracy = 90f,
+                            sessionCount = 15,
                         ),
                     recentBadges = emptyList(),
                     eventSink = {},

@@ -3,14 +3,17 @@ package dev.hossain.mathtutor.ui.mathpractice
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
@@ -43,6 +46,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
@@ -62,6 +66,10 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metro.Inject
 import timber.log.Timber
+
+// Width breakpoints for adaptive layouts
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val MAX_CONTENT_WIDTH: Dp = 500.dp
 
 /**
  * Custom Ui.Factory for MathPracticeScreen that injects HapticService.
@@ -92,6 +100,10 @@ class MathPracticeUiFactory(
  * UI for [MathPracticeScreen].
  *
  * Displays the math problem, answer input field, number pad, and action buttons.
+ *
+ * Adaptive Layout:
+ * - Compact: Stacked vertical layout
+ * - Medium/Expanded: Centered with max width, landscape shows side-by-side problem and input
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -195,66 +207,173 @@ internal fun MathPracticeUi(
                 }
             }
         } else {
-            Column(
+            BoxWithConstraints(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp),
+                        .padding(paddingValues),
             ) {
-                // Progress indicator
-                ProgressSection(
-                    currentIndex = state.currentProblemIndex,
-                    totalProblems = state.totalProblems,
-                )
+                val isWideScreen = maxWidth >= MEDIUM_WIDTH_BREAKPOINT
+                val isLandscape = maxWidth > maxHeight
 
-                // Problem display
-                state.currentProblem?.let { problem ->
-                    ProblemCard(problem = problem)
-                }
+                // Center content on wide screens
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    if (isWideScreen && isLandscape) {
+                        // Landscape tablet: side-by-side layout
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(32.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            // Left side: Problem and feedback
+                            Column(
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                // Progress indicator
+                                ProgressSection(
+                                    currentIndex = state.currentProblemIndex,
+                                    totalProblems = state.totalProblems,
+                                )
 
-                // Answer field with shake animation on incorrect answer
-                AnswerField(
-                    answer = state.currentAnswer,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .shake(
-                                shouldShake = shouldShake,
-                                onAnimationComplete = {
-                                    shouldShake = false
+                                Spacer(modifier = Modifier.height(24.dp))
+
+                                // Problem display
+                                state.currentProblem?.let { problem ->
+                                    ProblemCard(problem = problem)
+                                }
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Feedback display with success animation
+                                FeedbackSection(
+                                    isCorrect = state.isCorrect,
+                                    userName = state.userName,
+                                )
+                            }
+
+                            // Right side: Answer input and number pad
+                            Column(
+                                modifier =
+                                    Modifier
+                                        .widthIn(max = MAX_CONTENT_WIDTH)
+                                        .fillMaxHeight(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                // Answer field with shake animation on incorrect answer
+                                AnswerField(
+                                    answer = state.currentAnswer,
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .shake(
+                                                shouldShake = shouldShake,
+                                                onAnimationComplete = {
+                                                    shouldShake = false
+                                                },
+                                            ),
+                                )
+
+                                Spacer(modifier = Modifier.height(24.dp))
+
+                                // Number pad
+                                NumberPad(
+                                    onNumberClick = { number ->
+                                        state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    hapticService = hapticService,
+                                )
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Action buttons
+                                ActionButtons(
+                                    hasAnswer = state.currentAnswer.isNotEmpty(),
+                                    isCorrect = state.isCorrect,
+                                    onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
+                                    onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
+                                    onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
+                                    hapticService = hapticService,
+                                )
+                            }
+                        }
+                    } else {
+                        // Portrait or compact: stacked layout (centered on wide screens)
+                        Column(
+                            modifier =
+                                Modifier
+                                    .widthIn(max = MAX_CONTENT_WIDTH)
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(24.dp),
+                        ) {
+                            // Progress indicator
+                            ProgressSection(
+                                currentIndex = state.currentProblemIndex,
+                                totalProblems = state.totalProblems,
+                            )
+
+                            // Problem display
+                            state.currentProblem?.let { problem ->
+                                ProblemCard(problem = problem)
+                            }
+
+                            // Answer field with shake animation on incorrect answer
+                            AnswerField(
+                                answer = state.currentAnswer,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .shake(
+                                            shouldShake = shouldShake,
+                                            onAnimationComplete = {
+                                                shouldShake = false
+                                            },
+                                        ),
+                            )
+
+                            // Feedback display with success animation
+                            FeedbackSection(
+                                isCorrect = state.isCorrect,
+                                userName = state.userName,
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            // Number pad
+                            NumberPad(
+                                onNumberClick = { number ->
+                                    state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
                                 },
-                            ),
-                )
+                                modifier = Modifier.fillMaxWidth(),
+                                hapticService = hapticService,
+                            )
 
-                // Feedback display with success animation
-                FeedbackSection(
-                    isCorrect = state.isCorrect,
-                    userName = state.userName,
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                // Number pad
-                NumberPad(
-                    onNumberClick = { number ->
-                        state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    hapticService = hapticService,
-                )
-
-                // Action buttons
-                ActionButtons(
-                    hasAnswer = state.currentAnswer.isNotEmpty(),
-                    isCorrect = state.isCorrect,
-                    onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
-                    onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
-                    onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
-                    hapticService = hapticService,
-                )
+                            // Action buttons
+                            ActionButtons(
+                                hasAnswer = state.currentAnswer.isNotEmpty(),
+                                isCorrect = state.isCorrect,
+                                onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
+                                onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
+                                onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
+                                hapticService = hapticService,
+                            )
+                        }
+                    }
+                }
             }
         }
 
