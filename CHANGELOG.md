@@ -87,6 +87,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Analytics events: challenge import started, challenge started, challenge archived, challenge deleted
   - Metro DI integration with `CustomChallengeService` and `AnalyticsService`
   - Comprehensive unit tests covering challenge filtering, statistics, and operations grouping
+- **Custom Challenge Practice Integration** - Integrated custom challenges into existing math practice flow for seamless parent-created challenge experience
+  - Extended `MathPracticeScreen` with `customChallengeId` parameter to support both regular and custom challenge practice
+  - Enhanced `MathPracticePresenter` to inject `CustomChallengeService` and load custom challenge problems
+  - Custom challenge practice session tracking via `recordPracticeSession()` with completion metrics
+  - Extended `ResultsScreen` with custom challenge metadata (`customChallengeId`, `customChallengeTitle`)
+  - Custom challenge header display in practice screen showing challenge title and "Parent Challenge" label
+  - Custom challenge results section in results screen with "Parent Challenge Complete!" message and trophy icon
+  - Navigation flow from Parent Challenges → Practice → Results with challenge context preservation
+  - Material 3 theme-aware colors for custom challenge UI components (primaryContainer, secondaryContainer)
+  - State management for custom challenge title throughout practice and results flow
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual

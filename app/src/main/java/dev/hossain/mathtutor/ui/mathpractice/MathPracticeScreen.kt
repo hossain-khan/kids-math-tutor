@@ -18,11 +18,13 @@ import kotlinx.parcelize.Parcelize
  *
  * @param operation The math operation type for this practice session
  * @param problemCount Number of problems in this practice session
+ * @param customChallengeId Optional ID for custom challenge practice (null for regular practice)
  */
 @Parcelize
 data class MathPracticeScreen(
     val operation: MathOperation = MathOperation.ADDITION,
     val problemCount: Int = 10,
+    val customChallengeId: String? = null,
 ) : Screen {
     /**
      * State for [MathPracticeScreen].
@@ -41,6 +43,7 @@ data class MathPracticeScreen(
         val difficultyAdjustment: DifficultyAdjustment? = null,
         val actualGradeLevel: GradeLevel? = null,
         val showDifficultyChangeNotice: Boolean = false,
+        val customChallengeTitle: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

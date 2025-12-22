@@ -63,6 +63,7 @@ class MathPracticePresenter
         private val audioService: AudioService,
         private val hapticService: HapticService,
         private val analyticsService: AnalyticsService,
+        private val customChallengeService: dev.hossain.mathtutor.domain.service.CustomChallengeService,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -109,6 +110,7 @@ class MathPracticePresenter
             var currentGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
             var isAdaptiveEnabled by remember { mutableStateOf(false) }
             var userName by remember { mutableStateOf<String?>(null) }
+            var customChallengeTitle by remember { mutableStateOf<String?>(null) }
 
             // Fetch user profile and generate problems in a single LaunchedEffect
             LaunchedEffect(Unit) {
@@ -122,7 +124,23 @@ class MathPracticePresenter
                     "Fetched user grade: $grade (profile exists: ${profile != null}, adaptive: $isAdaptiveEnabled, name: $userName)",
                 )
 
-                if (isAdaptiveEnabled) {
+                // Load problems from custom challenge or generate regular problems
+                if (screen.customChallengeId != null) {
+                    Timber.d("Loading custom challenge: ${screen.customChallengeId}")
+                    val challenge = customChallengeService.getChallengeById(screen.customChallengeId)
+                    if (challenge != null) {
+                        problems = challenge.problems
+                        customChallengeTitle = challenge.title
+                        actualGradeLevel = grade // Use user's grade for custom challenges
+                        Timber.d(
+                            "Loaded ${problems.size} problems from custom challenge '${challenge.title}'",
+                        )
+                    } else {
+                        Timber.w("Custom challenge not found: ${screen.customChallengeId}")
+                        // Fall back to regular problem generation
+                        problems = emptyList()
+                    }
+                } else if (isAdaptiveEnabled) {
                     // Use adaptive problem generator
                     val result =
                         adaptiveProblemGenerator.generateAdaptiveProblems(
@@ -183,6 +201,7 @@ class MathPracticePresenter
                 difficultyAdjustment = difficultyAdjustment,
                 actualGradeLevel = actualGradeLevel,
                 showDifficultyChangeNotice = showDifficultyChangeNotice,
+                customChallengeTitle = customChallengeTitle,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
@@ -325,6 +344,24 @@ class MathPracticePresenter
                                     )
                                     Timber.d("Session saved successfully")
 
+                                    // Record custom challenge practice session if applicable
+                                    if (screen.customChallengeId != null) {
+                                        Timber.d("Recording custom challenge practice session...")
+                                        val challengeSession =
+                                            dev.hossain.mathtutor.domain.model.ChallengePracticeSession(
+                                                startTime = sessionStartTime,
+                                                endTime = sessionEndTime,
+                                                problemsAttempted = problems.size,
+                                                correctAnswers = correctCount,
+                                                totalTimeMs = durationSeconds * 1000,
+                                            )
+                                        customChallengeService.recordPracticeSession(
+                                            challengeId = screen.customChallengeId,
+                                            session = challengeSession,
+                                        )
+                                        Timber.d("Custom challenge practice session recorded successfully")
+                                    }
+
                                     // Update streak
                                     Timber.d("[MathPractice] Updating streak...")
                                     val previousStreak = updateStreakUseCase.getCurrentStreak()
@@ -377,6 +414,8 @@ class MathPracticePresenter
                                                     problems = problems,
                                                     userAnswers = userAnswers,
                                                     badgesAlreadyChecked = true,
+                                                    customChallengeId = screen.customChallengeId,
+                                                    customChallengeTitle = customChallengeTitle,
                                                 ),
                                             )
                                         }
@@ -390,6 +429,8 @@ class MathPracticePresenter
                                                 problems = problems,
                                                 userAnswers = userAnswers,
                                                 badgesAlreadyChecked = true,
+                                                customChallengeId = screen.customChallengeId,
+                                                customChallengeTitle = customChallengeTitle,
                                             ),
                                         )
                                     }
@@ -414,6 +455,8 @@ class MathPracticePresenter
                                     problems = problems,
                                     userAnswers = userAnswers,
                                     badgesAlreadyChecked = true,
+                                    customChallengeId = screen.customChallengeId,
+                                    customChallengeTitle = customChallengeTitle,
                                 ),
                             )
                         }

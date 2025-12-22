@@ -246,6 +246,7 @@ internal fun MathPracticeUi(
                                 ProgressSection(
                                     currentIndex = state.currentProblemIndex,
                                     totalProblems = state.totalProblems,
+                                    customChallengeTitle = state.customChallengeTitle,
                                 )
 
                                 Spacer(modifier = Modifier.height(24.dp))
@@ -326,6 +327,7 @@ internal fun MathPracticeUi(
                             ProgressSection(
                                 currentIndex = state.currentProblemIndex,
                                 totalProblems = state.totalProblems,
+                                customChallengeTitle = state.customChallengeTitle,
                             )
 
                             // Problem display
@@ -406,6 +408,7 @@ private fun ProgressSection(
     currentIndex: Int,
     totalProblems: Int,
     modifier: Modifier = Modifier,
+    customChallengeTitle: String? = null,
 ) {
     val progressDescription = "Problem ${currentIndex + 1} of $totalProblems"
 
@@ -419,6 +422,24 @@ private fun ProgressSection(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        if (customChallengeTitle != null) {
+            Text(
+                text = customChallengeTitle,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Parent Challenge",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         Text(
             text = progressDescription,
             style = MaterialTheme.typography.titleMedium,
