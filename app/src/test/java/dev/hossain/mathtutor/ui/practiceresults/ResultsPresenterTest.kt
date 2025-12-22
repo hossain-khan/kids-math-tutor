@@ -232,4 +232,77 @@ class ResultsPresenterTest {
         // Then
         assertThat(accuracy).isWithin(0.01f).of(66.67f)
     }
+
+    // Custom Challenge Tests
+    @Test
+    fun `results screen with custom challenge id`() {
+        // Given - Create screen with custom challenge
+        val customChallengeId = "challenge-456"
+        val customChallengeTitle = "Parent's Math Challenge"
+        val problems =
+            listOf(
+                MathProblem(num1 = 5, num2 = 5, operation = MathOperation.ADDITION, correctAnswer = 10),
+            )
+        val userAnswers = listOf(10)
+        val screen =
+            ResultsScreen(
+                problems = problems,
+                userAnswers = userAnswers,
+                customChallengeId = customChallengeId,
+                customChallengeTitle = customChallengeTitle,
+            )
+
+        // Then - Screen should have custom challenge info
+        assertThat(screen.customChallengeId).isEqualTo(customChallengeId)
+        assertThat(screen.customChallengeTitle).isEqualTo(customChallengeTitle)
+    }
+
+    @Test
+    fun `results screen defaults to null custom challenge`() {
+        // Given - Create regular results screen
+        val problems =
+            listOf(
+                MathProblem(num1 = 5, num2 = 5, operation = MathOperation.ADDITION, correctAnswer = 10),
+            )
+        val userAnswers = listOf(10)
+        val screen = ResultsScreen(problems = problems, userAnswers = userAnswers)
+
+        // Then - Custom challenge fields should be null
+        assertThat(screen.customChallengeId).isNull()
+        assertThat(screen.customChallengeTitle).isNull()
+    }
+
+    @Test
+    fun `state includes custom challenge title`() {
+        // Given - State with custom challenge title
+        val customChallengeTitle = "Division Practice"
+        val state =
+            ResultsScreen.State(
+                totalProblems = 5,
+                correctCount = 4,
+                accuracyPercentage = 80f,
+                problemResults = emptyList(),
+                customChallengeTitle = customChallengeTitle,
+                eventSink = {},
+            )
+
+        // Then - State should have the challenge title
+        assertThat(state.customChallengeTitle).isEqualTo(customChallengeTitle)
+    }
+
+    @Test
+    fun `state defaults to null custom challenge title`() {
+        // Given - State for regular results
+        val state =
+            ResultsScreen.State(
+                totalProblems = 5,
+                correctCount = 4,
+                accuracyPercentage = 80f,
+                problemResults = emptyList(),
+                eventSink = {},
+            )
+
+        // Then - Custom challenge title should be null
+        assertThat(state.customChallengeTitle).isNull()
+    }
 }

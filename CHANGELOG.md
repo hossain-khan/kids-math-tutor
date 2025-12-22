@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Custom Challenge Integration into Math Practice Flow** - Seamlessly integrated parent-created custom challenges into existing math practice experience
+  - Updated `MathPracticeScreen` with optional `customChallengeId` parameter for identifying custom challenges
+  - Updated `MathPracticePresenter` to load custom challenge problems via `CustomChallengeService`
+  - Added custom challenge practice session tracking with `ChallengePracticeSession` recording
+  - Enhanced practice screen UI to display custom challenge title and "Parent Challenge" indicator
+  - Updated `ResultsScreen` and `ResultsPresenter` to support custom challenge context display
+  - Added "Parent Challenge Complete!" header with trophy icon in results screen
+  - Custom congratulations messages for custom challenge completion
+  - Updated `ParentChallengesPresenter` to pass `customChallengeId` when navigating to practice
+  - Children can now practice custom challenges using the same familiar math practice interface
+  - Complete navigation flow: Parent Challenges → Practice → Results with custom challenge context
 - **Worksheet Creator Web App** - New React-based web application for creating custom math challenges
   - Quick Generator builder with auto-generated problems based on rules (operation, number range, problem count)
   - Custom Problems builder for entering specific math problems
