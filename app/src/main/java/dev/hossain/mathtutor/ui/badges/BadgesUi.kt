@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -32,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
@@ -46,11 +49,18 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
 
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 840.dp
+
 /**
  * UI for [BadgesScreen].
  *
  * Displays all badges organized by category with Material 3 design.
  * Shows progress summary, badge grid by category, and badge detail dialog.
+ *
+ * Adaptive Layout:
+ * - Compact: Full width badge grids
+ * - Medium/Expanded: Centered content with max width
  */
 @CircuitInject(BadgesScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,41 +101,54 @@ fun BadgesUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        LazyColumn(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            contentPadding = PaddingValues(bottom = 16.dp),
         ) {
-            // Hero Image with fade effect
-            item {
-                HeroImageSection()
-            }
+            // Center content on wide screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    contentPadding = PaddingValues(bottom = 16.dp),
+                ) {
+                    // Hero Image with fade effect
+                    item {
+                        HeroImageSection()
+                    }
 
-            // Progress Summary
-            item {
-                ProgressSummarySection(
-                    unlockedCount = state.progressSummary.unlockedCount,
-                    totalCount = state.progressSummary.totalCount,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                )
-            }
-
-            // Badge Categories
-            BadgeCategory.entries.forEach { category ->
-                val badges = state.badgesByCategory[category] ?: emptyList()
-                if (badges.isNotEmpty()) {
-                    item(key = category) {
-                        BadgeCategorySection(
-                            category = category,
-                            badges = badges,
-                            onBadgeClick = { badge ->
-                                state.eventSink(BadgesScreen.Event.BadgeClicked(badge))
-                            },
+                    // Progress Summary
+                    item {
+                        ProgressSummarySection(
+                            unlockedCount = state.progressSummary.unlockedCount,
+                            totalCount = state.progressSummary.totalCount,
                             modifier = Modifier.padding(horizontal = 16.dp),
                         )
+                    }
+
+                    // Badge Categories
+                    BadgeCategory.entries.forEach { category ->
+                        val badges = state.badgesByCategory[category] ?: emptyList()
+                        if (badges.isNotEmpty()) {
+                            item(key = category) {
+                                BadgeCategorySection(
+                                    category = category,
+                                    badges = badges,
+                                    onBadgeClick = { badge ->
+                                        state.eventSink(BadgesScreen.Event.BadgeClicked(badge))
+                                    },
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                )
+                            }
+                        }
                     }
                 }
             }

@@ -1,6 +1,8 @@
 package dev.hossain.mathtutor.ui.stats
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -32,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
@@ -42,11 +46,19 @@ import dev.hossain.mathtutor.util.TimeFormatter
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
 
+// Width breakpoints for adaptive layouts
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val MAX_CONTENT_WIDTH: Dp = 840.dp
+
 /**
  * UI for [StatsScreen].
  *
  * Displays practice statistics including overall progress, per-operation breakdown,
  * and recent session history with Material 3 design.
+ *
+ * Adaptive Layout:
+ * - Compact: Single column, full width
+ * - Medium/Expanded: Centered content with max width
  */
 @CircuitInject(StatsScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,67 +85,104 @@ fun StatsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        if (state.overallStats.sessionCount == 0) {
-            // Empty state
-            EmptyStatsView(
-                onStartPractice = { state.eventSink(StatsScreen.Event.BackPressed) },
-                modifier = Modifier.padding(paddingValues),
-            )
-        } else {
-            // Stats content
-            LazyColumn(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+        BoxWithConstraints(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+        ) {
+            val isWideScreen = maxWidth >= MEDIUM_WIDTH_BREAKPOINT
+
+            // Center content on wide screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                // Overall Progress Section
-                item {
-                    Text(
-                        text = "Overall Progress",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
+                if (state.overallStats.sessionCount == 0) {
+                    // Empty state
+                    EmptyStatsView(
+                        onStartPractice = { state.eventSink(StatsScreen.Event.BackPressed) },
+                        modifier = Modifier.widthIn(max = MAX_CONTENT_WIDTH),
                     )
-                }
+                } else {
+                    // Stats content
+                    LazyColumn(
+                        modifier =
+                            Modifier
+                                .widthIn(max = MAX_CONTENT_WIDTH)
+                                .fillMaxSize()
+                                .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        // Overall Progress Section
+                        item {
+                            Text(
+                                text = "Overall Progress",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
 
-                item {
-                    OverallProgressCards(stats = state.overallStats)
-                }
+                        item {
+                            OverallProgressCards(stats = state.overallStats)
+                        }
 
-                // By Operation Section
-                if (state.operationStats.isNotEmpty()) {
-                    item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "By Operation",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
+                        // By Operation Section
+                        if (state.operationStats.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "By Operation",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
 
-                    items(state.operationStats.entries.toList()) { (operation, stats) ->
-                        OperationStatsCard(
-                            operation = operation,
-                            stats = stats,
-                        )
-                    }
-                }
+                            // Show operation stats in grid on wide screens
+                            if (isWideScreen && state.operationStats.size >= 2) {
+                                items(state.operationStats.entries.chunked(2)) { rowItems ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    ) {
+                                        rowItems.forEach { (operation, stats) ->
+                                            OperationStatsCard(
+                                                operation = operation,
+                                                stats = stats,
+                                                modifier = Modifier.weight(1f),
+                                            )
+                                        }
+                                        // Fill remaining space if odd number of items
+                                        if (rowItems.size == 1) {
+                                            Spacer(modifier = Modifier.weight(1f))
+                                        }
+                                    }
+                                }
+                            } else {
+                                items(state.operationStats.entries.toList()) { (operation, stats) ->
+                                    OperationStatsCard(
+                                        operation = operation,
+                                        stats = stats,
+                                    )
+                                }
+                            }
+                        }
 
-                // Recent Sessions Section
-                if (state.recentSessions.isNotEmpty()) {
-                    item {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Recent Sessions",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
+                        // Recent Sessions Section
+                        if (state.recentSessions.isNotEmpty()) {
+                            item {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Recent Sessions",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
 
-                    items(state.recentSessions) { session ->
-                        RecentSessionItem(session = session)
+                            items(state.recentSessions) { session ->
+                                RecentSessionItem(session = session)
+                            }
+                        }
                     }
                 }
             }
@@ -504,6 +553,63 @@ private fun StatsUiDarkPreview() {
                                     correctCount = 27,
                                     accuracy = 90f,
                                     sessionCount = 3,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 9,
+                                incorrectAnswers = 1,
+                                accuracy = 90f,
+                                durationSeconds = 120,
+                                timestamp = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Tablet previews for adaptive layout testing
+
+@Preview(
+    showBackground = true,
+    widthDp = 700,
+    heightDp = 500,
+    name = "Tablet Landscape",
+)
+@Composable
+private fun StatsUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 150,
+                            correctCount = 135,
+                            accuracy = 90f,
+                            sessionCount = 15,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 80,
+                                    correctCount = 72,
+                                    accuracy = 90f,
+                                    sessionCount = 8,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 70,
+                                    correctCount = 63,
+                                    accuracy = 90f,
+                                    sessionCount = 7,
                                 ),
                         ),
                     recentSessions =
