@@ -188,7 +188,10 @@ export default function GeneratedBuilder() {
                       ...formData,
                       minNumber: newMin,
                       // Auto-adjust max if min becomes >= max
-                      maxNumber: newMin >= formData.maxNumber ? newMin + 1 : formData.maxNumber,
+                      maxNumber:
+                        newMin >= formData.maxNumber
+                          ? newMin + 1
+                          : formData.maxNumber,
                     });
                   }}
                   error={errors["numberRange.min"]}
