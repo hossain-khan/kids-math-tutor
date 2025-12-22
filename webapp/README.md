@@ -57,14 +57,18 @@ pnpm test
 pnpm test:ui
 ```
 
-### Cloudflare Workers (API)
+### Cloudflare Deployment
+
+The webapp is deployed to Cloudflare Workers with static assets.
+
+**Live URL**: https://pup-tutor-worksheet-generator.hk-c91.workers.dev/
 
 ```bash
-# Start local worker
-pnpm worker:dev
+# Login to Cloudflare (first time only)
+npx wrangler login
 
-# Deploy to Cloudflare
-pnpm worker:deploy
+# Build and deploy
+pnpm build && npx wrangler deploy
 ```
 
 ## Project Structure
@@ -77,29 +81,48 @@ webapp/
 │   ├── pages/         # Page components
 │   ├── styles/        # Global styles
 │   └── main.tsx       # Entry point
-├── workers/           # Cloudflare Workers API
 ├── public/            # Static assets
-└── tests/             # Test files
+├── dist/              # Build output (generated)
+├── wrangler.json      # Cloudflare Workers config
+└── vite.config.ts     # Vite configuration
 ```
 
 ## Deployment
 
-### Frontend (Cloudflare Pages)
+**Production URL**: https://pup-tutor-worksheet-generator.hk-c91.workers.dev/
+
+The webapp is deployed as a static SPA to Cloudflare Workers.
+
+### Deploy Updates
 
 ```bash
 # Build for production
 pnpm build
 
-# Deploy to Cloudflare Pages
-wrangler pages deploy dist
+# Deploy to Cloudflare Workers
+npx wrangler deploy
 ```
 
-### Backend (Cloudflare Workers)
+### First-Time Setup
+
+If you haven't deployed before:
 
 ```bash
-# Deploy API worker
-pnpm worker:deploy
+# 1. Login to Cloudflare
+npx wrangler login
+
+# 2. Build and deploy
+pnpm build && npx wrangler deploy
 ```
+
+The configuration is in `wrangler.json`:
+- Worker name: `pup-tutor-worksheet-generator`
+- Static assets directory: `./dist`
+- SPA mode enabled (all routes serve `index.html`)
+
+### View Deployment
+
+After deployment, visit: https://pup-tutor-worksheet-generator.hk-c91.workers.dev/
 
 ## JSON Schema
 
