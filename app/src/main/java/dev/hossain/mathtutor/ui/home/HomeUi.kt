@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -33,11 +36,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeIcon
@@ -302,18 +308,38 @@ private fun WelcomeSection(
                 .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Personalized greeting
-        Text(
-            text =
-                if (userName != null) {
-                    "Hi $userName! 👋"
-                } else {
-                    "Welcome back! 👋"
-                },
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center,
-        )
+        // Personalized greeting with mascot
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            // Math Pup mascot
+            Image(
+                painter = painterResource(id = R.drawable.pup_tutor_sticker_standing_hand_left),
+                contentDescription = "Math Pup waving",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.size(80.dp),
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(horizontalAlignment = Alignment.Start) {
+                Text(
+                    text =
+                        if (userName != null) {
+                            "Hi $userName!"
+                        } else {
+                            "Welcome back!"
+                        },
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = "Ready to practice some math? 📚",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(8.dp))
 
         // Grade level and accuracy
@@ -326,13 +352,6 @@ private fun WelcomeSection(
             )
             Spacer(modifier = Modifier.height(4.dp))
         }
-
-        Text(
-            text = "Ready to practice some math? 📚",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
     }
 }
 

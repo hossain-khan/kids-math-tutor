@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual
 - **Stats Empty State** - Replaced dog emoji with Math Pup sticker (outdoor map and backpack) in empty state for better visual appeal
 - **Default Volume** - Changed default volume from 70% to 50% for more comfortable initial audio levels
+- **Home Screen Greeting** - Replaced hand wave emoji with Math Pup sticker (standing with hand left) and restructured greeting layout with mascot on left and text on right
 
 ## [1.8.0] - 2025-12-21
 
