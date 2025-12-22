@@ -1,5 +1,8 @@
 package dev.hossain.mathtutor.domain.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 /**
  * Sealed class representing the specification for importing a custom challenge.
  *
@@ -7,6 +10,7 @@ package dev.hossain.mathtutor.domain.model
  * - [Generated]: Rule-based generation using operation, count, and number range
  * - [Explicit]: Manual specification of individual problems
  */
+@Serializable
 sealed class ChallengeImportSpec {
     abstract val title: String
     abstract val subtitle: String?
@@ -20,9 +24,11 @@ sealed class ChallengeImportSpec {
      * @property problemCount Number of problems to generate
      * @property numberRange Range of numbers to use for problem generation
      */
+    @Serializable
+    @SerialName("generated")
     data class Generated(
         override val title: String,
-        override val subtitle: String?,
+        override val subtitle: String? = null,
         val operation: MathOperation,
         val problemCount: Int,
         val numberRange: NumberRange,
@@ -35,9 +41,11 @@ sealed class ChallengeImportSpec {
      * @property subtitle Optional subtitle or description
      * @property problems List of explicitly defined problem specifications
      */
+    @Serializable
+    @SerialName("explicit")
     data class Explicit(
         override val title: String,
-        override val subtitle: String?,
+        override val subtitle: String? = null,
         val problems: List<ProblemSpec>,
     ) : ChallengeImportSpec()
 }

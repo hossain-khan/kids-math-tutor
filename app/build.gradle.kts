@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.metro)
     alias(libs.plugins.kotlinter)
@@ -138,6 +139,9 @@ dependencies {
 
     // Timber logging library
     implementation(libs.timber)
+
+    // Kotlinx Serialization JSON for JSON parsing
+    implementation(libs.kotlinx.serialization.json)
 
     // AndroidX Browser (Custom Tabs) for opening external links
     implementation("androidx.browser:browser:1.9.0")
