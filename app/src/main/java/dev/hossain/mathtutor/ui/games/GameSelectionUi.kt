@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.ui.games
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -40,12 +41,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.Game
 import dev.zacsweers.metro.AppScope
 
@@ -122,20 +126,33 @@ fun GameSelectionUi(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item {
-                        // Header
-                        Text(
-                            text = "🎮 Play fun math games!",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
+                        // Header with mascot
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(bottom = 8.dp),
-                        )
-                        Text(
-                            text = "Solve more problems to unlock new games",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(bottom = 8.dp),
-                        )
+                        ) {
+                            // Math Pup juggling number blocks
+                            Image(
+                                painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
+                                contentDescription = "Math Pup juggling numbers",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.size(80.dp),
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Play fun math games!",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                                Text(
+                                    text = "Solve more problems to unlock new games",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
                     }
 
                     items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
