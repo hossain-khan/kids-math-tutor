@@ -1,15 +1,15 @@
-import { useParams } from 'react-router-dom';
-import GeneratedBuilder from './GeneratedBuilder';
-import ExplicitBuilder from './ExplicitBuilder';
+import { useParams } from "react-router-dom";
+import GeneratedBuilder from "./GeneratedBuilder";
+import ExplicitBuilder from "./ExplicitBuilder";
 
 export default function Builder() {
   const { type } = useParams<{ type: string }>();
 
-  if (type === 'generated') {
+  if (type === "generated") {
     return <GeneratedBuilder />;
   }
 
-  if (type === 'explicit') {
+  if (type === "explicit") {
     return <ExplicitBuilder />;
   }
 

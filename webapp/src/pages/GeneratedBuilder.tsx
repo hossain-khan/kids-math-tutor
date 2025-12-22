@@ -1,29 +1,32 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Button from '@/components/Button';
-import Input from '@/components/Input';
-import Select from '@/components/Select';
-import Card from '@/components/Card';
-import { GeneratedChallengeSpecSchema, type MathOperation } from '@/lib/schemas/challenge-schema';
-import { z } from 'zod';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import Select from "@/components/Select";
+import Card from "@/components/Card";
+import {
+  GeneratedChallengeSpecSchema,
+  type MathOperation,
+} from "@/lib/schemas/challenge-schema";
+import { z } from "zod";
 
 export default function GeneratedBuilder() {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
-    title: '',
-    subtitle: '',
-    operation: 'addition' as MathOperation,
+    title: "",
+    subtitle: "",
+    operation: "addition" as MathOperation,
     problemCount: 10,
     minNumber: 0,
     maxNumber: 20,
   });
 
   const operationOptions = [
-    { value: 'addition', label: '➕ Addition' },
-    { value: 'subtraction', label: '➖ Subtraction' },
-    { value: 'multiplication', label: '✖️ Multiplication' },
-    { value: 'division', label: '➗ Division' },
+    { value: "addition", label: "➕ Addition" },
+    { value: "subtraction", label: "➖ Subtraction" },
+    { value: "multiplication", label: "✖️ Multiplication" },
+    { value: "division", label: "➗ Division" },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,7 +36,7 @@ export default function GeneratedBuilder() {
     try {
       // Validate the form data
       const challengeData = {
-        type: 'generated' as const,
+        type: "generated" as const,
         title: formData.title,
         subtitle: formData.subtitle || undefined,
         operation: formData.operation,
@@ -47,13 +50,13 @@ export default function GeneratedBuilder() {
       GeneratedChallengeSpecSchema.parse(challengeData);
 
       // Store the data and navigate to result page
-      sessionStorage.setItem('challengeData', JSON.stringify(challengeData));
-      navigate('/result');
+      sessionStorage.setItem("challengeData", JSON.stringify(challengeData));
+      navigate("/result");
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
-          const path = err.path.join('.');
+          const path = err.path.join(".");
           newErrors[path] = err.message;
         });
         setErrors(newErrors);
@@ -68,14 +71,20 @@ export default function GeneratedBuilder() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link to="/" className="text-2xl hover:scale-110 transition-transform">
+              <Link
+                to="/"
+                className="text-2xl hover:scale-110 transition-transform"
+              >
                 🐶
               </Link>
               <h1 className="text-2xl font-display font-bold text-gray-900">
                 Quick Generator
               </h1>
             </div>
-            <Link to="/help" className="text-primary-600 hover:underline text-sm">
+            <Link
+              to="/help"
+              className="text-primary-600 hover:underline text-sm"
+            >
               Need Help?
             </Link>
           </div>
@@ -88,9 +97,12 @@ export default function GeneratedBuilder() {
           <div className="flex items-start gap-4">
             <div className="text-3xl flex-shrink-0">✨</div>
             <div className="flex-1">
-              <h2 className="font-display font-bold text-lg mb-2">Auto-Generate Problems</h2>
+              <h2 className="font-display font-bold text-lg mb-2">
+                Auto-Generate Problems
+              </h2>
               <p className="text-sm text-gray-600">
-                Set your rules and we'll create random problems for you. Perfect for quick practice!
+                Set your rules and we'll create random problems for you. Perfect
+                for quick practice!
               </p>
             </div>
           </div>
@@ -104,7 +116,9 @@ export default function GeneratedBuilder() {
               label="Challenge Title"
               placeholder="e.g., Addition Practice 1-20"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               error={errors.title}
               required
             />
@@ -114,7 +128,9 @@ export default function GeneratedBuilder() {
               label="Subtitle (Optional)"
               placeholder="e.g., Master basic addition skills"
               value={formData.subtitle}
-              onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, subtitle: e.target.value })
+              }
               error={errors.subtitle}
               helperText="Add extra description to help your child"
             />
@@ -124,7 +140,12 @@ export default function GeneratedBuilder() {
               label="Math Operation"
               options={operationOptions}
               value={formData.operation}
-              onChange={(e) => setFormData({ ...formData, operation: e.target.value as MathOperation })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  operation: e.target.value as MathOperation,
+                })
+              }
               error={errors.operation}
             />
 
@@ -136,7 +157,12 @@ export default function GeneratedBuilder() {
                 min={1}
                 max={50}
                 value={formData.problemCount}
-                onChange={(e) => setFormData({ ...formData, problemCount: parseInt(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    problemCount: parseInt(e.target.value) || 0,
+                  })
+                }
                 error={errors.problemCount}
                 helperText="Between 1 and 50 problems"
               />
@@ -154,8 +180,13 @@ export default function GeneratedBuilder() {
                   min={0}
                   max={9999}
                   value={formData.minNumber}
-                  onChange={(e) => setFormData({ ...formData, minNumber: parseInt(e.target.value) || 0 })}
-                  error={errors['numberRange.min']}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      minNumber: parseInt(e.target.value) || 0,
+                    })
+                  }
+                  error={errors["numberRange.min"]}
                 />
                 <Input
                   label="Maximum"
@@ -163,25 +194,36 @@ export default function GeneratedBuilder() {
                   min={0}
                   max={9999}
                   value={formData.maxNumber}
-                  onChange={(e) => setFormData({ ...formData, maxNumber: parseInt(e.target.value) || 0 })}
-                  error={errors['numberRange.max']}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      maxNumber: parseInt(e.target.value) || 0,
+                    })
+                  }
+                  error={errors["numberRange.max"]}
                 />
               </div>
               <p className="text-sm text-gray-500">
-                Problems will use random numbers between {formData.minNumber} and {formData.maxNumber}
+                Problems will use random numbers between {formData.minNumber}{" "}
+                and {formData.maxNumber}
               </p>
             </div>
 
             {/* Action Buttons */}
             <div className="flex gap-4 pt-4">
-              <Button type="submit" variant="primary" size="lg" className="flex-1">
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="flex-1"
+              >
                 Generate Worksheet 🎉
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 size="lg"
-                onClick={() => navigate('/')}
+                onClick={() => navigate("/")}
               >
                 Cancel
               </Button>
@@ -197,7 +239,9 @@ export default function GeneratedBuilder() {
               <h3 className="font-bold text-gray-900 mb-2">Quick Tips</h3>
               <ul className="text-sm text-gray-700 space-y-1">
                 <li>• Start with smaller ranges (0-10) for younger children</li>
-                <li>• For division, the app ensures all answers are whole numbers</li>
+                <li>
+                  • For division, the app ensures all answers are whole numbers
+                </li>
                 <li>• For subtraction, results will always be positive</li>
                 <li>• Try 5-10 problems for quick practice sessions</li>
               </ul>
