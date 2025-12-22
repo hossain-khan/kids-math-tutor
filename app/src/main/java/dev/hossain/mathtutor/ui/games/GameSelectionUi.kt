@@ -5,7 +5,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -106,62 +105,58 @@ fun GameSelectionUi(
         },
         modifier = modifier,
     ) { paddingValues ->
-        BoxWithConstraints(
+        // Center content on wide screens
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            // Center content on wide screens
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter,
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .fillMaxSize()
+                        .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                LazyColumn(
-                    modifier =
-                        Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
-                            .fillMaxSize()
-                            .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    item {
-                        // Header with mascot
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 8.dp),
-                        ) {
-                            // Math Pup juggling number blocks
-                            Image(
-                                painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
-                                contentDescription = "Math Pup juggling numbers",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier.size(100.dp),
+                item {
+                    // Header with mascot
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                    ) {
+                        // Math Pup juggling number blocks
+                        Image(
+                            painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
+                            contentDescription = "Math Pup juggling numbers",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(100.dp),
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "Play fun math games!",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text(
-                                    text = "Play fun math games!",
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
-                                Text(
-                                    text = "Solve more problems to unlock new games",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
+                            Text(
+                                text = "Solve more problems to unlock new games",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
+                }
 
-                    items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
-                        GameCard(
-                            gameInfo = gameInfo,
-                            totalProblemsSolved = state.totalProblemsSolved,
-                            onPlayClicked = { state.eventSink(GameSelectionScreen.Event.PlayGame(gameInfo.game)) },
-                        )
-                    }
+                items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
+                    GameCard(
+                        gameInfo = gameInfo,
+                        totalProblemsSolved = state.totalProblemsSolved,
+                        onPlayClicked = { state.eventSink(GameSelectionScreen.Event.PlayGame(gameInfo.game)) },
+                    )
                 }
             }
         }
