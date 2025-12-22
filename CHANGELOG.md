@@ -29,6 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `ChallengePracticeSession` data class for tracking practice session history with metrics
   - `CustomChallenge` data class as main model with problems, metadata, and practice history
   - All models are Parcelable for Android navigation and include comprehensive unit tests
+- **JSON Parser for Custom Challenges** - Implemented JSON parsing and validation for custom challenge import specifications
+  - `ChallengeJsonParser` interface with `DefaultChallengeJsonParser` implementation using kotlinx-serialization
+  - `ValidationResult` sealed class for field-level validation feedback
+  - Support for both "generated" (rule-based) and "explicit" (problem list) JSON schemas
+  - Smart JSON detection that finds valid JSON anywhere in shared text (emails, messages)
+  - Comprehensive validation rules: title (required, max 100 chars), subtitle (optional, max 150 chars), problem count (1-50), number range (0-9999, min < max), operation validation, division whole number validation, integer overflow protection
+  - `MathOperation` serializer for lowercase string mapping ("addition", "subtraction", "multiplication", "division")
+  - Added kotlinx-serialization dependencies (version 1.8.0) and Kotlin serialization plugin
+  - Comprehensive test suite with 30+ test cases covering all validation scenarios
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual

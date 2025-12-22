@@ -54,6 +54,9 @@ leakcanary = "3.0-alpha-8"
 # Window library for foldable support and display features
 # https://developer.android.com/jetpack/androidx/releases/window
 androidxWindow = "1.5.1"
+# Kotlinx Serialization - JSON serialization library
+# https://github.com/Kotlin/kotlinx.serialization
+kotlinxSerialization = "1.8.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -146,6 +149,9 @@ androidx-compose-materialWindow = { group = "androidx.compose.material3", name =
 # Window library for foldable support
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidxWindow" }
 
+# Kotlinx Serialization JSON
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 # Firebase Crashlytics Gradle plugin
@@ -175,5 +181,9 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+
+# Kotlin Serialization plugin
+# https://kotlinlang.org/docs/serialization.html
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 
