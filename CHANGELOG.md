@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Back Button on Operation Selector** - Added back arrow navigation icon to "Math Time" (Operation Selector) screen TopAppBar for easier navigation
+
 ### Changed
 - **Default Volume** - Changed default volume from 70% to 50% for more comfortable initial audio levels
 
