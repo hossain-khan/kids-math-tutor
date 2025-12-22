@@ -62,6 +62,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -164,6 +165,7 @@ class GradeSelectionPresenter
                 when (event) {
                     is GradeSelectionScreen.Event.GradeSelected -> {
                         selectedGrade = event.grade
+                        Timber.d("GradeSelection: Grade selected = ${event.grade}")
                         // Track grade selection
                         analyticsService.logEvent(
                             AnalyticsEvent.GRADE_SELECTED,
@@ -177,6 +179,7 @@ class GradeSelectionPresenter
                         // Only navigate if grade is selected
                         selectedGrade?.let { grade ->
                             if (screen.isFromSettings) {
+                                Timber.d("GradeSelection: Saving grade to profile (settings) = $grade")
                                 // From settings: save grade asynchronously and navigate back immediately
                                 // Don't block navigation on database save to prevent ANR
                                 scope.launch {
@@ -196,9 +199,11 @@ class GradeSelectionPresenter
                                         )
                                     }
                                 }
+                                Timber.d("GradeSelection: Navigating back after saving grade")
                                 // Navigate back immediately without waiting for database save
                                 navigator.pop()
                             } else {
+                                Timber.d("GradeSelection: Onboarding continue - navigating to NameEntry with grade = $grade")
                                 // Onboarding: navigate to name entry
                                 navigator.goTo(NameEntryScreen(gradeLevel = grade))
                             }
@@ -206,6 +211,7 @@ class GradeSelectionPresenter
                     }
 
                     is GradeSelectionScreen.Event.BackClicked -> {
+                        Timber.d("GradeSelection: Back clicked")
                         navigator.pop()
                     }
                 }

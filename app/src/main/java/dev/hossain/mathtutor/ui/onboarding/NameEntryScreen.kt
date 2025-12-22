@@ -51,6 +51,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -141,6 +142,7 @@ class NameEntryPresenter
                     }
 
                     is NameEntryScreen.Event.SkipClicked -> {
+                        Timber.d("NameEntry: Skip clicked - saving profile without name")
                         // Track name skipped
                         analyticsService.logEvent(
                             AnalyticsEvent.NAME_ENTERED,
@@ -156,11 +158,13 @@ class NameEntryPresenter
                                     adaptiveDifficultyEnabled = true,
                                 ),
                             )
+                            Timber.d("NameEntry: Profile saved (skipped), navigating to Home")
                             navigator.resetRoot(HomeScreen)
                         }
                     }
 
                     is NameEntryScreen.Event.ContinueClicked -> {
+                        Timber.d("NameEntry: Continue clicked - name='${name.trim()}')")
                         // Track name entered
                         val hasName = name.trim().isNotBlank()
                         analyticsService.logEvent(
@@ -177,6 +181,7 @@ class NameEntryPresenter
                                     adaptiveDifficultyEnabled = true,
                                 ),
                             )
+                            Timber.d("NameEntry: Profile saved, navigating to Home")
                             navigator.resetRoot(HomeScreen)
                         }
                     }

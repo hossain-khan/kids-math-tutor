@@ -1,11 +1,13 @@
 package dev.hossain.mathtutor.ui.settings
 
+import android.content.Context
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,18 +39,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
+import timber.log.Timber
 import java.time.Instant
 
 // Width breakpoints for adaptive layouts
@@ -106,7 +112,7 @@ fun SettingsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
@@ -424,13 +430,51 @@ private fun AnalyticsToggleRow(
  */
 @Composable
 private fun SettingsLinks(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val toolbarColor = MaterialTheme.colorScheme.primary.toArgb()
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
-        SettingsLinkItem(text = "About", onClick = { /* TODO: Implement navigation */ })
-        SettingsLinkItem(text = "Privacy", onClick = { /* TODO: Implement navigation */ })
-        SettingsLinkItem(text = "Help", onClick = { /* TODO: Implement navigation */ })
+        SettingsLinkItem(text = "About", onClick = { openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/", toolbarColor) })
+        SettingsLinkItem(text = "Terms of Service", onClick = {
+            openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/terms-of-service.html", toolbarColor)
+        })
+        SettingsLinkItem(text = "Privacy", onClick = {
+            openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/privacy.html", toolbarColor)
+        })
+    }
+}
+
+/**
+ * Helper to open an external URL using Chrome Custom Tabs with a themed toolbar color.
+ * Falls back to ACTION_VIEW if Custom Tabs cannot be launched.
+ */
+private fun openExternalUrl(
+    context: Context,
+    url: String,
+    toolbarColor: Int? = null,
+) {
+    try {
+        val uri = url.toUri()
+        val builder = CustomTabsIntent.Builder().setShowTitle(true)
+        toolbarColor?.let { builder.setToolbarColor(it) }
+        val customTabsIntent = builder.build()
+
+        customTabsIntent.launchUrl(context, uri)
+    } catch (e: Exception) {
+        Timber.e(e, "[Settings] CustomTabs failed, falling back to ACTION_VIEW for URL=%s", url)
+        // Fallback to ACTION_VIEW if Custom Tabs fails (safe for previews/tests)
+        try {
+            val intent =
+                android.content.Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            context.startActivity(intent)
+        } catch (ignored: Exception) {
+            Timber.e(ignored, "[Settings] Failed to open URL via ACTION_VIEW: %s", url)
+        }
     }
 }
 

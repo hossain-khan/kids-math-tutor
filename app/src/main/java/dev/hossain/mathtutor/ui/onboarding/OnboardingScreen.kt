@@ -60,6 +60,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 @Parcelize
 data object OnboardingScreen : Screen {
@@ -140,6 +141,7 @@ class OnboardingPresenter
                 when (event) {
                     is OnboardingScreen.Event.PageChanged -> {
                         currentPage = event.page
+                        Timber.d("Onboarding: Page changed to ${event.page}")
                     }
 
                     OnboardingScreen.Event.NextClicked -> {
@@ -149,6 +151,7 @@ class OnboardingPresenter
                     OnboardingScreen.Event.SkipClicked,
                     OnboardingScreen.Event.GetStartedClicked,
                     -> {
+                        Timber.d("Onboarding: Skip/GetStarted clicked - currentPage=$currentPage")
                         coroutineScope.launch {
                             userPreferencesRepository.setOnboardingCompleted(true)
                             // Track onboarding completed

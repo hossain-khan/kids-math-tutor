@@ -1,7 +1,6 @@
 package dev.hossain.mathtutor.work
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dev.hossain.mathtutor.di.AppWorkerFactory
@@ -14,6 +13,7 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.binding
 import kotlinx.coroutines.delay
+import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -51,11 +51,12 @@ class SampleWorker(
 
     override suspend fun doWork(): Result {
         val workName = inputData.getString(KEY_WORK_NAME) ?: "unknown"
-        Log.d("SampleWorker", "Sample doWork running: $workName")
+        Timber.d("[SampleWorker] Sample doWork running: $workName")
 
         // Simulate some work
         delay(5.seconds)
 
+        Timber.d("[SampleWorker] Work complete: $workName")
         return Result.success()
     }
 
