@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -72,6 +73,7 @@ fun MathRaceStartScreen(
                         )
                     }
                 },
+                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier,

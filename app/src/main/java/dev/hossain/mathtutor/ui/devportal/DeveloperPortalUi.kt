@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
@@ -41,7 +42,10 @@ fun DeveloperPortalUi(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Developer Portal") })
+            TopAppBar(
+                title = { Text("Developer Portal") },
+                modifier = Modifier.shadow(elevation = 4.dp),
+            )
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
