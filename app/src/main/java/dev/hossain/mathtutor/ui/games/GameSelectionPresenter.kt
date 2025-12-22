@@ -70,24 +70,31 @@ class GameSelectionPresenter
                         totalProblemsSolved = 0,
                     ),
             ) {
-                // Combine all flows - emits whenever any flow updates
-                // Using nested combine since we have more than 5 flows
+                // Combine all flows using multiple combine calls since we have 7 flows with different types
+                // First combine session stats with Math Race data
                 combine(
                     sessionRepository.getOverallStats(),
-                    combine(
-                        gameRepository.getPersonalBest(Game.MATH_RACE),
-                        gameRepository.getGameStats(Game.MATH_RACE),
-                    ) { best, stats -> Pair(best, stats) },
-                    combine(
-                        gameRepository.getPersonalBest(Game.MEMORY_MATCH),
-                        gameRepository.getGameStats(Game.MEMORY_MATCH),
-                    ) { best, stats -> Pair(best, stats) },
+                    gameRepository.getPersonalBest(Game.MATH_RACE),
+                    gameRepository.getGameStats(Game.MATH_RACE),
+                    gameRepository.getPersonalBest(Game.MEMORY_MATCH),
+                    gameRepository.getGameStats(Game.MEMORY_MATCH),
+                ) { sessionStats, mathRaceBest, mathRaceStats, memoryMatchBest, memoryMatchStats ->
+                    Pair(
+                        sessionStats,
+                        Triple(
+                            Pair(mathRaceBest, mathRaceStats),
+                            Pair(memoryMatchBest, memoryMatchStats),
+                            null, // Placeholder for number sequence data
+                        ),
+                    )
+                }.combine(
                     combine(
                         gameRepository.getPersonalBest(Game.NUMBER_SEQUENCE),
                         gameRepository.getGameStats(Game.NUMBER_SEQUENCE),
                     ) { best, stats -> Pair(best, stats) },
-                ) { sessionStats, mathRaceData, memoryMatchData, numberSequenceData ->
+                ) { (sessionStats, gameData), numberSequenceData ->
                     val totalProblems = sessionStats.totalProblems
+                    val (mathRaceData, memoryMatchData, _) = gameData
                     val (mathRaceBest, mathRaceStats) = mathRaceData
                     val (memoryMatchBest, memoryMatchStats) = memoryMatchData
                     val (numberSequenceBest, numberSequenceStats) = numberSequenceData
