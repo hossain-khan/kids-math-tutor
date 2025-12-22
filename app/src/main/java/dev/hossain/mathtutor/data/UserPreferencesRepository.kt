@@ -116,7 +116,7 @@ class UserPreferencesRepositoryImpl
 
         override val volume: Flow<Float> =
             context.userPreferencesDataStore.data.map { preferences ->
-                preferences[PreferencesKeys.VOLUME] ?: 0.7f
+                preferences[PreferencesKeys.VOLUME] ?: 0.5f
             }
 
         override suspend fun setVolume(volume: Float) {

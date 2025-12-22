@@ -59,7 +59,7 @@ class AudioHapticSettingsPresenter
             val soundEffectsEnabled by userPreferencesRepository.isSoundEffectsEnabled.collectAsState(initial = true)
             val backgroundMusicEnabled by userPreferencesRepository.isBackgroundMusicEnabled.collectAsState(initial = false)
             val hapticsEnabled by userPreferencesRepository.isHapticsEnabled.collectAsState(initial = true)
-            val volume by userPreferencesRepository.volume.collectAsState(initial = 0.7f)
+            val volume by userPreferencesRepository.volume.collectAsState(initial = 0.5f)
             val highContrastEnabled by userPreferencesRepository.isHighContrastEnabled.collectAsState(initial = false)
             val largeTextEnabled by userPreferencesRepository.isLargeTextEnabled.collectAsState(initial = false)
 

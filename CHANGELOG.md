@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Default Volume** - Changed default volume from 70% to 50% for more comfortable initial audio levels
+
 ## [1.8.0] - 2025-12-21
 
 ### Added
