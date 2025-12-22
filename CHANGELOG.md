@@ -21,6 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Help documentation page
 - **Back Button on Operation Selector** - Added back arrow navigation icon to "Math Time" (Operation Selector) screen TopAppBar for easier navigation
 - **Settings Hero Image** - Added Math Pup teaching sticker (`pup_tutor_sticker_teaching_math_and_painting`) as welcoming header image at top of settings page
+- **Custom Challenge Domain Models** - Created core domain models to support Parent Custom Challenges feature
+  - `ChallengeType` enum for GENERATED and EXPLICIT challenge types
+  - `NumberRange` data class for specifying number ranges in generated challenges
+  - `ProblemSpec` data class for explicit problem specifications
+  - `ChallengeImportSpec` sealed class with Generated and Explicit variants for challenge import specifications
+  - `ChallengePracticeSession` data class for tracking practice session history with metrics
+  - `CustomChallenge` data class as main model with problems, metadata, and practice history
+  - All models are Parcelable for Android navigation and include comprehensive unit tests
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual
