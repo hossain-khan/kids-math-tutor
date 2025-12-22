@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.data.local
 
 import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.ChallengeType
 import dev.hossain.mathtutor.domain.model.MathOperation
 import org.junit.Test
 import java.time.Instant
@@ -162,6 +163,37 @@ class ConvertersTest {
         // to match the precision preserved by the converters
         val original = Instant.ofEpochMilli(Instant.now().toEpochMilli())
         val converted = converters.toInstant(converters.fromInstant(original))
+        assertThat(converted).isEqualTo(original)
+    }
+
+    @Test
+    fun `fromChallengeType converts GENERATED to string`() {
+        val result = converters.fromChallengeType(ChallengeType.GENERATED)
+        assertThat(result).isEqualTo("GENERATED")
+    }
+
+    @Test
+    fun `fromChallengeType converts EXPLICIT to string`() {
+        val result = converters.fromChallengeType(ChallengeType.EXPLICIT)
+        assertThat(result).isEqualTo("EXPLICIT")
+    }
+
+    @Test
+    fun `toChallengeType converts string to GENERATED`() {
+        val result = converters.toChallengeType("GENERATED")
+        assertThat(result).isEqualTo(ChallengeType.GENERATED)
+    }
+
+    @Test
+    fun `toChallengeType converts string to EXPLICIT`() {
+        val result = converters.toChallengeType("EXPLICIT")
+        assertThat(result).isEqualTo(ChallengeType.EXPLICIT)
+    }
+
+    @Test
+    fun `round trip conversion preserves ChallengeType`() {
+        val original = ChallengeType.GENERATED
+        val converted = converters.toChallengeType(converters.fromChallengeType(original))
         assertThat(converted).isEqualTo(original)
     }
 }

@@ -6,11 +6,15 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
+import dev.hossain.mathtutor.data.local.dao.CustomChallengeDao
 import dev.hossain.mathtutor.data.local.dao.GameSessionDao
 import dev.hossain.mathtutor.data.local.dao.PerformanceDao
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.dao.StreakDao
 import dev.hossain.mathtutor.data.local.entity.BadgeEntity
+import dev.hossain.mathtutor.data.local.entity.ChallengePracticeSessionEntity
+import dev.hossain.mathtutor.data.local.entity.ChallengeProblemsEntity
+import dev.hossain.mathtutor.data.local.entity.CustomChallengeEntity
 import dev.hossain.mathtutor.data.local.entity.GameSessionEntity
 import dev.hossain.mathtutor.data.local.entity.PerformanceEntity
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
@@ -20,10 +24,10 @@ import timber.log.Timber
 /**
  * Room database for Kids Math Tutor app.
  * Stores practice session history, statistics, badge achievements, daily streaks,
- * performance records, and game session data.
+ * performance records, game session data, and custom challenges.
  *
  * Database name: kids_math_tutor.db
- * Version: 7 (added 4 new Memory Match badges)
+ * Version: 8 (added custom challenges support)
  *
  * Entities:
  * - [PracticeSessionEntity]: Completed practice sessions with statistics
@@ -31,9 +35,12 @@ import timber.log.Timber
  * - [StreakEntity]: Daily practice streak tracking
  * - [PerformanceEntity]: Individual problem performance records for adaptive difficulty
  * - [GameSessionEntity]: Mini-game session data and scores
+ * - [CustomChallengeEntity]: Parent-created custom challenges
+ * - [ChallengeProblemsEntity]: Math problems within custom challenges
+ * - [ChallengePracticeSessionEntity]: Practice sessions for custom challenges
  *
  * Type Converters:
- * - [Converters]: Handles MathOperation, BadgeCategory, GradeLevel enums, Instant timestamp, and LocalDate conversions
+ * - [Converters]: Handles MathOperation, BadgeCategory, ChallengeType, GradeLevel enums, Instant timestamp, and LocalDate conversions
  */
 @Database(
     entities = [
@@ -42,8 +49,11 @@ import timber.log.Timber
         StreakEntity::class,
         PerformanceEntity::class,
         GameSessionEntity::class,
+        CustomChallengeEntity::class,
+        ChallengeProblemsEntity::class,
+        ChallengePracticeSessionEntity::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -82,6 +92,13 @@ abstract class MathDatabase : RoomDatabase() {
      * @return GameSessionDao instance
      */
     abstract fun gameSessionDao(): GameSessionDao
+
+    /**
+     * Provides access to custom challenge data operations.
+     *
+     * @return CustomChallengeDao instance
+     */
+    abstract fun customChallengeDao(): CustomChallengeDao
 
     companion object {
         /**
@@ -247,6 +264,80 @@ abstract class MathDatabase : RoomDatabase() {
                         """
                         INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
                         VALUES ('perfect_memory', 'Perfect Memory', 'Complete with exactly 8 moves (perfect game)', 'PERFECT_MEMORY', 'GAMES', 'PerfectMemoryMatch', '', NULL)
+                        """.trimIndent(),
+                    )
+                }
+            }
+
+        /**
+         * Migration from database version 7 to version 8.
+         * Adds custom challenges support with three new tables:
+         * - custom_challenges: Parent-created custom challenges
+         * - challenge_problems: Math problems within custom challenges
+         * - challenge_practice_sessions: Practice sessions for custom challenges
+         */
+        val MIGRATION_7_8 =
+            object : Migration(7, 8) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    Timber.d("MathDatabase: Migrating 7 -> 8 - adding custom challenges tables")
+
+                    // Create custom_challenges table
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS custom_challenges (
+                            id TEXT PRIMARY KEY NOT NULL,
+                            title TEXT NOT NULL,
+                            subtitle TEXT,
+                            type TEXT NOT NULL,
+                            createdAt INTEGER NOT NULL,
+                            isArchived INTEGER NOT NULL
+                        )
+                        """.trimIndent(),
+                    )
+
+                    // Create challenge_problems table with foreign key to custom_challenges
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS challenge_problems (
+                            id TEXT PRIMARY KEY NOT NULL,
+                            challengeId TEXT NOT NULL,
+                            operand1 INTEGER NOT NULL,
+                            operand2 INTEGER NOT NULL,
+                            operation TEXT NOT NULL,
+                            answer INTEGER NOT NULL,
+                            orderIndex INTEGER NOT NULL,
+                            FOREIGN KEY (challengeId) REFERENCES custom_challenges(id) ON DELETE CASCADE
+                        )
+                        """.trimIndent(),
+                    )
+
+                    // Create index on challengeId for faster lookups
+                    db.execSQL(
+                        """
+                        CREATE INDEX IF NOT EXISTS index_challenge_problems_challengeId ON challenge_problems (challengeId)
+                        """.trimIndent(),
+                    )
+
+                    // Create challenge_practice_sessions table with foreign key to custom_challenges
+                    db.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS challenge_practice_sessions (
+                            sessionId TEXT PRIMARY KEY NOT NULL,
+                            challengeId TEXT NOT NULL,
+                            startTime INTEGER NOT NULL,
+                            endTime INTEGER,
+                            problemsAttempted INTEGER NOT NULL,
+                            correctAnswers INTEGER NOT NULL,
+                            totalTimeMs INTEGER NOT NULL,
+                            FOREIGN KEY (challengeId) REFERENCES custom_challenges(id) ON DELETE CASCADE
+                        )
+                        """.trimIndent(),
+                    )
+
+                    // Create index on challengeId for faster lookups
+                    db.execSQL(
+                        """
+                        CREATE INDEX IF NOT EXISTS index_challenge_practice_sessions_challengeId ON challenge_practice_sessions (challengeId)
                         """.trimIndent(),
                     )
                 }

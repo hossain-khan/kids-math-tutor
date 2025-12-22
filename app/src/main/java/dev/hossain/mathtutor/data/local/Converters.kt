@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.data.local
 
 import androidx.room.TypeConverter
 import dev.hossain.mathtutor.domain.model.BadgeCategory
+import dev.hossain.mathtutor.domain.model.ChallengeType
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import java.time.Instant
@@ -9,7 +10,7 @@ import java.time.LocalDate
 
 /**
  * Room type converters for custom types that need to be stored in the database.
- * Converts between Room-supported types (String, Long) and domain types (MathOperation, BadgeCategory, Instant, LocalDate).
+ * Converts between Room-supported types (String, Long) and domain types (MathOperation, BadgeCategory, ChallengeType, Instant, LocalDate).
  */
 class Converters {
     /**
@@ -101,4 +102,22 @@ class Converters {
      */
     @TypeConverter
     fun toGradeLevel(value: String): GradeLevel = GradeLevel.valueOf(value)
+
+    /**
+     * Converts ChallengeType enum to String for database storage.
+     *
+     * @param type The ChallengeType enum value
+     * @return String representation of the challenge type name
+     */
+    @TypeConverter
+    fun fromChallengeType(type: ChallengeType): String = type.name
+
+    /**
+     * Converts String from database back to ChallengeType enum.
+     *
+     * @param value String representation of the challenge type name
+     * @return ChallengeType enum value
+     */
+    @TypeConverter
+    fun toChallengeType(value: String): ChallengeType = ChallengeType.valueOf(value)
 }
