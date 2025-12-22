@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2025-12-21
+
 ### Added
 - **TopAppBar Shadow** - Added subtle drop shadow (4dp elevation) to all TopAppBar components across the app for better visual hierarchy and separation between the app bar and content
 - **Adaptive Layout Support** - Implemented tablet and adaptive layouts across all screens
@@ -1312,7 +1314,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.7.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.8.0...HEAD
+[1.8.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.4.0...1.5.0
