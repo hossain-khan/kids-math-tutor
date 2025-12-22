@@ -300,15 +300,17 @@ object JsonTestSamples {
 
     /**
      * Invalid JSON with too many problems (over limit).
+     * Note: Not const because it uses dynamic list generation.
      */
-    const val INVALID_EXPLICIT_TOO_MANY_PROBLEMS =
-        """
-        {
-          "type": "explicit",
-          "title": "Too Many",
-          "problems": [${
-            List(51) { """{"operand1": 1, "operand2": 1, "operation": "addition"}""" }.joinToString(",")
-        }]
-        }
-        """
+    val INVALID_EXPLICIT_TOO_MANY_PROBLEMS: String
+        get() =
+            """
+            {
+              "type": "explicit",
+              "title": "Too Many",
+              "problems": [${
+                List(51) { """{"operand1": 1, "operand2": 1, "operation": "addition"}""" }.joinToString(",")
+            }]
+            }
+            """
 }
