@@ -55,8 +55,8 @@ describe('formatNumber', () => {
 describe('downloadJson', () => {
   beforeEach(() => {
     // Mock DOM APIs
-    global.URL.createObjectURL = vi.fn(() => 'mock-url')
-    global.URL.revokeObjectURL = vi.fn()
+    globalThis.URL.createObjectURL = vi.fn(() => 'mock-url')
+    globalThis.URL.revokeObjectURL = vi.fn()
     
     // Create mock link element
     const mockLink = {
@@ -89,12 +89,12 @@ describe('downloadJson', () => {
     downloadJson(data, 'test.json')
 
     // Verify Blob was created with formatted JSON
-    expect(global.URL.createObjectURL).toHaveBeenCalled()
+    expect(globalThis.URL.createObjectURL).toHaveBeenCalled()
   })
 
   it('should revoke object URL after download', () => {
     downloadJson({ test: 'data' }, 'test.json')
-    expect(global.URL.revokeObjectURL).toHaveBeenCalledWith('mock-url')
+    expect(globalThis.URL.revokeObjectURL).toHaveBeenCalledWith('mock-url')
   })
 })
 
