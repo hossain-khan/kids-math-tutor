@@ -83,11 +83,12 @@ export default function Result() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
-            <Link
-              to="/"
-              className="text-2xl hover:scale-110 transition-transform"
-            >
-              🐶
+            <Link to="/" className="hover:scale-110 transition-transform">
+              <img
+                src="/images/logo.webp"
+                alt="Math Pup Logo"
+                className="w-10 h-10 object-contain"
+              />
             </Link>
             <h1 className="text-2xl font-display font-bold text-gray-900">
               Worksheet Ready!

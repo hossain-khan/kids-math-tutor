@@ -7,7 +7,11 @@ export default function Home() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="text-4xl">🐶</div>
+            <img
+              src="/images/logo.webp"
+              alt="Math Pup Logo"
+              className="w-12 h-12 object-contain"
+            />
             <h1 className="text-2xl font-display font-bold text-gray-900">
               Math Pup Worksheet Creator
             </h1>
@@ -18,7 +22,11 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Hero Section */}
         <section className="text-center mb-12">
-          <div className="text-8xl mb-6 animate-bounce-slow">🐶</div>
+          <img
+            src="/images/hero.webp"
+            alt="Math Pup Teaching"
+            className="w-48 h-48 mx-auto mb-6 object-contain animate-bounce-slow"
+          />
           <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
             Math Pup Worksheet Creator
           </h2>
