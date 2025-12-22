@@ -47,6 +47,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `MathOperation` serializer for lowercase string mapping ("addition", "subtraction", "multiplication", "division")
   - Added kotlinx-serialization dependencies (version 1.8.0) and Kotlin serialization plugin
   - Comprehensive test suite with 30+ test cases covering all validation scenarios
+- **Custom Challenge Service** - Implemented business logic service to convert import specifications into practice-ready custom challenges
+  - `CustomChallengeService` interface defining service contract for challenge operations
+  - `CustomChallengeServiceImpl` with Metro DI integration (@SingleIn, @ContributesBinding, @Inject)
+  - `PreviewData` model for challenge preview with sample problems and estimated completion time
+  - Problem generation logic using existing `ProblemGenerator` with custom number ranges
+  - Explicit problem conversion with comprehensive validation (division filtering, overflow protection)
+  - Division validation ensuring whole number results only (non-whole results filtered out)
+  - Integer overflow protection for addition and multiplication operations
+  - Preview generation with first 3-5 sample problems and operations summary
+  - CRUD operations: getAllChallenges, getChallengeById, archiveChallenge, deleteChallenge
+  - Practice session recording via recordPracticeSession()
+  - Reactive observeActiveChallenges() Flow for UI updates
+  - Estimated duration calculation based on operation complexity (15-25 seconds per problem)
+  - Comprehensive unit tests with 20+ test cases covering all business logic scenarios
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual
