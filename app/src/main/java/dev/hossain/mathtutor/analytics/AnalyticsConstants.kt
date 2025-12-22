@@ -34,6 +34,12 @@ object AnalyticsEvent {
     const val GAME_COMPLETED = "game_completed"
     const val GAME_HIGH_SCORE = "game_high_score"
 
+    // Custom challenge events
+    const val CUSTOM_CHALLENGE_IMPORT_STARTED = "custom_challenge_import_started"
+    const val CUSTOM_CHALLENGE_STARTED = "custom_challenge_started"
+    const val CUSTOM_CHALLENGE_ARCHIVED = "custom_challenge_archived"
+    const val CUSTOM_CHALLENGE_DELETED = "custom_challenge_deleted"
+
     // Settings events
     const val SETTINGS_CHANGED = "settings_changed"
     const val AUDIO_TOGGLED = "audio_toggled"
@@ -73,6 +79,10 @@ object AnalyticsParam {
     const val GAME_SCORE = "game_score"
     const val GAME_DURATION = "game_duration"
     const val IS_NEW_RECORD = "is_new_record"
+
+    // Custom challenge parameters
+    const val CHALLENGE_ID = "challenge_id"
+    const val SOURCE = "source"
 
     // Settings parameters
     const val SETTING_NAME = "setting_name"
