@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Back Button on Operation Selector** - Added back arrow navigation icon to "Math Time" (Operation Selector) screen TopAppBar for easier navigation
+- **Settings Hero Image** - Added Math Pup teaching sticker (`pup_tutor_sticker_teaching_math_and_painting`) as welcoming header image at top of settings page
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual
