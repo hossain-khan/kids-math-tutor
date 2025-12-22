@@ -13,6 +13,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "generate-schema": "tsx scripts/generate-json-schema.ts",
     "worker:dev": "wrangler dev workers/api.ts",
     "worker:deploy": "wrangler deploy workers/api.ts"
   },
@@ -45,9 +46,11 @@
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.19",
+    "tsx": "^4.21.0",
     "typescript": "^5.5.3",
     "vite": "^7.0.0",
     "vitest": "^4.0.0",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.0.0",
+    "zod-to-json-schema": "^3.25.0"
   }
 }

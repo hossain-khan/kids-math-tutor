@@ -126,7 +126,24 @@ After deployment, visit: https://pup-tutor-worksheet-generator.hk-c91.workers.de
 
 ## JSON Schema
 
-The web app generates JSON that matches the Android app's custom challenge schema exactly:
+The web app generates JSON that matches the Android app's custom challenge schema exactly.
+
+### Public JSON Schema
+
+A JSON Schema (draft-07) specification is available for validation in the Android app:
+
+**Schema URL**: https://pup-tutor-worksheet-generator.hk-c91.workers.dev/challenge-schema.json
+
+This schema is auto-generated from the Zod validation schemas and provides:
+- Type-safe validation for custom challenges
+- Documentation of required fields and constraints
+- Examples for both challenge types
+
+To regenerate the schema after updating Zod schemas:
+
+```bash
+pnpm generate-schema
+```
 
 ### Generated Challenge
 ```json
