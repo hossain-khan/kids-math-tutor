@@ -112,15 +112,25 @@ Used to detect foldable device states and adapt layouts.
 #### 5. TwoPane Layout
 
 ```kotlin
-TwoPane(
-    first = { /* List content */ },
-    second = { /* Detail content */ },
-    strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
-    displayFeatures = displayFeatures,
+// Using Material 3 Adaptive TwoPane (replaces deprecated accompanist-adaptive)
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+
+ListDetailPaneScaffold(
+    listPane = { /* List content */ },
+    detailPane = { /* Detail content */ },
+)
+
+// Or using supportingPane for three-pane layout
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
+
+SupportingPaneScaffold(
+    mainPane = { /* Main content */ },
+    supportingPane = { /* Supporting content */ },
 )
 ```
 
-For master-detail layouts on larger screens.
+For master-detail layouts on larger screens. Note: The Reply sample uses `com.google.accompanist:accompanist-adaptive` but this library is deprecated. The official Material 3 Adaptive library (`androidx.compose.material3.adaptive:adaptive-layout`) provides `ListDetailPaneScaffold` and `SupportingPaneScaffold` as replacements.
 
 ---
 
@@ -132,11 +142,10 @@ For master-detail layouts on larger screens.
 
 **Tasks**:
 1. Add Material 3 Adaptive dependencies to `gradle/libs.versions.toml`
-2. Add Accompanist Adaptive dependency for TwoPane support
-3. Add Window library for foldable support
-4. Create `ui/utils/WindowStateUtils.kt` with DevicePosture and window utilities
-5. Create `ui/utils/AdaptiveLayoutTypes.kt` for NavigationType and ContentType enums
-6. Update `MainActivity.kt` to calculate WindowSizeClass and DisplayFeatures
+2. Add Window library for foldable support
+3. Create `ui/utils/WindowStateUtils.kt` with DevicePosture and window utilities
+4. Create `ui/utils/AdaptiveLayoutTypes.kt` for NavigationType and ContentType enums
+5. Update `MainActivity.kt` to calculate WindowSizeClass and DisplayFeatures
 
 **Files to Create/Modify**:
 - `gradle/libs.versions.toml` - Add new dependencies
@@ -148,11 +157,10 @@ For master-detail layouts on larger screens.
 **Dependencies Required**:
 ```toml
 [versions]
-accompanist = "0.37.3"
 androidx-window = "1.5.1"
 
 [libraries]
-accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
+# Material 3 Adaptive Components (includes TwoPane/ListDetail support)
 androidx-compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
 androidx-compose-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation" }
@@ -451,14 +459,10 @@ Add to `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-accompanist = "0.37.3"
 androidx-window = "1.5.1"
 
 [libraries]
-# Accompanist Adaptive (for TwoPane support)
-accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
-
-# Material 3 Adaptive Components
+# Material 3 Adaptive Components (includes TwoPane support, replacing deprecated accompanist-adaptive)
 androidx-compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
 androidx-compose-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation" }
@@ -475,8 +479,7 @@ Add to `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    // Adaptive layouts
-    implementation(libs.accompanist.adaptive)
+    // Adaptive layouts (Material 3 Adaptive includes TwoPane support)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
@@ -485,6 +488,8 @@ dependencies {
     implementation(libs.androidx.window)
 }
 ```
+
+**Note**: The deprecated `accompanist-adaptive` library is NOT included here. TwoPane functionality has been migrated to `androidx.compose.material3.adaptive:adaptive-layout` as part of the official Material 3 adaptive libraries.
 
 ---
 
