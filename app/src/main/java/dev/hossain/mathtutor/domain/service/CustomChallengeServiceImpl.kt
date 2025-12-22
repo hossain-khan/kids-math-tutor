@@ -39,7 +39,13 @@ class CustomChallengeServiceImpl
             /**
              * Number of sample problems to include in preview (3-5).
              */
-            private const val PREVIEW_SAMPLE_SIZE = 5
+            const val PREVIEW_SAMPLE_SIZE = 5
+
+            /**
+             * Multiplier for over-generating division problems to account for filtering.
+             * Division problems are filtered for whole number results, so we generate extra.
+             */
+            private const val DIVISION_OVER_GENERATE_MULTIPLIER = 2
 
             /**
              * Estimated seconds per problem for completion time calculation.
@@ -144,7 +150,8 @@ class CustomChallengeServiceImpl
             )
 
             // Generate more problems than needed to account for filtering
-            val overGenerateMultiplier = if (spec.operation == MathOperation.DIVISION) 2 else 1
+            val overGenerateMultiplier =
+                if (spec.operation == MathOperation.DIVISION) DIVISION_OVER_GENERATE_MULTIPLIER else 1
             val totalToGenerate = spec.problemCount * overGenerateMultiplier
 
             // Use Grade 2 as the default grade level for custom challenges
@@ -177,12 +184,25 @@ class CustomChallengeServiceImpl
                 when (problem.operation) {
                     MathOperation.SUBTRACTION -> {
                         // Ensure num2 <= num1 to avoid negative results
-                        Random.nextInt(min, minOf(num1 + 1, max + 1))
+                        // Also ensure num2 >= min to stay within range
+                        val upperBound = minOf(num1 + 1, max + 1)
+                        if (min >= upperBound) {
+                            // Invalid range, return null
+                            return null
+                        }
+                        Random.nextInt(min, upperBound)
                     }
 
                     MathOperation.DIVISION -> {
-                        // Generate valid divisor
-                        val divisor = Random.nextInt(maxOf(1, min), maxOf(2, max + 1))
+                        // Generate valid divisor within range
+                        // Ensure divisor is at least 1 and within the specified range
+                        val divisorMin = maxOf(1, min)
+                        val divisorMax = max
+                        if (divisorMin > divisorMax) {
+                            // Invalid range, return null
+                            return null
+                        }
+                        val divisor = Random.nextInt(divisorMin, divisorMax + 1)
                         if (divisor == 0 || num1 % divisor != 0) {
                             // Skip if division is not clean
                             return null

@@ -267,7 +267,8 @@ class CustomChallengeServiceImplTest {
             assertThat(preview.subtitle).isEqualTo("Test subtitle")
             assertThat(preview.problemCount).isGreaterThan(0)
             assertThat(preview.sampleProblems).isNotEmpty()
-            assertThat(preview.sampleProblems).hasSize(5) // PREVIEW_SAMPLE_SIZE
+            assertThat(preview.sampleProblems)
+                .hasSize(CustomChallengeServiceImpl.PREVIEW_SAMPLE_SIZE)
             assertThat(preview.operationsSummary).isNotEmpty()
             assertThat(preview.estimatedDuration.inWholeSeconds).isGreaterThan(0)
         }
