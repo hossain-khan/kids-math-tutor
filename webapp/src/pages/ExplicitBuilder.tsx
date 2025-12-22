@@ -235,10 +235,11 @@ export default function ExplicitBuilder() {
                   />
                   <Button
                     type="button"
-                    variant="outline"
-                    size="sm"
+                    variant="primary"
+                    size="md"
                     onClick={addProblem}
                     disabled={problems.length >= 50}
+                    className="min-w-[160px] font-semibold whitespace-nowrap"
                   >
                     ➕ Add Problem
                   </Button>
