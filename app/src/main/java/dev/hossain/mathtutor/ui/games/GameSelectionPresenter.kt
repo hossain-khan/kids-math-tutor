@@ -1,10 +1,9 @@
 package dev.hossain.mathtutor.ui.games
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
@@ -53,80 +52,86 @@ class GameSelectionPresenter
                 )
             }
 
-            // Collect overall stats to get total problems solved for unlock logic
-            val sessionStats by sessionRepository.getOverallStats().collectAsState(
-                initial = SessionStats.EMPTY,
+            // Use produceRetainedState to batch all game data collection
+            // This reduces overhead by:
+            // 1. Combining 7 separate flow collections into a single producer (sessionStats + 3 games × 2 flows)
+            // 2. Building gameInfoList only once per data update
+            // 3. Retaining state across configuration changes without reprocessing
+            data class GameSelectionData(
+                val gameInfoList: List<GameSelectionScreen.GameInfo>,
+                val totalProblemsSolved: Int,
             )
-            val totalProblemsSolved = sessionStats.totalProblems
 
-            // Log only when stats change (not on every recomposition)
-            LaunchedEffect(totalProblemsSolved) {
-                Timber.d(
-                    "GameSelection: Total problems solved = $totalProblemsSolved",
-                )
-            }
-
-            // Collect personal bests and game stats for each game
-            val mathRacePersonalBest by gameRepository
-                .getPersonalBest(Game.MATH_RACE)
-                .collectAsState(initial = 0)
-            val mathRaceStats by gameRepository
-                .getGameStats(Game.MATH_RACE)
-                .collectAsState(initial = GameStats.empty(Game.MATH_RACE))
-
-            val memoryMatchPersonalBest by gameRepository
-                .getPersonalBest(Game.MEMORY_MATCH)
-                .collectAsState(initial = 0)
-            val memoryMatchStats by gameRepository
-                .getGameStats(Game.MEMORY_MATCH)
-                .collectAsState(initial = GameStats.empty(Game.MEMORY_MATCH))
-
-            val numberSequencePersonalBest by gameRepository
-                .getPersonalBest(Game.NUMBER_SEQUENCE)
-                .collectAsState(initial = 0)
-            val numberSequenceStats by gameRepository
-                .getGameStats(Game.NUMBER_SEQUENCE)
-                .collectAsState(initial = GameStats.empty(Game.NUMBER_SEQUENCE))
-
-            // Build game info list
-            val gameInfoList =
-                listOf(
-                    GameSelectionScreen.GameInfo(
-                        game = Game.MATH_RACE,
-                        isUnlocked = Game.MATH_RACE.isUnlocked(totalProblemsSolved),
-                        personalBest = mathRacePersonalBest,
-                        totalPlays = mathRaceStats.totalGamesPlayed,
+            val gameData by produceRetainedState(
+                initialValue =
+                    GameSelectionData(
+                        gameInfoList = emptyList(),
+                        totalProblemsSolved = 0,
                     ),
-                    GameSelectionScreen.GameInfo(
-                        game = Game.MEMORY_MATCH,
-                        isUnlocked = Game.MEMORY_MATCH.isUnlocked(totalProblemsSolved),
-                        personalBest = memoryMatchPersonalBest,
-                        totalPlays = memoryMatchStats.totalGamesPlayed,
-                    ),
-                    GameSelectionScreen.GameInfo(
-                        game = Game.NUMBER_SEQUENCE,
-                        isUnlocked = Game.NUMBER_SEQUENCE.isUnlocked(totalProblemsSolved),
-                        personalBest = numberSequencePersonalBest,
-                        totalPlays = numberSequenceStats.totalGamesPlayed,
-                    ),
-                )
+            ) {
+                // Collect overall stats for unlock logic
+                sessionRepository.getOverallStats().collect { sessionStats ->
+                    val totalProblems = sessionStats.totalProblems
 
-            // Log only when game info changes (not on every recomposition)
-            LaunchedEffect(gameInfoList) {
-                Timber.d(
-                    "GameSelection: Games - " +
-                        "MathRace(unlocked=${gameInfoList[0].isUnlocked}, " +
-                        "best=${gameInfoList[0].personalBest}, plays=${gameInfoList[0].totalPlays}), " +
-                        "MemoryMatch(unlocked=${gameInfoList[1].isUnlocked}, " +
-                        "best=${gameInfoList[1].personalBest}, plays=${gameInfoList[1].totalPlays}), " +
-                        "NumberSequence(unlocked=${gameInfoList[2].isUnlocked}, " +
-                        "best=${gameInfoList[2].personalBest}, plays=${gameInfoList[2].totalPlays})",
-                )
+                    // Collect Math Race data
+                    gameRepository.getPersonalBest(Game.MATH_RACE).collect { mathRaceBest ->
+                        gameRepository.getGameStats(Game.MATH_RACE).collect { mathRaceStats ->
+                            // Collect Memory Match data
+                            gameRepository.getPersonalBest(Game.MEMORY_MATCH).collect { memoryMatchBest ->
+                                gameRepository.getGameStats(Game.MEMORY_MATCH).collect { memoryMatchStats ->
+                                    // Collect Number Sequence data
+                                    gameRepository.getPersonalBest(Game.NUMBER_SEQUENCE).collect { numberSequenceBest ->
+                                        gameRepository.getGameStats(Game.NUMBER_SEQUENCE).collect { numberSequenceStats ->
+                                            // Build game info list
+                                            val games =
+                                                listOf(
+                                                    GameSelectionScreen.GameInfo(
+                                                        game = Game.MATH_RACE,
+                                                        isUnlocked = Game.MATH_RACE.isUnlocked(totalProblems),
+                                                        personalBest = mathRaceBest,
+                                                        totalPlays = mathRaceStats.totalGamesPlayed,
+                                                    ),
+                                                    GameSelectionScreen.GameInfo(
+                                                        game = Game.MEMORY_MATCH,
+                                                        isUnlocked = Game.MEMORY_MATCH.isUnlocked(totalProblems),
+                                                        personalBest = memoryMatchBest,
+                                                        totalPlays = memoryMatchStats.totalGamesPlayed,
+                                                    ),
+                                                    GameSelectionScreen.GameInfo(
+                                                        game = Game.NUMBER_SEQUENCE,
+                                                        isUnlocked = Game.NUMBER_SEQUENCE.isUnlocked(totalProblems),
+                                                        personalBest = numberSequenceBest,
+                                                        totalPlays = numberSequenceStats.totalGamesPlayed,
+                                                    ),
+                                                )
+
+                                            Timber.d(
+                                                "GameSelectionPresenter: Loaded data - totalProblems=$totalProblems, " +
+                                                    "MathRace(unlocked=${games[0].isUnlocked}, " +
+                                                    "best=${games[0].personalBest}, plays=${games[0].totalPlays}), " +
+                                                    "MemoryMatch(unlocked=${games[1].isUnlocked}, " +
+                                                    "best=${games[1].personalBest}, plays=${games[1].totalPlays}), " +
+                                                    "NumberSequence(unlocked=${games[2].isUnlocked}, " +
+                                                    "best=${games[2].personalBest}, plays=${games[2].totalPlays})",
+                                            )
+
+                                            value =
+                                                GameSelectionData(
+                                                    gameInfoList = games,
+                                                    totalProblemsSolved = totalProblems,
+                                                )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             return GameSelectionScreen.State(
-                gameInfoList = gameInfoList,
-                totalProblemsSolved = totalProblemsSolved,
+                gameInfoList = gameData.gameInfoList,
+                totalProblemsSolved = gameData.totalProblemsSolved,
             ) { event ->
                 when (event) {
                     is GameSelectionScreen.Event.PlayGame -> {
