@@ -37,6 +37,7 @@ interface DatabaseModule {
                 MathDatabase.MIGRATION_4_5,
                 MathDatabase.MIGRATION_5_6,
                 MathDatabase.MIGRATION_6_7,
+                MathDatabase.MIGRATION_7_8,
             ).fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
@@ -59,4 +60,9 @@ interface DatabaseModule {
     @Provides
     @SingleIn(AppScope::class)
     fun provideGameSessionDao(database: MathDatabase): GameSessionDao = database.gameSessionDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideCustomChallengeDao(database: MathDatabase): dev.hossain.mathtutor.data.local.dao.CustomChallengeDao =
+        database.customChallengeDao()
 }
