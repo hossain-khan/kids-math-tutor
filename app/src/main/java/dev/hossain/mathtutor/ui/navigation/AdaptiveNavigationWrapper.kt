@@ -1,9 +1,11 @@
 package dev.hossain.mathtutor.ui.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,7 +19,6 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -102,6 +103,10 @@ fun AdaptiveNavigationWrapper(
 
 /**
  * Bottom navigation bar for compact (phone) devices.
+ *
+ * Note: We use Column instead of Scaffold here to avoid nested Scaffold issues.
+ * Each screen has its own Scaffold with topBar, so we just need to position
+ * the bottom navigation bar without adding extra padding.
  */
 @Composable
 private fun AppBottomNavigation(
@@ -110,41 +115,40 @@ private fun AppBottomNavigation(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                TopLevelDestination.entries.forEach { destination ->
-                    val selected = currentDestination == destination
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = { onDestinationSelected(destination) },
-                        icon = {
-                            Icon(
-                                imageVector =
-                                    if (selected) {
-                                        destination.selectedIcon
-                                    } else {
-                                        destination.unselectedIcon
-                                    },
-                                contentDescription = destination.contentDescription,
-                            )
-                        },
-                        label = {
-                            Text(text = destination.label)
-                        },
-                    )
-                }
-            }
-        },
-        modifier = modifier,
-    ) { paddingValues ->
+    Column(modifier = modifier.fillMaxSize()) {
+        // Main content takes remaining space
         Box(
             modifier =
                 Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                    .fillMaxWidth()
+                    .weight(1f),
         ) {
             content()
+        }
+
+        // Bottom navigation bar
+        NavigationBar {
+            TopLevelDestination.entries.forEach { destination ->
+                val selected = currentDestination == destination
+                NavigationBarItem(
+                    selected = selected,
+                    onClick = { onDestinationSelected(destination) },
+                    icon = {
+                        Icon(
+                            imageVector =
+                                if (selected) {
+                                    destination.selectedIcon
+                                } else {
+                                    destination.unselectedIcon
+                                },
+                            contentDescription = destination.contentDescription,
+                        )
+                    },
+                    label = {
+                        Text(text = destination.label)
+                    },
+                )
+            }
         }
     }
 }
