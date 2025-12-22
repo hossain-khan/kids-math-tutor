@@ -1,20 +1,27 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Button from '@/components/Button';
-import Card from '@/components/Card';
-import { type ChallengeImportSpec } from '@/lib/schemas/challenge-schema';
-import { copyToClipboard, downloadJson } from '@/lib/utils';
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
+import { githubGist } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import Button from "@/components/Button";
+import Card from "@/components/Card";
+import { type ChallengeImportSpec } from "@/lib/schemas/challenge-schema";
+import { copyToClipboard, downloadJson } from "@/lib/utils";
+
+// Register JSON language
+SyntaxHighlighter.registerLanguage("json", json);
 
 export default function Result() {
   const navigate = useNavigate();
-  const [challengeData, setChallengeData] = useState<ChallengeImportSpec | null>(null);
+  const [challengeData, setChallengeData] =
+    useState<ChallengeImportSpec | null>(null);
   const [copied, setCopied] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   useEffect(() => {
-    const data = sessionStorage.getItem('challengeData');
+    const data = sessionStorage.getItem("challengeData");
     if (!data) {
-      navigate('/');
+      navigate("/");
       return;
     }
 
@@ -22,8 +29,8 @@ export default function Result() {
       const parsed = JSON.parse(data);
       setChallengeData(parsed);
     } catch (error) {
-      console.error('Failed to parse challenge data:', error);
-      navigate('/');
+      console.error("Failed to parse challenge data:", error);
+      navigate("/");
     }
   }, [navigate]);
 
@@ -42,15 +49,15 @@ export default function Result() {
   const handleDownload = () => {
     if (!challengeData) return;
 
-    const filename = `${challengeData.title.toLowerCase().replace(/\s+/g, '-')}-worksheet.json`;
+    const filename = `${challengeData.title.toLowerCase().replace(/\s+/g, "-")}-worksheet.json`;
     downloadJson(challengeData, filename);
     setDownloadSuccess(true);
     setTimeout(() => setDownloadSuccess(false), 3000);
   };
 
   const handleCreateAnother = () => {
-    sessionStorage.removeItem('challengeData');
-    navigate('/');
+    sessionStorage.removeItem("challengeData");
+    navigate("/");
   };
 
   if (!challengeData) {
@@ -65,9 +72,10 @@ export default function Result() {
   }
 
   const json = JSON.stringify(challengeData, null, 2);
-  const problemCount = challengeData.type === 'generated' 
-    ? challengeData.problemCount 
-    : challengeData.problems.length;
+  const problemCount =
+    challengeData.type === "generated"
+      ? challengeData.problemCount
+      : challengeData.problems.length;
 
   return (
     <div className="min-h-screen">
@@ -75,7 +83,10 @@ export default function Result() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
-            <Link to="/" className="text-2xl hover:scale-110 transition-transform">
+            <Link
+              to="/"
+              className="text-2xl hover:scale-110 transition-transform"
+            >
               🐶
             </Link>
             <h1 className="text-2xl font-display font-bold text-gray-900">
@@ -87,14 +98,16 @@ export default function Result() {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Success Card */}
-        <Card className="mb-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300">
+        <Card className="mb-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 p-6">
           <div className="text-center">
             <div className="text-6xl mb-4 animate-bounce">🎉</div>
             <h2 className="text-3xl font-display font-bold text-gray-900 mb-2">
               {challengeData.title}
             </h2>
             {challengeData.subtitle && (
-              <p className="text-lg text-gray-600 mb-4">{challengeData.subtitle}</p>
+              <p className="text-lg text-gray-600 mb-4">
+                {challengeData.subtitle}
+              </p>
             )}
             <div className="flex items-center justify-center gap-6 text-sm text-gray-700">
               <div className="flex items-center gap-2">
@@ -104,9 +117,9 @@ export default function Result() {
               <div className="w-1 h-1 rounded-full bg-gray-400" />
               <div className="flex items-center gap-2">
                 <span className="font-bold capitalize">
-                  {challengeData.type === 'generated' 
-                    ? challengeData.operation 
-                    : 'Mixed'}
+                  {challengeData.type === "generated"
+                    ? challengeData.operation
+                    : "Mixed"}
                 </span>
                 <span>operation</span>
               </div>
@@ -115,7 +128,7 @@ export default function Result() {
         </Card>
 
         {/* How to Use Card */}
-        <Card className="mb-6 bg-blue-50 border-blue-200">
+        <Card className="mb-6 bg-blue-50 border-blue-200 p-6">
           <h3 className="font-display font-bold text-lg mb-3 flex items-center gap-2">
             <span>📱</span>
             <span>How to Import to App</span>
@@ -131,19 +144,26 @@ export default function Result() {
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-bold">
                 2
               </span>
-              <span>Open <strong>Kids Math Pup Tutor</strong> app on your Android device</span>
+              <span>
+                Open <strong>Kids Math Pup Tutor</strong> app on your Android
+                device
+              </span>
             </li>
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-bold">
                 3
               </span>
-              <span>Go to <strong>Settings → Parent Challenges → Import</strong></span>
+              <span>
+                Go to <strong>Settings → Parent Challenges → Import</strong>
+              </span>
             </li>
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-bold">
                 4
               </span>
-              <span>Paste the code and tap <strong>"Save Challenge"</strong></span>
+              <span>
+                Paste the code and tap <strong>"Save Challenge"</strong>
+              </span>
             </li>
           </ol>
         </Card>
@@ -189,20 +209,30 @@ export default function Result() {
         </div>
 
         {/* JSON Preview */}
-        <Card>
-          <div className="flex items-center justify-between mb-3">
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
             <h3 className="font-display font-bold text-lg">Worksheet Code</h3>
             <span className="text-sm text-gray-500">JSON Format</span>
           </div>
           <div className="relative">
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-xs font-mono max-h-96 overflow-y-auto">
-              <code>{json}</code>
-            </pre>
+            <SyntaxHighlighter
+              language="json"
+              style={githubGist}
+              customStyle={{
+                borderRadius: "0.5rem",
+                padding: "1rem",
+                maxHeight: "24rem",
+                fontSize: "0.875rem",
+              }}
+              showLineNumbers={false}
+            >
+              {json}
+            </SyntaxHighlighter>
             <button
               onClick={handleCopy}
               className="absolute top-2 right-2 bg-gray-800 hover:bg-gray-700 text-white px-3 py-1 rounded text-xs transition-colors"
             >
-              {copied ? '✅ Copied' : '📋 Copy'}
+              {copied ? "✅ Copied" : "📋 Copy"}
             </button>
           </div>
         </Card>

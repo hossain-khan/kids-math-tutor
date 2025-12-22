@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 export default function Help() {
   return (
@@ -10,30 +10,41 @@ export default function Help() {
           </h1>
         </div>
       </header>
-      
+
       <main className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="card mb-6">
-          <h2 className="text-xl font-display font-bold mb-4">Getting Started</h2>
+          <h2 className="text-xl font-display font-bold mb-4">
+            Getting Started
+          </h2>
           <p className="text-gray-600 mb-4">
-            The Math Pup Worksheet Creator helps you create custom math practice problems
-            for your child to solve in the Kids Math Pup Tutor Android app.
+            The Math Pup Worksheet Creator helps you create custom math practice
+            problems for your child to solve in the Kids Math Pup Tutor Android
+            app.
           </p>
-          
+
           <h3 className="font-bold text-lg mb-2">Two Ways to Create:</h3>
           <ul className="space-y-2 text-gray-600">
             <li className="flex gap-2">
               <span>✨</span>
-              <span><strong>Quick Generator:</strong> Set rules (operation, number range, problem count) and we generate problems for you</span>
+              <span>
+                <strong>Quick Generator:</strong> Set rules (operation, number
+                range, problem count) and we generate problems for you
+              </span>
             </li>
             <li className="flex gap-2">
               <span>✏️</span>
-              <span><strong>Custom Problems:</strong> Enter each math problem exactly as you want it</span>
+              <span>
+                <strong>Custom Problems:</strong> Enter each math problem
+                exactly as you want it
+              </span>
             </li>
           </ul>
         </div>
 
         <div className="card mb-6">
-          <h2 className="text-xl font-display font-bold mb-4">How to Import to App</h2>
+          <h2 className="text-xl font-display font-bold mb-4">
+            How to Import to App
+          </h2>
           <ol className="space-y-3 text-gray-700">
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-sm font-bold">
@@ -69,5 +80,5 @@ export default function Help() {
         </div>
       </main>
     </div>
-  )
+  );
 }

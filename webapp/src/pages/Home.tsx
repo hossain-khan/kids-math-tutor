@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
@@ -66,20 +66,24 @@ export default function Home() {
         <section className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="card text-center">
             <div className="text-4xl mb-3">✅</div>
-            <h3 className="font-display font-bold text-lg mb-2">Instant Validation</h3>
+            <h3 className="font-display font-bold text-lg mb-2">
+              Instant Validation
+            </h3>
             <p className="text-gray-600 text-sm">
               No errors when importing to the app
             </p>
           </div>
-          
+
           <div className="card text-center">
             <div className="text-4xl mb-3">📱</div>
-            <h3 className="font-display font-bold text-lg mb-2">Mobile Friendly</h3>
+            <h3 className="font-display font-bold text-lg mb-2">
+              Mobile Friendly
+            </h3>
             <p className="text-gray-600 text-sm">
               Works perfectly on phones and tablets
             </p>
           </div>
-          
+
           <div className="card text-center">
             <div className="text-4xl mb-3">🎨</div>
             <h3 className="font-display font-bold text-lg mb-2">Fun Themes</h3>
@@ -100,31 +104,39 @@ export default function Home() {
                 1
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 mb-1">Choose Your Style</h3>
+                <h3 className="font-bold text-gray-900 mb-1">
+                  Choose Your Style
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Pick Quick Generator for automatic problems or Custom Problems for full control
+                  Pick Quick Generator for automatic problems or Custom Problems
+                  for full control
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-4 items-start">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold">
                 2
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 mb-1">Fill in the Details</h3>
+                <h3 className="font-bold text-gray-900 mb-1">
+                  Fill in the Details
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Enter your challenge title, choose operations, and set up problems
+                  Enter your challenge title, choose operations, and set up
+                  problems
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-4 items-start">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold">
                 3
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 mb-1">Generate & Share</h3>
+                <h3 className="font-bold text-gray-900 mb-1">
+                  Generate & Share
+                </h3>
                 <p className="text-gray-600 text-sm">
                   Copy the code and paste it into the Kids Math Pup Tutor app
                 </p>
@@ -138,11 +150,14 @@ export default function Home() {
       <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="container mx-auto px-4 py-6 text-center text-gray-600 text-sm">
           <p>Made with ❤️ for Kids Math Pup Tutor</p>
-          <Link to="/help" className="text-primary-600 hover:underline mt-2 inline-block">
+          <Link
+            to="/help"
+            className="text-primary-600 hover:underline mt-2 inline-block"
+          >
             Need Help?
           </Link>
         </div>
       </footer>
     </div>
-  )
+  );
 }
