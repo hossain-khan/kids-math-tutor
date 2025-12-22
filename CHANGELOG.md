@@ -61,6 +61,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Reactive observeActiveChallenges() Flow for UI updates
   - Estimated duration calculation based on operation complexity (15-25 seconds per problem)
   - Comprehensive unit tests with 20+ test cases covering all business logic scenarios
+- **Import Custom Challenge Screen** - New Circuit screen for importing parent-created custom challenges
+  - `ImportChallengeScreen` with Circuit UDF architecture (Screen, Presenter, UI)
+  - `ValidationState` sealed class with Idle, Valid, and Invalid states for field-level error display
+  - JSON input text field with validation error feedback and clear functionality
+  - Real-time validation using `ChallengeJsonParser` with field-specific error messages
+  - Preview section displaying challenge title, subtitle, problem count, operations summary, and estimated duration
+  - Sample problems preview showing first 5 problems from the challenge
+  - Save functionality with loading state and error handling
+  - Material 3 components with theme-aware colors throughout (primaryContainer, secondaryContainer, errorContainer)
+  - Navigation integration with back button support
+  - Metro DI integration for `ChallengeJsonParser`, `CustomChallengeService`, and `CustomChallengeRepository`
+  - Comprehensive unit tests for presenter logic with fake implementations
 
 ### Changed
 - **Games Screen Header** - Replaced controller emoji with Math Pup sticker (juggling number blocks) for more engaging visual
