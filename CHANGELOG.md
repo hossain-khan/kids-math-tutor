@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Worksheet Creator Web App** - New React-based web application for creating custom math challenges
+  - Quick Generator builder with auto-generated problems based on rules (operation, number range, problem count)
+  - Custom Problems builder for entering specific math problems
+  - Real-time validation using Zod schemas matching Android app requirements
+  - JSON export with copy-to-clipboard and download functionality
+  - Result page with import instructions for Android app
+  - Material 3-inspired design system with Math Pup branding
+  - Responsive layout supporting mobile, tablet, and desktop
+  - PostCSS + Tailwind CSS for styling
+  - Complete component library (Button, Card, Input, Select)
+  - Help documentation page
 - **Back Button on Operation Selector** - Added back arrow navigation icon to "Math Time" (Operation Selector) screen TopAppBar for easier navigation
 - **Settings Hero Image** - Added Math Pup teaching sticker (`pup_tutor_sticker_teaching_math_and_painting`) as welcoming header image at top of settings page
 - **Custom Challenge Domain Models** - Created core domain models to support Parent Custom Challenges feature
