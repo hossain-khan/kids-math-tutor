@@ -1,14 +1,14 @@
 package dev.hossain.mathtutor.ui.stats
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.SessionRepository
@@ -16,6 +16,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 
 /**
@@ -47,56 +48,63 @@ class StatsPresenter
                 )
             }
 
-            // Collect overall statistics
-            val overallStats by sessionRepository.getOverallStats().collectAsState(
-                initial = SessionStats.EMPTY,
+            // Use produceRetainedState to batch all statistics collection
+            // This reduces overhead by:
+            // 1. Combining 4 separate flow collections into a single producer
+            // 2. Building operationStats map only once per data update
+            // 3. Retaining state across configuration changes without reprocessing
+            data class StatsData(
+                val overallStats: SessionStats,
+                val recentSessions: List<PracticeSessionEntity>,
+                val operationStats: Map<MathOperation, SessionStats>,
             )
 
-            // Collect recent sessions (last 10)
-            val recentSessions by sessionRepository.getRecentSessions(limit = 10).collectAsState(
-                initial = emptyList(),
-            )
+            val statsData by produceRetainedState(
+                initialValue =
+                    StatsData(
+                        overallStats = SessionStats.EMPTY,
+                        recentSessions = emptyList(),
+                        operationStats = emptyMap(),
+                    ),
+            ) {
+                // Combine all flows - emits whenever any flow updates
+                combine(
+                    sessionRepository.getOverallStats(),
+                    sessionRepository.getRecentSessions(limit = 10),
+                    sessionRepository.getStatsByOperation(MathOperation.ADDITION),
+                    sessionRepository.getStatsByOperation(MathOperation.SUBTRACTION),
+                ) { overall, sessions, addition, subtraction ->
+                    // Build operation stats map
+                    val operationStatsMap =
+                        buildMap {
+                            if (addition.sessionCount > 0) {
+                                put(MathOperation.ADDITION, addition)
+                            }
+                            if (subtraction.sessionCount > 0) {
+                                put(MathOperation.SUBTRACTION, subtraction)
+                            }
+                        }
 
-            // Collect statistics for each operation
-            val additionStats by sessionRepository.getStatsByOperation(MathOperation.ADDITION).collectAsState(
-                initial = SessionStats.EMPTY,
-            )
-            val subtractionStats by sessionRepository.getStatsByOperation(MathOperation.SUBTRACTION).collectAsState(
-                initial = SessionStats.EMPTY,
-            )
+                    Timber.d(
+                        "StatsPresenter: Loaded stats - sessions=${overall.sessionCount}, " +
+                            "totalProblems=${overall.totalProblems}, accuracy=${overall.accuracy}, " +
+                            "recentSessions=${sessions.size}, operations=${operationStatsMap.size}",
+                    )
 
-            // Log stats only when they change (not on every recomposition)
-            LaunchedEffect(overallStats) {
-                Timber.d(
-                    "StatsScreen: Overall stats loaded - sessionCount=${overallStats.sessionCount}, " +
-                        "totalProblems=${overallStats.totalProblems}, accuracy=${overallStats.accuracy}",
-                )
-            }
-            LaunchedEffect(recentSessions.size) {
-                Timber.d("StatsScreen: Loaded ${recentSessions.size} recent sessions")
-            }
-            LaunchedEffect(additionStats, subtractionStats) {
-                Timber.d(
-                    "StatsScreen: Operation stats - Addition(sessions=${additionStats.sessionCount}), " +
-                        "Subtraction(sessions=${subtractionStats.sessionCount})",
-                )
-            }
-
-            // Build operation stats map, only including operations with sessions
-            val operationStats =
-                buildMap {
-                    if (additionStats.sessionCount > 0) {
-                        put(MathOperation.ADDITION, additionStats)
-                    }
-                    if (subtractionStats.sessionCount > 0) {
-                        put(MathOperation.SUBTRACTION, subtractionStats)
-                    }
+                    StatsData(
+                        overallStats = overall,
+                        recentSessions = sessions,
+                        operationStats = operationStatsMap,
+                    )
+                }.collect { data ->
+                    value = data
                 }
+            }
 
             return StatsScreen.State(
-                overallStats = overallStats,
-                operationStats = operationStats,
-                recentSessions = recentSessions,
+                overallStats = statsData.overallStats,
+                operationStats = statsData.operationStats,
+                recentSessions = statsData.recentSessions,
             ) { event ->
                 when (event) {
                     is StatsScreen.Event.BackPressed -> {
