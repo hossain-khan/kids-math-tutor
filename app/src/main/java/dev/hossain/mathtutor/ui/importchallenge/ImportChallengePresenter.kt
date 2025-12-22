@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.importchallenge
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,12 +56,31 @@ class ImportChallengePresenter
             var validationState by remember { mutableStateOf<ValidationState>(ValidationState.Idle) }
             var previewData by remember { mutableStateOf<PreviewData?>(null) }
             var isLoading by remember { mutableStateOf(false) }
+            var detectedJsonFromShare by remember { mutableStateOf(false) }
+
+            // Initialize with shared text if provided
+            LaunchedEffect(screen.prefilledJson) {
+                screen.prefilledJson?.let { sharedText ->
+                    val detectedJson = jsonParser.findJsonInText(sharedText)
+                    if (detectedJson != null) {
+                        jsonInput = detectedJson
+                        detectedJsonFromShare = true
+                        Timber.d("JSON detected from shared content")
+                    } else {
+                        // No JSON detected, show full shared text for manual extraction
+                        jsonInput = sharedText
+                        detectedJsonFromShare = false
+                        Timber.d("No JSON detected in shared content, showing raw text")
+                    }
+                }
+            }
 
             return ImportChallengeScreen.State(
                 jsonInput = jsonInput,
                 validationState = validationState,
                 previewData = previewData,
                 isLoading = isLoading,
+                detectedJsonFromShare = detectedJsonFromShare,
             ) { event ->
                 when (event) {
                     is ImportChallengeScreen.Event.JsonInputChanged -> {
@@ -69,6 +89,10 @@ class ImportChallengePresenter
                         if (validationState !is ValidationState.Idle) {
                             validationState = ValidationState.Idle
                             previewData = null
+                        }
+                        // Clear the share detection flag when user manually edits
+                        if (detectedJsonFromShare) {
+                            detectedJsonFromShare = false
                         }
                     }
 
@@ -181,6 +205,7 @@ class ImportChallengePresenter
                         jsonInput = ""
                         validationState = ValidationState.Idle
                         previewData = null
+                        detectedJsonFromShare = false
                     }
 
                     ImportChallengeScreen.Event.NavigateBack -> {

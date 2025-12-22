@@ -170,6 +170,12 @@ fun SettingsUi(
                         onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
                     )
 
+                    // Parent Challenges link
+                    SettingsLinkItem(
+                        text = "Parent Challenges",
+                        onClick = { state.eventSink(SettingsScreen.Event.ParentChallengesClicked) },
+                    )
+
                     // Developer Portal (debug-only)
                     if (state.showDeveloperPortal) {
                         SettingsLinkItem(

@@ -200,6 +200,11 @@ class SettingsPresenter
                             }
                         }
                     }
+
+                    is SettingsScreen.Event.ParentChallengesClicked -> {
+                        Timber.d("SettingsScreen: Parent Challenges clicked - navigating to ParentChallengesScreen")
+                        navigator.goTo(dev.hossain.mathtutor.ui.parentchallenges.ParentChallengesScreen)
+                    }
                 }
             }
         }

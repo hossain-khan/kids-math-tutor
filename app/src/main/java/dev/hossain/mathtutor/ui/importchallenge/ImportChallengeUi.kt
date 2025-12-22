@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -65,6 +68,16 @@ fun ImportChallengeUi(
                     .fillMaxSize()
                     .padding(paddingValues),
         ) {
+            // Share detection banner
+            if (state.detectedJsonFromShare && state.jsonInput.isNotBlank()) {
+                item {
+                    ShareDetectionBanner(
+                        detectedFromShare = true,
+                        hasValidationErrors = state.validationState is ValidationState.Invalid,
+                    )
+                }
+            }
+
             item {
                 JsonInputSection(
                     jsonInput = state.jsonInput,
@@ -384,5 +397,72 @@ private fun formatDuration(duration: Duration): String {
         "$minutes min"
     } else {
         "${duration.inWholeSeconds} sec"
+    }
+}
+
+/**
+ * Share detection banner indicating JSON was detected and extracted from shared content.
+ */
+@Composable
+private fun ShareDetectionBanner(
+    detectedFromShare: Boolean,
+    hasValidationErrors: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    if (detectedFromShare) {
+        Card(
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor =
+                        if (hasValidationErrors) {
+                            MaterialTheme.colorScheme.errorContainer
+                        } else {
+                            MaterialTheme.colorScheme.primaryContainer
+                        },
+                ),
+        ) {
+            Row(
+                modifier = Modifier.padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector =
+                        if (hasValidationErrors) {
+                            Icons.Outlined.Warning
+                        } else {
+                            Icons.Outlined.Share
+                        },
+                    contentDescription = null,
+                    tint =
+                        if (hasValidationErrors) {
+                            MaterialTheme.colorScheme.onErrorContainer
+                        } else {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        },
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text =
+                        if (hasValidationErrors) {
+                            "JSON detected from shared content, but validation found errors. Please review."
+                        } else {
+                            "JSON detected from shared content!"
+                        },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color =
+                        if (hasValidationErrors) {
+                            MaterialTheme.colorScheme.onErrorContainer
+                        } else {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        },
+                )
+            }
+        }
     }
 }

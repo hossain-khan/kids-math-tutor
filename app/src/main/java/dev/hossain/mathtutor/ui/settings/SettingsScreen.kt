@@ -102,5 +102,10 @@ data object SettingsScreen : Screen {
         data class AnalyticsToggled(
             val enabled: Boolean,
         ) : Event
+
+        /**
+         * User tapped the Parent Challenges button.
+         */
+        data object ParentChallengesClicked : Event
     }
 }

@@ -11,9 +11,13 @@ import kotlinx.parcelize.Parcelize
  *
  * This screen allows parents to paste JSON challenge specifications,
  * validate them, preview the problems, and save the challenge.
+ *
+ * @property prefilledJson Optional JSON content shared from another app
  */
 @Parcelize
-data object ImportChallengeScreen : Screen {
+data class ImportChallengeScreen(
+    val prefilledJson: String? = null,
+) : Screen {
     /**
      * State for [ImportChallengeScreen].
      *
@@ -21,6 +25,7 @@ data object ImportChallengeScreen : Screen {
      * @property validationState Current validation state
      * @property previewData Preview data if validation is successful
      * @property isLoading Whether a save operation is in progress
+     * @property detectedJsonFromShare Whether JSON was detected and extracted from shared content
      * @property eventSink Handler for screen events
      */
     data class State(
@@ -28,6 +33,7 @@ data object ImportChallengeScreen : Screen {
         val validationState: ValidationState,
         val previewData: PreviewData?,
         val isLoading: Boolean,
+        val detectedJsonFromShare: Boolean,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

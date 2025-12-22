@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Android Share Intent Handling for JSON Import** - Implemented ability to share JSON challenge specifications directly into the app
+  - Added SEND intent filter in AndroidManifest.xml for text/plain MIME type
+  - Enhanced MainActivity to handle share intents on app launch (onCreate) and while running (onNewIntent)
+  - Updated `ImportChallengeScreen` to accept optional `prefilledJson` parameter for shared content
+  - Smart JSON detection automatically extracts valid JSON from shared text using existing `findJsonInText()` method
+  - Auto-populates import screen with detected JSON and shows success banner
+  - Visual feedback with ShareDetectionBanner component (green for success, red for validation errors)
+  - Supports sharing from any app (email, messaging, notes, etc.)
+  - Navigation from Settings screen to Parent Challenges for easy access to import feature
+  - Seamlessly integrates with existing validation and preview workflow
 - **Custom Challenge Integration into Math Practice Flow** - Seamlessly integrated parent-created custom challenges into existing math practice experience
   - Updated `MathPracticeScreen` with optional `customChallengeId` parameter for identifying custom challenges
   - Updated `MathPracticePresenter` to load custom challenge problems via `CustomChallengeService`
