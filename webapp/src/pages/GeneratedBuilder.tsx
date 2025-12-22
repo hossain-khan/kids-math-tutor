@@ -166,6 +166,7 @@ export default function GeneratedBuilder() {
                 }
                 error={errors.problemCount}
                 helperText="Between 1 and 50 problems"
+                className="text-center text-xl font-bold"
               />
             </div>
 
@@ -181,13 +182,17 @@ export default function GeneratedBuilder() {
                   min={0}
                   max={9999}
                   value={formData.minNumber}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const newMin = parseInt(e.target.value) || 0;
                     setFormData({
                       ...formData,
-                      minNumber: parseInt(e.target.value) || 0,
-                    })
-                  }
+                      minNumber: newMin,
+                      // Auto-adjust max if min becomes >= max
+                      maxNumber: newMin >= formData.maxNumber ? newMin + 1 : formData.maxNumber,
+                    });
+                  }}
                   error={errors["numberRange.min"]}
+                  className="text-center text-xl font-bold"
                 />
                 <Input
                   label="Maximum"
@@ -202,6 +207,7 @@ export default function GeneratedBuilder() {
                     })
                   }
                   error={errors["numberRange.max"]}
+                  className="text-center text-xl font-bold"
                 />
               </div>
               <p className="text-sm text-gray-500">
