@@ -140,7 +140,7 @@ dependencies {
     implementation(libs.timber)
 
     // AndroidX Browser (Custom Tabs) for opening external links
-    implementation("androidx.browser:browser:1.5.0")
+    implementation("androidx.browser:browser:1.9.0")
 
     // Room Database
     implementation(libs.androidx.room.runtime)
