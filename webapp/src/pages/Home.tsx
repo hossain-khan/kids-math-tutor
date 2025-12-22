@@ -10,7 +10,7 @@ export default function Home() {
             <img
               src="/images/logo.webp"
               alt="Math Pup Logo"
-              className="w-12 h-12 object-contain"
+              className="w-10 h-10 object-contain"
             />
             <h1 className="text-2xl font-display font-bold text-gray-900">
               Math Pup Worksheet Creator
