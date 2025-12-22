@@ -49,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -147,6 +148,7 @@ fun MemoryMatchStartScreen(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     ),
+                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier,
@@ -339,6 +341,7 @@ fun MemoryMatchGameScreen(
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ),
+                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier,
@@ -499,6 +502,7 @@ fun MemoryMatchResultsScreen(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     ),
+                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier,

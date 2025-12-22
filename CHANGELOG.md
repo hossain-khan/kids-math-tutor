@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **TopAppBar Shadow** - Added subtle drop shadow (4dp elevation) to all TopAppBar components across the app for better visual hierarchy and separation between the app bar and content
 - **Adaptive Layout Support** - Implemented tablet and adaptive layouts across all screens
   - Added Material 3 Adaptive dependencies for responsive layouts
   - Created WindowStateUtils for foldable device posture detection
