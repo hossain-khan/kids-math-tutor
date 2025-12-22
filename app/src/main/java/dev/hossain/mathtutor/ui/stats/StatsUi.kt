@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.stats
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -34,11 +35,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
@@ -433,11 +437,12 @@ private fun EmptyStatsView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        // Dog emoji represents the app's "pup tutor" theme
-        Text(
-            text = "🐕",
-            style = MaterialTheme.typography.displayLarge,
-            fontSize = MaterialTheme.typography.displayLarge.fontSize * 2, // Make emoji larger for visual emphasis
+        // Math Pup mascot with map and backpack - ready for adventure!
+        Image(
+            painter = painterResource(id = R.drawable.pup_tutor_sticker_outdoot_map_and_bagpack),
+            contentDescription = "Math Pup ready for practice",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(150.dp),
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(

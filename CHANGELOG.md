@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Back Button on Operation Selector** - Added back arrow navigation icon to "Math Time" (Operation Selector) screen TopAppBar for easier navigation
 
 ### Changed
+- **Stats Empty State** - Replaced dog emoji with Math Pup sticker (outdoor map and backpack) in empty state for better visual appeal
 - **Default Volume** - Changed default volume from 70% to 50% for more comfortable initial audio levels
 
 ## [1.8.0] - 2025-12-21
