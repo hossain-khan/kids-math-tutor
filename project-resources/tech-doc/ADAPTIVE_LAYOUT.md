@@ -160,12 +160,17 @@ For master-detail layouts on larger screens. Note: The Reply sample uses `com.go
 androidx-window = "1.5.1"
 
 [libraries]
-# Material 3 Adaptive Components (includes TwoPane/ListDetail support)
+# Material 3 Adaptive Components (includes ListDetailPaneScaffold support)
+# Note: The base 'adaptive' artifacts use 'material3.adaptive:' groupId
+# while navigation suite uses 'material3:' groupId - this is intentional from the library
 androidx-compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
 androidx-compose-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation" }
+# Navigation Suite is part of main material3 library
 androidx-compose-material3-adaptive-navigationSuite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite" }
+# Window Size Class is part of main material3 library
 androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
+# Window library for foldable support
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 ```
 
@@ -462,15 +467,16 @@ Add to `gradle/libs.versions.toml`:
 androidx-window = "1.5.1"
 
 [libraries]
-# Material 3 Adaptive Components (includes TwoPane support, replacing deprecated accompanist-adaptive)
+# Material 3 Adaptive Components (includes ListDetailPaneScaffold support)
+# Note: The base 'adaptive' artifacts use 'material3.adaptive:' groupId
+# while navigation suite and window-size-class use 'material3:' groupId - this is intentional
 androidx-compose-material3-adaptive = { module = "androidx.compose.material3.adaptive:adaptive" }
 androidx-compose-material3-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout" }
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation" }
+# Navigation Suite is part of main material3 library
 androidx-compose-material3-adaptive-navigationSuite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite" }
-
-# Window Size Class
+# Window Size Class is part of main material3 library
 androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
-
 # Window library for foldable support
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 ```
@@ -479,7 +485,7 @@ Add to `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    // Adaptive layouts (Material 3 Adaptive includes TwoPane support)
+    // Adaptive layouts (Material 3 Adaptive includes ListDetailPaneScaffold support)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
@@ -489,7 +495,7 @@ dependencies {
 }
 ```
 
-**Note**: The deprecated `accompanist-adaptive` library is NOT included here. TwoPane functionality has been migrated to `androidx.compose.material3.adaptive:adaptive-layout` as part of the official Material 3 adaptive libraries.
+**Note**: The deprecated `accompanist-adaptive` library is NOT included here. TwoPane functionality has been migrated to `androidx.compose.material3.adaptive:adaptive-layout` (via `ListDetailPaneScaffold`) as part of the official Material 3 adaptive libraries.
 
 ---
 
@@ -563,22 +569,39 @@ Use Android Studio's resizable emulator to test:
 ### Common Patterns
 
 ```kotlin
-// Get window size class in composable
-val windowSizeClass = calculateWindowSizeClass(LocalContext.current as Activity)
-
-// Determine layout type
-val contentType = when (windowSizeClass.widthSizeClass) {
-    WindowWidthSizeClass.Compact -> ContentType.SINGLE_PANE
-    WindowWidthSizeClass.Medium -> ContentType.SINGLE_PANE  // or DUAL_PANE based on screen
-    WindowWidthSizeClass.Expanded -> ContentType.DUAL_PANE
-    else -> ContentType.SINGLE_PANE
+// Get window size class in MainActivity (activity scope)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+override fun onCreate(savedInstanceState: Bundle?) {
+    setContent {
+        val windowSizeClass = calculateWindowSizeClass(this)
+        // Pass windowSizeClass to composables
+        AppContent(windowSizeClass = windowSizeClass)
+    }
 }
 
-// Use in composable
-if (contentType == ContentType.DUAL_PANE) {
-    TwoPane(first = { ... }, second = { ... })
-} else {
-    SinglePaneContent()
+// Or use Material 3 Adaptive's currentWindowAdaptiveInfo() for automatic detection
+@Composable
+fun AdaptiveContent() {
+    val adaptiveInfo = currentWindowAdaptiveInfo()
+    val windowSizeClass = adaptiveInfo.windowSizeClass
+    
+    // Determine layout type
+    val contentType = when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> ContentType.SINGLE_PANE
+        WindowWidthSizeClass.MEDIUM -> ContentType.SINGLE_PANE  // or DUAL_PANE based on screen
+        WindowWidthSizeClass.EXPANDED -> ContentType.DUAL_PANE
+        else -> ContentType.SINGLE_PANE
+    }
+
+    // Use Material 3 Adaptive ListDetailPaneScaffold for list+detail layouts
+    if (contentType == ContentType.DUAL_PANE) {
+        ListDetailPaneScaffold(
+            listPane = { /* List content */ },
+            detailPane = { /* Detail content */ },
+        )
+    } else {
+        SinglePaneContent()
+    }
 }
 ```
 
@@ -596,5 +619,5 @@ if (contentType == ContentType.DUAL_PANE) {
 - [Reply Sample README](https://github.com/android/compose-samples/blob/main/Reply/README.md)
 - [Material 3 Adaptive Design Overview](https://m3.material.io/foundations/adaptive-design/overview)
 - [WindowSizeClass Documentation](https://developer.android.com/reference/kotlin/androidx/compose/material3/windowsizeclass/WindowSizeClass)
-- [Accompanist Adaptive](https://google.github.io/accompanist/adaptive/)
+- [Material 3 Adaptive Components](https://developer.android.com/develop/ui/compose/layouts/adaptive)
 - [Circuit Documentation](https://slackhq.github.io/circuit/)
