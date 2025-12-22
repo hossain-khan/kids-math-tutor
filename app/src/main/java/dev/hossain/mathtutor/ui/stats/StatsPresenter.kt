@@ -8,6 +8,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.SessionRepository
@@ -53,7 +54,7 @@ class StatsPresenter
             // 3. Retaining state across configuration changes without reprocessing
             data class StatsData(
                 val overallStats: SessionStats,
-                val recentSessions: List<dev.hossain.mathtutor.domain.model.Session>,
+                val recentSessions: List<PracticeSessionEntity>,
                 val operationStats: Map<MathOperation, SessionStats>,
             )
 
