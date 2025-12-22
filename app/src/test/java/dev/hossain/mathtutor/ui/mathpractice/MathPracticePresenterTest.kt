@@ -487,4 +487,65 @@ class MathPracticePresenterTest {
         // Note: The actual number ranges are validated in GradeAwareProblemGeneratorTest
         // This test just ensures the grade level parameter is properly used
     }
+
+    // Custom Challenge Tests
+    @Test
+    fun `custom challenge screen has customChallengeId`() {
+        // Given - Create a screen with custom challenge ID
+        val customChallengeId = "challenge-123"
+        val customScreen =
+            MathPracticeScreen(
+                operation = MathOperation.ADDITION,
+                problemCount = 5,
+                customChallengeId = customChallengeId,
+            )
+
+        // Then - Screen should have the challenge ID
+        assertThat(customScreen.customChallengeId).isEqualTo(customChallengeId)
+    }
+
+    @Test
+    fun `custom challenge screen defaults to null challenge id`() {
+        // Given - Create a regular screen without custom challenge ID
+        val regularScreen = MathPracticeScreen(operation = MathOperation.ADDITION, problemCount = 5)
+
+        // Then - Custom challenge ID should be null
+        assertThat(regularScreen.customChallengeId).isNull()
+    }
+
+    @Test
+    fun `state includes custom challenge title`() {
+        // Given - State with custom challenge title
+        val customChallengeTitle = "Emma's Math Challenge"
+        val state =
+            MathPracticeScreen.State(
+                currentProblem = null,
+                currentAnswer = "",
+                currentProblemIndex = 0,
+                totalProblems = 5,
+                isCorrect = null,
+                customChallengeTitle = customChallengeTitle,
+                eventSink = {},
+            )
+
+        // Then - State should have the challenge title
+        assertThat(state.customChallengeTitle).isEqualTo(customChallengeTitle)
+    }
+
+    @Test
+    fun `state defaults to null custom challenge title`() {
+        // Given - State for regular practice
+        val state =
+            MathPracticeScreen.State(
+                currentProblem = null,
+                currentAnswer = "",
+                currentProblemIndex = 0,
+                totalProblems = 5,
+                isCorrect = null,
+                eventSink = {},
+            )
+
+        // Then - Custom challenge title should be null
+        assertThat(state.customChallengeTitle).isNull()
+    }
 }
