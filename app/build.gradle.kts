@@ -124,6 +124,7 @@ dependencies {
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)
     implementation(libs.circuit.overlay)
+    implementation(libs.circuit.retained)
     implementation(libs.circuitx.android)
     implementation(libs.circuitx.effects)
     implementation(libs.circuitx.gestureNav)

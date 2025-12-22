@@ -68,31 +68,29 @@ class HomePresenter
             }
 
             // Update aggregate user properties on home screen load
+            // Sequential .first() calls are fine here - this only runs once per presenter instance
             LaunchedEffect(Unit) {
                 try {
-                    // Update total problems solved
-                    sessionRepository.getOverallStats().first().let { stats ->
-                        analyticsService.setUserProperty(
-                            UserProperty.TOTAL_PROBLEMS_SOLVED,
-                            stats.totalProblems.toString(),
-                        )
-                    }
+                    // Collect all analytics data sequentially
+                    val stats = sessionRepository.getOverallStats().first()
+                    val streak = streakRepository.getStreak().first()
+                    val badges = badgeRepository.getUnlockedBadges().first()
 
-                    // Update current streak
-                    streakRepository.getStreak().first()?.let { streak ->
+                    // Update user properties
+                    analyticsService.setUserProperty(
+                        UserProperty.TOTAL_PROBLEMS_SOLVED,
+                        stats.totalProblems.toString(),
+                    )
+                    streak?.let {
                         analyticsService.setUserProperty(
                             UserProperty.CURRENT_STREAK,
-                            streak.currentStreak.toString(),
+                            it.currentStreak.toString(),
                         )
                     }
-
-                    // Update total badges unlocked
-                    badgeRepository.getUnlockedBadges().first().let { badges ->
-                        analyticsService.setUserProperty(
-                            UserProperty.TOTAL_BADGES_UNLOCKED,
-                            badges.size.toString(),
-                        )
-                    }
+                    analyticsService.setUserProperty(
+                        UserProperty.TOTAL_BADGES_UNLOCKED,
+                        badges.size.toString(),
+                    )
 
                     Timber.d("Analytics: Aggregate user properties updated")
                 } catch (e: Exception) {

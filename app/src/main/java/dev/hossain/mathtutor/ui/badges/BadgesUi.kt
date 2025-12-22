@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.badges
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,20 @@ fun BadgesUi(
     state: BadgesScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    /*
+     * IMPORTANT: Explicit BackHandler to prevent ANR on system back button press.
+     *
+     * Without this BackHandler, pressing the system back button causes a 5+ second freeze
+     * with high CPU usage on the main thread, triggering an ANR (Application Not Responding).
+     * The BackHandler ensures immediate navigation response by handling the back event directly
+     * and triggering navigation without blocking the UI thread.
+     *
+     * See: Similar fix in OperationSelectorUi and GameSelectionUi for the same ANR issue.
+     */
+    BackHandler {
+        state.eventSink(BadgesScreen.Event.BackPressed)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
