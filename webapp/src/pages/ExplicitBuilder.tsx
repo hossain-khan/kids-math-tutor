@@ -103,6 +103,48 @@ export default function ExplicitBuilder() {
     return symbols[operation];
   };
 
+  const calculateResult = (problem: ProblemSpec): number | string => {
+    const { operand1, operand2, operation } = problem;
+
+    if (operand2 === 0 && operation === "division") return "Error";
+
+    switch (operation) {
+      case "addition":
+        return operand1 + operand2;
+      case "subtraction":
+        return operand1 - operand2;
+      case "multiplication":
+        return operand1 * operand2;
+      case "division":
+        return operand1 % operand2 === 0
+          ? operand1 / operand2
+          : (operand1 / operand2).toFixed(2);
+      default:
+        return 0;
+    }
+  };
+
+  const validateProblem = (problem: ProblemSpec): string | null => {
+    const { operand1, operand2, operation } = problem;
+
+    // Division by zero
+    if (operation === "division" && operand2 === 0) {
+      return "⚠️ Cannot divide by zero";
+    }
+
+    // Division must result in whole number
+    if (operation === "division" && operand1 % operand2 !== 0) {
+      return "⚠️ Division result must be a whole number (no decimals)";
+    }
+
+    // Subtraction must not result in negative
+    if (operation === "subtraction" && operand1 < operand2) {
+      return "⚠️ Result cannot be negative (first number must be ≥ second number)";
+    }
+
+    return null;
+  };
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -198,6 +240,7 @@ export default function ExplicitBuilder() {
               <div className="space-y-3">
                 {problems.map((problem, index) => {
                   const problemError = errors[`problems.${index}`];
+                  const validationError = validateProblem(problem);
                   return (
                     <Card
                       key={index}
@@ -210,7 +253,7 @@ export default function ExplicitBuilder() {
                           {index + 1}
                         </div>
 
-                        <div className="flex-1 grid grid-cols-7 gap-2 items-end">
+                        <div className="flex-1 grid grid-cols-9 gap-2 items-center">
                           {/* First Number */}
                           <div className="col-span-2">
                             <Input
@@ -225,12 +268,12 @@ export default function ExplicitBuilder() {
                                   parseInt(e.target.value) || 0,
                                 )
                               }
-                              className="text-center"
+                              className="text-center text-xl font-bold"
                             />
                           </div>
 
                           {/* Operation */}
-                          <div className="col-span-2">
+                          <div className="col-span-3">
                             <Select
                               options={operationOptions}
                               value={problem.operation}
@@ -241,6 +284,7 @@ export default function ExplicitBuilder() {
                                   e.target.value as MathOperation,
                                 )
                               }
+                              className="text-center text-lg font-semibold"
                             />
                           </div>
 
@@ -258,13 +302,32 @@ export default function ExplicitBuilder() {
                                   parseInt(e.target.value) || 0,
                                 )
                               }
-                              className="text-center"
+                              className="text-center text-xl font-bold"
                             />
                           </div>
 
-                          {/* Preview */}
-                          <div className="text-center text-gray-400 text-sm">
-                            = ?
+                          {/* Result */}
+                          <div className="col-span-2 text-center">
+                            <div
+                              className={`px-4 py-3 rounded-xl border-2 ${
+                                validationError
+                                  ? "bg-red-50 border-red-300"
+                                  : "bg-gray-50 border-gray-200"
+                              }`}
+                            >
+                              <span className="text-gray-400 text-lg font-semibold mr-2">
+                                =
+                              </span>
+                              <span
+                                className={`text-xl font-bold ${
+                                  validationError
+                                    ? "text-red-600"
+                                    : "text-primary-600"
+                                }`}
+                              >
+                                {calculateResult(problem)}
+                              </span>
+                            </div>
                           </div>
                         </div>
 
@@ -281,6 +344,16 @@ export default function ExplicitBuilder() {
                           </Button>
                         )}
                       </div>
+
+                      {/* Validation Error Message */}
+                      {validationError && (
+                        <div className="mt-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm text-red-700 flex items-center gap-2">
+                            <span className="text-base">⚠️</span>
+                            <span>{validationError}</span>
+                          </p>
+                        </div>
+                      )}
 
                       {/* Preview Equation */}
                       <div className="mt-2 text-center text-sm text-gray-600 font-mono">
