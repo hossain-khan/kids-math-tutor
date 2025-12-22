@@ -88,7 +88,7 @@ class ParentChallengesPresenter
                             eventName = AnalyticsEvent.CUSTOM_CHALLENGE_IMPORT_STARTED,
                             parameters = mapOf(AnalyticsParam.SOURCE to "parent_challenges_screen"),
                         )
-                        navigator.goTo(ImportChallengeScreen)
+                        navigator.goTo(ImportChallengeScreen())
                     }
 
                     is ParentChallengesScreen.Event.ChallengeSelected -> {

@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +24,7 @@ import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.di.ActivityKey
 import dev.hossain.mathtutor.ui.home.HomeScreen
+import dev.hossain.mathtutor.ui.importchallenge.ImportChallengeScreen
 import dev.hossain.mathtutor.ui.navigation.AdaptiveNavigationWrapper
 import dev.hossain.mathtutor.ui.navigation.isTopLevelDestination
 import dev.hossain.mathtutor.ui.onboarding.OnboardingScreen
@@ -96,6 +98,10 @@ class MainActivity
             // Register lifecycle observer for music management
             lifecycle.addObserver(musicLifecycleObserver)
 
+            // Handle share intent
+            val sharedText = handleShareIntent(intent)
+            Timber.d("[MainActivity] onCreate - sharedText: ${if (sharedText != null) "present" else "null"}")
+
             setContent {
                 KidsMathTutorAppTheme {
                     val isOnboardingCompleted by userPreferencesRepository.isOnboardingCompleted.collectAsState(
@@ -103,7 +109,10 @@ class MainActivity
                     )
 
                     val initialScreen =
-                        if (isOnboardingCompleted) {
+                        if (sharedText != null) {
+                            // Share intent detected - go directly to import screen with prefilled JSON
+                            ImportChallengeScreen(prefilledJson = sharedText)
+                        } else if (isOnboardingCompleted) {
                             HomeScreen
                         } else {
                             OnboardingScreen
@@ -168,4 +177,42 @@ class MainActivity
                 }
             }
         }
+
+        /**
+         * Handles share intents when a new intent is received while the app is already running.
+         *
+         * This is called when the app is in the background or foreground and receives a new
+         * share intent. It's not called on initial app launch (that's handled in onCreate).
+         */
+        override fun onNewIntent(intent: Intent) {
+            super.onNewIntent(intent)
+            setIntent(intent)
+
+            // Handle share intent while app is running
+            val sharedText = handleShareIntent(intent)
+            if (sharedText != null) {
+                Timber.d("[MainActivity] onNewIntent - Share intent received with text")
+                // Note: Navigation to ImportChallengeScreen would need to be handled
+                // through the Circuit Navigator, which isn't easily accessible here.
+                // For now, we log and rely on onCreate for share handling on app start.
+                // A more complete solution would involve using a shared state or event bus.
+            }
+        }
+
+        /**
+         * Extracts shared text from a share intent.
+         *
+         * @param intent The intent to check
+         * @return The shared text if this is a valid share intent, null otherwise
+         */
+        private fun handleShareIntent(intent: Intent): String? =
+            if (intent.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+                intent.getStringExtra(Intent.EXTRA_TEXT).also { text ->
+                    if (text != null) {
+                        Timber.d("[MainActivity] Share intent detected with text of length ${text.length}")
+                    }
+                }
+            } else {
+                null
+            }
     }
