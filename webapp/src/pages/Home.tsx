@@ -19,13 +19,13 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-2 max-w-4xl">
         {/* Hero Section */}
-        <section className="text-center mb-12">
+        <section className="text-center mb-6">
           <img
             src="/images/hero.webp"
             alt="Math Pup Teaching"
-            className="w-48 h-48 mx-auto mb-6 object-contain animate-bounce-slow"
+            className="w-72 h-72 mx-auto mb-2 object-contain"
           />
           <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
             Math Pup Worksheet Creator
