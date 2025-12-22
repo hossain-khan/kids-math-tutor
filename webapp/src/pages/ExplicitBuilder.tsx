@@ -18,6 +18,8 @@ export default function ExplicitBuilder() {
     title: "",
     subtitle: "",
   });
+  const [defaultOperation, setDefaultOperation] =
+    useState<MathOperation>("addition");
   const [problems, setProblems] = useState<ProblemSpec[]>([
     { operand1: 0, operand2: 0, operation: "addition" as MathOperation },
   ]);
@@ -33,7 +35,7 @@ export default function ExplicitBuilder() {
     if (problems.length < 50) {
       setProblems([
         ...problems,
-        { operand1: 0, operand2: 0, operation: "addition" },
+        { operand1: 0, operand2: 0, operation: defaultOperation },
       ]);
     }
   };
@@ -222,15 +224,25 @@ export default function ExplicitBuilder() {
                 <label className="block text-sm font-medium text-gray-700">
                   Math Problems ({problems.length}/50)
                 </label>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addProblem}
-                  disabled={problems.length >= 50}
-                >
-                  ➕ Add Problem
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={defaultOperation}
+                    onChange={(e) =>
+                      setDefaultOperation(e.target.value as MathOperation)
+                    }
+                    options={operationOptions}
+                    className="text-sm"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addProblem}
+                    disabled={problems.length >= 50}
+                  >
+                    ➕ Add Problem
+                  </Button>
+                </div>
               </div>
 
               {errors.problems && (
