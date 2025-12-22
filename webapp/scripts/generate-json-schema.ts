@@ -32,7 +32,7 @@ const jsonSchema = zodToJsonSchema(ChallengeSpecSchema, {
 // Add metadata and examples
 const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
-  $id: 'https://pup-tutor-worksheet-generator.hk-c91.workers.dev/challenge-schema.json',
+  $id: 'https://math-worksheet.gohk.xyz/challenge-schema.json',
   title: 'Math Pup Challenge Specification',
   description:
     'JSON schema for custom math practice challenges in Kids Math Pup Tutor app',
@@ -70,5 +70,5 @@ writeFileSync(outputPath, JSON.stringify(schema, null, 2), 'utf-8')
 console.log('✅ JSON Schema generated successfully!')
 console.log(`📄 Output: ${outputPath}`)
 console.log(
-  `🌐 Available at: https://pup-tutor-worksheet-generator.hk-c91.workers.dev/challenge-schema.json`
+  `🌐 Available at: https://math-worksheet.gohk.xyz/challenge-schema.json`
 )
