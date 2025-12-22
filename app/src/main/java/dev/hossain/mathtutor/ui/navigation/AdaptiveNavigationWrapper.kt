@@ -23,7 +23,6 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.window.core.layout.WindowSizeClass
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.ui.utils.NavigationType
 
