@@ -78,7 +78,7 @@ class ParentChallengesPresenter
             // Filter challenges based on showArchived flag
             val displayedChallenges =
                 if (showArchived) {
-                    activeChallenges
+                    activeChallenges.filter { it.isArchived }
                 } else {
                     activeChallenges.filter { !it.isArchived }
                 }
