@@ -438,9 +438,7 @@ private fun RecentSessionItem(
  * Hero image section showing completion achievements.
  */
 @Composable
-private fun HeroImageSection(
-    modifier: Modifier = Modifier,
-) {
+private fun HeroImageSection(modifier: Modifier = Modifier) {
     Box(
         modifier =
             modifier
