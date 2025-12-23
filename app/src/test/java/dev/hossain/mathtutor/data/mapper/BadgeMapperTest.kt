@@ -294,6 +294,178 @@ class BadgeMapperTest {
         assertThat(convertedReq.count).isEqualTo(originalReq.count)
     }
 
+    // ===========================================
+    // Number Sequence Badge Tests
+    // ===========================================
+
+    @Test
+    fun `toDomain converts NumberSequenceCount badge correctly`() {
+        val entity =
+            BadgeEntity(
+                id = "sequence_solver",
+                name = "Sequence Solver",
+                description = "Complete your first Number Sequence game",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.SEQUENCE_SOLVER.name,
+                category = BadgeCategory.GAMES,
+                requirementType = "NumberSequenceCount",
+                requirementData = "count=1",
+                unlockedAt = null,
+            )
+
+        val badge = BadgeMapper.toDomain(entity)
+
+        assert(badge.requirement is BadgeRequirement.NumberSequenceCount)
+        val requirement = badge.requirement as BadgeRequirement.NumberSequenceCount
+        assertThat(requirement.count).isEqualTo(1)
+    }
+
+    @Test
+    fun `toDomain converts NumberSequenceScore badge correctly`() {
+        val entity =
+            BadgeEntity(
+                id = "pattern_master",
+                name = "Pattern Master",
+                description = "Score 10+ in Number Sequence",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PATTERN_MASTER.name,
+                category = BadgeCategory.GAMES,
+                requirementType = "NumberSequenceScore",
+                requirementData = "minScore=10",
+                unlockedAt = null,
+            )
+
+        val badge = BadgeMapper.toDomain(entity)
+
+        assert(badge.requirement is BadgeRequirement.NumberSequenceScore)
+        val requirement = badge.requirement as BadgeRequirement.NumberSequenceScore
+        assertThat(requirement.minScore).isEqualTo(10)
+    }
+
+    @Test
+    fun `toDomain converts NumberSequenceTime badge correctly`() {
+        val entity =
+            BadgeEntity(
+                id = "quick_sequencer",
+                name = "Quick Sequencer",
+                description = "Complete Number Sequence in under 60 seconds",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.QUICK_SEQUENCER.name,
+                category = BadgeCategory.GAMES,
+                requirementType = "NumberSequenceTime",
+                requirementData = "maxSeconds=60",
+                unlockedAt = null,
+            )
+
+        val badge = BadgeMapper.toDomain(entity)
+
+        assert(badge.requirement is BadgeRequirement.NumberSequenceTime)
+        val requirement = badge.requirement as BadgeRequirement.NumberSequenceTime
+        assertThat(requirement.maxSeconds).isEqualTo(60)
+    }
+
+    @Test
+    fun `toEntity converts NumberSequenceCount badge correctly`() {
+        val badge =
+            Badge(
+                id = "sequence_solver",
+                name = "Sequence Solver",
+                description = "Complete your first Number Sequence game",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.SEQUENCE_SOLVER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceCount(1),
+                unlockedAt = null,
+            )
+
+        val entity = BadgeMapper.toEntity(badge)
+
+        assertThat(entity.requirementType).isEqualTo("NumberSequenceCount")
+        assertThat(entity.requirementData).isEqualTo("count=1")
+    }
+
+    @Test
+    fun `toEntity converts NumberSequenceScore badge correctly`() {
+        val badge =
+            Badge(
+                id = "pattern_master",
+                name = "Pattern Master",
+                description = "Score 10+ in Number Sequence",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.PATTERN_MASTER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceScore(10),
+                unlockedAt = null,
+            )
+
+        val entity = BadgeMapper.toEntity(badge)
+
+        assertThat(entity.requirementType).isEqualTo("NumberSequenceScore")
+        assertThat(entity.requirementData).isEqualTo("minScore=10")
+    }
+
+    @Test
+    fun `toEntity converts NumberSequenceTime badge correctly`() {
+        val badge =
+            Badge(
+                id = "quick_sequencer",
+                name = "Quick Sequencer",
+                description = "Complete Number Sequence in under 60 seconds",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.QUICK_SEQUENCER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceTime(60),
+                unlockedAt = null,
+            )
+
+        val entity = BadgeMapper.toEntity(badge)
+
+        assertThat(entity.requirementType).isEqualTo("NumberSequenceTime")
+        assertThat(entity.requirementData).isEqualTo("maxSeconds=60")
+    }
+
+    @Test
+    fun `roundtrip conversion works for NumberSequenceCount badge`() {
+        val original =
+            Badge(
+                id = "sequence_solver",
+                name = "Sequence Solver",
+                description = "Complete your first Number Sequence game",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.SEQUENCE_SOLVER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceCount(5),
+                unlockedAt = Instant.now(),
+            )
+
+        val entity = BadgeMapper.toEntity(original)
+        val converted = BadgeMapper.toDomain(entity)
+
+        assertThat(converted.id).isEqualTo(original.id)
+        assertThat(converted.icon).isEqualTo(original.icon)
+        val originalReq = original.requirement as BadgeRequirement.NumberSequenceCount
+        val convertedReq = converted.requirement as BadgeRequirement.NumberSequenceCount
+        assertThat(convertedReq.count).isEqualTo(originalReq.count)
+    }
+
+    @Test
+    fun `roundtrip conversion works for NumberSequenceScore badge`() {
+        val original =
+            Badge(
+                id = "sequence_pro",
+                name = "Sequence Pro",
+                description = "Score 15+ in Number Sequence",
+                icon = dev.hossain.mathtutor.domain.model.BadgeIcon.SEQUENCE_PRO,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceScore(15),
+                unlockedAt = null,
+            )
+
+        val entity = BadgeMapper.toEntity(original)
+        val converted = BadgeMapper.toDomain(entity)
+
+        val originalReq = original.requirement as BadgeRequirement.NumberSequenceScore
+        val convertedReq = converted.requirement as BadgeRequirement.NumberSequenceScore
+        assertThat(convertedReq.minScore).isEqualTo(originalReq.minScore)
+    }
+
+    // ===========================================
+    // Error Cases
+    // ===========================================
+
     @Test(expected = IllegalArgumentException::class)
     fun `toDomain throws exception for unknown requirement type`() {
         val entity =

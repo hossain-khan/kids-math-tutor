@@ -194,6 +194,18 @@ private fun formatRequirement(badge: Badge): String =
         dev.hossain.mathtutor.domain.model.BadgeRequirement.PerfectMemoryMatch -> {
             "Complete Memory Match with exactly 8 moves"
         }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.NumberSequenceCount -> {
+            "Complete ${req.count} Number Sequence game${if (req.count > 1) "s" else ""}"
+        }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.NumberSequenceScore -> {
+            "Score ${req.minScore}+ in Number Sequence"
+        }
+
+        is dev.hossain.mathtutor.domain.model.BadgeRequirement.NumberSequenceTime -> {
+            "Complete Number Sequence in under ${req.maxSeconds} seconds"
+        }
     }
 
 @Preview(showBackground = true)

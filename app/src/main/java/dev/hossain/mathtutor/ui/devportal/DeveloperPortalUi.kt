@@ -93,6 +93,51 @@ fun DeveloperPortalUi(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Quick Navigation - Jump directly to games for testing
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Quick Navigation", style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Jump directly to games for testing",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.NavigateToMathRace) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("🏎️ Math Race")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.NavigateToMemoryMatch) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("🧠 Memory Match")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.NavigateToNumberSequence) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("🔢 Number Sequence")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             // Profile Controls
             Card(
                 modifier = Modifier.fillMaxWidth(),

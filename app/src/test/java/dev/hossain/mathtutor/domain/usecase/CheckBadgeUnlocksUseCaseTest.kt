@@ -9,6 +9,7 @@ import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.Game
 import dev.hossain.mathtutor.domain.model.GameSession
 import dev.hossain.mathtutor.domain.model.GameStats
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionStats
@@ -281,6 +282,156 @@ class CheckBadgeUnlocksUseCaseTest {
             assertThat(fakeBadgeRepository.unlockCalls.size).isEqualTo(2)
         }
 
+    // ===========================================
+    // Number Sequence Badge Tests
+    // ===========================================
+
+    @Test
+    fun `checkAndUnlockBadges unlocks badge when NumberSequenceCount requirement is met`() =
+        runTest {
+            val lockedBadge = createBadge("sequence_solver", requirement = BadgeRequirement.NumberSequenceCount(1))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            fakeGameRepository.totalGamesPlayed = 1
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("sequence_solver")
+        }
+
+    @Test
+    fun `checkAndUnlockBadges does not unlock badge when NumberSequenceCount requirement is not met`() =
+        runTest {
+            val lockedBadge = createBadge("sequence_solver", requirement = BadgeRequirement.NumberSequenceCount(5))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            fakeGameRepository.totalGamesPlayed = 3 // Only 3, need 5
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
+        }
+
+    @Test
+    fun `checkAndUnlockBadges unlocks badge when NumberSequenceScore requirement is met`() =
+        runTest {
+            val lockedBadge = createBadge("pattern_master", requirement = BadgeRequirement.NumberSequenceScore(10))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            fakeGameRepository.personalBest = 12 // Better than required
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("pattern_master")
+        }
+
+    @Test
+    fun `checkAndUnlockBadges does not unlock badge when NumberSequenceScore requirement is not met`() =
+        runTest {
+            val lockedBadge = createBadge("pattern_master", requirement = BadgeRequirement.NumberSequenceScore(10))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            fakeGameRepository.personalBest = 8 // Less than required
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
+        }
+
+    @Test
+    fun `checkAndUnlockBadges unlocks badge when NumberSequenceTime requirement is met`() =
+        runTest {
+            val lockedBadge = createBadge("quick_sequencer", requirement = BadgeRequirement.NumberSequenceTime(60))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            // Create a session with fast completion time
+            fakeGameRepository.gameSessions =
+                listOf(
+                    GameSession(
+                        game = Game.NUMBER_SEQUENCE,
+                        startTime = Instant.now(),
+                        endTime = Instant.now(),
+                        score = 5,
+                        correctAnswers = 5,
+                        totalAttempts = 5,
+                        durationSeconds = 50, // Under 60 seconds
+                        gradeLevel = GradeLevel.GRADE_1,
+                        isNewRecord = false,
+                    ),
+                )
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.size).isEqualTo(1)
+            assertThat(newlyUnlocked[0].id).isEqualTo("quick_sequencer")
+        }
+
+    @Test
+    fun `checkAndUnlockBadges does not unlock badge when NumberSequenceTime requirement is not met`() =
+        runTest {
+            val lockedBadge = createBadge("quick_sequencer", requirement = BadgeRequirement.NumberSequenceTime(60))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            // Create a session with slow completion time
+            fakeGameRepository.gameSessions =
+                listOf(
+                    GameSession(
+                        game = Game.NUMBER_SEQUENCE,
+                        startTime = Instant.now(),
+                        endTime = Instant.now(),
+                        score = 5,
+                        correctAnswers = 5,
+                        totalAttempts = 5,
+                        durationSeconds = 75, // Over 60 seconds
+                        gradeLevel = GradeLevel.GRADE_1,
+                        isNewRecord = false,
+                    ),
+                )
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
+        }
+
+    @Test
+    fun `checkAndUnlockBadges does not unlock NumberSequenceTime badge when no correct answers`() =
+        runTest {
+            val lockedBadge = createBadge("quick_sequencer", requirement = BadgeRequirement.NumberSequenceTime(60))
+            fakeBadgeRepository.allBadges = listOf(lockedBadge)
+            // Create a session with 0 correct answers (shouldn't count)
+            fakeGameRepository.gameSessions =
+                listOf(
+                    GameSession(
+                        game = Game.NUMBER_SEQUENCE,
+                        startTime = Instant.now(),
+                        endTime = Instant.now(),
+                        score = 0,
+                        correctAnswers = 0, // No correct answers
+                        totalAttempts = 3,
+                        durationSeconds = 30,
+                        gradeLevel = GradeLevel.GRADE_1,
+                        isNewRecord = false,
+                    ),
+                )
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.isEmpty()).isTrue()
+        }
+
+    @Test
+    fun `checkAndUnlockBadges unlocks multiple Number Sequence badges simultaneously`() =
+        runTest {
+            val badge1 = createBadge("sequence_solver", requirement = BadgeRequirement.NumberSequenceCount(1))
+            val badge2 = createBadge("pattern_master", requirement = BadgeRequirement.NumberSequenceScore(10))
+            val badge3 = createBadge("sequence_pro", requirement = BadgeRequirement.NumberSequenceScore(20)) // Not met
+            fakeBadgeRepository.allBadges = listOf(badge1, badge2, badge3)
+            fakeGameRepository.totalGamesPlayed = 5
+            fakeGameRepository.personalBest = 15
+
+            val newlyUnlocked = useCase.checkAndUnlockBadges()
+
+            assertThat(newlyUnlocked.size).isEqualTo(2)
+            assertThat(newlyUnlocked.any { it.id == "sequence_solver" }).isTrue()
+            assertThat(newlyUnlocked.any { it.id == "pattern_master" }).isTrue()
+        }
+
     private fun createBadge(
         id: String,
         requirement: BadgeRequirement = BadgeRequirement.ProblemCount(10),
@@ -395,6 +546,7 @@ class CheckBadgeUnlocksUseCaseTest {
         var totalGamesPlayed: Int = 0
         var personalBest: Int = 0
         var perfectGameCount: Int = 0
+        var gameSessions: List<GameSession> = emptyList()
 
         override suspend fun saveGameSession(session: GameSession): Long = 0
 
@@ -408,7 +560,7 @@ class CheckBadgeUnlocksUseCaseTest {
 
         override fun isGameUnlocked(game: Game): Flow<Boolean> = flowOf(true)
 
-        override fun getSessionsByGame(game: Game): Flow<List<GameSession>> = flowOf(emptyList())
+        override fun getSessionsByGame(game: Game): Flow<List<GameSession>> = flowOf(gameSessions.filter { it.game == game })
 
         override fun getRecentSessions(limit: Int): Flow<List<GameSession>> = flowOf(emptyList())
 

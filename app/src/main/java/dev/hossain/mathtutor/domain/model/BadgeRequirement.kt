@@ -132,4 +132,33 @@ sealed class BadgeRequirement {
      * Requires completing the game in exactly 8 moves (matching all 8 pairs on first try).
      */
     data object PerfectMemoryMatch : BadgeRequirement()
+
+    // ==================== Number Sequence Badges ====================
+
+    /**
+     * Badge requirement for completing Number Sequence games.
+     *
+     * @property count The number of Number Sequence games that must be completed
+     */
+    data class NumberSequenceCount(
+        val count: Int,
+    ) : BadgeRequirement()
+
+    /**
+     * Badge requirement for Number Sequence score.
+     *
+     * @property minScore The minimum score required in a single Number Sequence game
+     */
+    data class NumberSequenceScore(
+        val minScore: Int,
+    ) : BadgeRequirement()
+
+    /**
+     * Badge requirement for completing Number Sequence quickly.
+     *
+     * @property maxSeconds The maximum time in seconds to complete the game with at least one correct answer
+     */
+    data class NumberSequenceTime(
+        val maxSeconds: Int,
+    ) : BadgeRequirement()
 }

@@ -210,5 +210,38 @@ object BadgeDefinitions {
                 category = BadgeCategory.GAMES,
                 requirement = BadgeRequirement.PerfectMemoryMatch,
             ),
+            // Number Sequence Badges
+            Badge(
+                id = "sequence_solver",
+                name = "Sequence Solver",
+                description = "Complete your first Number Sequence game",
+                icon = BadgeIcon.SEQUENCE_SOLVER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceCount(1),
+            ),
+            Badge(
+                id = "pattern_master",
+                name = "Pattern Master",
+                description = "Score 10+ in Number Sequence",
+                icon = BadgeIcon.PATTERN_MASTER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceScore(10),
+            ),
+            Badge(
+                id = "sequence_pro",
+                name = "Sequence Pro",
+                description = "Score 15+ in Number Sequence",
+                icon = BadgeIcon.SEQUENCE_PRO,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceScore(15),
+            ),
+            Badge(
+                id = "quick_sequencer",
+                name = "Quick Sequencer",
+                description = "Complete Number Sequence in under 60 seconds",
+                icon = BadgeIcon.QUICK_SEQUENCER,
+                category = BadgeCategory.GAMES,
+                requirement = BadgeRequirement.NumberSequenceTime(60),
+            ),
         )
 }

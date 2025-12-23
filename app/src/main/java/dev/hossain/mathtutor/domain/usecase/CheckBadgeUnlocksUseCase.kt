@@ -79,6 +79,9 @@ class CheckBadgeUnlocksUseCase
                 is BadgeRequirement.MemoryMatchMoves -> checkMemoryMatchMoves(requirement)
                 is BadgeRequirement.MemoryMatchTime -> checkMemoryMatchTime(requirement)
                 is BadgeRequirement.PerfectMemoryMatch -> checkPerfectMemoryMatch()
+                is BadgeRequirement.NumberSequenceCount -> checkNumberSequenceCount(requirement)
+                is BadgeRequirement.NumberSequenceScore -> checkNumberSequenceScore(requirement)
+                is BadgeRequirement.NumberSequenceTime -> checkNumberSequenceTime(requirement)
             }
 
         /**
@@ -250,5 +253,42 @@ class CheckBadgeUnlocksUseCase
             val hasPerfectGame = sessions.any { it.totalAttempts == 8 }
             Timber.d("PerfectMemoryMatch check - Has 8-move game: $hasPerfectGame")
             return hasPerfectGame
+        }
+
+        // ==================== Number Sequence Badge Checks ====================
+
+        /**
+         * Checks if the Number Sequence count requirement is met.
+         */
+        private suspend fun checkNumberSequenceCount(requirement: BadgeRequirement.NumberSequenceCount): Boolean {
+            val gamesPlayed = gameRepository.getTotalGamesPlayed(Game.NUMBER_SEQUENCE).first()
+            val meetsRequirement = gamesPlayed >= requirement.count
+            Timber.d("NumberSequenceCount check - Played: $gamesPlayed, Required: ${requirement.count}, Met: $meetsRequirement")
+            return meetsRequirement
+        }
+
+        /**
+         * Checks if the Number Sequence score requirement is met.
+         * Uses the player's personal best score for Number Sequence.
+         */
+        private suspend fun checkNumberSequenceScore(requirement: BadgeRequirement.NumberSequenceScore): Boolean {
+            val personalBest = gameRepository.getPersonalBest(Game.NUMBER_SEQUENCE).first()
+            val meetsRequirement = personalBest >= requirement.minScore
+            Timber.d("NumberSequenceScore check - Best: $personalBest, Required: ${requirement.minScore}, Met: $meetsRequirement")
+            return meetsRequirement
+        }
+
+        /**
+         * Checks if the Number Sequence time requirement is met.
+         * Checks if any Number Sequence session was completed within maxSeconds with at least one correct answer.
+         */
+        private suspend fun checkNumberSequenceTime(requirement: BadgeRequirement.NumberSequenceTime): Boolean {
+            val sessions = gameRepository.getSessionsByGame(Game.NUMBER_SEQUENCE).first()
+            // Only consider sessions where the player got at least one correct answer
+            val validSessions = sessions.filter { it.correctAnswers > 0 }
+            val bestTime = validSessions.minOfOrNull { it.durationSeconds } ?: Int.MAX_VALUE
+            val meetsRequirement = bestTime <= requirement.maxSeconds
+            Timber.d("NumberSequenceTime check - Best: ${bestTime}s, Required: <=${requirement.maxSeconds}s, Met: $meetsRequirement")
+            return meetsRequirement
         }
     }
