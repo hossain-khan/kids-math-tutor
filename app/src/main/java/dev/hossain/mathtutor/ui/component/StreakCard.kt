@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -216,6 +217,11 @@ private fun WeeklyCalendar(
                                     } else {
                                         MaterialTheme.colorScheme.surfaceVariant
                                     },
+                                shape = CircleShape,
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline,
                                 shape = CircleShape,
                             ),
                     contentAlignment = Alignment.Center,
