@@ -107,6 +107,17 @@ interface AudioService {
      */
     fun setVolume(volume: Float)
 
+    /**
+     * Register a listener to receive updates about sound loading state and sample IDs.
+     * The listener will be invoked immediately with the current state when registered.
+     */
+    fun registerSoundLoadListener(listener: (loaded: Boolean, sampleIds: Map<String, Int>) -> Unit)
+
+    /**
+     * Unregister a previously registered sound load listener.
+     */
+    fun unregisterSoundLoadListener(listener: (loaded: Boolean, sampleIds: Map<String, Int>) -> Unit)
+
     // ==================== Lifecycle ====================
 
     /**

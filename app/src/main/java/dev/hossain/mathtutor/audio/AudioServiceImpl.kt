@@ -50,10 +50,20 @@ class AudioServiceImpl
         private var goSoundId: Int = 0
         private var warningSoundId: Int = 0
 
+        // Sound loading state
+        // Number of sounds we expect to load into SoundPool; set when loadSounds() runs
+        private var soundsLoadExpected: Int = 0
+        private var soundsLoadCompleted: Int = 0
+        private var soundsLoaded: Boolean = false
+        private val soundLoadQueue: MutableList<Int> = mutableListOf() // queue plays until loaded
+
         // Settings
         private var soundEffectsEnabled: Boolean = true
         private var musicEnabled: Boolean = false // Default OFF - user must enable in settings
         private var volume: Float = 1.0f
+
+        // Sound load listeners (dev UI can register to receive updates)
+        private val soundLoadListeners: MutableList<(loaded: Boolean, sampleIds: Map<String, Int>) -> Unit> = mutableListOf()
 
         // Background music volume is 30% of main volume
         private val musicVolumeMultiplier: Float = 0.3f
@@ -89,68 +99,167 @@ class AudioServiceImpl
          */
         private fun loadSounds(pool: SoundPool) {
             Timber.d("[AudioService] Loading sound effects...")
-            successSoundId = pool.load(context, R.raw.success_01, 1)
-            perfectScoreSoundId = pool.load(context, R.raw.success_02, 1)
-            badgeUnlockSoundId = pool.load(context, R.raw.success_03, 1)
-            errorSoundId = pool.load(context, R.raw.error_gentle, 1)
-            streakContinueSoundId = pool.load(context, R.raw.streak_continue, 1)
-            levelUpSoundId = pool.load(context, R.raw.level_up, 1)
-            // Game sounds - reuse existing sounds with appropriate variations
-            countdownSoundId = pool.load(context, R.raw.countdown_tick, 1)
-            goSoundId = pool.load(context, R.raw.countdown_go, 1)
-            warningSoundId = pool.load(context, R.raw.time_warning, 1)
-            Timber.d("[AudioService] Sound effects loaded")
+
+            // Load sounds and remember how many we requested
+            val ids =
+                listOf(
+                    pool.load(context, R.raw.success_01, 1),
+                    pool.load(context, R.raw.success_02, 1),
+                    pool.load(context, R.raw.success_03, 1),
+                    pool.load(context, R.raw.error_gentle, 1),
+                    pool.load(context, R.raw.streak_continue, 1),
+                    pool.load(context, R.raw.level_up, 1),
+                    pool.load(context, R.raw.countdown_tick, 1),
+                    pool.load(context, R.raw.countdown_go, 1),
+                    pool.load(context, R.raw.time_warning, 1),
+                )
+
+            // Assign explicit ids to fields (order matches above)
+            successSoundId = ids[0]
+            perfectScoreSoundId = ids[1]
+            badgeUnlockSoundId = ids[2]
+            errorSoundId = ids[3]
+            streakContinueSoundId = ids[4]
+            levelUpSoundId = ids[5]
+            countdownSoundId = ids[6]
+            goSoundId = ids[7]
+            warningSoundId = ids[8]
+
+            soundsLoadExpected = ids.size
+            soundsLoadCompleted = 0
+            soundsLoaded = false
+
+            // Listen for load completion and flush any queued plays once ready
+            pool.setOnLoadCompleteListener { sp, sampleId, status ->
+                if (status == 0) {
+                    soundsLoadCompleted += 1
+                    Timber.d("[AudioService] Sound loaded: sampleId=$sampleId (completed=$soundsLoadCompleted/$soundsLoadExpected)")
+                    if (soundsLoadCompleted >= soundsLoadExpected) {
+                        soundsLoaded = true
+                        Timber.d("[AudioService] All sound effects loaded")
+
+                        // Notify listeners about loaded state and sample IDs
+                        val sampleMap =
+                            mapOf(
+                                "success" to successSoundId,
+                                "perfect" to perfectScoreSoundId,
+                                "badge" to badgeUnlockSoundId,
+                                "error" to errorSoundId,
+                                "streak" to streakContinueSoundId,
+                                "levelUp" to levelUpSoundId,
+                                "countdown" to countdownSoundId,
+                                "go" to goSoundId,
+                                "warning" to warningSoundId,
+                            )
+                        soundLoadListeners.forEach { listener ->
+                            try {
+                                listener(true, sampleMap)
+                            } catch (e: Exception) {
+                                Timber.e(e, "[AudioService] Error notifying soundLoadListener")
+                            }
+                        }
+
+                        // Play any queued sound requests now that loading is complete
+                        if (soundLoadQueue.isNotEmpty()) {
+                            Timber.d("[AudioService] Flushing ${soundLoadQueue.size} queued sound(s)")
+                            soundLoadQueue.forEach { id ->
+                                try {
+                                    sp.play(id, volume, volume, 1, 0, 1.0f)
+                                } catch (e: Exception) {
+                                    Timber.e(e, "[AudioService] Failed to play queued sound $id")
+                                }
+                            }
+                            soundLoadQueue.clear()
+                        }
+                    }
+                } else {
+                    Timber.w("[AudioService] Sound load failed for sampleId=$sampleId status=$status")
+                }
+            }
+
+            // If someone registers a listener later, we want to be able to push current state; keep a local list
+            // (listeners are called when loading completes)
         }
 
         /**
          * Play a sound effect if sound effects are enabled.
          */
         private fun playSound(soundId: Int) {
-            if (!soundEffectsEnabled || soundId == 0) {
-                Timber.d("[AudioService] Sound skipped (enabled=$soundEffectsEnabled, soundId=$soundId)")
+            if (!soundEffectsEnabled) {
+                Timber.d("[AudioService] Sound skipped (enabled=$soundEffectsEnabled)")
                 return
             }
-            soundPool.play(soundId, volume, volume, 1, 0, 1.0f)
-            Timber.d("[AudioService] Playing sound $soundId at volume $volume")
+
+            // Ensure SoundPool is initialized (this will trigger loadSounds())
+            val sp = soundPool
+
+            if (!soundsLoaded) {
+                // SoundPool may not have finished loading samples yet — queue this play
+                Timber.d("[AudioService] Sound not yet loaded, queueing soundId=$soundId")
+                soundLoadQueue.add(soundId)
+                return
+            }
+
+            if (soundId == 0) {
+                Timber.w("[AudioService] Invalid soundId=0 after loading - skipping")
+                return
+            }
+
+            try {
+                sp.play(soundId, volume, volume, 1, 0, 1.0f)
+                Timber.d("[AudioService] Playing sound $soundId at volume $volume")
+            } catch (e: Exception) {
+                Timber.e(e, "[AudioService] Failed to play sound $soundId")
+            }
         }
 
         // ==================== Sound Effects ====================
 
         override fun playSuccess() {
+            // Ensure SoundPool initialized so IDs are assigned, then play
+            val sp = soundPool
             playSound(successSoundId)
         }
 
         override fun playPerfectScore() {
+            val sp = soundPool
             playSound(perfectScoreSoundId)
         }
 
         override fun playBadgeUnlock() {
+            val sp = soundPool
             playSound(badgeUnlockSoundId)
         }
 
         override fun playError() {
+            val sp = soundPool
             playSound(errorSoundId)
         }
 
         override fun playStreakContinue() {
+            val sp = soundPool
             playSound(streakContinueSoundId)
         }
 
         override fun playLevelUp() {
+            val sp = soundPool
             playSound(levelUpSoundId)
         }
 
         // ==================== Game Sound Effects ====================
 
         override fun playCountdown() {
+            val sp = soundPool
             playSound(countdownSoundId)
         }
 
         override fun playGo() {
+            val sp = soundPool
             playSound(goSoundId)
         }
 
         override fun playWarning() {
+            val sp = soundPool
             playSound(warningSoundId)
         }
 
@@ -222,6 +331,32 @@ class AudioServiceImpl
             if (!enabled) {
                 pauseBackgroundMusic()
             }
+        }
+
+        override fun registerSoundLoadListener(listener: (loaded: Boolean, sampleIds: Map<String, Int>) -> Unit) {
+            // Add listener and call immediately with current state
+            soundLoadListeners.add(listener)
+            try {
+                val sampleMap =
+                    mapOf(
+                        "success" to successSoundId,
+                        "perfect" to perfectScoreSoundId,
+                        "badge" to badgeUnlockSoundId,
+                        "error" to errorSoundId,
+                        "streak" to streakContinueSoundId,
+                        "levelUp" to levelUpSoundId,
+                        "countdown" to countdownSoundId,
+                        "go" to goSoundId,
+                        "warning" to warningSoundId,
+                    )
+                listener(soundsLoaded, sampleMap)
+            } catch (e: Exception) {
+                Timber.e(e, "[AudioService] Error calling soundLoadListener upon registration")
+            }
+        }
+
+        override fun unregisterSoundLoadListener(listener: (loaded: Boolean, sampleIds: Map<String, Int>) -> Unit) {
+            soundLoadListeners.remove(listener)
         }
 
         override fun setSoundEffectsEnabled(enabled: Boolean) {

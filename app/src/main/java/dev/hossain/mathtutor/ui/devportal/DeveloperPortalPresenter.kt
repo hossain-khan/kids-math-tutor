@@ -85,10 +85,23 @@ class DeveloperPortalPresenter
             var isAnalyticsEnabled by remember { mutableStateOf(true) }
             var isBackgroundMusicPlaying by remember { mutableStateOf(false) }
             var soundHapticFeedback by remember { mutableStateOf<String?>(null) }
+            var soundsLoadedState by remember { mutableStateOf(false) }
+            var sampleIdMap by remember { mutableStateOf<Map<String, Int>>(emptyMap()) }
             var currentProfileName by remember { mutableStateOf<String?>(null) }
             var currentGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
             var currentAdaptiveDifficulty by remember { mutableStateOf(true) }
             var profileUpdateResultMessage by remember { mutableStateOf<String?>(null) }
+            var totalSessionCount by remember { mutableStateOf(0) }
+            // Remembered listener to receive sound load events
+            val soundListener =
+                remember<(Boolean, Map<String, Int>) -> Unit> {
+                    { loaded, sampleIds ->
+                        soundsLoadedState = loaded
+                        sampleIdMap = sampleIds
+                        Timber.d("[DevPortal] Sound load listener: loaded=$loaded, sampleIds=$sampleIds")
+                    }
+                }
+
             LaunchedEffect(Unit) {
                 // Collect badges from repository to display in UI
                 launch {
@@ -108,6 +121,27 @@ class DeveloperPortalPresenter
                         currentProfileName = profile?.name
                         currentGradeLevel = profile?.gradeLevel
                         currentAdaptiveDifficulty = profile?.adaptiveDifficultyEnabled ?: true
+                    }
+                }
+
+                // Load session count
+                launch {
+                    sessionRepository.getAllSessions().collect { sessions ->
+                        totalSessionCount = sessions.size
+                    }
+                }
+
+                // Register the listener (it will be invoked immediately with current state)
+                audioService.registerSoundLoadListener(soundListener)
+            }
+
+            // Ensure we unregister the listener when this composable leaves
+            androidx.compose.runtime.DisposableEffect(Unit) {
+                onDispose {
+                    try {
+                        audioService.unregisterSoundLoadListener(soundListener)
+                    } catch (e: Exception) {
+                        Timber.e(e, "[DevPortal] Failed to unregister sound listener")
                     }
                 }
             }
@@ -137,6 +171,9 @@ class DeveloperPortalPresenter
                 currentGradeLevel = currentGradeLevel,
                 currentAdaptiveDifficulty = currentAdaptiveDifficulty,
                 profileUpdateResultMessage = profileUpdateResultMessage,
+                soundsLoaded = soundsLoadedState,
+                soundSampleIds = sampleIdMap,
+                totalSessionCount = totalSessionCount,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
@@ -154,6 +191,33 @@ class DeveloperPortalPresenter
                                 Timber.e(e, "[DevPortal] Failed to force unlock badge: ${event.badgeId}")
                                 withContext(Dispatchers.Main) {
                                     forceUnlockResultMessage = "Unlock failed: ${e.message}"
+                                    forceUnlockInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.UnlockAllBadges -> {
+                        forceUnlockInProgress = true
+                        forceUnlockResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                var unlockedCount = 0
+                                badges.forEach { badge ->
+                                    if (!badge.isUnlocked()) {
+                                        badgeRepository.unlockBadge(badge.id)
+                                        unlockedCount++
+                                    }
+                                }
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Unlocked $unlockedCount badges"
+                                    forceUnlockInProgress = false
+                                }
+                                Timber.d("[DevPortal] Unlocked all badges: $unlockedCount")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to unlock all badges")
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Unlock all failed: ${e.message}"
                                     forceUnlockInProgress = false
                                 }
                             }
@@ -360,13 +424,34 @@ class DeveloperPortalPresenter
                         Timber.d("[DevPortal] Played GO! sound & haptic")
                     }
 
+                    is DeveloperPortalScreen.Event.PlayPerfectScore -> {
+                        audioService.playPerfectScore()
+                        hapticService.triggerSuccess()
+                        soundHapticFeedback = "Perfect score sound played"
+                        Timber.d("[DevPortal] Played perfect score sound & haptic")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayStreakContinue -> {
+                        audioService.playStreakContinue()
+                        soundHapticFeedback = "Streak continue sound played"
+                        Timber.d("[DevPortal] Played streak continue sound")
+                    }
+
+                    is DeveloperPortalScreen.Event.PlayWarning -> {
+                        audioService.playWarning()
+                        soundHapticFeedback = "Warning sound played"
+                        Timber.d("[DevPortal] Played warning sound")
+                    }
+
                     is DeveloperPortalScreen.Event.ToggleBackgroundMusic -> {
                         if (isBackgroundMusicPlaying) {
                             audioService.stopBackgroundMusic()
+                            audioService.setMusicEnabled(false)
                             isBackgroundMusicPlaying = false
                             soundHapticFeedback = "Background music stopped"
                             Timber.d("[DevPortal] Stopped background music")
                         } else {
+                            audioService.setMusicEnabled(true)
                             audioService.startBackgroundMusic()
                             isBackgroundMusicPlaying = true
                             soundHapticFeedback = "Background music started"

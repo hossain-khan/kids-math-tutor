@@ -9,7 +9,7 @@ Below is a **best-effort, license-safe shortlist** built from sources that (a) a
 
 ---
 
-> **Download note:** I attempted to download the shortlisted files into `audio/original/` from Mixkit and Pixabay, but the automated download environment received HTTP 403 responses for some CDN links (Pixabay/Mixkit may block automated traffic). To help, a script has been added at `scripts/download-audio.sh` that you can run locally to perform the downloads (it includes Referer and User-Agent headers for Pixabay). If any downloads still fail, please download the file manually from the listed `source_url` and place it into `audio/original/`.
+> **Download note:** Some CDNs block automated downloads (HTTP 403). Please download each file directly from its `source_url` listed below and place the files into `audio/original/`. If a direct download still fails, use the site’s download button (accept cookies if needed) and save the file locally.
 
 ## 📁 `candidates.csv`
 

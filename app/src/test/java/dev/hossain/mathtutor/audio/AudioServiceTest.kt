@@ -427,6 +427,14 @@ class AudioServiceTest {
             currentVolume = volume.coerceIn(0f, 1f)
         }
 
+        override fun registerSoundLoadListener(listener: (loaded: Boolean, sampleIds: Map<String, Int>) -> Unit) {
+            // No-op in tests
+        }
+
+        override fun unregisterSoundLoadListener(listener: (loaded: Boolean, sampleIds: Map<String, Int>) -> Unit) {
+            // No-op in tests
+        }
+
         override fun release() {
             isReleased = true
             isMusicPlaying = false
