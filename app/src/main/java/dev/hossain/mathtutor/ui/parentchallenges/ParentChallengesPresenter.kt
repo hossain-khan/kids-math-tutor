@@ -63,28 +63,30 @@ class ParentChallengesPresenter
             var challengeToDelete by remember { mutableStateOf<CustomChallenge?>(null) }
             var importSuccessMessage by remember { mutableStateOf<String?>(null) }
 
-            // Track the previous challenge count to detect new imports
-            var previousChallengeCount by rememberSaveable { mutableStateOf(-1) }
-
-            // Note: We detect successful imports by observing challenge count changes
-            // rather than using Circuit's PopResult pattern, which has issues with Circuit 0.31.0
+            // Track challenge count before navigating to import screen
+            // -1 means not expecting a result, >= 0 means we navigated to import with that many challenges
+            var challengeCountBeforeImport by rememberSaveable { mutableStateOf(-1) }
 
             // Observe active challenges from service
             val activeChallenges by challengeService
                 .observeActiveChallenges()
                 .collectAsState(initial = emptyList())
 
-            // Detect new challenge added and show success message
-            LaunchedEffect(activeChallenges.size) {
-                if (previousChallengeCount >= 0 && activeChallenges.size > previousChallengeCount) {
-                    // A new challenge was added - find and show success message
+            // Detect successful import when we return from import screen
+            // Only show snackbar if challenge count actually increased from before import
+            LaunchedEffect(activeChallenges.size, challengeCountBeforeImport) {
+                if (challengeCountBeforeImport >= 0 && activeChallenges.size > challengeCountBeforeImport) {
+                    // Challenge count increased - a new challenge was imported
                     val newestChallenge = activeChallenges.maxByOrNull { it.createdAt }
-                    if (newestChallenge != null && importSuccessMessage == null) {
-                        Timber.d("ParentChallenges: New challenge imported: ${newestChallenge.title}")
+                    if (newestChallenge != null) {
+                        Timber.d("ParentChallenges: Import completed: ${newestChallenge.title}")
                         importSuccessMessage = "Challenge \"${newestChallenge.title}\" imported successfully!"
                     }
+                    challengeCountBeforeImport = -1 // Reset
+                } else if (challengeCountBeforeImport >= 0 && activeChallenges.size == challengeCountBeforeImport) {
+                    // Returned from import but no new challenge - user cancelled
+                    challengeCountBeforeImport = -1 // Reset
                 }
-                previousChallengeCount = activeChallenges.size
             }
 
             // Filter challenges based on showArchived flag
@@ -109,6 +111,8 @@ class ParentChallengesPresenter
                             eventName = AnalyticsEvent.CUSTOM_CHALLENGE_IMPORT_STARTED,
                             parameters = mapOf(AnalyticsParam.SOURCE to "parent_challenges_screen"),
                         )
+                        // Record current count so we can detect if a new challenge was added
+                        challengeCountBeforeImport = activeChallenges.size
                         navigator.goTo(ImportChallengeScreen())
                     }
 
