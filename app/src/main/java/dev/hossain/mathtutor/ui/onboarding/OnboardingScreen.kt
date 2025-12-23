@@ -117,12 +117,10 @@ private val onboardingPages =
 class OnboardingPresenter
     constructor(
         @Assisted private val navigator: Navigator,
-        private val userPreferencesRepository: UserPreferencesRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<OnboardingScreen.State> {
         @Composable
         override fun present(): OnboardingScreen.State {
-            val coroutineScope = rememberCoroutineScope()
             var currentPage = 0
 
             // Track screen view
@@ -152,12 +150,8 @@ class OnboardingPresenter
                     OnboardingScreen.Event.GetStartedClicked,
                     -> {
                         Timber.d("Onboarding: Skip/GetStarted clicked - currentPage=$currentPage")
-                        coroutineScope.launch {
-                            userPreferencesRepository.setOnboardingCompleted(true)
-                            // Track onboarding completed
-                            analyticsService.logEvent(AnalyticsEvent.ONBOARDING_COMPLETED)
-                            navigator.goTo(GradeSelectionScreen())
-                        }
+                        // Navigate to grade selection - onboarding is only marked complete after name entry
+                        navigator.goTo(GradeSelectionScreen())
                     }
                 }
             }

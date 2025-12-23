@@ -40,6 +40,7 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
@@ -109,6 +110,7 @@ class NameEntryPresenter
         @Assisted private val screen: NameEntryScreen,
         @Assisted private val navigator: Navigator,
         private val userProfileRepository: UserProfileRepository,
+        private val userPreferencesRepository: UserPreferencesRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<NameEntryScreen.State> {
         @CircuitInject(NameEntryScreen::class, AppScope::class)
@@ -158,6 +160,8 @@ class NameEntryPresenter
                                     adaptiveDifficultyEnabled = true,
                                 ),
                             )
+                            // Mark onboarding as completed
+                            userPreferencesRepository.setOnboardingCompleted(true)
                             Timber.d("NameEntry: Profile saved (skipped), navigating to Home")
                             navigator.resetRoot(HomeScreen)
                         }
@@ -181,6 +185,8 @@ class NameEntryPresenter
                                     adaptiveDifficultyEnabled = true,
                                 ),
                             )
+                            // Mark onboarding as completed
+                            userPreferencesRepository.setOnboardingCompleted(true)
                             Timber.d("NameEntry: Profile saved, navigating to Home")
                             navigator.resetRoot(HomeScreen)
                         }
