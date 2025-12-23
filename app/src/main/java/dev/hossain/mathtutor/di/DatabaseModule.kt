@@ -30,14 +30,6 @@ interface DatabaseModule {
                 context,
                 MathDatabase::class.java,
                 MathDatabase.DATABASE_NAME,
-            ).addMigrations(
-                MathDatabase.MIGRATION_1_2,
-                MathDatabase.MIGRATION_2_3,
-                MathDatabase.MIGRATION_3_4,
-                MathDatabase.MIGRATION_4_5,
-                MathDatabase.MIGRATION_5_6,
-                MathDatabase.MIGRATION_6_7,
-                MathDatabase.MIGRATION_7_8,
             ).fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
