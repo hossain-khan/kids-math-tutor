@@ -109,29 +109,33 @@ enum class TopLevelDestination(
 @Composable
 fun TopLevelDestination.getNavigationItemColors(): NavigationItemColors =
     when (this) {
-        TopLevelDestination.HOME ->
+        TopLevelDestination.HOME -> {
             NavigationItemColors(
                 containerColor = VibrantNavigationColors.homeBackground,
                 contentColor = Color.White,
             )
+        }
 
-        TopLevelDestination.GAMES ->
+        TopLevelDestination.GAMES -> {
             NavigationItemColors(
                 containerColor = VibrantNavigationColors.gamesBackground,
                 contentColor = Color.White,
             )
+        }
 
-        TopLevelDestination.STATS ->
+        TopLevelDestination.STATS -> {
             NavigationItemColors(
                 containerColor = VibrantNavigationColors.statsBackground,
                 contentColor = Color.White,
             )
+        }
 
-        TopLevelDestination.SETTINGS ->
+        TopLevelDestination.SETTINGS -> {
             NavigationItemColors(
                 containerColor = VibrantNavigationColors.settingsBackground,
                 contentColor = Color.White,
             )
+        }
     }
 
 /**

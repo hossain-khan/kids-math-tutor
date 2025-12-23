@@ -218,8 +218,7 @@ private fun WeeklyCalendar(
                                         MaterialTheme.colorScheme.surfaceVariant
                                     },
                                 shape = CircleShape,
-                            )
-                            .border(
+                            ).border(
                                 width = 1.dp,
                                 color = MaterialTheme.colorScheme.outline,
                                 shape = CircleShape,
