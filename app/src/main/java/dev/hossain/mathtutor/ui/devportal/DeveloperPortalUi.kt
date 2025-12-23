@@ -46,6 +46,19 @@ fun DeveloperPortalUi(
     state: DeveloperPortalScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // Local state for section expansion
+    var expandedSections by remember {
+        mutableStateOf(
+            mapOf(
+                "dataOps" to true,
+                "navigation" to true,
+                "profile" to true,
+                "seed" to false,
+                "sounds" to true,
+                "diagnostics" to false,
+            ),
+        )
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,6 +76,23 @@ fun DeveloperPortalUi(
                     .padding(16.dp)
                     .fillMaxWidth(),
         ) {
+            // Session Statistics Card (always visible at top)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Session Statistics", style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Total Sessions: ${state.totalSessionCount}",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             // Data Operations
             if (state.showDataOpsSection) {
                 Card(
@@ -70,28 +100,39 @@ fun DeveloperPortalUi(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Data Operations", style = MaterialTheme.typography.titleMedium)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ResetOnboardingClicked) }) {
-                            Text("Reset Onboarding")
+                        Button(
+                            onClick = {
+                                expandedSections =
+                                    expandedSections.toMutableMap().apply { put("dataOps", !(this["dataOps"] ?: true)) }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = "${if (expandedSections["dataOps"] == true) "▼" else "▶"} Data Operations")
                         }
 
-                        // Show result message if present
-                        state.resetOnboardingResultMessage?.let { msg ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = msg)
-                        }
+                        if (expandedSections["dataOps"] == true) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ResetOnboardingClicked) }) {
+                                Text("Reset Onboarding")
+                            }
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                            // Show result message if present
+                            state.resetOnboardingResultMessage?.let { msg ->
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = msg)
+                            }
 
-                        Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ClearAppDataClicked) }) {
-                            Text("Clear App Data")
-                        }
+                            Spacer(modifier = Modifier.height(12.dp))
 
-                        // Show result message if present
-                        state.clearResultMessage?.let { msg ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = msg)
+                            Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ClearAppDataClicked) }) {
+                                Text("Clear App Data")
+                            }
+
+                            // Show result message if present
+                            state.clearResultMessage?.let { msg ->
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = msg)
+                            }
                         }
                     }
                 }
@@ -302,9 +343,27 @@ fun DeveloperPortalUi(
                             Text("Run Badge Checks")
                         }
 
+                        // Session count display
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(text = "Sessions Created: ${state.totalSessionCount}", style = MaterialTheme.typography.bodyMedium)
+
                         // Force unlock per-badge controls
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(text = "Force Unlock Badges", style = MaterialTheme.typography.bodyLarge)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Unlock All button
+                        if (state.badges.isNotEmpty()) {
+                            Button(
+                                onClick = { state.eventSink(DeveloperPortalScreen.Event.UnlockAllBadges) },
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = !state.forceUnlockInProgress,
+                            ) {
+                                Text("🔓 Unlock All Badges")
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+
                         Spacer(modifier = Modifier.height(6.dp))
                         if (state.badges.isEmpty()) {
                             Text(text = "No badges available")
