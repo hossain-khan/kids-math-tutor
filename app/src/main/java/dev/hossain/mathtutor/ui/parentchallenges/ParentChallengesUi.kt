@@ -687,3 +687,11 @@ private fun EmptyStatePreview() {
         EmptyState(showArchived = false, onImportClick = {})
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun EmptyStateArchivedPreview() {
+    KidsMathTutorAppTheme {
+        EmptyState(showArchived = true, onImportClick = {})
+    }
+}
