@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Integration Tests for Critical User Flows** - Comprehensive end-to-end tests for practice, game, and streak flows (#299)
+  - `PracticeToResultsFlowTest`: Validates practice session → badge unlock flow with database persistence
+  - `GameBadgeFlowTest`: Tests game completion → badge unlock for Math Race and other games
+  - `StreakUpdateFlowTest`: Verifies daily streak tracking and streak-based badge unlocks
+  - Uses in-memory Room database with real repository implementations
+  - Test helpers: `FakeGameRepository` and `FakeAnalyticsService` for isolated testing
+  - Added `truth` library to `androidTestImplementation` for assertions
 - **Import Success Feedback** - Show success snackbar after importing custom challenge (#256)
   - Uses Circuit's `rememberAnsweringNavigator` and `PopResult` pattern
   - ImportChallengeScreen returns `ImportResult` with challenge title on successful import
