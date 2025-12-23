@@ -25,13 +25,12 @@ object SessionMapper {
         gradeLevel: Int? = null,
     ): PracticeSessionEntity {
         val correctAnswers = session.getCorrectCount()
-        val totalProblems = session.totalProblems
-        val incorrectAnswers = totalProblems - correctAnswers
+        val incorrectAnswers = session.getIncorrectCount()
         val accuracy = session.getAccuracy()
 
         return PracticeSessionEntity(
             operation = operation,
-            totalProblems = totalProblems,
+            totalProblems = session.totalProblems,
             correctAnswers = correctAnswers,
             incorrectAnswers = incorrectAnswers,
             accuracy = accuracy,
