@@ -136,6 +136,8 @@ class CustomChallengeServiceImpl
             repository.addPracticeSession(challengeId, session)
         }
 
+        override fun observeAllChallenges(): Flow<List<CustomChallenge>> = repository.observeAllChallenges()
+
         override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = repository.observeActiveChallenges()
 
         /**

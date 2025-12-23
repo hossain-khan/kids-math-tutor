@@ -112,6 +112,11 @@ class CustomChallengeRepositoryImpl
             }
         }
 
+        override fun observeAllChallenges(): Flow<List<CustomChallenge>> =
+            dao.getAllChallenges().map { entities ->
+                CustomChallengeMapper.toDomainList(entities)
+            }
+
         override fun observeActiveChallenges(): Flow<List<CustomChallenge>> =
             dao.observeActiveChallenges().map { entities ->
                 CustomChallengeMapper.toDomainList(entities)

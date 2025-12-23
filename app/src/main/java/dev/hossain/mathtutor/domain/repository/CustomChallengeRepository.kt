@@ -63,6 +63,14 @@ interface CustomChallengeRepository {
     )
 
     /**
+     * Observes all challenges (including archived).
+     * Emits a new list whenever the data changes.
+     *
+     * @return Flow of list of all custom challenges
+     */
+    fun observeAllChallenges(): Flow<List<CustomChallenge>>
+
+    /**
      * Observes active (non-archived) challenges.
      * Emits a new list whenever the data changes.
      *

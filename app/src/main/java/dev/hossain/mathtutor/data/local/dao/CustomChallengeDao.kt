@@ -28,6 +28,16 @@ interface CustomChallengeDao {
     fun observeActiveChallenges(): Flow<List<CustomChallengeWithDetails>>
 
     /**
+     * Observes all challenges (including archived) ordered by creation date (newest first).
+     * Returns a Flow that emits whenever the data changes.
+     *
+     * @return Flow of list of all challenges with their details (problems and sessions)
+     */
+    @Transaction
+    @Query("SELECT * FROM custom_challenges ORDER BY createdAt DESC")
+    fun getAllChallenges(): Flow<List<CustomChallengeWithDetails>>
+
+    /**
      * Gets a specific challenge with all its details (problems and sessions).
      *
      * @param id The unique identifier of the challenge

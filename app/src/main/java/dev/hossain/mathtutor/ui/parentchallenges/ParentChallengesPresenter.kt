@@ -70,17 +70,17 @@ class ParentChallengesPresenter
                     importSuccessMessage = "Challenge \"${result.challengeTitle}\" imported successfully!"
                 }
 
-            // Observe active challenges from service
-            val activeChallenges by challengeService
-                .observeActiveChallenges()
+            // Observe all challenges (including archived) from service
+            val allChallenges by challengeService
+                .observeAllChallenges()
                 .collectAsState(initial = emptyList())
 
             // Filter challenges based on showArchived flag
             val displayedChallenges =
                 if (showArchived) {
-                    activeChallenges.filter { it.isArchived }
+                    allChallenges.filter { it.isArchived }
                 } else {
-                    activeChallenges.filter { !it.isArchived }
+                    allChallenges.filter { !it.isArchived }
                 }
 
             return ParentChallengesScreen.State(
