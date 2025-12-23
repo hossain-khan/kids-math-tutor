@@ -294,6 +294,14 @@ class AudioHapticSettingsPresenterTest {
             this.volume = volume
         }
 
+        override fun registerSoundLoadListener(listener: (Boolean, Map<String, Int>) -> Unit) {
+            // No-op for tests
+        }
+
+        override fun unregisterSoundLoadListener(listener: (Boolean, Map<String, Int>) -> Unit) {
+            // No-op for tests
+        }
+
         override fun release() {}
 
         fun isSoundEffectsEnabled(): Boolean = soundEffectsEnabled

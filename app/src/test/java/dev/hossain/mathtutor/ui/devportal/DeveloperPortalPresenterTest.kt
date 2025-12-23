@@ -360,6 +360,14 @@ class DeveloperPortalPresenterTest {
             musicEnabled = enabled
         }
 
+        override fun registerSoundLoadListener(listener: (Boolean, Map<String, Int>) -> Unit) {
+            // No-op for tests
+        }
+
+        override fun unregisterSoundLoadListener(listener: (Boolean, Map<String, Int>) -> Unit) {
+            // No-op for tests
+        }
+
         override fun setSoundEffectsEnabled(enabled: Boolean) {
             soundEffectsEnabled = enabled
         }
