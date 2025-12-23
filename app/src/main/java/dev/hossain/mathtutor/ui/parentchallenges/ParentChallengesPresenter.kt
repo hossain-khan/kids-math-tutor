@@ -9,6 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.foundation.answeringNavigationAvailable
 import com.slack.circuit.foundation.rememberAnsweringNavigator
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -63,6 +64,9 @@ class ParentChallengesPresenter
             var challengeToDelete by remember { mutableStateOf<CustomChallenge?>(null) }
             var importSuccessMessage by remember { mutableStateOf<String?>(null) }
 
+            // Check if answering navigation is available
+            val answeringNavAvailable = answeringNavigationAvailable()
+            Timber.d("ParentChallenges: answeringNavigationAvailable=$answeringNavAvailable")
             Timber.d("ParentChallenges: Presenter composing, importSuccessMessage=$importSuccessMessage")
 
             // Navigator that handles import results
@@ -74,7 +78,7 @@ class ParentChallengesPresenter
                     Timber.d("ParentChallenges: importSuccessMessage set to: $importSuccessMessage")
                 }
 
-            Timber.d("ParentChallenges: importNavigator created: $importNavigator")
+            Timber.d("ParentChallenges: importNavigator type: ${importNavigator::class.simpleName}")
 
             // Observe active challenges from service
             val activeChallenges by challengeService
