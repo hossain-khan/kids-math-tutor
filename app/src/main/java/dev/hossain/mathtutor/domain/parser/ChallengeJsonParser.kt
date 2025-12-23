@@ -15,6 +15,14 @@ import kotlinx.serialization.json.Json
  *
  * Handles parsing and validation of JSON challenge import specifications
  * supporting both generated (rule-based) and explicit (problem list) formats.
+ *
+ * Challenge JSON can be created using the Math Pup Worksheet Creator web app:
+ * `https://math-worksheet.gohk.xyz/`
+ *
+ * The JSON schema is available at:
+ * `https://math-worksheet.gohk.xyz/challenge-schema.json`
+ *
+ * @see ChallengeImportSpec for the parsed specification model
  */
 interface ChallengeJsonParser {
     /**

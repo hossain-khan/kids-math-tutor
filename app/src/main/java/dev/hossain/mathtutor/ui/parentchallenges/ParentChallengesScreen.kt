@@ -12,6 +12,12 @@ import kotlinx.parcelize.Parcelize
  * This screen displays all custom challenges (active and archived),
  * allows parents to manage them (archive/delete), and navigate to
  * import new challenges or start practice sessions.
+ *
+ * Parents can create custom challenges using the Math Pup Worksheet Creator web app:
+ * `https://math-worksheet.gohk.xyz/`
+ *
+ * @see ImportChallengeScreen for importing challenges
+ * @see CustomChallenge for the challenge data model
  */
 @Parcelize
 data object ParentChallengesScreen : Screen {

@@ -12,7 +12,11 @@ import kotlinx.parcelize.Parcelize
  * This screen allows parents to paste JSON challenge specifications,
  * validate them, preview the problems, and save the challenge.
  *
+ * Challenge JSON can be easily created using the Math Pup Worksheet Creator web app:
+ * `https://math-worksheet.gohk.xyz/`
+ *
  * @property prefilledJson Optional JSON content shared from another app
+ * @see ChallengeJsonParser for JSON parsing and validation
  */
 @Parcelize
 data class ImportChallengeScreen(

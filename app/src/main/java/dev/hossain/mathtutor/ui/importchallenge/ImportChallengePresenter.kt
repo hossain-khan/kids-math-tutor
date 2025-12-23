@@ -29,6 +29,9 @@ import timber.log.Timber
  *
  * Manages the state and business logic for importing custom challenges,
  * including JSON validation, preview generation, and challenge creation.
+ *
+ * Parents can create challenge JSON using the Math Pup Worksheet Creator web app:
+ * `https://math-worksheet.gohk.xyz/`
  */
 @AssistedInject
 class ImportChallengePresenter

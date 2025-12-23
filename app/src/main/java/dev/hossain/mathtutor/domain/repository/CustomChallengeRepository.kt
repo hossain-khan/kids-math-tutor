@@ -7,6 +7,11 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Repository interface for custom challenge operations.
  * Provides methods to manage custom challenges created by parents.
+ *
+ * Parents can create challenge JSON using the Math Pup Worksheet Creator web app:
+ * `https://math-worksheet.gohk.xyz/`
+ *
+ * @see CustomChallenge for the challenge data model
  */
 interface CustomChallengeRepository {
     /**

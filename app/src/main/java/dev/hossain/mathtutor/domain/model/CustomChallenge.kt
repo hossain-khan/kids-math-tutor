@@ -12,6 +12,12 @@ import java.util.UUID
  * - Generated: Rule-based problem generation
  * - Explicit: Manually specified problems
  *
+ * Parents can easily create custom challenges using the Math Pup Worksheet Creator web app:
+ * `https://math-worksheet.gohk.xyz/`
+ *
+ * The web app provides a child-friendly interface to generate challenge JSON that can be
+ * imported into the app via QR code or deep link.
+ *
  * @property id Unique identifier for the challenge
  * @property title The title of the challenge
  * @property subtitle Optional subtitle or description

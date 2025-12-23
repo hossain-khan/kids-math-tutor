@@ -12,6 +12,12 @@ import kotlinx.coroutines.flow.Flow
  * This service handles the business logic for converting import specifications
  * into practice-ready custom challenges, including problem generation, validation,
  * and preview generation.
+ *
+ * Challenge JSON can be created using the Math Pup Worksheet Creator web app:
+ * `https://math-worksheet.gohk.xyz/`
+ *
+ * @see ChallengeImportSpec for the import specification format
+ * @see CustomChallenge for the resulting challenge model
  */
 interface CustomChallengeService {
     /**
