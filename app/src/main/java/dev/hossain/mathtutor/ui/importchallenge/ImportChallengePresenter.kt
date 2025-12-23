@@ -170,9 +170,13 @@ class ImportChallengePresenter
                                                 // Persist to repository
                                                 challengeRepository.saveChallenge(challenge)
                                                 Timber.d("ImportChallenge: Challenge saved: ${challenge.title}")
-                                                // Navigate back - ParentChallengesScreen detects
-                                                // the new challenge via count observation
-                                                navigator.pop()
+                                                // Navigate back with result for parent to show success message
+                                                navigator.pop(
+                                                    result =
+                                                        ImportChallengeScreen.ImportResult(
+                                                            challengeTitle = challenge.title,
+                                                        ),
+                                                )
                                             }.onFailure { error ->
                                                 Timber.e(error, "Failed to create challenge")
                                                 validationState =

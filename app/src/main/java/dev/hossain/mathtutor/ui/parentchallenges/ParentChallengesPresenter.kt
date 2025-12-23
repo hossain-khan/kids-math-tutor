@@ -1,7 +1,6 @@
 package dev.hossain.mathtutor.ui.parentchallenges
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.foundation.rememberAnsweringNavigator
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
@@ -63,31 +63,17 @@ class ParentChallengesPresenter
             var challengeToDelete by remember { mutableStateOf<CustomChallenge?>(null) }
             var importSuccessMessage by remember { mutableStateOf<String?>(null) }
 
-            // Track challenge count before navigating to import screen
-            // -1 means not expecting a result, >= 0 means we navigated to import with that many challenges
-            var challengeCountBeforeImport by rememberSaveable { mutableStateOf(-1) }
+            // Navigator that handles import results using Circuit's PopResult pattern
+            val importNavigator =
+                rememberAnsweringNavigator<ImportChallengeScreen.ImportResult>(navigator) { result ->
+                    Timber.d("ParentChallenges: PopResult callback! challengeTitle=${result.challengeTitle}")
+                    importSuccessMessage = "Challenge \"${result.challengeTitle}\" imported successfully!"
+                }
 
             // Observe active challenges from service
             val activeChallenges by challengeService
                 .observeActiveChallenges()
                 .collectAsState(initial = emptyList())
-
-            // Detect successful import when we return from import screen
-            // Only show snackbar if challenge count actually increased from before import
-            LaunchedEffect(activeChallenges.size, challengeCountBeforeImport) {
-                if (challengeCountBeforeImport >= 0 && activeChallenges.size > challengeCountBeforeImport) {
-                    // Challenge count increased - a new challenge was imported
-                    val newestChallenge = activeChallenges.maxByOrNull { it.createdAt }
-                    if (newestChallenge != null) {
-                        Timber.d("ParentChallenges: Import completed: ${newestChallenge.title}")
-                        importSuccessMessage = "Challenge \"${newestChallenge.title}\" imported successfully!"
-                    }
-                    challengeCountBeforeImport = -1 // Reset
-                } else if (challengeCountBeforeImport >= 0 && activeChallenges.size == challengeCountBeforeImport) {
-                    // Returned from import but no new challenge - user cancelled
-                    challengeCountBeforeImport = -1 // Reset
-                }
-            }
 
             // Filter challenges based on showArchived flag
             val displayedChallenges =
@@ -111,9 +97,8 @@ class ParentChallengesPresenter
                             eventName = AnalyticsEvent.CUSTOM_CHALLENGE_IMPORT_STARTED,
                             parameters = mapOf(AnalyticsParam.SOURCE to "parent_challenges_screen"),
                         )
-                        // Record current count so we can detect if a new challenge was added
-                        challengeCountBeforeImport = activeChallenges.size
-                        navigator.goTo(ImportChallengeScreen())
+                        // Use importNavigator to receive the result when import completes
+                        importNavigator.goTo(ImportChallengeScreen())
                     }
 
                     is ParentChallengesScreen.Event.ChallengeSelected -> {
