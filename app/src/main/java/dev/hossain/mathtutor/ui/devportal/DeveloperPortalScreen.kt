@@ -95,6 +95,13 @@ data object DeveloperPortalScreen : Screen {
             val name: String?,
         ) : Event
 
+        // Quick Navigation events for testing games directly
+        data object NavigateToMathRace : Event
+
+        data object NavigateToMemoryMatch : Event
+
+        data object NavigateToNumberSequence : Event
+
         data object NavigateBack : Event
     }
 }
