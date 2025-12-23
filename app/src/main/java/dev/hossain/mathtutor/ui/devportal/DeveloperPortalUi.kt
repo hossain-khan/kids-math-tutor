@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.devportal
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -303,18 +304,42 @@ fun DeveloperPortalUi(
                         if (state.badges.isEmpty()) {
                             Text(text = "No badges available")
                         } else {
-                            state.badges.forEach { badge ->
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    Text(text = badge.name)
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Button(
-                                        onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
-                                        enabled = !badge.isUnlocked(),
-                                    ) {
-                                        Text(if (badge.isUnlocked()) "Unlocked" else "Force Unlock")
+                            state.badges.chunked(3).forEach { badgeRow ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    badgeRow.forEach { badge ->
+                                        Column(
+                                            modifier =
+                                                Modifier
+                                                    .weight(1f)
+                                                    .padding(8.dp),
+                                        ) {
+                                            Text(
+                                                text = badge.name,
+                                                style = MaterialTheme.typography.labelMedium,
+                                                maxLines = 2,
+                                            )
+                                            Spacer(modifier = Modifier.height(6.dp))
+                                            Button(
+                                                onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
+                                                enabled = !badge.isUnlocked(),
+                                                modifier = Modifier.fillMaxWidth(),
+                                            ) {
+                                                Text(
+                                                    text = if (badge.isUnlocked()) "Unlocked" else "Unlock",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                )
+                                            }
+                                        }
+                                    }
+                                    // Add spacer if only 1 item in row
+                                    if (badgeRow.size == 1) {
+                                        Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
 
