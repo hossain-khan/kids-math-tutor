@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -226,9 +227,9 @@ fun NameEntryUi(
         ) {
             Text(
                 text = "What's your name? 🐶",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
             )
 
@@ -241,15 +242,20 @@ fun NameEntryUi(
                 textAlign = TextAlign.Center,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
                 value = state.name,
                 onValueChange = { state.eventSink(NameEntryScreen.Event.NameChanged(it)) },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Your Name") },
-                placeholder = { Text("Enter your name") },
-                singleLine = true,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(80.dp),
+                label = { Text("Your Name", style = MaterialTheme.typography.titleMedium) },
+                placeholder = { Text("Enter your name", style = MaterialTheme.typography.titleMedium) },
+                textStyle = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                singleLine = false,
+                shape = RoundedCornerShape(16.dp),
             )
 
             Spacer(modifier = Modifier.weight(1f))
