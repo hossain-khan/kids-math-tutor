@@ -25,6 +25,8 @@ The app contains **13 Circuit screens** organized by feature:
 | 11 | `AudioHapticSettingsScreen` | `ui/settings/` | `data object` | Sound & haptic preferences |
 | 12 | `GameSelectionScreen` | `ui/games/` | `data object` | Mini-game selection |
 | 13 | `MathRaceScreen` | `ui/mathrace/` | `data object` | Math race mini-game |
+| 14 | `ImportChallengeScreen` | `ui/importchallenge/` | `data class` | Import custom challenges via QR/JSON |
+| 15 | `ParentChallengesScreen` | `ui/parentchallenges/` | `data object` | Manage custom parent challenges |
 
 ## Navigation Graph
 
@@ -83,6 +85,26 @@ The app has two entry points defined in `MainActivity.kt`:
 │     │                                                                       │
 │ resetRoot ──────────────────────────► HomeScreen                            │
 │                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                      CUSTOM CHALLENGES FLOW                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  MainActivity (share intent)                                                │
+│           │                                                                 │
+│         Initial                                                             │
+│           │                                                                 │
+│           ▼                                                                 │
+│  ImportChallengeScreen ──goTo──► ParentChallengesScreen                     │
+│           │                                                                 │
+│           └──────────────► pop back ──────────────► HomeScreen              │
+│                                                                             │
+│  Or from HomeScreen: HomeScreen ──goTo──► ParentChallengesScreen            │
+│                                                   │                         │
+│                                                 pop back                     │
+│                                                   │                         │
+│                                                   ▼                         │
+│                                               HomeScreen                    │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -101,9 +123,9 @@ The app has two entry points defined in `MainActivity.kt`:
 | Screen | Navigated From | Method | Navigates To |
 |--------|---------------|--------|--------------|
 | `OnboardingScreen` | MainActivity (root) | Initial | `GradeSelectionScreen` |
-| `GradeSelectionScreen` | OnboardingScreen, SettingsScreen | `goTo` | `NameEntryScreen` (onboarding) or back (settings) |
+| `GradeSelectionScreen` | OnboardingScreen, SettingsScreen | `goTo` | `NameEntryScreen` (onboarding) or back via pop (settings) |
 | `NameEntryScreen` | GradeSelectionScreen | `goTo` | `HomeScreen` |
-| `HomeScreen` | NameEntryScreen, ResultsScreen | `resetRoot` | Multiple screens |
+| `HomeScreen` | NameEntryScreen, ResultsScreen, ImportChallengeScreen | `resetRoot` | Multiple screens |
 | `OperationSelectorScreen` | HomeScreen | `goTo` | `MathPracticeScreen`, `StatsScreen` |
 | `MathPracticeScreen` | OperationSelectorScreen | `goTo` | `ResultsScreen` |
 | `ResultsScreen` | MathPracticeScreen | `goTo` | `HomeScreen` |
@@ -113,6 +135,8 @@ The app has two entry points defined in `MainActivity.kt`:
 | `AudioHapticSettingsScreen` | SettingsScreen | `goTo` | — |
 | `GameSelectionScreen` | HomeScreen | `goTo` | `MathRaceScreen` |
 | `MathRaceScreen` | GameSelectionScreen | `goTo` | — |
+| `ImportChallengeScreen` | MainActivity (share intent), HomeScreen | `goTo` or Initial | `ParentChallengesScreen` or back |
+| `ParentChallengesScreen` | HomeScreen, ImportChallengeScreen | `goTo` | back via pop |
 
 ## Screen Types
 
