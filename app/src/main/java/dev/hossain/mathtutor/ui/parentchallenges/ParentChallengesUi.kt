@@ -63,7 +63,6 @@ import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
-import timber.log.Timber
 import java.time.Instant
 
 /**
@@ -82,15 +81,10 @@ fun ParentChallengesUi(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    Timber.d("ParentChallengesUi: Composing with importSuccessMessage=${state.importSuccessMessage}")
-
     // Show snackbar when import succeeds
     LaunchedEffect(state.importSuccessMessage) {
-        Timber.d("ParentChallengesUi: LaunchedEffect triggered, message=${state.importSuccessMessage}")
         state.importSuccessMessage?.let { message ->
-            Timber.d("ParentChallengesUi: ⭐ Showing snackbar with message: $message")
             snackbarHostState.showSnackbar(message)
-            Timber.d("ParentChallengesUi: Snackbar shown, dismissing")
             state.eventSink(ParentChallengesScreen.Event.DismissImportSuccess)
         }
     }

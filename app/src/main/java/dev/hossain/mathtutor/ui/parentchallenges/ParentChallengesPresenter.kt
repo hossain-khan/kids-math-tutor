@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.parentchallenges
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,8 +10,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.foundation.answeringNavigationAvailable
-import com.slack.circuit.foundation.rememberAnsweringNavigator
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
@@ -64,26 +63,29 @@ class ParentChallengesPresenter
             var challengeToDelete by remember { mutableStateOf<CustomChallenge?>(null) }
             var importSuccessMessage by remember { mutableStateOf<String?>(null) }
 
-            // Check if answering navigation is available
-            val answeringNavAvailable = answeringNavigationAvailable()
-            Timber.d("ParentChallenges: answeringNavigationAvailable=$answeringNavAvailable")
-            Timber.d("ParentChallenges: Presenter composing, importSuccessMessage=$importSuccessMessage")
+            // Track the previous challenge count to detect new imports
+            var previousChallengeCount by rememberSaveable { mutableStateOf(-1) }
 
-            // Navigator that handles import results
-            val importNavigator =
-                rememberAnsweringNavigator<ImportChallengeScreen.ImportResult>(navigator) { result ->
-                    Timber.d("ParentChallenges: ⭐ Import result callback triggered!")
-                    Timber.d("ParentChallenges: Import result received - challengeTitle=${result.challengeTitle}")
-                    importSuccessMessage = "Challenge \"${result.challengeTitle}\" imported successfully!"
-                    Timber.d("ParentChallenges: importSuccessMessage set to: $importSuccessMessage")
-                }
-
-            Timber.d("ParentChallenges: importNavigator type: ${importNavigator::class.simpleName}")
+            // Note: We detect successful imports by observing challenge count changes
+            // rather than using Circuit's PopResult pattern, which has issues with Circuit 0.31.0
 
             // Observe active challenges from service
             val activeChallenges by challengeService
                 .observeActiveChallenges()
                 .collectAsState(initial = emptyList())
+
+            // Detect new challenge added and show success message
+            LaunchedEffect(activeChallenges.size) {
+                if (previousChallengeCount >= 0 && activeChallenges.size > previousChallengeCount) {
+                    // A new challenge was added - find and show success message
+                    val newestChallenge = activeChallenges.maxByOrNull { it.createdAt }
+                    if (newestChallenge != null && importSuccessMessage == null) {
+                        Timber.d("ParentChallenges: New challenge imported: ${newestChallenge.title}")
+                        importSuccessMessage = "Challenge \"${newestChallenge.title}\" imported successfully!"
+                    }
+                }
+                previousChallengeCount = activeChallenges.size
+            }
 
             // Filter challenges based on showArchived flag
             val displayedChallenges =
@@ -103,16 +105,14 @@ class ParentChallengesPresenter
             ) { event ->
                 when (event) {
                     is ParentChallengesScreen.Event.ImportNewChallenge -> {
-                        Timber.d("ParentChallenges: Import new challenge clicked")
                         analyticsService.logEvent(
                             eventName = AnalyticsEvent.CUSTOM_CHALLENGE_IMPORT_STARTED,
                             parameters = mapOf(AnalyticsParam.SOURCE to "parent_challenges_screen"),
                         )
-                        importNavigator.goTo(ImportChallengeScreen())
+                        navigator.goTo(ImportChallengeScreen())
                     }
 
                     is ParentChallengesScreen.Event.ChallengeSelected -> {
-                        Timber.d("ParentChallenges: Challenge selected - ${event.challenge.title}")
                         analyticsService.logEvent(
                             eventName = AnalyticsEvent.CUSTOM_CHALLENGE_STARTED,
                             parameters =
@@ -139,7 +139,6 @@ class ParentChallengesPresenter
                     }
 
                     is ParentChallengesScreen.Event.ArchiveChallenge -> {
-                        Timber.d("ParentChallenges: Archive challenge - ${event.challengeId}")
                         analyticsService.logEvent(
                             eventName = AnalyticsEvent.CUSTOM_CHALLENGE_ARCHIVED,
                             parameters = mapOf(AnalyticsParam.CHALLENGE_ID to event.challengeId),
@@ -154,7 +153,6 @@ class ParentChallengesPresenter
                     }
 
                     is ParentChallengesScreen.Event.DeleteChallengeRequested -> {
-                        Timber.d("ParentChallenges: Delete requested - ${event.challenge.title}")
                         challengeToDelete = event.challenge
                         showDeleteConfirmation = true
                     }
@@ -193,7 +191,6 @@ class ParentChallengesPresenter
                     }
 
                     is ParentChallengesScreen.Event.DismissImportSuccess -> {
-                        Timber.d("ParentChallenges: Dismiss import success message")
                         importSuccessMessage = null
                     }
                 }
