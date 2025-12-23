@@ -1,12 +1,12 @@
 package dev.hossain.mathtutor.ui.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SportsEsports
-import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.SportsEsports
 import androidx.compose.material3.MaterialTheme
@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.ui.games.GameSelectionScreen
 import dev.hossain.mathtutor.ui.home.HomeScreen
+import dev.hossain.mathtutor.ui.parentchallenges.ParentChallengesScreen
 import dev.hossain.mathtutor.ui.settings.SettingsScreen
-import dev.hossain.mathtutor.ui.stats.StatsScreen
 
 /**
  * Color pair for selected navigation items: background color and content color.
@@ -35,8 +35,8 @@ private object VibrantNavigationColors {
     // Games: Vibrant Red
     val gamesBackground = Color(0xFFE53935)
 
-    // Stats: Vibrant Blue
-    val statsBackground = Color(0xFF1976D2)
+    // Parents: Vibrant Blue
+    val parentsBackground = Color(0xFF1976D2)
 
     // Settings: Vibrant Purple
     val settingsBackground = Color(0xFF7B1FA2)
@@ -78,14 +78,14 @@ enum class TopLevelDestination(
     ),
 
     /**
-     * Stats screen - practice statistics.
+     * Parents screen - custom challenges creation.
      */
-    STATS(
-        selectedIcon = Icons.Filled.BarChart,
-        unselectedIcon = Icons.Outlined.BarChart,
-        label = "Stats",
-        contentDescription = "Statistics",
-        screen = StatsScreen,
+    PARENTS(
+        selectedIcon = Icons.Filled.People,
+        unselectedIcon = Icons.Outlined.People,
+        label = "Parents",
+        contentDescription = "Custom challenges",
+        screen = ParentChallengesScreen,
     ),
 
     /**
@@ -103,7 +103,7 @@ enum class TopLevelDestination(
 /**
  * Gets vibrant, high-contrast colors for a destination when selected.
  * Each destination has its own unique vibrant background color with white text for maximum contrast.
- * Colors are: Home=Green, Games=Red, Stats=Blue, Settings=Purple
+ * Colors are: Home=Green, Games=Red, Parents=Blue, Settings=Purple
  * White text works well on these dark vibrant backgrounds in both light and dark modes.
  */
 @Composable
@@ -123,9 +123,9 @@ fun TopLevelDestination.getNavigationItemColors(): NavigationItemColors =
             )
         }
 
-        TopLevelDestination.STATS -> {
+        TopLevelDestination.PARENTS -> {
             NavigationItemColors(
-                containerColor = VibrantNavigationColors.statsBackground,
+                containerColor = VibrantNavigationColors.parentsBackground,
                 contentColor = Color.White,
             )
         }
