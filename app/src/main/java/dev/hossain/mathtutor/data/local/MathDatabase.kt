@@ -3,8 +3,6 @@ package dev.hossain.mathtutor.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.hossain.mathtutor.data.local.dao.BadgeDao
 import dev.hossain.mathtutor.data.local.dao.CustomChallengeDao
 import dev.hossain.mathtutor.data.local.dao.GameSessionDao
@@ -19,7 +17,6 @@ import dev.hossain.mathtutor.data.local.entity.GameSessionEntity
 import dev.hossain.mathtutor.data.local.entity.PerformanceEntity
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.data.local.entity.StreakEntity
-import timber.log.Timber
 
 /**
  * Room database for Kids Math Tutor app.
@@ -27,7 +24,7 @@ import timber.log.Timber
  * performance records, game session data, and custom challenges.
  *
  * Database name: kids_math_tutor.db
- * Version: 8 (added custom challenges support)
+ * Version: 1 (initial release version with all features)
  *
  * Entities:
  * - [PracticeSessionEntity]: Completed practice sessions with statistics
@@ -53,7 +50,7 @@ import timber.log.Timber
         ChallengeProblemsEntity::class,
         ChallengePracticeSessionEntity::class,
     ],
-    version = 8,
+    version = 1,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -105,242 +102,5 @@ abstract class MathDatabase : RoomDatabase() {
          * Database file name used for Room database creation.
          */
         const val DATABASE_NAME = "kids_math_tutor.db"
-
-        /**
-         * Migration from database version 1 to version 2.
-         * Adds the badges table for the badge achievement system.
-         */
-        val MIGRATION_1_2 =
-            object : Migration(1, 2) {
-                override fun migrate(db: SupportSQLiteDatabase) {
-                    Timber.d("MathDatabase: Migrating 1 -> 2")
-                    // Create badges table
-                    db.execSQL(
-                        """
-                        CREATE TABLE IF NOT EXISTS badges (
-                            id TEXT PRIMARY KEY NOT NULL,
-                            name TEXT NOT NULL,
-                            description TEXT NOT NULL,
-                            icon TEXT NOT NULL,
-                            category TEXT NOT NULL,
-                            requirementType TEXT NOT NULL,
-                            requirementData TEXT NOT NULL,
-                            unlockedAt INTEGER
-                        )
-                        """.trimIndent(),
-                    )
-                }
-            }
-
-        /**
-         * Migration from database version 2 to version 3.
-         * Adds the streak table for daily practice streak tracking.
-         */
-        val MIGRATION_2_3 =
-            object : Migration(2, 3) {
-                override fun migrate(db: SupportSQLiteDatabase) {
-                    Timber.d("MathDatabase: Migrating 2 -> 3")
-                    // Create streak table
-                    db.execSQL(
-                        """
-                        CREATE TABLE IF NOT EXISTS streak (
-                            id INTEGER PRIMARY KEY NOT NULL,
-                            currentStreak INTEGER NOT NULL,
-                            longestStreak INTEGER NOT NULL,
-                            lastPracticeDate INTEGER,
-                            totalDaysPracticed INTEGER NOT NULL
-                        )
-                        """.trimIndent(),
-                    )
-                }
-            }
-
-        /**
-         * Migration from database version 3 to version 4.
-         * Adds the performance_records table for adaptive difficulty tracking.
-         */
-        val MIGRATION_3_4 =
-            object : Migration(3, 4) {
-                override fun migrate(db: SupportSQLiteDatabase) {
-                    Timber.d("MathDatabase: Migrating 3 -> 4")
-                    // Create performance_records table
-                    db.execSQL(
-                        """
-                        CREATE TABLE IF NOT EXISTS performance_records (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                            operation TEXT NOT NULL,
-                            gradeLevel TEXT NOT NULL,
-                            problemId TEXT NOT NULL,
-                            isCorrect INTEGER NOT NULL,
-                            attemptCount INTEGER NOT NULL,
-                            timeSpentSeconds INTEGER NOT NULL,
-                            timestamp INTEGER NOT NULL
-                        )
-                        """.trimIndent(),
-                    )
-                }
-            }
-
-        /**
-         * Migration from database version 4 to version 5.
-         * Adds the game_sessions table for mini-game tracking (Math Race, etc.).
-         */
-        val MIGRATION_4_5 =
-            object : Migration(4, 5) {
-                override fun migrate(db: SupportSQLiteDatabase) {
-                    Timber.d("MathDatabase: Migrating 4 -> 5")
-                    // Create game_sessions table
-                    db.execSQL(
-                        """
-                        CREATE TABLE IF NOT EXISTS game_sessions (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                            gameId TEXT NOT NULL,
-                            startTime INTEGER NOT NULL,
-                            endTime INTEGER NOT NULL,
-                            score INTEGER NOT NULL,
-                            correctAnswers INTEGER NOT NULL,
-                            totalAttempts INTEGER NOT NULL,
-                            durationSeconds INTEGER NOT NULL,
-                            gradeLevel TEXT NOT NULL
-                        )
-                        """.trimIndent(),
-                    )
-                    // Create index on gameId for faster lookups
-                    db.execSQL(
-                        """
-                        CREATE INDEX IF NOT EXISTS index_game_sessions_gameId ON game_sessions (gameId)
-                        """.trimIndent(),
-                    )
-                }
-            }
-
-        /**
-         * Migration from database version 5 to version 6.
-         * Updates badge icons from emoji strings to BadgeIcon enum names.
-         * This migration clears existing badges as emoji values cannot be mapped to enum.
-         * Badges will be repopulated with proper enum values on next app launch.
-         */
-        val MIGRATION_5_6 =
-            object : Migration(5, 6) {
-                override fun migrate(db: SupportSQLiteDatabase) {
-                    Timber.d("MathDatabase: Migrating 5 -> 6 - clearing badges table")
-                    // Clear existing badges since we can't migrate emoji strings to enum names
-                    db.execSQL("DELETE FROM badges")
-                }
-            }
-
-        /**
-         * Migration from database version 6 to version 7.
-         * Adds 4 new Memory Match badges to the database.
-         */
-        val MIGRATION_6_7 =
-            object : Migration(6, 7) {
-                override fun migrate(db: SupportSQLiteDatabase) {
-                    Timber.d("MathDatabase: Migrating 6 -> 7 - inserting memory match badges")
-                    // Insert new Memory Match badges
-                    // Memory Master
-                    db.execSQL(
-                        """
-                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
-                        VALUES ('memory_master', 'Memory Master', 'Complete your first Memory Match', 'MEMORY_MASTER', 'GAMES', 'MemoryMatchCount', 'count=1', NULL)
-                        """.trimIndent(),
-                    )
-                    // Sharp Memory
-                    db.execSQL(
-                        """
-                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
-                        VALUES ('sharp_memory', 'Sharp Memory', 'Complete Memory Match in 12 or fewer moves', 'SHARP_MEMORY', 'GAMES', 'MemoryMatchMoves', 'maxMoves=12', NULL)
-                        """.trimIndent(),
-                    )
-                    // Lightning Match
-                    db.execSQL(
-                        """
-                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
-                        VALUES ('lightning_match', 'Lightning Match', 'Complete Memory Match in under 60 seconds', 'LIGHTNING_MATCH', 'GAMES', 'MemoryMatchTime', 'maxSeconds=60', NULL)
-                        """.trimIndent(),
-                    )
-                    // Perfect Memory
-                    db.execSQL(
-                        """
-                        INSERT OR IGNORE INTO badges (id, name, description, icon, category, requirementType, requirementData, unlockedAt)
-                        VALUES ('perfect_memory', 'Perfect Memory', 'Complete with exactly 8 moves (perfect game)', 'PERFECT_MEMORY', 'GAMES', 'PerfectMemoryMatch', '', NULL)
-                        """.trimIndent(),
-                    )
-                }
-            }
-
-        /**
-         * Migration from database version 7 to version 8.
-         * Adds custom challenges support with three new tables:
-         * - custom_challenges: Parent-created custom challenges
-         * - challenge_problems: Math problems within custom challenges
-         * - challenge_practice_sessions: Practice sessions for custom challenges
-         */
-        val MIGRATION_7_8 =
-            object : Migration(7, 8) {
-                override fun migrate(db: SupportSQLiteDatabase) {
-                    Timber.d("MathDatabase: Migrating 7 -> 8 - adding custom challenges tables")
-
-                    // Create custom_challenges table
-                    db.execSQL(
-                        """
-                        CREATE TABLE IF NOT EXISTS custom_challenges (
-                            id TEXT PRIMARY KEY NOT NULL,
-                            title TEXT NOT NULL,
-                            subtitle TEXT,
-                            type TEXT NOT NULL,
-                            createdAt INTEGER NOT NULL,
-                            isArchived INTEGER NOT NULL
-                        )
-                        """.trimIndent(),
-                    )
-
-                    // Create challenge_problems table with foreign key to custom_challenges
-                    db.execSQL(
-                        """
-                        CREATE TABLE IF NOT EXISTS challenge_problems (
-                            id TEXT PRIMARY KEY NOT NULL,
-                            challengeId TEXT NOT NULL,
-                            operand1 INTEGER NOT NULL,
-                            operand2 INTEGER NOT NULL,
-                            operation TEXT NOT NULL,
-                            answer INTEGER NOT NULL,
-                            orderIndex INTEGER NOT NULL,
-                            FOREIGN KEY (challengeId) REFERENCES custom_challenges(id) ON DELETE CASCADE
-                        )
-                        """.trimIndent(),
-                    )
-
-                    // Create index on challengeId for faster lookups
-                    db.execSQL(
-                        """
-                        CREATE INDEX IF NOT EXISTS index_challenge_problems_challengeId ON challenge_problems (challengeId)
-                        """.trimIndent(),
-                    )
-
-                    // Create challenge_practice_sessions table with foreign key to custom_challenges
-                    db.execSQL(
-                        """
-                        CREATE TABLE IF NOT EXISTS challenge_practice_sessions (
-                            sessionId TEXT PRIMARY KEY NOT NULL,
-                            challengeId TEXT NOT NULL,
-                            startTime INTEGER NOT NULL,
-                            endTime INTEGER,
-                            problemsAttempted INTEGER NOT NULL,
-                            correctAnswers INTEGER NOT NULL,
-                            totalTimeMs INTEGER NOT NULL,
-                            FOREIGN KEY (challengeId) REFERENCES custom_challenges(id) ON DELETE CASCADE
-                        )
-                        """.trimIndent(),
-                    )
-
-                    // Create index on challengeId for faster lookups
-                    db.execSQL(
-                        """
-                        CREATE INDEX IF NOT EXISTS index_challenge_practice_sessions_challengeId ON challenge_practice_sessions (challengeId)
-                        """.trimIndent(),
-                    )
-                }
-            }
     }
 }

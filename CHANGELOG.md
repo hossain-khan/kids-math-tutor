@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Database Version Reset** - Reset Room database to version 1 for initial release
+  - Removed all 7 migration scripts (MIGRATION_1_2 through MIGRATION_7_8)
+  - Simplified MathDatabase.kt by removing migration code overhead
+  - Updated DatabaseModule.kt to remove migration registrations
+  - Regenerated schema export with version 1 containing all 8 tables
+  - Updated DATABASE.md documentation to reflect version reset
+  - This is a pre-release cleanup since the app has not been published yet
+
 ### Added
 - **Android Share Intent Handling for JSON Import** - Implemented ability to share JSON challenge specifications directly into the app
   - Added SEND intent filter in AndroidManifest.xml for text/plain MIME type

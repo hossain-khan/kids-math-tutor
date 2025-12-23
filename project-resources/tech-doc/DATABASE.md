@@ -9,7 +9,7 @@ The app uses **Android Room** (v2.6.1) as the persistence layer for local data s
 | Property | Value |
 |----------|-------|
 | Database Name | `kids_math_tutor.db` |
-| Current Version | **8** |
+| Current Version | **1** |
 | ORM | Android Room |
 | Query Pattern | Flow-based reactive streams |
 | Schema Export | Enabled (`exportSchema = true`) |
@@ -382,16 +382,12 @@ Room uses `Converters.kt` to handle custom type conversions:
 
 ## Migration History
 
-| Version | Migration | Changes |
-|---------|-----------|---------|
-| 1 | Initial | `practice_sessions` table |
-| 2 | MIGRATION_1_2 | Added `badges` table |
-| 3 | MIGRATION_2_3 | Added `streak` table |
-| 4 | MIGRATION_3_4 | Added `performance_records` table |
-| 5 | MIGRATION_4_5 | Added `game_sessions` table with index |
-| 6 | MIGRATION_5_6 | Badge icon migration (emoji → enum) |
-| 7 | MIGRATION_6_7 | Added Memory Match badges |
-| 8 | MIGRATION_7_8 | Added custom challenges tables |
+| Version | Description |
+|---------|-------------|
+| 1 | Initial release version with all 8 tables |
+
+> **Note**: Since the app has not been released to production yet, the database was reset to version 1
+> with all tables included. Future migrations will start from version 1 after the initial release.
 
 All schema versions are exported to `/app/schemas/` directory for version tracking.
 
@@ -406,10 +402,6 @@ interface DatabaseModule {
     @SingleIn(AppScope::class)
     fun provideMathDatabase(@ApplicationContext context: Context): MathDatabase =
         Room.databaseBuilder(context, MathDatabase::class.java, MathDatabase.DATABASE_NAME)
-            .addMigrations(
-                MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4,
-                MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8
-            )
             .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
     
