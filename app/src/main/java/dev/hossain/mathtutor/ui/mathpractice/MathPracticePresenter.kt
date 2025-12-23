@@ -245,12 +245,15 @@ class MathPracticePresenter
                                 }
                             }
 
-                            // Store the user's answer
+                            // Store the user's answer (only the FIRST attempt, not retries)
                             val updatedAnswers = userAnswers.toMutableList()
                             while (updatedAnswers.size <= currentProblemIndex) {
                                 updatedAnswers.add(null)
                             }
-                            updatedAnswers[currentProblemIndex] = userAnswer
+                            // Only store if not already answered (don't overwrite retry attempts)
+                            if (updatedAnswers[currentProblemIndex] == null) {
+                                updatedAnswers[currentProblemIndex] = userAnswer
+                            }
                             userAnswers = updatedAnswers
 
                             // Record performance for adaptive difficulty (if enabled)

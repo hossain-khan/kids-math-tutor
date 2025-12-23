@@ -28,6 +28,14 @@ data class PracticeSession(
     fun getCorrectCount(): Int = answers.values.count { it.isCorrect }
 
     /**
+     * Gets the count of incorrect answers in this session.
+     * Includes both answered incorrectly and skipped (unanswered) problems.
+     *
+     * @return Number of incorrect answers
+     */
+    fun getIncorrectCount(): Int = answers.values.count { !it.isCorrect }
+
+    /**
      * Calculates the accuracy percentage for this session.
      *
      * @return Accuracy as a percentage (0-100), or 0 if no answers yet
