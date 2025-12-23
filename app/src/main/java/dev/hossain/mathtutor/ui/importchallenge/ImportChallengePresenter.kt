@@ -169,9 +169,14 @@ class ImportChallengePresenter
                                             .onSuccess { challenge ->
                                                 // Persist to repository
                                                 challengeRepository.saveChallenge(challenge)
-                                                Timber.d("Challenge saved successfully: ${challenge.id}")
-                                                // TODO: Navigate to Parent Challenges screen or show success
-                                                navigator.pop()
+                                                Timber.d("ImportChallenge: Challenge saved: ${challenge.title}")
+                                                // Navigate back with result for parent to show success message
+                                                navigator.pop(
+                                                    result =
+                                                        ImportChallengeScreen.ImportResult(
+                                                            challengeTitle = challenge.title,
+                                                        ),
+                                                )
                                             }.onFailure { error ->
                                                 Timber.e(error, "Failed to create challenge")
                                                 validationState =

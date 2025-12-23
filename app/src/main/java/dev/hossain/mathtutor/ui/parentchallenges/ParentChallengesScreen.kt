@@ -29,6 +29,7 @@ data object ParentChallengesScreen : Screen {
      * @property showArchived Whether to show archived challenges
      * @property showDeleteConfirmation Whether to show delete confirmation dialog
      * @property challengeToDelete Challenge pending deletion (for confirmation)
+     * @property importSuccessMessage Success message to show after importing a challenge
      * @property eventSink Handler for screen events
      */
     data class State(
@@ -37,6 +38,7 @@ data object ParentChallengesScreen : Screen {
         val showArchived: Boolean,
         val showDeleteConfirmation: Boolean = false,
         val challengeToDelete: CustomChallenge? = null,
+        val importSuccessMessage: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -88,6 +90,11 @@ data object ParentChallengesScreen : Screen {
         data class ToggleArchived(
             val show: Boolean,
         ) : Event
+
+        /**
+         * Dismiss the import success message.
+         */
+        data object DismissImportSuccess : Event
 
         /**
          * User requested to navigate back.

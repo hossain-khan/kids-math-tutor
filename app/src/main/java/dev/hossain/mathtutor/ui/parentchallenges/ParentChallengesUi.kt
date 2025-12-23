@@ -38,10 +38,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,6 +79,16 @@ fun ParentChallengesUi(
     state: ParentChallengesScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show snackbar when import succeeds
+    LaunchedEffect(state.importSuccessMessage) {
+        state.importSuccessMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            state.eventSink(ParentChallengesScreen.Event.DismissImportSuccess)
+        }
+    }
+
     BackHandler {
         state.eventSink(ParentChallengesScreen.Event.NavigateBack)
     }
@@ -95,6 +109,15 @@ fun ParentChallengesUi(
                 },
                 modifier = Modifier.shadow(elevation = 4.dp),
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
