@@ -15,6 +15,7 @@ import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.ui.mathrace.MathRaceScreen
 import dev.hossain.mathtutor.ui.memorymatch.MemoryMatchScreen
+import dev.hossain.mathtutor.ui.numbersequence.NumberSequenceScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -159,8 +160,8 @@ class GameSelectionPresenter
                             }
 
                             Game.NUMBER_SEQUENCE -> {
-                                // TODO: Navigate to NumberSequenceScreen when implemented
-                                Timber.d("GameSelection: Number Sequence not yet implemented")
+                                Timber.d("GameSelection: Navigating to NumberSequenceScreen")
+                                navigator.goTo(NumberSequenceScreen)
                             }
                         }
                     }

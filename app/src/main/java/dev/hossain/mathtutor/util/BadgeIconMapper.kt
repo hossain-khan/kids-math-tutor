@@ -71,5 +71,20 @@ object BadgeIconMapper {
             BadgeIcon.LIGHTNING_MATCH -> R.drawable.badge_lightning_match
 
             BadgeIcon.PERFECT_MEMORY -> R.drawable.badge_perfect_memory
+
+            // Number Sequence badges
+            BadgeIcon.SEQUENCE_SOLVER -> R.drawable.badge_game_master
+
+            // Reuse existing icon for now
+
+            BadgeIcon.PATTERN_MASTER -> R.drawable.badge_quick_thinker
+
+            // Reuse existing icon for now
+
+            BadgeIcon.SEQUENCE_PRO -> R.drawable.badge_math_champion
+
+            // Reuse existing icon for now
+
+            BadgeIcon.QUICK_SEQUENCER -> R.drawable.badge_lightning_match // Reuse existing icon for now
         }
 }

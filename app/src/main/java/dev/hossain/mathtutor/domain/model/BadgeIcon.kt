@@ -45,4 +45,10 @@ enum class BadgeIcon {
     SHARP_MEMORY,
     LIGHTNING_MATCH,
     PERFECT_MEMORY,
+
+    // Number Sequence badges
+    SEQUENCE_SOLVER,
+    PATTERN_MASTER,
+    SEQUENCE_PRO,
+    QUICK_SEQUENCER,
 }

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Number Sequence Game** - New mini-game where kids find the missing number in a sequence (#255)
+  - Pattern recognition gameplay: sequences like 2, 4, __, 8 (answer: 6)
+  - Grade-appropriate sequence patterns (+1, +2, +5, +10, -1, -2, doubles)
+  - 90-second timed gameplay with 10-second warning
+  - Sequence generator with arithmetic and doubling patterns
+  - Full Circuit UDF implementation with Screen, Presenter, and UI components
+  - 4 new badges: Sequence Solver, Pattern Master, Sequence Pro, Quick Sequencer
+  - Personal best tracking and badge unlock integration
+  - Accessible from Game Selection when unlocked (200 problems solved)
+
 ### Changed
 - **Database Version Reset** - Reset Room database to version 1 for initial release
   - Removed all 7 migration scripts (MIGRATION_1_2 through MIGRATION_7_8)
