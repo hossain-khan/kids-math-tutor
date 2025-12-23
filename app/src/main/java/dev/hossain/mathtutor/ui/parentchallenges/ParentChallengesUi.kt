@@ -263,7 +263,7 @@ private fun EmptyState(
                 painter = painterResource(id = heroImageRes),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
             )
 
             // Gradient overlay at top (20%)
