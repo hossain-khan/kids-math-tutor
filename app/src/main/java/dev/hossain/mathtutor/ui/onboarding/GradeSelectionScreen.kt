@@ -180,28 +180,30 @@ class GradeSelectionPresenter
                         selectedGrade?.let { grade ->
                             if (screen.isFromSettings) {
                                 Timber.d("GradeSelection: Saving grade to profile (settings) = $grade")
-                                // From settings: save grade asynchronously and navigate back immediately
-                                // Don't block navigation on database save to prevent ANR
+                                // From settings: save grade and then navigate back
                                 scope.launch {
-                                    if (currentProfile != null) {
-                                        // Profile exists, just update the grade
-                                        userProfileRepository.updateGradeLevel(grade)
-                                    } else {
-                                        // No profile exists, create a new one
-                                        // This handles edge cases where profile wasn't created properly
-                                        userProfileRepository.saveProfile(
-                                            UserProfile(
-                                                name = null,
-                                                gradeLevel = grade,
-                                                createdAt = Instant.now(),
-                                                adaptiveDifficultyEnabled = true,
-                                            ),
-                                        )
+                                    try {
+                                        if (currentProfile != null) {
+                                            // Profile exists, just update the grade
+                                            userProfileRepository.updateGradeLevel(grade)
+                                        } else {
+                                            // No profile exists, create a new one
+                                            // This handles edge cases where profile wasn't created properly
+                                            userProfileRepository.saveProfile(
+                                                UserProfile(
+                                                    name = null,
+                                                    gradeLevel = grade,
+                                                    createdAt = Instant.now(),
+                                                    adaptiveDifficultyEnabled = true,
+                                                ),
+                                            )
+                                        }
+                                    } finally {
+                                        // Navigate back only after save completes
+                                        Timber.d("GradeSelection: Navigating back after saving grade")
+                                        navigator.pop()
                                     }
                                 }
-                                Timber.d("GradeSelection: Navigating back after saving grade")
-                                // Navigate back immediately without waiting for database save
-                                navigator.pop()
                             } else {
                                 Timber.d("GradeSelection: Onboarding continue - navigating to NameEntry with grade = $grade")
                                 // Onboarding: navigate to name entry

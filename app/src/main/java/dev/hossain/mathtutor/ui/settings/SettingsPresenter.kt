@@ -134,20 +134,24 @@ class SettingsPresenter
                                     AnalyticsParam.SETTING_VALUE to (event.name ?: ""),
                                 ),
                         )
-                        showNameDialog = false
                         scope.launch {
-                            if (profile != null) {
-                                userProfileRepository.updateName(event.name)
-                            } else {
-                                // No profile exists, create one with default grade
-                                userProfileRepository.saveProfile(
-                                    UserProfile(
-                                        name = event.name,
-                                        gradeLevel = GradeLevel.KINDERGARTEN,
-                                        createdAt = java.time.Instant.now(),
-                                        adaptiveDifficultyEnabled = true,
-                                    ),
-                                )
+                            try {
+                                if (profile != null) {
+                                    userProfileRepository.updateName(event.name)
+                                } else {
+                                    // No profile exists, create one with default grade
+                                    userProfileRepository.saveProfile(
+                                        UserProfile(
+                                            name = event.name,
+                                            gradeLevel = GradeLevel.KINDERGARTEN,
+                                            createdAt = java.time.Instant.now(),
+                                            adaptiveDifficultyEnabled = true,
+                                        ),
+                                    )
+                                }
+                            } finally {
+                                // Close dialog only after save completes
+                                showNameDialog = false
                             }
                         }
                     }
@@ -159,9 +163,13 @@ class SettingsPresenter
 
                     is SettingsScreen.Event.SaveGrade -> {
                         Timber.d("SettingsScreen: Saving grade - ${event.gradeLevel}")
-                        showGradeDialog = false
                         scope.launch {
-                            userProfileRepository.updateGradeLevel(event.gradeLevel)
+                            try {
+                                userProfileRepository.updateGradeLevel(event.gradeLevel)
+                            } finally {
+                                // Close dialog only after save completes
+                                showGradeDialog = false
+                            }
                         }
                     }
 
