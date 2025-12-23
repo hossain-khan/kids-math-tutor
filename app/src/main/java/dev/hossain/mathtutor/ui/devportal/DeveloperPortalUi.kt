@@ -417,6 +417,34 @@ fun DeveloperPortalUi(
                         Text(if (state.isBackgroundMusicPlaying) "Stop Background Music" else "Start Background Music")
                     }
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Additional sound test buttons
+                    Button(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayPerfectScore) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Play Perfect Score Sound & Haptic")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayStreakContinue) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Play Streak Continue Sound")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayWarning) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Play Warning Sound")
+                    }
+
                     // Show feedback message if present
                     state.soundHapticFeedback?.let { msg ->
                         Spacer(modifier = Modifier.height(8.dp))
@@ -469,6 +497,18 @@ fun DeveloperPortalUi(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Sound load status
+                        Text(text = "Sounds: ${if (state.soundsLoaded) "Loaded" else "Loading..."}")
+                        Spacer(modifier = Modifier.height(6.dp))
+                        if (state.soundSampleIds.isNotEmpty()) {
+                            Text(text = "Sample IDs:", style = MaterialTheme.typography.bodySmall)
+                            state.soundSampleIds.entries.forEach { entry ->
+                                Text(text = " - ${entry.key}: ${entry.value}", style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
                     }
                 }
             }

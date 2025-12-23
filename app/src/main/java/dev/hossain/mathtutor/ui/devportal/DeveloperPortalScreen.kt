@@ -35,6 +35,8 @@ data object DeveloperPortalScreen : Screen {
         val currentGradeLevel: GradeLevel? = null,
         val currentAdaptiveDifficulty: Boolean = true,
         val profileUpdateResultMessage: String? = null,
+        val soundsLoaded: Boolean = false,
+        val soundSampleIds: Map<String, Int> = emptyMap(),
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -80,6 +82,12 @@ data object DeveloperPortalScreen : Screen {
         data object PlayCountdownSound : Event
 
         data object PlayGoSound : Event
+
+        data object PlayPerfectScore : Event
+
+        data object PlayStreakContinue : Event
+
+        data object PlayWarning : Event
 
         data object ToggleBackgroundMusic : Event
 
