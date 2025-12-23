@@ -9,6 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.foundation.rememberAnsweringNavigator
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
@@ -60,6 +61,14 @@ class ParentChallengesPresenter
             var showArchived by rememberSaveable { mutableStateOf(false) }
             var showDeleteConfirmation by remember { mutableStateOf(false) }
             var challengeToDelete by remember { mutableStateOf<CustomChallenge?>(null) }
+            var importSuccessMessage by remember { mutableStateOf<String?>(null) }
+
+            // Navigator that handles import results
+            val importNavigator =
+                rememberAnsweringNavigator<ImportChallengeScreen.ImportResult>(navigator) { result ->
+                    Timber.d("ParentChallenges: Import result received - ${result.challengeTitle}")
+                    importSuccessMessage = "Challenge \"${result.challengeTitle}\" imported successfully!"
+                }
 
             // Observe active challenges from service
             val activeChallenges by challengeService
@@ -80,6 +89,7 @@ class ParentChallengesPresenter
                 showArchived = showArchived,
                 showDeleteConfirmation = showDeleteConfirmation,
                 challengeToDelete = challengeToDelete,
+                importSuccessMessage = importSuccessMessage,
             ) { event ->
                 when (event) {
                     is ParentChallengesScreen.Event.ImportNewChallenge -> {
@@ -88,7 +98,7 @@ class ParentChallengesPresenter
                             eventName = AnalyticsEvent.CUSTOM_CHALLENGE_IMPORT_STARTED,
                             parameters = mapOf(AnalyticsParam.SOURCE to "parent_challenges_screen"),
                         )
-                        navigator.goTo(ImportChallengeScreen())
+                        importNavigator.goTo(ImportChallengeScreen())
                     }
 
                     is ParentChallengesScreen.Event.ChallengeSelected -> {
@@ -170,6 +180,11 @@ class ParentChallengesPresenter
                     is ParentChallengesScreen.Event.NavigateBack -> {
                         Timber.d("ParentChallenges: Navigate back")
                         navigator.pop()
+                    }
+
+                    is ParentChallengesScreen.Event.DismissImportSuccess -> {
+                        Timber.d("ParentChallenges: Dismiss import success message")
+                        importSuccessMessage = null
                     }
                 }
             }

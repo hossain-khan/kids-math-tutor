@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Import Success Feedback** - Show success snackbar after importing custom challenge (#256)
+  - Uses Circuit's `rememberAnsweringNavigator` and `PopResult` pattern
+  - ImportChallengeScreen returns `ImportResult` with challenge title on successful import
+  - ParentChallengesScreen displays success message snackbar with imported challenge name
+  - Material 3 themed snackbar with primary container colors
+
 ## [1.9.0] - 2025-12-22
 
 ### Added

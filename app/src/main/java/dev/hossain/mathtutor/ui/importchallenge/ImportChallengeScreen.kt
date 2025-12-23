@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.ui.importchallenge
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
+import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.PreviewData
 import kotlinx.parcelize.Parcelize
@@ -72,6 +73,16 @@ data class ImportChallengeScreen(
          */
         data object NavigateBack : Event
     }
+
+    /**
+     * Result returned when a challenge is successfully imported.
+     *
+     * @property challengeTitle The title of the imported challenge
+     */
+    @Parcelize
+    data class ImportResult(
+        val challengeTitle: String,
+    ) : PopResult
 }
 
 /**
