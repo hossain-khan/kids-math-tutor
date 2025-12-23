@@ -73,7 +73,7 @@ fun ResultsUi(
                     Text("Practice Results")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { state.eventSink(ResultsScreen.Event.NavigateBack) }) {
+                    IconButton(onClick = { state.eventSink(ResultsScreen.Event.TryAgain) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -405,7 +405,7 @@ private fun ActionButtonsSection(
             onClick = onTryAgain,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Try Again")
+            Text("Let's Practice More")
         }
     }
 }
