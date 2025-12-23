@@ -184,7 +184,7 @@ private fun BadgeCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Box(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(12.dp).fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
             Column(

@@ -6,14 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -177,6 +175,7 @@ private fun HeroImageSection(modifier: Modifier = Modifier) {
                 .height(200.dp),
         contentAlignment = Alignment.Center,
     ) {
+        val gradientColor = MaterialTheme.colorScheme.surface
         Image(
             painter = painterResource(id = R.drawable.hero_image_your_badges),
             contentDescription = "Your Badges Hero",
@@ -194,9 +193,9 @@ private fun HeroImageSection(modifier: Modifier = Modifier) {
                                         listOf(
                                             Color.Transparent,
                                             Color.Transparent,
-                                            Color.White.copy(alpha = 0.3f),
-                                            Color.White.copy(alpha = 0.7f),
-                                            Color.White,
+                                            gradientColor.copy(alpha = 0.3f),
+                                            gradientColor.copy(alpha = 0.7f),
+                                            gradientColor,
                                         ),
                                     startY = 0f,
                                     endY = size.height,

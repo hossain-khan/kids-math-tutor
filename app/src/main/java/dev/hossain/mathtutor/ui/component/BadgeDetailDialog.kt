@@ -53,7 +53,7 @@ fun BadgeDetailDialog(
                     .padding(16.dp),
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(24.dp).fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
@@ -71,7 +71,7 @@ fun BadgeDetailDialog(
                 BadgeIcon(
                     badgeIcon = badge.icon,
                     contentDescription = badge.name,
-                    size = 120.dp,
+                    size = 160.dp,
                     colorFilter =
                         if (!badge.isUnlocked()) {
                             ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
