@@ -451,7 +451,7 @@ private fun HeroImageSection(
         Image(
             painter = painterResource(id = R.drawable.hero_complete_challenges),
             contentDescription = "Completion achievements",
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize(),
         )
 
