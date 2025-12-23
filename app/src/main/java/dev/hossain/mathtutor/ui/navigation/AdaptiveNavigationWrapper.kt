@@ -15,11 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
@@ -136,6 +139,8 @@ private fun AppBottomNavigation(
         NavigationBar {
             TopLevelDestination.entries.forEach { destination ->
                 val selected = currentDestination == destination
+                val colors = destination.getNavigationItemColors()
+
                 NavigationBarItem(
                     selected = selected,
                     onClick = { onDestinationSelected(destination) },
@@ -153,6 +158,16 @@ private fun AppBottomNavigation(
                     label = {
                         Text(text = destination.label)
                     },
+                    colors =
+                        if (selected) {
+                            NavigationBarItemDefaults.colors(
+                                selectedIconColor = colors.contentColor,
+                                selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                indicatorColor = colors.containerColor,
+                            )
+                        } else {
+                            NavigationBarItemDefaults.colors()
+                        },
                 )
             }
         }
@@ -175,6 +190,8 @@ private fun AppNavigationRail(
         ) {
             TopLevelDestination.entries.forEach { destination ->
                 val selected = currentDestination == destination
+                val colors = destination.getNavigationItemColors()
+
                 NavigationRailItem(
                     selected = selected,
                     onClick = { onDestinationSelected(destination) },
@@ -192,6 +209,16 @@ private fun AppNavigationRail(
                     label = {
                         Text(text = destination.label)
                     },
+                    colors =
+                        if (selected) {
+                            NavigationRailItemDefaults.colors(
+                                selectedIconColor = colors.contentColor,
+                                selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                indicatorColor = colors.containerColor,
+                            )
+                        } else {
+                            NavigationRailItemDefaults.colors()
+                        },
                 )
             }
         }
@@ -229,6 +256,8 @@ private fun AppPermanentNavigationDrawer(
                 Spacer(modifier = Modifier.height(8.dp))
                 TopLevelDestination.entries.forEach { destination ->
                     val selected = currentDestination == destination
+                    val colors = destination.getNavigationItemColors()
+
                     NavigationDrawerItem(
                         selected = selected,
                         onClick = { onDestinationSelected(destination) },
@@ -246,6 +275,16 @@ private fun AppPermanentNavigationDrawer(
                         label = {
                             Text(text = destination.label)
                         },
+                        colors =
+                            if (selected) {
+                                NavigationDrawerItemDefaults.colors(
+                                    selectedIconColor = colors.contentColor,
+                                    selectedTextColor = colors.contentColor,
+                                    selectedContainerColor = colors.containerColor,
+                                )
+                            } else {
+                                NavigationDrawerItemDefaults.colors()
+                            },
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                     )
                 }
