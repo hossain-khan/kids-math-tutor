@@ -63,12 +63,18 @@ class ParentChallengesPresenter
             var challengeToDelete by remember { mutableStateOf<CustomChallenge?>(null) }
             var importSuccessMessage by remember { mutableStateOf<String?>(null) }
 
+            Timber.d("ParentChallenges: Presenter composing, importSuccessMessage=$importSuccessMessage")
+
             // Navigator that handles import results
             val importNavigator =
                 rememberAnsweringNavigator<ImportChallengeScreen.ImportResult>(navigator) { result ->
-                    Timber.d("ParentChallenges: Import result received - ${result.challengeTitle}")
+                    Timber.d("ParentChallenges: ⭐ Import result callback triggered!")
+                    Timber.d("ParentChallenges: Import result received - challengeTitle=${result.challengeTitle}")
                     importSuccessMessage = "Challenge \"${result.challengeTitle}\" imported successfully!"
+                    Timber.d("ParentChallenges: importSuccessMessage set to: $importSuccessMessage")
                 }
+
+            Timber.d("ParentChallenges: importNavigator created: $importNavigator")
 
             // Observe active challenges from service
             val activeChallenges by challengeService
