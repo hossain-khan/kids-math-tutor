@@ -1,6 +1,8 @@
 package dev.hossain.mathtutor.ui.parentchallenges
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,14 +53,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.ChallengeType
 import dev.hossain.mathtutor.domain.model.CustomChallenge
 import dev.hossain.mathtutor.domain.model.MathOperation
@@ -166,6 +175,7 @@ fun ParentChallengesUi(
 
                 state.challenges.isEmpty() -> {
                     EmptyState(
+                        showArchived = state.showArchived,
                         onImportClick = {
                             state.eventSink(ParentChallengesScreen.Event.ImportNewChallenge)
                         },
@@ -223,6 +233,7 @@ private fun LoadingState(modifier: Modifier = Modifier) {
 
 @Composable
 private fun EmptyState(
+    showArchived: Boolean,
     onImportClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -232,37 +243,97 @@ private fun EmptyState(
                 .fillMaxSize()
                 .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Quiz,
-            contentDescription = null,
-            modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        // Hero image based on state
+        val heroImageRes =
+            if (showArchived) {
+                R.drawable.hero_custom_challenge_empty
+            } else {
+                R.drawable.hero_parent_teaching_kid
+            }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+        ) {
+            Image(
+                painter = painterResource(id = heroImageRes),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+            )
+
+            // Gradient overlay at top (20%)
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.2f)
+                        .align(Alignment.TopCenter)
+                        .background(
+                            brush =
+                                Brush.verticalGradient(
+                                    colors =
+                                        listOf(
+                                            MaterialTheme.colorScheme.surface,
+                                            MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                        ),
+                                ),
+                        ),
+            )
+
+            // Gradient overlay at bottom (20%)
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.2f)
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            brush =
+                                Brush.verticalGradient(
+                                    colors =
+                                        listOf(
+                                            MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                            MaterialTheme.colorScheme.surface,
+                                        ),
+                                ),
+                        ),
+            )
+        }
 
         Text(
-            text = "No Custom Challenges Yet",
+            text =
+                if (showArchived) {
+                    "No Archived Challenges"
+                } else {
+                    "No Custom Challenges Yet"
+                },
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
         )
 
         Text(
-            text = "Create personalized math problems for your child by importing JSON specifications.",
+            text =
+                if (showArchived) {
+                    "Archive completed challenges to keep your list organized."
+                } else {
+                    "Create personalized math problems for your child by importing JSON specifications."
+                },
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 8.dp),
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(onClick = onImportClick) {
-            Icon(Icons.Outlined.Add, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Import Challenge")
+        if (!showArchived) {
+            Button(onClick = onImportClick) {
+                Icon(Icons.Outlined.Add, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Import Challenge")
+            }
         }
     }
 }
@@ -613,6 +684,14 @@ private fun ParentChallengesUiPreview() {
 @Composable
 private fun EmptyStatePreview() {
     KidsMathTutorAppTheme {
-        EmptyState(onImportClick = {})
+        EmptyState(showArchived = false, onImportClick = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EmptyStateArchivedPreview() {
+    KidsMathTutorAppTheme {
+        EmptyState(showArchived = true, onImportClick = {})
     }
 }

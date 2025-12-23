@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.stats
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -37,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -122,6 +124,11 @@ fun StatsUi(
                                 .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
+                        // Hero Image Section
+                        item {
+                            HeroImageSection()
+                        }
+
                         // Overall Progress Section
                         item {
                             Text(
@@ -424,6 +431,65 @@ private fun RecentSessionItem(
                 )
             }
         }
+    }
+}
+
+/**
+ * Hero image section showing completion achievements.
+ */
+@Composable
+private fun HeroImageSection(modifier: Modifier = Modifier) {
+    Box(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(240.dp),
+    ) {
+        // Hero Image with gradient overlays for blending
+        Image(
+            painter = painterResource(id = R.drawable.hero_complete_challenges),
+            contentDescription = "Completion achievements",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxSize(),
+        )
+
+        // Top gradient overlay
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.2f)
+                    .align(Alignment.TopCenter)
+                    .background(
+                        brush =
+                            Brush.verticalGradient(
+                                colors =
+                                    listOf(
+                                        MaterialTheme.colorScheme.surface,
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                    ),
+                            ),
+                    ),
+        )
+
+        // Bottom gradient overlay
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.2f)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        brush =
+                            Brush.verticalGradient(
+                                colors =
+                                    listOf(
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                        MaterialTheme.colorScheme.surface,
+                                    ),
+                            ),
+                    ),
+        )
     }
 }
 

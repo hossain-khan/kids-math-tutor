@@ -469,6 +469,8 @@ class FakeCustomChallengeRepository : CustomChallengeRepository {
     }
 
     override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = activeChallengesFlow
+
+    override fun observeAllChallenges(): Flow<List<CustomChallenge>> = activeChallengesFlow
 }
 
 /**

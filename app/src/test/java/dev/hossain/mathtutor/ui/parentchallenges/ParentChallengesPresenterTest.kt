@@ -213,4 +213,6 @@ class FakeCustomChallengeService : CustomChallengeService {
     }
 
     override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = flowOf(challenges.filter { !it.isArchived })
+
+    override fun observeAllChallenges(): Flow<List<CustomChallenge>> = flowOf(challenges)
 }
