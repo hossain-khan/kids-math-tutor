@@ -91,6 +91,7 @@ class DeveloperPortalPresenter
             var currentGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
             var currentAdaptiveDifficulty by remember { mutableStateOf(true) }
             var profileUpdateResultMessage by remember { mutableStateOf<String?>(null) }
+            var totalSessionCount by remember { mutableStateOf(0) }
             // Remembered listener to receive sound load events
             val soundListener =
                 remember<(Boolean, Map<String, Int>) -> Unit> {
@@ -120,6 +121,13 @@ class DeveloperPortalPresenter
                         currentProfileName = profile?.name
                         currentGradeLevel = profile?.gradeLevel
                         currentAdaptiveDifficulty = profile?.adaptiveDifficultyEnabled ?: true
+                    }
+                }
+
+                // Load session count
+                launch {
+                    sessionRepository.getAllSessions().collect { sessions ->
+                        totalSessionCount = sessions.size
                     }
                 }
 
@@ -165,6 +173,7 @@ class DeveloperPortalPresenter
                 profileUpdateResultMessage = profileUpdateResultMessage,
                 soundsLoaded = soundsLoadedState,
                 soundSampleIds = sampleIdMap,
+                totalSessionCount = totalSessionCount,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
@@ -182,6 +191,33 @@ class DeveloperPortalPresenter
                                 Timber.e(e, "[DevPortal] Failed to force unlock badge: ${event.badgeId}")
                                 withContext(Dispatchers.Main) {
                                     forceUnlockResultMessage = "Unlock failed: ${e.message}"
+                                    forceUnlockInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.UnlockAllBadges -> {
+                        forceUnlockInProgress = true
+                        forceUnlockResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                var unlockedCount = 0
+                                badges.forEach { badge ->
+                                    if (!badge.isUnlocked()) {
+                                        badgeRepository.unlockBadge(badge.id)
+                                        unlockedCount++
+                                    }
+                                }
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Unlocked $unlockedCount badges"
+                                    forceUnlockInProgress = false
+                                }
+                                Timber.d("[DevPortal] Unlocked all badges: $unlockedCount")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to unlock all badges")
+                                withContext(Dispatchers.Main) {
+                                    forceUnlockResultMessage = "Unlock all failed: ${e.message}"
                                     forceUnlockInProgress = false
                                 }
                             }

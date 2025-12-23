@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.devportal
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,14 +8,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -40,6 +46,19 @@ fun DeveloperPortalUi(
     state: DeveloperPortalScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // Local state for section expansion
+    var expandedSections by remember {
+        mutableStateOf(
+            mapOf(
+                "dataOps" to true,
+                "navigation" to true,
+                "profile" to true,
+                "seed" to false,
+                "sounds" to true,
+                "diagnostics" to false,
+            ),
+        )
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -57,6 +76,23 @@ fun DeveloperPortalUi(
                     .padding(16.dp)
                     .fillMaxWidth(),
         ) {
+            // Session Statistics Card (always visible at top)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Session Statistics", style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Total Sessions: ${state.totalSessionCount}",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             // Data Operations
             if (state.showDataOpsSection) {
                 Card(
@@ -64,28 +100,39 @@ fun DeveloperPortalUi(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Data Operations", style = MaterialTheme.typography.titleMedium)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ResetOnboardingClicked) }) {
-                            Text("Reset Onboarding")
+                        Button(
+                            onClick = {
+                                expandedSections =
+                                    expandedSections.toMutableMap().apply { put("dataOps", !(this["dataOps"] ?: true)) }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = "${if (expandedSections["dataOps"] == true) "▼" else "▶"} Data Operations")
                         }
 
-                        // Show result message if present
-                        state.resetOnboardingResultMessage?.let { msg ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = msg)
-                        }
+                        if (expandedSections["dataOps"] == true) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ResetOnboardingClicked) }) {
+                                Text("Reset Onboarding")
+                            }
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                            // Show result message if present
+                            state.resetOnboardingResultMessage?.let { msg ->
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = msg)
+                            }
 
-                        Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ClearAppDataClicked) }) {
-                            Text("Clear App Data")
-                        }
+                            Spacer(modifier = Modifier.height(12.dp))
 
-                        // Show result message if present
-                        state.clearResultMessage?.let { msg ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = msg)
+                            Button(onClick = { state.eventSink(DeveloperPortalScreen.Event.ClearAppDataClicked) }) {
+                                Text("Clear App Data")
+                            }
+
+                            // Show result message if present
+                            state.clearResultMessage?.let { msg ->
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = msg)
+                            }
                         }
                     }
                 }
@@ -296,25 +343,67 @@ fun DeveloperPortalUi(
                             Text("Run Badge Checks")
                         }
 
+                        // Session count display
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(text = "Sessions Created: ${state.totalSessionCount}", style = MaterialTheme.typography.bodyMedium)
+
                         // Force unlock per-badge controls
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(text = "Force Unlock Badges", style = MaterialTheme.typography.bodyLarge)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Unlock All button
+                        if (state.badges.isNotEmpty()) {
+                            Button(
+                                onClick = { state.eventSink(DeveloperPortalScreen.Event.UnlockAllBadges) },
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = !state.forceUnlockInProgress,
+                            ) {
+                                Text("🔓 Unlock All Badges")
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+
                         Spacer(modifier = Modifier.height(6.dp))
                         if (state.badges.isEmpty()) {
                             Text(text = "No badges available")
                         } else {
-                            state.badges.forEach { badge ->
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    Text(text = badge.name)
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Button(
-                                        onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
-                                        enabled = !badge.isUnlocked(),
-                                    ) {
-                                        Text(if (badge.isUnlocked()) "Unlocked" else "Force Unlock")
+                            state.badges.chunked(3).forEach { badgeRow ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    badgeRow.forEach { badge ->
+                                        Column(
+                                            modifier =
+                                                Modifier
+                                                    .weight(1f)
+                                                    .padding(8.dp),
+                                        ) {
+                                            Text(
+                                                text = badge.name,
+                                                style = MaterialTheme.typography.labelMedium,
+                                                maxLines = 2,
+                                            )
+                                            Spacer(modifier = Modifier.height(6.dp))
+                                            Button(
+                                                onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
+                                                enabled = !badge.isUnlocked(),
+                                                modifier = Modifier.fillMaxWidth(),
+                                            ) {
+                                                Text(
+                                                    text = if (badge.isUnlocked()) "Unlocked" else "Unlock",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                )
+                                            }
+                                        }
+                                    }
+                                    // Add spacer if only 1 item in row
+                                    if (badgeRow.size == 1) {
+                                        Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
 
@@ -414,6 +503,11 @@ fun DeveloperPortalUi(
                         onClick = { state.eventSink(DeveloperPortalScreen.Event.ToggleBackgroundMusic) },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
+                        Icon(
+                            imageVector = if (state.isBackgroundMusicPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                            contentDescription = if (state.isBackgroundMusicPlaying) "Pause" else "Play",
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(if (state.isBackgroundMusicPlaying) "Stop Background Music" else "Start Background Music")
                     }
 

@@ -37,6 +37,7 @@ data object DeveloperPortalScreen : Screen {
         val profileUpdateResultMessage: String? = null,
         val soundsLoaded: Boolean = false,
         val soundSampleIds: Map<String, Int> = emptyMap(),
+        val totalSessionCount: Int = 0,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -70,6 +71,8 @@ data object DeveloperPortalScreen : Screen {
         data class ForceUnlockBadge(
             val badgeId: String,
         ) : Event
+
+        data object UnlockAllBadges : Event
 
         data object PlaySuccessSound : Event
 
