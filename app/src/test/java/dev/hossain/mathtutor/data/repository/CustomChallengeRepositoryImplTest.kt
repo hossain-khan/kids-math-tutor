@@ -301,7 +301,8 @@ class FakeCustomChallengeDao : CustomChallengeDao {
 
     override fun observeActiveChallenges(): Flow<List<CustomChallengeWithDetails>> = activeChallenges
 
-    override fun getAllChallenges(): Flow<List<CustomChallengeWithDetails>> = activeChallenges.map { it.filter { detail -> !detail.challenge.isArchived } }
+    override fun getAllChallenges(): Flow<List<CustomChallengeWithDetails>> =
+        activeChallenges.map { it.filter { detail -> !detail.challenge.isArchived } }
 
     override suspend fun getChallengeWithDetails(id: String): CustomChallengeWithDetails? = challengeById[id]
 
