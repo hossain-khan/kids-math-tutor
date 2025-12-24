@@ -210,6 +210,18 @@ class AudioHapticSettingsPresenterTest {
             analyticsEnabledFlow.value = enabled
         }
 
+        private val gameTrialAttemptsFlows = mutableMapOf<dev.hossain.mathtutor.domain.model.Game, MutableStateFlow<Int>>()
+
+        override fun getGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Flow<Int> =
+            gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
+
+        override suspend fun incrementGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Int {
+            val flow = gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
+            val newCount = (flow.value + 1).coerceAtMost(3)
+            flow.value = newCount
+            return newCount
+        }
+
         // Test helper methods
         fun setSoundEffectsEnabledSync(enabled: Boolean) {
             soundEffectsEnabledFlow.value = enabled

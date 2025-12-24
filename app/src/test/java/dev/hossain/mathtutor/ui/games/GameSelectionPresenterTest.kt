@@ -154,4 +154,54 @@ class GameSelectionPresenterTest {
         assertThat(Game.MATH_RACE.unlockRequirement < Game.MEMORY_MATCH.unlockRequirement).isTrue()
         assertThat(Game.MEMORY_MATCH.unlockRequirement < Game.NUMBER_SEQUENCE.unlockRequirement).isTrue()
     }
+
+    // ==================== Trial Feature Tests ====================
+
+    @Test
+    fun `GameInfo includes trial attempts for locked games`() {
+        // Create GameInfo for a locked game with trial attempts
+        val gameInfo =
+            GameSelectionScreen.GameInfo(
+                game = Game.MATH_RACE,
+                isUnlocked = false,
+                personalBest = 0,
+                totalPlays = 0,
+                trialAttempts = 2,
+            )
+
+        assertThat(gameInfo.trialAttempts).isEqualTo(2)
+        assertThat(gameInfo.isUnlocked).isFalse()
+    }
+
+    @Test
+    fun `GameInfo defaults to zero trial attempts`() {
+        // When creating GameInfo without specifying trialAttempts
+        val gameInfo =
+            GameSelectionScreen.GameInfo(
+                game = Game.MEMORY_MATCH,
+                isUnlocked = true,
+                personalBest = 15,
+                totalPlays = 3,
+            )
+
+        assertThat(gameInfo.trialAttempts).isEqualTo(0)
+    }
+
+    @Test
+    fun `PlayGame event includes isTrial flag`() {
+        // Create PlayGame event with trial flag
+        val trialEvent = GameSelectionScreen.Event.PlayGame(Game.MATH_RACE, isTrial = true)
+        val regularEvent = GameSelectionScreen.Event.PlayGame(Game.MATH_RACE, isTrial = false)
+
+        assertThat(trialEvent.isTrial).isTrue()
+        assertThat(regularEvent.isTrial).isFalse()
+    }
+
+    @Test
+    fun `PlayGame event defaults to non-trial`() {
+        // When creating PlayGame event without specifying isTrial
+        val event = GameSelectionScreen.Event.PlayGame(Game.NUMBER_SEQUENCE)
+
+        assertThat(event.isTrial).isFalse()
+    }
 }
