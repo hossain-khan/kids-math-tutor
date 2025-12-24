@@ -30,7 +30,7 @@ val LightOnErrorContainer = Color(0xFFC62828) // Dark Red text
 // Background and Surface: Clean and bright
 val LightBackground = Color(0xFFFFFBFE) // Off-white
 val LightOnBackground = Color(0xFF1C1B1F) // Dark gray
-val LightSurface = Color(0xFFFFFFFF) // Pure white
+val LightSurface = Color(0xFFFFFBFE) // Off-white (consistent with background)
 val LightOnSurface = Color(0xFF1C1B1F) // Dark gray
 
 val LightSurfaceVariant = Color(0xFFF5F5F5) // Very light gray
@@ -71,5 +71,5 @@ val DarkOnSurface = Color(0xFFE6E1E5) // Light gray
 
 val DarkSurfaceVariant = Color(0xFF2C2C2C) // Medium gray
 val DarkOnSurfaceVariant = Color(0xFFBDBDBD) // Light gray
-val DarkOutline = Color(0xFF757575) // Gray
-val DarkOutlineVariant = Color(0xFF424242) // Dark gray
+val DarkOutline = Color(0xFF9E9E9E) // Lighter gray for dark mode
+val DarkOutlineVariant = Color(0xFF616161) // Medium gray
