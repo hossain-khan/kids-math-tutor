@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2025-12-24
+
 ### Changed
 - **Release Build Optimization** - Android app now uses R8 code minification for release builds
   - Enabled minification (`isMinifyEnabled = true`) for production APK/bundle
@@ -1547,7 +1549,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.9.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.10.0...HEAD
+[1.10.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.9.0...1.10.0
 [1.9.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.6.0...1.7.0
