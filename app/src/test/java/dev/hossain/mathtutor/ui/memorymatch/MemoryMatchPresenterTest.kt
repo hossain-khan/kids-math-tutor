@@ -235,8 +235,12 @@ class MemoryMatchPresenterTest {
                         )
                     }
 
-                    else -> {
-                        throw IllegalStateException("Unexpected operation")
+                    // Only ADDITION and SUBTRACTION are used in this test
+                    MathOperation.MULTIPLICATION,
+                    MathOperation.DIVISION,
+                    MathOperation.MIXED,
+                    -> {
+                        throw IllegalStateException("Operation $operation not supported in test")
                     }
                 }
             problems.add(problem)
