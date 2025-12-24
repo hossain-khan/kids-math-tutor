@@ -16,9 +16,14 @@ import kotlinx.parcelize.Parcelize
  * - 60-second timer with 10-second warning
  * - Instant feedback on answers
  * - Score tracking and personal best
+ *
+ * @property isTrialMode Whether this game is being played in trial mode (locked game).
+ *                       When true, no badges will be awarded and progress may not be saved.
  */
 @Parcelize
-data object MathRaceScreen : Screen {
+data class MathRaceScreen(
+    val isTrialMode: Boolean = false,
+) : Screen {
     /**
      * Represents the current state of the game.
      */

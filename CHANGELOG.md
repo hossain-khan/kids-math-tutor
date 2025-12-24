@@ -15,12 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Trial counts are tracked per game using DataStore preferences
   - Improves first-time user experience by letting kids explore games before unlocking
   - Trial attempts counter displayed on locked game cards (e.g., "Try this game 2 times before unlocking!")
+  - **Trial Mode Badge Restriction**: Badges are NOT awarded when playing games in trial mode
+    - Game screens (Math Race, Memory Match, Number Sequence) now accept `isTrialMode` parameter
+    - Badge checking is skipped when `isTrialMode = true`
+    - Comprehensive Timber logging added around badge logic for debugging
+    - Ensures badges are only earned through unlocked gameplay
+
 ### Fixed
 - **Background Music UI Sync** - Fixed background music toggle state synchronization between home screen and settings
   - Home screen now reads music state from UserPreferences instead of local state
   - Music toggle on home screen now persists state to UserPreferences
   - MainActivity now checks user preference before starting background music on app launch
   - Ensures consistent music state across all screens
+
 ### Added
 - **Device Audio Suppression Detection** - Audio now respects device ringer mode (silent/vibrate)
   - App automatically detects when device is in silent or vibrate mode

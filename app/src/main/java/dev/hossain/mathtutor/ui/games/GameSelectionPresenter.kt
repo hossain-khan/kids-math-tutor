@@ -181,18 +181,18 @@ class GameSelectionPresenter
 
                         when (event.game) {
                             Game.MATH_RACE -> {
-                                Timber.d("GameSelection: Navigating to MathRaceScreen")
-                                navigator.goTo(MathRaceScreen)
+                                Timber.d("GameSelection: Navigating to MathRaceScreen (trial=${event.isTrial})")
+                                navigator.goTo(MathRaceScreen(isTrialMode = event.isTrial))
                             }
 
                             Game.MEMORY_MATCH -> {
-                                Timber.d("GameSelection: Navigating to MemoryMatchScreen")
-                                navigator.goTo(MemoryMatchScreen)
+                                Timber.d("GameSelection: Navigating to MemoryMatchScreen (trial=${event.isTrial})")
+                                navigator.goTo(MemoryMatchScreen(isTrialMode = event.isTrial))
                             }
 
                             Game.NUMBER_SEQUENCE -> {
-                                Timber.d("GameSelection: Navigating to NumberSequenceScreen")
-                                navigator.goTo(NumberSequenceScreen)
+                                Timber.d("GameSelection: Navigating to NumberSequenceScreen (trial=${event.isTrial})")
+                                navigator.goTo(NumberSequenceScreen(isTrialMode = event.isTrial))
                             }
                         }
                     }
