@@ -101,25 +101,19 @@ describe('downloadJson', () => {
 describe('copyToClipboard', () => {
   it('should copy text to clipboard successfully', async () => {
     const writeTextMock = vi.fn().mockResolvedValue(undefined)
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: writeTextMock,
-      },
-    })
+    vi.spyOn(navigator.clipboard, 'writeText').mockImplementation(writeTextMock)
 
     const result = await copyToClipboard('test text')
     
     expect(writeTextMock).toHaveBeenCalledWith('test text')
     expect(result).toBe(true)
+    
+    vi.restoreAllMocks()
   })
 
   it('should return false on clipboard error', async () => {
     const writeTextMock = vi.fn().mockRejectedValue(new Error('Access denied'))
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: writeTextMock,
-      },
-    })
+    vi.spyOn(navigator.clipboard, 'writeText').mockImplementation(writeTextMock)
 
     // Mock console.error to avoid test output noise
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -129,20 +123,18 @@ describe('copyToClipboard', () => {
     expect(result).toBe(false)
     expect(consoleErrorSpy).toHaveBeenCalled()
     
-    consoleErrorSpy.mockRestore()
+    vi.restoreAllMocks()
   })
 
   it('should handle empty strings', async () => {
     const writeTextMock = vi.fn().mockResolvedValue(undefined)
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: writeTextMock,
-      },
-    })
+    vi.spyOn(navigator.clipboard, 'writeText').mockImplementation(writeTextMock)
 
     const result = await copyToClipboard('')
     
     expect(writeTextMock).toHaveBeenCalledWith('')
     expect(result).toBe(true)
+    
+    vi.restoreAllMocks()
   })
 })
