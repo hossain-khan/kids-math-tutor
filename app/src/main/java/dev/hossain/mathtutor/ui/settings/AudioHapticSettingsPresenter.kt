@@ -63,6 +63,9 @@ class AudioHapticSettingsPresenter
             val highContrastEnabled by userPreferencesRepository.isHighContrastEnabled.collectAsState(initial = false)
             val largeTextEnabled by userPreferencesRepository.isLargeTextEnabled.collectAsState(initial = false)
 
+            // Check if device is in silent/vibrate mode
+            val isDeviceAudioSuppressed = audioService.isDeviceAudioSuppressed()
+
             // Log state changes in LaunchedEffect to avoid recomposition spam
             LaunchedEffect(soundEffectsEnabled, backgroundMusicEnabled, hapticsEnabled, volume, highContrastEnabled, largeTextEnabled) {
                 Timber.d(
@@ -78,6 +81,7 @@ class AudioHapticSettingsPresenter
                 volume = volume,
                 highContrastEnabled = highContrastEnabled,
                 largeTextEnabled = largeTextEnabled,
+                isDeviceAudioSuppressed = isDeviceAudioSuppressed,
             ) { event ->
                 when (event) {
                     is AudioHapticSettingsScreen.Event.ToggleSoundEffects -> {

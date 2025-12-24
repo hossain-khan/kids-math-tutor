@@ -80,6 +80,11 @@ fun AudioHapticSettingsUi(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
+            // Device audio suppression warning (only show if device is in silent/vibrate mode)
+            if (state.isDeviceAudioSuppressed) {
+                DeviceAudioSuppressionWarning()
+            }
+
             // Sound Effects section
             SoundEffectsSection(
                 enabled = state.soundEffectsEnabled,
@@ -138,6 +143,47 @@ fun AudioHapticSettingsUi(
                 onToggleLargeText = { enabled ->
                     state.eventSink(AudioHapticSettingsScreen.Event.ToggleLargeText(enabled))
                 },
+            )
+        }
+    }
+}
+
+/**
+ * Device audio suppression warning card.
+ * Displayed when device is in silent or vibrate mode.
+ */
+@Composable
+private fun DeviceAudioSuppressionWarning(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+            ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 2.dp,
+            ),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = "🔕 Device Audio Suppressed",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+            )
+
+            Text(
+                text =
+                    "Your device is in silent or vibrate mode. Audio from this app will not play. " +
+                        "Change your device's ringer mode to normal to hear sounds.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer,
             )
         }
     }
@@ -463,6 +509,7 @@ private fun AudioHapticSettingsUiPreview() {
                     volume = 0.7f,
                     highContrastEnabled = false,
                     largeTextEnabled = false,
+                    isDeviceAudioSuppressed = false,
                     eventSink = {},
                 ),
         )
@@ -482,6 +529,7 @@ private fun AudioHapticSettingsUiAllDisabledPreview() {
                     volume = 0.5f,
                     highContrastEnabled = true,
                     largeTextEnabled = true,
+                    isDeviceAudioSuppressed = false,
                     eventSink = {},
                 ),
         )
@@ -501,6 +549,27 @@ private fun AudioHapticSettingsUiDarkPreview() {
                     volume = 0.8f,
                     highContrastEnabled = false,
                     largeTextEnabled = false,
+                    isDeviceAudioSuppressed = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AudioHapticSettingsUiWithSuppressionWarningPreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = true,
+                    hapticsEnabled = true,
+                    volume = 0.8f,
+                    highContrastEnabled = false,
+                    largeTextEnabled = false,
+                    isDeviceAudioSuppressed = true,
                     eventSink = {},
                 ),
         )

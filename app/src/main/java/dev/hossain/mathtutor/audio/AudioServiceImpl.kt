@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.audio
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.SoundPool
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
@@ -190,6 +191,12 @@ class AudioServiceImpl
                 return
             }
 
+            // Check if device is in silent or vibrate mode
+            if (isDeviceAudioSuppressed()) {
+                Timber.d("[AudioService] Sound skipped (device in silent/vibrate mode)")
+                return
+            }
+
             // Ensure SoundPool is initialized (this will trigger loadSounds())
             val sp = soundPool
 
@@ -370,6 +377,13 @@ class AudioServiceImpl
 
             // Update ExoPlayer volume if playing
             exoPlayer?.setVolume(this.volume * musicVolumeMultiplier)
+        }
+
+        override fun isDeviceAudioSuppressed(): Boolean {
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            return audioManager?.ringerMode?.let { mode ->
+                mode == AudioManager.RINGER_MODE_SILENT || mode == AudioManager.RINGER_MODE_VIBRATE
+            } ?: false
         }
 
         // ==================== Lifecycle ====================

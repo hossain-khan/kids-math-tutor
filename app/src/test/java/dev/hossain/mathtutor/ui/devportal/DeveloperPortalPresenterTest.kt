@@ -374,6 +374,8 @@ class DeveloperPortalPresenterTest {
 
         override fun setVolume(volume: Float) {}
 
+        override fun isDeviceAudioSuppressed(): Boolean = false
+
         override fun release() {}
     }
 
