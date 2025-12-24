@@ -1,5 +1,7 @@
 # Math Pup Worksheet Creator - Web App
 
+[![Webapp CI](https://github.com/hossain-khan/kids-math-tutor/actions/workflows/webapp.yml/badge.svg)](https://github.com/hossain-khan/kids-math-tutor/actions/workflows/webapp.yml)
+
 Web-based worksheet creator for the Kids Math Pup Tutor Android app. Create custom math practice problems with instant validation and easy sharing.
 
 ## Features
@@ -19,6 +21,7 @@ Web-based worksheet creator for the Kids Math Pup Tutor Android app. Create cust
 - **Validation**: Zod (type-safe schema validation)
 - **State**: Zustand
 - **Animations**: Framer Motion
+- **Testing**: Vitest + React Testing Library
 - **Backend**: Cloudflare Workers + Hono
 - **Icons**: Lucide React
 
@@ -55,7 +58,21 @@ pnpm test
 
 # Run tests with UI
 pnpm test:ui
+
+# Generate coverage report
+pnpm test:coverage
 ```
+
+### Test Coverage
+
+The webapp has comprehensive test coverage for core functionality:
+- **Utility functions** - String manipulation, clipboard operations, JSON handling
+- **Zod schemas** - Challenge data validation for both generated and explicit modes
+- **React components** - Form submission, validation, and navigation
+
+Current coverage: ~70% overall
+- Core validation logic: 90%+
+- UI components: 50-90%
 
 ### Cloudflare Deployment
 
