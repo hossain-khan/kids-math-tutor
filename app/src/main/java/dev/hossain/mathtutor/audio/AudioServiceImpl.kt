@@ -65,8 +65,8 @@ class AudioServiceImpl
         // Sound load listeners (dev UI can register to receive updates)
         private val soundLoadListeners: MutableList<(loaded: Boolean, sampleIds: Map<String, Int>) -> Unit> = mutableListOf()
 
-        // Background music volume is 30% of main volume
-        private val musicVolumeMultiplier: Float = 0.3f
+        // Background music volume is 60% of main volume
+        private val musicVolumeMultiplier: Float = AudioConstants.BACKGROUND_MUSIC_VOLUME_MULTIPLIER
 
         // Track whether SoundPool has been initialized to avoid unnecessary initialization in release()
         // Note: This flag is set within the lazy initializer. In a single-threaded context (main thread),
