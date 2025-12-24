@@ -75,7 +75,7 @@ class GameSelectionPresenter
                         totalProblemsSolved = 0,
                     ),
             ) {
-                // Combine all flows including trial attempts
+                // Combine all flows: session stats (1), game stats (6), and trial attempts (3) = 10 total flows
                 // First combine session stats with Math Race data
                 combine(
                     sessionRepository.getOverallStats(),

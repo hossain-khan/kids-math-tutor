@@ -483,8 +483,7 @@ class DeveloperPortalPresenterTest {
 
         private val gameTrialAttemptsFlows = mutableMapOf<Game, MutableStateFlow<Int>>()
 
-        override fun getGameTrialAttempts(game: Game): Flow<Int> =
-            gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
+        override fun getGameTrialAttempts(game: Game): Flow<Int> = gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
 
         override suspend fun incrementGameTrialAttempts(game: Game): Int {
             val flow = gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
