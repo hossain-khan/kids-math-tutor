@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2025-12-24
+
 ### Changed
 - **Warning Sound Timing** - Changed countdown tick warning from 10 to 7 seconds
   - Adjusted to match 7-second `countdown_tick_fast` audio duration
@@ -22,7 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ensures safer, more child-friendly audio experience
 - **Audio Constants Refactoring** - Created centralized `AudioConstants` object
   - Introduced `DEFAULT_SOUND_EFFECTS_VOLUME` constant to eliminate hardcoded 0.3f values
-  - Used consistently across AudioServiceImpl, UserPreferencesRepository, and test files
+  - Introduced `BACKGROUND_MUSIC_VOLUME_MULTIPLIER` constant for music volume control
+  - Increased background music volume from 30% to 60% of sound effects volume
+  - Background music now plays at ~18% of max volume (was ~9%) for better audio balance
+  - Used consistently across AudioServiceImpl and test files
   - Improves maintainability and single source of truth for audio defaults
 
 ### Fixed
@@ -1583,7 +1588,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.10.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.11.0...HEAD
+[1.11.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.9.0...1.10.0
 [1.9.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.7.0...1.8.0
