@@ -16,9 +16,14 @@ import kotlinx.parcelize.Parcelize
  * - Flip two cards at a time
  * - Match problems with answers
  * - Track moves and time
+ *
+ * @property isTrialMode Whether this game is being played in trial mode (locked game).
+ *                       When true, no badges will be awarded and progress may not be saved.
  */
 @Parcelize
-data object MemoryMatchScreen : Screen {
+data class MemoryMatchScreen(
+    val isTrialMode: Boolean = false,
+) : Screen {
     /**
      * Represents a card in the memory match game.
      *

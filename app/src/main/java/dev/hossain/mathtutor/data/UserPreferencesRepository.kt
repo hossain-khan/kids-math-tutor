@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import dev.hossain.mathtutor.audio.AudioConstants
 import dev.hossain.mathtutor.data.local.userPreferencesDataStore
 import dev.hossain.mathtutor.di.ApplicationContext
+import dev.hossain.mathtutor.domain.model.Game
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -47,6 +49,23 @@ interface UserPreferencesRepository {
     val isAnalyticsEnabled: Flow<Boolean>
 
     suspend fun setAnalyticsEnabled(enabled: Boolean)
+
+    /**
+     * Gets the number of trial attempts used for a specific game.
+     * Trial attempts allow kids to try locked games up to 3 times before unlocking.
+     *
+     * @param game The game to get trial attempts for
+     * @return Flow of trial attempts count (0-3)
+     */
+    fun getGameTrialAttempts(game: Game): Flow<Int>
+
+    /**
+     * Increments the trial attempt count for a specific game.
+     *
+     * @param game The game to increment trial attempts for
+     * @return The new trial attempt count after incrementing
+     */
+    suspend fun incrementGameTrialAttempts(game: Game): Int
 }
 
 @SingleIn(AppScope::class)
@@ -65,6 +84,9 @@ class UserPreferencesRepositoryImpl
             val HIGH_CONTRAST_ENABLED = booleanPreferencesKey("high_contrast_enabled")
             val LARGE_TEXT_ENABLED = booleanPreferencesKey("large_text_enabled")
             val ANALYTICS_ENABLED = booleanPreferencesKey("analytics_enabled")
+
+            // Game trial attempts keys (max 3 trials per game)
+            fun gameTrialAttempts(game: Game) = intPreferencesKey("game_trial_${game.name}")
         }
 
         override val isOnboardingCompleted: Flow<Boolean> =
@@ -161,5 +183,21 @@ class UserPreferencesRepositoryImpl
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.ANALYTICS_ENABLED] = enabled
             }
+        }
+
+        override fun getGameTrialAttempts(game: Game): Flow<Int> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.gameTrialAttempts(game)] ?: 0
+            }
+
+        override suspend fun incrementGameTrialAttempts(game: Game): Int {
+            var newCount = 0
+            context.userPreferencesDataStore.edit { preferences ->
+                val currentCount = preferences[PreferencesKeys.gameTrialAttempts(game)] ?: 0
+                newCount = (currentCount + 1).coerceAtMost(3) // Max 3 trials
+                preferences[PreferencesKeys.gameTrialAttempts(game)] = newCount
+                Timber.d("UserPreferencesRepository: Incremented trial attempts for ${game.name} to $newCount")
+            }
+            return newCount
         }
     }

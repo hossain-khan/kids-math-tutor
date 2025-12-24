@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.devportal
 import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.analytics.FakeAnalyticsService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.domain.model.Game
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -480,6 +481,17 @@ class DeveloperPortalPresenterTest {
 
         override suspend fun setLargeTextEnabled(enabled: Boolean) {
             largeTextEnabledFlow.value = enabled
+        }
+
+        private val gameTrialAttemptsFlows = mutableMapOf<Game, MutableStateFlow<Int>>()
+
+        override fun getGameTrialAttempts(game: Game): Flow<Int> = gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
+
+        override suspend fun incrementGameTrialAttempts(game: Game): Int {
+            val flow = gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
+            val newCount = (flow.value + 1).coerceAtMost(3)
+            flow.value = newCount
+            return newCount
         }
     }
 
