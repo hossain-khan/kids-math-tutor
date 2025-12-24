@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.ui.stats
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -145,7 +146,10 @@ fun StatsUi(
                         }
 
                         item {
-                            OverallProgressCards(stats = state.overallStats)
+                            OverallProgressCards(
+                                stats = state.overallStats,
+                                onAccuracyClick = { state.eventSink(StatsScreen.Event.AccuracyClicked) },
+                            )
                         }
 
                         // By Operation Section
@@ -217,6 +221,7 @@ fun StatsUi(
 @Composable
 private fun OverallProgressCards(
     stats: SessionStats,
+    onAccuracyClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -256,7 +261,10 @@ private fun OverallProgressCards(
 
         // Overall Accuracy Card
         Card(
-            modifier = Modifier.weight(1f),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .clickable { onAccuracyClick() },
             colors =
                 CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,

@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.domain.repository
 
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
+import dev.hossain.mathtutor.domain.model.DailyAccuracy
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionStats
@@ -66,6 +67,14 @@ interface SessionRepository {
      * @return Flow of operation-specific statistics
      */
     fun getStatsByOperation(operation: MathOperation): Flow<SessionStats>
+
+    /**
+     * Retrieves daily accuracy statistics for all practice sessions.
+     * Groups sessions by date and calculates accuracy for each day.
+     *
+     * @return Flow of daily accuracy data, sorted by date (most recent first)
+     */
+    fun getDailyAccuracy(): Flow<List<DailyAccuracy>>
 
     /**
      * Deletes all practice sessions from the database.

@@ -122,6 +122,11 @@ class StatsPresenter
                         Timber.d("StatsScreen: Back pressed")
                         navigator.pop()
                     }
+
+                    is StatsScreen.Event.AccuracyClicked -> {
+                        Timber.d("StatsScreen: Accuracy clicked, navigating to details")
+                        navigator.goTo(dev.hossain.mathtutor.ui.stats.accuracydetails.AccuracyDetailsScreen)
+                    }
                 }
             }
         }

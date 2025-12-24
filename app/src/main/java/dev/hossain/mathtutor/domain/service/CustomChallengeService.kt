@@ -84,6 +84,14 @@ interface CustomChallengeService {
     )
 
     /**
+     * Clears all practice sessions for a specific challenge.
+     * This removes the practice history but keeps the challenge itself.
+     *
+     * @param challengeId The unique identifier of the challenge
+     */
+    suspend fun clearChallengeSessions(challengeId: String)
+
+    /**
      * Observes all challenges (including archived).
      * Emits a new list whenever the data changes.
      *

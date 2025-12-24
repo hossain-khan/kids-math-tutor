@@ -7,6 +7,7 @@ import dev.hossain.mathtutor.analytics.UserProperty
 import dev.hossain.mathtutor.data.local.dao.SessionDao
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.data.mapper.SessionMapper
+import dev.hossain.mathtutor.domain.model.DailyAccuracy
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionStats
@@ -18,7 +19,10 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.ZoneId
 
 /**
  * Implementation of [SessionRepository] using Room database.
@@ -126,6 +130,33 @@ class SessionRepositoryImpl
                         sessionCount = sessions.size,
                     )
                 }
+            }
+
+        override fun getDailyAccuracy(): Flow<List<DailyAccuracy>> =
+            sessionDao.getAllSessions().map { sessions ->
+                // Group sessions by date and calculate daily stats
+                sessions
+                    .groupBy { session ->
+                        // Convert Instant to LocalDate in system timezone
+                        session.timestamp.atZone(ZoneId.systemDefault()).toLocalDate()
+                    }.map { (date, daySessions) ->
+                        val totalProblems = daySessions.sumOf { it.totalProblems }
+                        val correctAnswers = daySessions.sumOf { it.correctAnswers }
+                        val accuracy =
+                            if (totalProblems > 0) {
+                                (correctAnswers.toFloat() / totalProblems) * 100f
+                            } else {
+                                0f
+                            }
+
+                        DailyAccuracy(
+                            date = date,
+                            sessionCount = daySessions.size,
+                            totalProblems = totalProblems,
+                            correctAnswers = correctAnswers,
+                            accuracy = accuracy,
+                        )
+                    }.sortedByDescending { it.date } // Most recent first
             }
 
         override suspend fun clearAllSessions() {
