@@ -209,42 +209,54 @@ class GameSelectionPresenterTest {
 
     @Test
     fun `MathRaceScreen defaults to non-trial mode`() {
-        val screen = dev.hossain.mathtutor.ui.mathrace.MathRaceScreen()
+        val screen =
+            dev.hossain.mathtutor.ui.mathrace
+                .MathRaceScreen()
 
         assertThat(screen.isTrialMode).isFalse()
     }
 
     @Test
     fun `MathRaceScreen can be created in trial mode`() {
-        val screen = dev.hossain.mathtutor.ui.mathrace.MathRaceScreen(isTrialMode = true)
+        val screen =
+            dev.hossain.mathtutor.ui.mathrace
+                .MathRaceScreen(isTrialMode = true)
 
         assertThat(screen.isTrialMode).isTrue()
     }
 
     @Test
     fun `MemoryMatchScreen defaults to non-trial mode`() {
-        val screen = dev.hossain.mathtutor.ui.memorymatch.MemoryMatchScreen()
+        val screen =
+            dev.hossain.mathtutor.ui.memorymatch
+                .MemoryMatchScreen()
 
         assertThat(screen.isTrialMode).isFalse()
     }
 
     @Test
     fun `MemoryMatchScreen can be created in trial mode`() {
-        val screen = dev.hossain.mathtutor.ui.memorymatch.MemoryMatchScreen(isTrialMode = true)
+        val screen =
+            dev.hossain.mathtutor.ui.memorymatch
+                .MemoryMatchScreen(isTrialMode = true)
 
         assertThat(screen.isTrialMode).isTrue()
     }
 
     @Test
     fun `NumberSequenceScreen defaults to non-trial mode`() {
-        val screen = dev.hossain.mathtutor.ui.numbersequence.NumberSequenceScreen()
+        val screen =
+            dev.hossain.mathtutor.ui.numbersequence
+                .NumberSequenceScreen()
 
         assertThat(screen.isTrialMode).isFalse()
     }
 
     @Test
     fun `NumberSequenceScreen can be created in trial mode`() {
-        val screen = dev.hossain.mathtutor.ui.numbersequence.NumberSequenceScreen(isTrialMode = true)
+        val screen =
+            dev.hossain.mathtutor.ui.numbersequence
+                .NumberSequenceScreen(isTrialMode = true)
 
         assertThat(screen.isTrialMode).isTrue()
     }
