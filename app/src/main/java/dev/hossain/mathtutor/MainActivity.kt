@@ -103,7 +103,18 @@ class MainActivity
             Timber.d("[MainActivity] onCreate - sharedText: ${if (sharedText != null) "present" else "null"}")
 
             setContent {
-                KidsMathTutorAppTheme {
+                // Load accessibility settings
+                val highContrastEnabled by userPreferencesRepository.isHighContrastEnabled.collectAsState(
+                    initial = false,
+                )
+                val largeTextEnabled by userPreferencesRepository.isLargeTextEnabled.collectAsState(
+                    initial = false,
+                )
+
+                KidsMathTutorAppTheme(
+                    highContrast = highContrastEnabled,
+                    largeText = largeTextEnabled,
+                ) {
                     val isOnboardingCompleted by userPreferencesRepository.isOnboardingCompleted.collectAsState(
                         initial = false,
                     )

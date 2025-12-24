@@ -472,7 +472,7 @@ private fun AudioHapticSettingsUiPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun AudioHapticSettingsUiAllDisabledPreview() {
-    KidsMathTutorAppTheme {
+    KidsMathTutorAppTheme(highContrast = true, largeText = true) {
         AudioHapticSettingsUi(
             state =
                 AudioHapticSettingsScreen.State(
