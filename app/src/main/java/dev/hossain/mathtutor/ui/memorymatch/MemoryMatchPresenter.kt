@@ -142,16 +142,120 @@ class MemoryMatchPresenter
             }
 
             /**
+             * Fallback method to deduplicate problems by removing duplicates based on
+             * answer and problem string, then generating additional problems to reach the target count.
+             */
+            fun deduplicateProblems(problems: List<MathProblem>): List<MathProblem> {
+                val seenAnswers = mutableSetOf<Int>()
+                val seenProblemStrings = mutableSetOf<String>()
+                val uniqueProblems = mutableListOf<MathProblem>()
+
+                // First pass: collect unique problems
+                for (problem in problems) {
+                    val answer = problem.correctAnswer
+                    val problemString = problem.getDisplayString()
+
+                    if (answer !in seenAnswers && problemString !in seenProblemStrings) {
+                        seenAnswers.add(answer)
+                        seenProblemStrings.add(problemString)
+                        uniqueProblems.add(problem)
+                    }
+                }
+
+                // Generate more problems if needed
+                var additionalAttempts = 0
+                val maxAdditionalAttempts = 100
+
+                while (uniqueProblems.size < TOTAL_PAIRS && additionalAttempts < maxAdditionalAttempts) {
+                    val newProblem =
+                        problemGenerator
+                            .generateProblems(
+                                count = 1,
+                                operation = MathOperation.MIXED,
+                                gradeLevel = gradeLevel,
+                            ).first()
+
+                    val answer = newProblem.correctAnswer
+                    val problemString = newProblem.getDisplayString()
+
+                    if (answer !in seenAnswers && problemString !in seenProblemStrings) {
+                        seenAnswers.add(answer)
+                        seenProblemStrings.add(problemString)
+                        uniqueProblems.add(newProblem)
+                    }
+
+                    additionalAttempts++
+                }
+
+                Timber.d(
+                    "[MemoryMatch] Deduplication complete: ${uniqueProblems.size} unique problems",
+                )
+
+                return uniqueProblems
+            }
+
+            /**
+             * Generates problems with unique answers for the memory match game.
+             * Ensures that no two problems have the same answer or problem string.
+             *
+             * @return List of problems where all answers and problem strings are unique
+             */
+            fun generateProblemsWithUniqueAnswers(): List<MathProblem> {
+                val maxAttempts = 100 // Prevent infinite loop
+                var attempts = 0
+                var problems: List<MathProblem>
+
+                do {
+                    problems =
+                        problemGenerator.generateProblems(
+                            count = TOTAL_PAIRS,
+                            operation = MathOperation.MIXED,
+                            gradeLevel = gradeLevel,
+                        )
+
+                    val answers = problems.map { it.correctAnswer }
+                    val problemStrings = problems.map { it.getDisplayString() }
+
+                    // Check for uniqueness
+                    val hasUniqueAnswers = answers.size == answers.toSet().size
+                    val hasUniqueProblemStrings = problemStrings.size == problemStrings.toSet().size
+
+                    if (hasUniqueAnswers && hasUniqueProblemStrings) {
+                        Timber.d(
+                            "[MemoryMatch] Generated $TOTAL_PAIRS problems with unique answers " +
+                                "and problem strings in ${attempts + 1} attempt(s)",
+                        )
+                        return problems
+                    }
+
+                    attempts++
+                    Timber.d(
+                        "[MemoryMatch] Attempt $attempts: Found duplicate answers or problem strings, " +
+                            "regenerating...",
+                    )
+                } while (attempts < maxAttempts)
+
+                // Fallback: If we can't generate unique answers after max attempts,
+                // manually filter to ensure uniqueness
+                Timber.w(
+                    "[MemoryMatch] Could not generate unique problems after $maxAttempts attempts, " +
+                        "using fallback deduplication",
+                )
+                return deduplicateProblems(problems)
+            }
+
+            /**
              * Generates cards for the memory match game.
-             * Creates 8 problem-answer pairs and shuffles them into a 4×4 grid.
+             * Creates 8 problem-answer pairs with unique answers and problem strings,
+             * then shuffles them into a 4×4 grid.
+             *
+             * This ensures that:
+             * 1. No two problems have the same answer (e.g., "2+3=5" and "1+4=5")
+             * 2. No two cards show the same problem string
+             * This prevents confusion where a card might match multiple questions.
              */
             fun generateCards(): List<MemoryMatchScreen.Card> {
-                val problems =
-                    problemGenerator.generateProblems(
-                        count = TOTAL_PAIRS,
-                        operation = MathOperation.MIXED,
-                        gradeLevel = gradeLevel,
-                    )
+                val problems = generateProblemsWithUniqueAnswers()
 
                 val cardList = mutableListOf<MemoryMatchScreen.Card>()
                 problems.forEachIndexed { index, problem ->
