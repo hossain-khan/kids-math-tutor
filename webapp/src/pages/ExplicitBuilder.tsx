@@ -221,6 +221,16 @@ export default function ExplicitBuilder() {
 
         {/* Intro Card */}
         <Card className="mb-6 bg-gradient-to-br from-secondary-50 to-purple-50 border-2 border-secondary-200 p-6">
+          <style>{`
+            @keyframes pulse-glow {
+              0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+              50% { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
+            }
+            .template-button-pulse {
+              animation: pulse-glow 2s ease-out forwards;
+            }
+          `}</style>
+
           <div className="flex flex-col gap-4">
             <div className="flex items-start gap-4">
               <div className="text-3xl flex-shrink-0">✏️</div>
@@ -235,14 +245,27 @@ export default function ExplicitBuilder() {
               </div>
             </div>
 
-            {/* Templates inside Intro Card */}
-            <TemplateSection
-              templates={explicitTemplates}
-              onTemplateSelect={handleTemplateSelect}
-              isExpanded={isTemplateExpanded}
-              onToggle={setIsTemplateExpanded}
-              colorScheme="secondary"
-            />
+            {/* Templates inside Intro Card - with attention wrapper */}
+            <div className="template-button-pulse rounded-lg">
+              <TemplateSection
+                templates={explicitTemplates}
+                onTemplateSelect={handleTemplateSelect}
+                isExpanded={isTemplateExpanded}
+                onToggle={setIsTemplateExpanded}
+                colorScheme="secondary"
+              />
+            </div>
+
+            {/* Quick tip when collapsed */}
+            {!isTemplateExpanded && (
+              <div className="text-xs text-secondary-700 bg-secondary-100 rounded-lg px-3 py-2 flex items-center gap-2">
+                <span>💡</span>
+                <span>
+                  <strong>Pro Tip:</strong> Use templates to quickly create
+                  problem sets!
+                </span>
+              </div>
+            )}
           </div>
         </Card>
 

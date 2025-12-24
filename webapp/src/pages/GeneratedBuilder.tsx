@@ -141,6 +141,16 @@ export default function GeneratedBuilder() {
 
         {/* Intro Card */}
         <Card className="mb-6 bg-gradient-to-br from-primary-50 to-blue-50 border-2 border-primary-200 p-6">
+          <style>{`
+            @keyframes pulse-glow {
+              0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+              50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+            }
+            .template-button-pulse {
+              animation: pulse-glow 2s ease-out forwards;
+            }
+          `}</style>
+
           <div className="flex flex-col gap-4">
             <div className="flex items-start gap-4">
               <div className="text-3xl flex-shrink-0">✨</div>
@@ -155,13 +165,26 @@ export default function GeneratedBuilder() {
               </div>
             </div>
 
-            {/* Templates inside Intro Card */}
-            <TemplateSection
-              templates={generatedTemplates}
-              onTemplateSelect={handleTemplateSelect}
-              isExpanded={isTemplateExpanded}
-              onToggle={setIsTemplateExpanded}
-            />
+            {/* Templates inside Intro Card - with attention wrapper */}
+            <div className="template-button-pulse rounded-lg">
+              <TemplateSection
+                templates={generatedTemplates}
+                onTemplateSelect={handleTemplateSelect}
+                isExpanded={isTemplateExpanded}
+                onToggle={setIsTemplateExpanded}
+              />
+            </div>
+
+            {/* Quick tip when collapsed */}
+            {!isTemplateExpanded && (
+              <div className="text-xs text-primary-700 bg-primary-100 rounded-lg px-3 py-2 flex items-center gap-2">
+                <span>💡</span>
+                <span>
+                  <strong>Pro Tip:</strong> Use templates to instantly set up
+                  problem rules!
+                </span>
+              </div>
+            )}
           </div>
         </Card>
 
