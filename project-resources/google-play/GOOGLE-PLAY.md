@@ -103,8 +103,10 @@ Download Kids Math Pup Tutor today and watch your child fall in love with math! 
 
 ### App Icon
 - **Size**: 512 x 512 px
-- **Format**: PNG (32-bit with alpha)
-- **Location**: `app/src/main/res/mipmap-xxxhdpi/ic_launcher.png`
+- **Format**: WebP (adaptive)
+- **Location**: `app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp`
+- **Round Icon**: `app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp`
+- **Foreground**: `app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp`
 
 ### Feature Graphic
 - **Size**: 1024 x 500 px
@@ -201,12 +203,13 @@ Consider applying for Google Play's Teacher Approved badge:
 ## Technical Information
 
 ### Version Information
-- **Version Name**: See `app/build.gradle.kts` → `versionName`
-- **Version Code**: See `app/build.gradle.kts` → `versionCode`
+- **Version Name**: 1.9.0
+- **Version Code**: 10
 
 ### Compatibility
 - **Minimum SDK**: 28 (Android 9.0 Pie)
-- **Target SDK**: 34 (Android 14)
+- **Target SDK**: 36 (Android 15)
+- **Compiled SDK**: 36
 - **Supported Devices**: Phones, Tablets
 - **Supported Architectures**: arm64-v8a, armeabi-v7a, x86_64
 
@@ -215,10 +218,11 @@ Consider applying for Google Play's Teacher Approved badge:
 
 ### Permissions
 ```xml
-<!-- No dangerous permissions required -->
-<uses-permission android:name="android.permission.INTERNET" />  <!-- For Firebase Analytics -->
+<!-- Permissions used by the app -->
 <uses-permission android:name="android.permission.VIBRATE" />   <!-- For haptic feedback -->
 ```
+
+**Note**: Internet permission not required. Firebase services are optional and can be disabled in Settings.
 
 ---
 
@@ -304,6 +308,9 @@ Consider localizing for broader reach:
 - German (de)
 - Portuguese (pt-BR)
 - Chinese Simplified (zh-CN)
+- Chinese Traditional (zh-TW)
+- Japanese (ja)
+- Korean (ko)
 
 ---
 
