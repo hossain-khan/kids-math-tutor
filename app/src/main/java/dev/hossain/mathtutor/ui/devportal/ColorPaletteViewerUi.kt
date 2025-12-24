@@ -174,7 +174,12 @@ private fun ColorSwatchItem(
         ) {
             if (colorEntry.isDarkModeVariant) {
                 Text(
-                    text = "🌙",
+                    text = "🌒",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            } else {
+                Text(
+                    text = "🌔",
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
