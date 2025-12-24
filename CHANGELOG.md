@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Accessibility Settings Application** - High contrast and large text modes now fully functional
-  - High contrast color schemes for both light and dark modes (black on white / white on black)
+  - Enhanced Material 3 high contrast color schemes (dark & light) maintaining WCAG AAA compliance
+  - Dark mode: Vivid yellow/bright blue/green on dark backgrounds (4.5:1+ text contrast)
+  - Light mode: Deep blue/red/teal colors with white text (4.5:1+ text contrast)
+  - UI remains fully usable with proper component contrast (3:1+ minimum)
   - Text scaling (1.3x) for large text mode across all Material 3 typography styles
   - Accessibility settings load from UserPreferencesRepository and apply app-wide in Theme
   - Both features can be toggled independently and work together
