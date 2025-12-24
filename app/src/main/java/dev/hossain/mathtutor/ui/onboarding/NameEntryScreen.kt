@@ -1,17 +1,22 @@
 package dev.hossain.mathtutor.ui.onboarding
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +32,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,8 +47,10 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuitx.effects.LaunchedImpressionEffect
+import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
@@ -109,6 +120,7 @@ class NameEntryPresenter
         @Assisted private val screen: NameEntryScreen,
         @Assisted private val navigator: Navigator,
         private val userProfileRepository: UserProfileRepository,
+        private val userPreferencesRepository: UserPreferencesRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<NameEntryScreen.State> {
         @CircuitInject(NameEntryScreen::class, AppScope::class)
@@ -158,6 +170,8 @@ class NameEntryPresenter
                                     adaptiveDifficultyEnabled = true,
                                 ),
                             )
+                            // Mark onboarding as completed
+                            userPreferencesRepository.setOnboardingCompleted(true)
                             Timber.d("NameEntry: Profile saved (skipped), navigating to Home")
                             navigator.resetRoot(HomeScreen)
                         }
@@ -181,6 +195,8 @@ class NameEntryPresenter
                                     adaptiveDifficultyEnabled = true,
                                 ),
                             )
+                            // Mark onboarding as completed
+                            userPreferencesRepository.setOnboardingCompleted(true)
                             Timber.d("NameEntry: Profile saved, navigating to Home")
                             navigator.resetRoot(HomeScreen)
                         }
@@ -212,73 +228,141 @@ fun NameEntryUi(
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(systemBarsPadding)
-                    .padding(24.dp)
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(
-                text = "What's your name? 🐶",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "(Optional - we'll cheer for you!)",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = state.name,
-                onValueChange = { state.eventSink(NameEntryScreen.Event.NameChanged(it)) },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Your Name") },
-                placeholder = { Text("Enter your name") },
-                singleLine = true,
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Buttons Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            // Hero image with gradient overlays
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+                        .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
             ) {
-                TextButton(
-                    onClick = { state.eventSink(NameEntryScreen.Event.SkipClicked) },
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                ) {
-                    Text(
-                        text = "Skip",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.hero_onboarding_name_entry),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                )
 
-                Button(
-                    onClick = { state.eventSink(NameEntryScreen.Event.ContinueClicked) },
+                // Gradient overlay at top (20%)
+                Box(
                     modifier =
                         Modifier
-                            .weight(1f)
-                            .height(56.dp),
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.2f)
+                            .align(Alignment.TopCenter)
+                            .background(
+                                brush =
+                                    Brush.verticalGradient(
+                                        colors =
+                                            listOf(
+                                                MaterialTheme.colorScheme.surface,
+                                                MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                            ),
+                                    ),
+                            ),
+                )
+
+                // Gradient overlay at bottom (20%)
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.2f)
+                            .align(Alignment.BottomCenter)
+                            .background(
+                                brush =
+                                    Brush.verticalGradient(
+                                        colors =
+                                            listOf(
+                                                MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                                MaterialTheme.colorScheme.surface,
+                                            ),
+                                    ),
+                            ),
+                )
+            }
+
+            Column(
+                modifier =
+                    Modifier
+                        .padding(systemBarsPadding)
+                        .padding(24.dp)
+                        .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Text(
+                    text = "What's your name? 🐶",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.ExtraBold,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "(Optional - we'll cheer for you!)",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                OutlinedTextField(
+                    value = state.name,
+                    onValueChange = { state.eventSink(NameEntryScreen.Event.NameChanged(it)) },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(80.dp),
+                    label = { Text("Your Name", style = MaterialTheme.typography.titleMedium) },
+                    placeholder = { Text("Enter your name", style = MaterialTheme.typography.titleMedium) },
+                    textStyle = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                    singleLine = false,
+                    shape = RoundedCornerShape(16.dp),
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                // Buttons Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Text(
-                        text = "Continue",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    TextButton(
+                        onClick = { state.eventSink(NameEntryScreen.Event.SkipClicked) },
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .height(56.dp),
+                    ) {
+                        Text(
+                            text = "Skip",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+
+                    Button(
+                        onClick = { state.eventSink(NameEntryScreen.Event.ContinueClicked) },
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .height(56.dp),
+                    ) {
+                        Text(
+                            text = "Continue",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
         }
