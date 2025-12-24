@@ -9,8 +9,10 @@ Object.assign(navigator, {
 })
 
 // Mock URL.createObjectURL and revokeObjectURL
-global.URL.createObjectURL = vi.fn(() => 'mock-url')
-global.URL.revokeObjectURL = vi.fn()
+if (typeof global !== 'undefined') {
+  global.URL.createObjectURL = vi.fn(() => 'mock-url')
+  global.URL.revokeObjectURL = vi.fn()
+}
 
 // Mock sessionStorage
 const sessionStorageMock = (() => {

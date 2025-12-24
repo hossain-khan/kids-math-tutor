@@ -30,16 +30,6 @@ describe('Result Component', () => {
     numberRange: { min: 1, max: 20 },
   }
 
-  const explicitChallengeData = {
-    type: 'explicit' as const,
-    title: 'Custom Problems',
-    subtitle: 'Mixed practice',
-    problems: [
-      { operand1: 5, operand2: 3, operation: 'addition' as const },
-      { operand1: 10, operand2: 2, operation: 'division' as const },
-    ],
-  }
-
   it('should redirect to home if no challenge data exists', async () => {
     render(
       <BrowserRouter>
