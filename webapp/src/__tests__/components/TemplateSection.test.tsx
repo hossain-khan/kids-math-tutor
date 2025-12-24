@@ -1,10 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import TemplateSection from "@/components/TemplateSection";
-import {
-  type GeneratedTemplate,
-  type GradeLevel,
-} from "@/lib/templates";
+import { type GeneratedTemplate, type GradeLevel } from "@/lib/templates";
 
 // Mock templates for testing
 const mockTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
@@ -79,7 +76,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={false}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     const button = screen.getByText(/Browse Fun Worksheet Templates/i);
@@ -96,7 +93,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={false}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     const button = screen.getByText(/Browse Fun Worksheet Templates/i);
@@ -115,7 +112,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     expect(screen.getByText(/Worksheet Templates/i)).toBeInTheDocument();
@@ -132,11 +129,13 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     expect(screen.getByText("Add to 5")).toBeInTheDocument();
-    expect(screen.getByText("Practice adding numbers up to 5")).toBeInTheDocument();
+    expect(
+      screen.getByText("Practice adding numbers up to 5"),
+    ).toBeInTheDocument();
   });
 
   it("should filter templates by grade level", () => {
@@ -149,7 +148,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     // Initially shows Kindergarten template
@@ -175,7 +174,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     const templateButton = screen.getByRole("button", { name: /Add to 5/i });
@@ -194,7 +193,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     const templateButton = screen.getByRole("button", { name: /Add to 5/i });
@@ -213,7 +212,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     const closeButton = screen.getByRole("button", { name: "✕" });
@@ -233,7 +232,7 @@ describe("TemplateSection Component", () => {
         isExpanded={false}
         onToggle={mockOnToggle}
         colorScheme="primary"
-      />
+      />,
     );
 
     const button = screen.getByText(/Browse Fun Worksheet Templates/i);
@@ -252,7 +251,7 @@ describe("TemplateSection Component", () => {
         isExpanded={false}
         onToggle={mockOnToggle}
         colorScheme="secondary"
-      />
+      />,
     );
 
     const button = screen.getByText(/Browse Fun Worksheet Templates/i);
@@ -276,10 +275,12 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
-    expect(screen.getByText(/No templates available for this grade level/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/No templates available for this grade level/i),
+    ).toBeInTheDocument();
   });
 
   it("should render all grade level options", () => {
@@ -292,7 +293,7 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     // Check for grade level tabs/buttons on desktop
@@ -311,11 +312,13 @@ describe("TemplateSection Component", () => {
         onTemplateSelect={mockOnSelect}
         isExpanded={true}
         onToggle={mockOnToggle}
-      />
+      />,
     );
 
     expect(screen.getByText("🔢")).toBeInTheDocument();
     expect(screen.getByText("Add to 5")).toBeInTheDocument();
-    expect(screen.getByText("Practice adding numbers up to 5")).toBeInTheDocument();
+    expect(
+      screen.getByText("Practice adding numbers up to 5"),
+    ).toBeInTheDocument();
   });
 });
