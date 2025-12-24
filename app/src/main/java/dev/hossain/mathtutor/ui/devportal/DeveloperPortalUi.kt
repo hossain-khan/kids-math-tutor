@@ -180,6 +180,15 @@ fun DeveloperPortalUi(
                     ) {
                         Text("🔢 Number Sequence")
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { state.eventSink(DeveloperPortalScreen.Event.ViewColorPalette) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("🎨 Color Palette Viewer")
+                    }
                 }
             }
 

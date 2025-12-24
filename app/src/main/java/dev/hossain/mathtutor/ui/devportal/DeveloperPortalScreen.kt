@@ -113,6 +113,9 @@ data object DeveloperPortalScreen : Screen {
 
         data object NavigateToNumberSequence : Event
 
+        // Color Palette Viewer
+        data object ViewColorPalette : Event
+
         data object NavigateBack : Event
     }
 }

@@ -543,6 +543,11 @@ class DeveloperPortalPresenter
                                 .NumberSequenceScreen(),
                         )
                     }
+
+                    is DeveloperPortalScreen.Event.ViewColorPalette -> {
+                        Timber.d("[DevPortal] Navigating to Color Palette Viewer")
+                        navigator.goTo(ColorPaletteViewerScreen)
+                    }
                 }
             }
         }

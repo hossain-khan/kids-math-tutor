@@ -40,8 +40,11 @@ enum class TopBarFeature {
  * Dark mode: Darker, more saturated versions that are easier on eyes in dark mode
  *
  * All colors maintain high contrast with white text for excellent accessibility.
+ *
+ * Made internal to allow reuse in developer tools (e.g., color palette viewer)
+ * without exposing the entire TopAppBar styling logic.
  */
-private object TopBarFeatureColors {
+internal object TopBarFeatureColors {
     // RED: Matches Games nav
     val redAccentLight = Color(0xFFEF5350) // Light mode
     val redAccentDark = Color(0xFFE53935) // Dark mode - more saturated

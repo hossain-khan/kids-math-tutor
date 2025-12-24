@@ -8,29 +8,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Color Palette Viewer** — New developer portal tool for visualizing all colors used throughout the app
+  - Created `ColorPaletteViewerScreen` with comprehensive color organization by UI component category
+  - New `ColorPaletteViewerPresenter` manages color palette data and groups colors by usage
+  - New `ColorPaletteViewerUi` displays color swatches with hex codes, RGB values, and usage descriptions
+  - Color groups include:
+    - **Navigation Colors**: Bottom navigation bar colors (Home, Games, Parents, Settings)
+    - **TopAppBar Colors**: Feature-based colors with light/dark theme variants for all 5 feature areas
+  - Each color displays:
+    - Visual color swatch preview with moon icon (🌙) for dark mode variants
+    - Color name for quick identification
+    - Hex code (#RRGGBB format) for design/development reference
+    - RGB values (rgb(r, g, b) format) for implementation reference
+    - Usage description explaining where color is applied in the app
+  - Accessible via "Quick Navigation" section in Developer Portal (debug builds only)
+  - Helps developers and designers quickly reference and verify color consistency across the app
+  - Useful for documenting design system colors and ensuring compliance with brand guidelines
+
 - **Vibrant Feature-Based TopAppBar Styling** - Consistent color-coded top navigation across all screens
   - New reusable `FeatureTopAppBar` component in `ui/component/ThemedTopAppBar.kt`
   - `TopBarFeature` enum with 5 feature areas: PRACTICE, STATS, BADGES, SETTINGS, GAMES
   - Each feature has a designated vibrant color:
-    - **PRACTICE** (Blue): `primaryContainer` & `onPrimaryContainer`
-    - **STATS** (Orange): `secondaryContainer` & `onSecondaryContainer`
-    - **BADGES** (Green): `tertiaryContainer` & `onTertiaryContainer`
-    - **SETTINGS** (Inverse Primary): `inversePrimary` & `onSurface`
-    - **GAMES** (Blue): `primaryContainer` & `onPrimaryContainer` (same as PRACTICE)
+    - **PRACTICE** (Red Light): #EF5350 light mode, #E53935 dark mode
+    - **STATS** (Blue Light): #42A5F5 light mode, #1565C0 dark mode
+    - **BADGES** (Green Light): #66BB6A light mode, #2E7D32 dark mode
+    - **SETTINGS** (Purple Light): #AB47BC light mode, #7B1FA2 dark mode
+    - **GAMES** (Red Light): #EF5350 light mode, #E53935 dark mode (same as PRACTICE)
   - Updated all top-level screens to use `FeatureTopAppBar`:
-    - `OperationSelectorScreen` → Blue TopBar (PRACTICE)
-    - `StatsScreen` → Orange TopBar (STATS)
+    - `HomeScreen` → Green TopBar (BADGES)
+    - `OperationSelectorScreen` → Red TopBar (PRACTICE)
+    - `StatsScreen` → Blue TopBar (STATS)
     - `BadgesScreen` → Green TopBar (BADGES)
-    - `SettingsScreen` → Inverse Primary TopBar (SETTINGS)
-    - `GameSelectionScreen` → Blue TopBar (GAMES)
+    - `SettingsScreen` → Purple TopBar (SETTINGS)
+    - `GameSelectionScreen` → Red TopBar (GAMES)
+    - `ParentChallengesScreen` → Blue TopBar (STATS)
+  - Dark mode support with isSystemInDarkTheme() for optimal eye comfort
+  - Colors carefully chosen to match bottom navigation bar colors for visual consistency
   - Provides consistent, child-friendly visual hierarchy across the app
-  - All colors follow Material 3 design system guidelines (no hardcoded colors)
+  - All colors use custom hex codes (not Material 3 theme tokens) for precise brand control
 
 ### Changed
 - **Static Theme Colors** - Disabled Material You dynamic colors in favor of vibrant static theme for kids
   - Replaced Material You dynamic colors with custom vibrant color palette designed for K-2 children
-  - Light mode: Bright, energetic colors (Blue, Orange, Green) for an engaging learning experience
-  - Dark mode: Softer vibrant colors that are easy on eyes while maintaining visual appeal
+  - Light mode: Bright, energetic colors (Red, Blue, Green, Purple) for an engaging learning experience
+  - Dark mode: Darker, more saturated versions that are easy on eyes while maintaining visual appeal
   - All colors maintain high contrast (WCAG AAA standards) for excellent readability
   - Theme no longer changes based on device wallpaper, providing consistent branding
   - High contrast mode remains available for accessibility needs
