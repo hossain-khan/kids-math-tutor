@@ -27,6 +27,7 @@ data object AudioHapticSettingsScreen : Screen {
      * @property volume Current volume level (0.0 to 1.0)
      * @property highContrastEnabled Whether high contrast mode is enabled
      * @property largeTextEnabled Whether large text mode is enabled
+     * @property isDeviceAudioSuppressed Whether device is in silent or vibrate mode
      * @property eventSink Handler for screen events
      */
     data class State(
@@ -36,6 +37,7 @@ data object AudioHapticSettingsScreen : Screen {
         val volume: Float,
         val highContrastEnabled: Boolean,
         val largeTextEnabled: Boolean,
+        val isDeviceAudioSuppressed: Boolean,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

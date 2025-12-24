@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Device Audio Suppression Detection** - Audio now respects device ringer mode (silent/vibrate)
+  - App automatically detects when device is in silent or vibrate mode
+  - Audio playback is suppressed when device is in silent or vibrate mode
+  - Settings screen displays warning message when device audio is suppressed
+  - Warning message instructs users to change device ringer mode to normal to hear sounds
+  - Improves user experience by providing clear feedback about why audio isn't playing
+
 ## [1.11.0] - 2025-12-24
 
 ### Changed
