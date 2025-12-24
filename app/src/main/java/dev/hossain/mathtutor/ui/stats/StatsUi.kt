@@ -80,7 +80,13 @@ fun StatsUi(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("My Stats")
+                    Text(
+                        if (state.userName != null) {
+                            "${state.userName}'s Progress"
+                        } else {
+                            "My Progress"
+                        },
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(StatsScreen.Event.BackPressed) }) {
@@ -541,6 +547,7 @@ private fun StatsUiPreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = "Alex",
                     overallStats =
                         SessionStats(
                             totalProblems = 50,
@@ -601,6 +608,7 @@ private fun EmptyStatsUiPreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = null,
                     overallStats = SessionStats.EMPTY,
                     operationStats = emptyMap(),
                     recentSessions = emptyList(),
@@ -617,6 +625,7 @@ private fun StatsUiDarkPreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = "Jamie",
                     overallStats =
                         SessionStats(
                             totalProblems = 50,
@@ -667,6 +676,7 @@ private fun StatsUiTabletLandscapePreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = "Sam",
                     overallStats =
                         SessionStats(
                             totalProblems = 150,

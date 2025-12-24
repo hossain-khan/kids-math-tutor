@@ -116,14 +116,21 @@ class MainActivity
                     largeText = largeTextEnabled,
                 ) {
                     val isOnboardingCompleted by userPreferencesRepository.isOnboardingCompleted.collectAsState(
-                        initial = false,
+                        initial = null,
                     )
+
+                    // Wait for onboarding status to load before rendering navigation
+                    // This prevents showing the onboarding screen briefly on cold boot
+                    if (isOnboardingCompleted == null) {
+                        // Still loading preferences - show nothing or a blank screen
+                        return@KidsMathTutorAppTheme
+                    }
 
                     val initialScreen =
                         if (sharedText != null) {
                             // Share intent detected - go directly to import screen with prefilled JSON
                             ImportChallengeScreen(prefilledJson = sharedText)
-                        } else if (isOnboardingCompleted) {
+                        } else if (isOnboardingCompleted == true) {
                             HomeScreen
                         } else {
                             OnboardingScreen
@@ -145,7 +152,7 @@ class MainActivity
                                 // Only show adaptive navigation for top-level destinations
                                 // Hide it during onboarding and for non-top-level screens
                                 val showAdaptiveNav =
-                                    isOnboardingCompleted &&
+                                    isOnboardingCompleted == true &&
                                         currentScreen?.isTopLevelDestination() == true
 
                                 if (showAdaptiveNav) {

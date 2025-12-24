@@ -145,6 +145,7 @@ fun HomeUi(
                     WelcomeSection(
                         userName = state.userName,
                         gradeLevel = state.gradeLevel,
+                        totalProblems = state.overallStats.totalProblems,
                         accuracy = state.overallStats.accuracy,
                     )
 
@@ -293,11 +294,13 @@ fun HomeUi(
 /**
  * Welcome section with personalized or generic greeting.
  * Shows grade level and accuracy if available.
+ * Accuracy is only shown if the user has completed at least one practice session.
  */
 @Composable
 private fun WelcomeSection(
     userName: String?,
     gradeLevel: GradeLevel?,
+    totalProblems: Int,
     accuracy: Float,
     modifier: Modifier = Modifier,
 ) {
@@ -342,10 +345,15 @@ private fun WelcomeSection(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Grade level and accuracy
+        // Grade level and accuracy (only show accuracy if problems solved)
         if (gradeLevel != null) {
             Text(
-                text = "${gradeLevel.displayName} • ${accuracy.toInt()}% accuracy",
+                text =
+                    if (totalProblems > 0) {
+                        "${gradeLevel.displayName} • ${accuracy.toInt()}% accuracy"
+                    } else {
+                        gradeLevel.displayName
+                    },
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -357,6 +365,7 @@ private fun WelcomeSection(
 
 /**
  * Quick stats card showing total problems solved and accuracy.
+ * If no problems have been solved yet, shows an encouraging message instead.
  */
 @Composable
 private fun QuickStatsCard(
@@ -388,23 +397,34 @@ private fun QuickStatsCard(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                // Total problems
-                StatItem(
-                    label = "Problems Solved",
-                    value = "${stats.totalProblems}",
-                    emoji = "📝",
+            if (stats.totalProblems == 0) {
+                // No practice sessions yet
+                Text(
+                    text = "No practice sessions yet. Start practicing to see your stats! 🚀",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    textAlign = TextAlign.Center,
                 )
+            } else {
+                // Show stats when problems have been solved
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    // Total problems
+                    StatItem(
+                        label = "Problems Solved",
+                        value = "${stats.totalProblems}",
+                        emoji = "📝",
+                    )
 
-                // Accuracy
-                StatItem(
-                    label = "Accuracy",
-                    value = "${stats.accuracy.toInt()}%",
-                    emoji = "🎯",
-                )
+                    // Accuracy
+                    StatItem(
+                        label = "Accuracy",
+                        value = "${stats.accuracy.toInt()}%",
+                        emoji = "🎯",
+                    )
+                }
             }
         }
     }

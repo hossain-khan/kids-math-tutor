@@ -183,6 +183,10 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 ./gradlew assembleDebug
 ```
 
+### macOS Development Notes
+
+- **Do NOT use `timeout` command in terminal operations on macOS** - it's not available by default. Use `gtimeout` (from GNU coreutils) or run gradle commands directly without timeout wrapping. Gradle tasks will complete naturally.
+
 ### Changelog Maintenance
 
 **REQUIRED**: Always update `CHANGELOG.md` when making changes following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) guidelines:

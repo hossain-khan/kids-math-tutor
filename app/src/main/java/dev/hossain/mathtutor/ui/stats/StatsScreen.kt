@@ -18,12 +18,14 @@ data object StatsScreen : Screen {
     /**
      * State for [StatsScreen].
      *
+     * @property userName Optional user name for personalized title
      * @property overallStats Overall statistics across all sessions
      * @property operationStats Statistics grouped by math operation
      * @property recentSessions List of recent practice sessions (up to 10)
      * @property eventSink Handler for screen events
      */
     data class State(
+        val userName: String?,
         val overallStats: SessionStats,
         val operationStats: Map<MathOperation, SessionStats>,
         val recentSessions: List<PracticeSessionEntity>,

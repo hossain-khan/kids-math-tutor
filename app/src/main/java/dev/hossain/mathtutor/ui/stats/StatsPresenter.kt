@@ -11,7 +11,9 @@ import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -30,6 +32,7 @@ class StatsPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val sessionRepository: SessionRepository,
+        private val userProfileRepository: UserProfileRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<StatsScreen.State> {
         @CircuitInject(StatsScreen::class, AppScope::class)
@@ -101,7 +104,15 @@ class StatsPresenter
                 }
             }
 
+            // Collect user profile
+            val userProfile by produceRetainedState<UserProfile?>(initialValue = null) {
+                userProfileRepository.getProfile().collect { profile ->
+                    value = profile
+                }
+            }
+
             return StatsScreen.State(
+                userName = userProfile?.name,
                 overallStats = statsData.overallStats,
                 operationStats = statsData.operationStats,
                 recentSessions = statsData.recentSessions,
