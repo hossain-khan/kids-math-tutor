@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Static Theme Colors** - Disabled Material You dynamic colors in favor of vibrant static theme for kids
+  - Replaced Material You dynamic colors with custom vibrant color palette designed for K-2 children
+  - Light mode: Bright, energetic colors (Blue, Orange, Green) for an engaging learning experience
+  - Dark mode: Softer vibrant colors that are easy on eyes while maintaining visual appeal
+  - All colors maintain high contrast (WCAG AAA standards) for excellent readability
+  - Theme no longer changes based on device wallpaper, providing consistent branding
+  - High contrast mode remains available for accessibility needs
 ### Added
 - **Game Trial Feature** - Allow first-time users to try locked games up to 3 times
   - Kids can now try locked games up to 3 times before needing to unlock them permanently

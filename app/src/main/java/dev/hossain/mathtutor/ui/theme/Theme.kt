@@ -149,8 +149,8 @@ private val LightColorScheme =
 @Composable
 fun KidsMathTutorAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Dynamic color disabled - using static vibrant theme for kids
+    dynamicColor: Boolean = false,
     highContrast: Boolean = false,
     largeText: Boolean = false,
     content: @Composable () -> Unit,
