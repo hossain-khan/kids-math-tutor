@@ -18,10 +18,10 @@ import dev.hossain.mathtutor.ui.games.GameSelectionScreen
 import dev.hossain.mathtutor.ui.home.HomeScreen
 import dev.hossain.mathtutor.ui.parentchallenges.ParentChallengesScreen
 import dev.hossain.mathtutor.ui.settings.SettingsScreen
-import dev.hossain.mathtutor.ui.theme.customGreenDark
-import dev.hossain.mathtutor.ui.theme.customPurpleDark
-import dev.hossain.mathtutor.ui.theme.customRaspberryDark
-import dev.hossain.mathtutor.ui.theme.customTealDark
+import dev.hossain.mathtutor.ui.theme.customGreenContainerDark
+import dev.hossain.mathtutor.ui.theme.customPurpleContainerDark
+import dev.hossain.mathtutor.ui.theme.customRaspberryContainerDark
+import dev.hossain.mathtutor.ui.theme.customTealContainerDark
 
 /**
  * Color pair for selected navigation items: background color and content color.
@@ -31,19 +31,19 @@ data class NavigationItemColors(
     val contentColor: Color,
 )
 
-// Material Theme Builder custom colors for navigation
+// Material Theme Builder custom colors for navigation - using darker container variants for vibrant appearance
 private object NavigationColors {
-    // Home: Custom Green
-    val homeBackground = customGreenDark
+    // Home: Custom Green (darker variant for better visibility)
+    val homeBackground = customGreenContainerDark
 
-    // Games: Custom Raspberry
-    val gamesBackground = customRaspberryDark
+    // Games: Custom Raspberry (darker variant for vibrant game screens)
+    val gamesBackground = customRaspberryContainerDark
 
-    // Parents: Custom Teal
-    val parentsBackground = customTealDark
+    // Parents: Custom Teal (darker variant for data/insights screens)
+    val parentsBackground = customTealContainerDark
 
-    // Settings: Custom Purple
-    val settingsBackground = customPurpleDark
+    // Settings: Custom Purple (darker variant for configuration screens)
+    val settingsBackground = customPurpleContainerDark
 }
 
 /**
