@@ -23,7 +23,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.ChildCare
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -145,12 +151,14 @@ fun SettingsUi(
 
                     // Audio & Haptics link
                     SettingsLinkItem(
+                        icon = Icons.Default.Settings,
                         text = "Audio, Haptics & Accessibility",
                         onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
                     )
 
                     // Parent Challenges link
                     SettingsLinkItem(
+                        icon = Icons.Outlined.Groups,
                         text = "Parent Challenges",
                         onClick = { state.eventSink(SettingsScreen.Event.ParentChallengesClicked) },
                     )
@@ -158,6 +166,7 @@ fun SettingsUi(
                     // Developer Portal (debug-only)
                     if (state.showDeveloperPortal) {
                         SettingsLinkItem(
+                            icon = Icons.Default.Info,
                             text = "Developer Portal",
                             onClick = { state.eventSink(SettingsScreen.Event.DeveloperPortalClicked) },
                         )
@@ -170,12 +179,22 @@ fun SettingsUi(
                     )
 
                     // Privacy section header
-                    Text(
-                        text = "Privacy",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.padding(horizontal = 8.dp),
-                    )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Lock,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text = "Privacy",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
 
                     // Analytics toggle
                     AnalyticsToggleRow(
@@ -344,11 +363,21 @@ private fun AdaptiveDifficultySection(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = "Adaptive Difficulty",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Tune,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+                Text(
+                    text = "Adaptive Difficulty",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -433,13 +462,25 @@ private fun SettingsLinks(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
-        SettingsLinkItem(text = "About", onClick = { openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/", toolbarColor) })
-        SettingsLinkItem(text = "Terms of Service", onClick = {
-            openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/terms-of-service.html", toolbarColor)
-        })
-        SettingsLinkItem(text = "Privacy", onClick = {
-            openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/privacy.html", toolbarColor)
-        })
+        SettingsLinkItem(
+            icon = Icons.Default.Info,
+            text = "About",
+            onClick = { openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/", toolbarColor) },
+        )
+        SettingsLinkItem(
+            icon = Icons.Outlined.Description,
+            text = "Terms of Service",
+            onClick = {
+                openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/terms-of-service.html", toolbarColor)
+            },
+        )
+        SettingsLinkItem(
+            icon = Icons.Outlined.Lock,
+            text = "Privacy",
+            onClick = {
+                openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/privacy.html", toolbarColor)
+            },
+        )
     }
 }
 
@@ -475,10 +516,11 @@ private fun openExternalUrl(
 }
 
 /**
- * Individual settings link item.
+ * Individual settings link item with icon.
  */
 @Composable
 private fun SettingsLinkItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     text: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
@@ -489,9 +531,14 @@ private fun SettingsLinkItem(
                 .fillMaxWidth()
                 .clickable { onClick() }
                 .padding(vertical = 16.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
