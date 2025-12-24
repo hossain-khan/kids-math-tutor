@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Webapp Test Coverage** - Comprehensive test suite for the web-based worksheet creator (#300)
+  - Added Vitest configuration with jsdom environment for browser API testing
+  - Component tests for GeneratedBuilder, ExplicitBuilder, and Result pages
+  - Test coverage for utility functions (clipboard, JSON download, formatting)
+  - Test coverage for Zod schema validation functions
+  - Test setup with proper mocking of navigator, sessionStorage, and browser APIs
+  - Current coverage: ~70% overall (90%+ for core validation logic)
+- **Webapp CI Workflow** - Automated testing and build verification for webapp changes
+  - GitHub Actions workflow for linting, testing, and building on pull requests
+  - Test coverage reporting with Codecov integration
+  - Runs on webapp file changes only for efficient CI usage
 - **Integration Tests for Critical User Flows** - Comprehensive end-to-end tests for practice, game, and streak flows (#299)
   - `PracticeToResultsFlowTest`: Validates practice session → badge unlock flow with database persistence
   - `GameBadgeFlowTest`: Tests game completion → badge unlock for Math Race and other games
