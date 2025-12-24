@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Color groups include:
     - **Navigation Colors**: Bottom navigation bar colors (Home, Games, Parents, Settings)
     - **TopAppBar Colors**: Feature-based colors with light/dark theme variants for all 5 feature areas
+    - **Theme Colors**: Material 3 semantic colors (Primary, Secondary, Tertiary, Error, Surface) with light/dark variants
   - Each color displays:
     - Visual color swatch preview with moon icon (🌙) for dark mode variants
     - Color name for quick identification
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Accessible via "Quick Navigation" section in Developer Portal (debug builds only)
   - Helps developers and designers quickly reference and verify color consistency across the app
   - Useful for documenting design system colors and ensuring compliance with brand guidelines
+  - Made all color definitions internal in `Color.kt` for reuse in developer tools without exposing theme implementation
 
 - **Vibrant Feature-Based TopAppBar Styling** - Consistent color-coded top navigation across all screens
   - New reusable `FeatureTopAppBar` component in `ui/component/ThemedTopAppBar.kt`
