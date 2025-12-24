@@ -238,6 +238,7 @@ fun NameEntryUi(
                     Modifier
                         .fillMaxWidth()
                         .height(200.dp)
+                        .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
                         .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
             ) {
                 Image(
