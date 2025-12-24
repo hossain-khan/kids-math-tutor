@@ -18,6 +18,10 @@ import dev.hossain.mathtutor.ui.games.GameSelectionScreen
 import dev.hossain.mathtutor.ui.home.HomeScreen
 import dev.hossain.mathtutor.ui.parentchallenges.ParentChallengesScreen
 import dev.hossain.mathtutor.ui.settings.SettingsScreen
+import dev.hossain.mathtutor.ui.theme.customGreenDark
+import dev.hossain.mathtutor.ui.theme.customPurpleDark
+import dev.hossain.mathtutor.ui.theme.customRaspberryDark
+import dev.hossain.mathtutor.ui.theme.customTealDark
 
 /**
  * Color pair for selected navigation items: background color and content color.
@@ -27,19 +31,19 @@ data class NavigationItemColors(
     val contentColor: Color,
 )
 
-// Vibrant, kid-friendly background colors
-private object VibrantNavigationColors {
-    // Home: Vibrant Green
-    val homeBackground = Color(0xFF2E7D32)
+// Material Theme Builder custom colors for navigation
+private object NavigationColors {
+    // Home: Custom Green
+    val homeBackground = customGreenDark
 
-    // Games: Vibrant Red
-    val gamesBackground = Color(0xFFE53935)
+    // Games: Custom Raspberry
+    val gamesBackground = customRaspberryDark
 
-    // Parents: Vibrant Blue
-    val parentsBackground = Color(0xFF1976D2)
+    // Parents: Custom Teal
+    val parentsBackground = customTealDark
 
-    // Settings: Vibrant Purple
-    val settingsBackground = Color(0xFF7B1FA2)
+    // Settings: Custom Purple
+    val settingsBackground = customPurpleDark
 }
 
 /**
@@ -101,38 +105,38 @@ enum class TopLevelDestination(
 }
 
 /**
- * Gets vibrant, high-contrast colors for a destination when selected.
- * Each destination has its own unique vibrant background color with white text for maximum contrast.
- * Colors are: Home=Green, Games=Red, Parents=Blue, Settings=Purple
- * White text works well on these dark vibrant backgrounds in both light and dark modes.
+ * Gets Material Theme Builder custom colors for a destination when selected.
+ * Each destination has its own unique custom background color with white text for maximum contrast.
+ * Colors are: Home=Green, Games=Raspberry, Parents=Teal, Settings=Purple
+ * White text works well on these dark custom backgrounds in both light and dark modes.
  */
 @Composable
 fun TopLevelDestination.getNavigationItemColors(): NavigationItemColors =
     when (this) {
         TopLevelDestination.HOME -> {
             NavigationItemColors(
-                containerColor = VibrantNavigationColors.homeBackground,
+                containerColor = NavigationColors.homeBackground,
                 contentColor = Color.White,
             )
         }
 
         TopLevelDestination.GAMES -> {
             NavigationItemColors(
-                containerColor = VibrantNavigationColors.gamesBackground,
+                containerColor = NavigationColors.gamesBackground,
                 contentColor = Color.White,
             )
         }
 
         TopLevelDestination.PARENTS -> {
             NavigationItemColors(
-                containerColor = VibrantNavigationColors.parentsBackground,
+                containerColor = NavigationColors.parentsBackground,
                 contentColor = Color.White,
             )
         }
 
         TopLevelDestination.SETTINGS -> {
             NavigationItemColors(
-                containerColor = VibrantNavigationColors.settingsBackground,
+                containerColor = NavigationColors.settingsBackground,
                 contentColor = Color.White,
             )
         }

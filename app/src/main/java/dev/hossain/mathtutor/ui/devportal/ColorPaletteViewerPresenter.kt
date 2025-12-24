@@ -139,27 +139,27 @@ class ColorPaletteViewerPresenter
                 description = "Feature-based top app bar colors with light/dark theme support",
                 colors =
                     listOf(
-                        // Red - PRACTICE & GAMES
+                        // Raspberry - PRACTICE & GAMES
                         ColorPaletteViewerScreen.ColorEntry(
                             name = "PRACTICE & GAMES - Light Mode",
-                            color = TopBarFeatureColors.redAccentLight,
+                            color = TopBarFeatureColors.raspberryAccentLight,
                             usage = "Practice and Games screens in light mode",
                         ),
                         ColorPaletteViewerScreen.ColorEntry(
                             name = "PRACTICE & GAMES - Dark Mode",
-                            color = TopBarFeatureColors.redAccentDark,
+                            color = TopBarFeatureColors.raspberryAccentDark,
                             usage = "Practice and Games screens in dark mode",
                             isDarkModeVariant = true,
                         ),
-                        // Blue - STATS
+                        // Teal - STATS
                         ColorPaletteViewerScreen.ColorEntry(
                             name = "STATS - Light Mode",
-                            color = TopBarFeatureColors.blueAccentLight,
+                            color = TopBarFeatureColors.tealAccentLight,
                             usage = "Stats/Parents screen in light mode",
                         ),
                         ColorPaletteViewerScreen.ColorEntry(
                             name = "STATS - Dark Mode",
-                            color = TopBarFeatureColors.blueAccentDark,
+                            color = TopBarFeatureColors.tealAccentDark,
                             usage = "Stats/Parents screen in dark mode",
                             isDarkModeVariant = true,
                         ),
