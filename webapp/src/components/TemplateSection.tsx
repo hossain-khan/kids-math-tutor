@@ -34,7 +34,7 @@ export default function TemplateSection({
       : "bg-primary-100 text-primary-700 border-primary-200 hover:bg-primary-200";
 
   const gradeLevels: { value: GradeLevel; label: string }[] = [
-    { value: "kindergarten", label: "K" },
+    { value: "kindergarten", label: "Kindergarten" },
     { value: "grade1", label: "Grade 1" },
     { value: "grade2", label: "Grade 2" },
   ];
