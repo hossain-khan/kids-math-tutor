@@ -435,6 +435,11 @@ class AudioServiceTest {
             // No-op in tests
         }
 
+        override fun isDeviceAudioSuppressed(): Boolean {
+            // Return false by default in tests
+            return false
+        }
+
         override fun release() {
             isReleased = true
             isMusicPlaying = false

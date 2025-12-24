@@ -302,6 +302,11 @@ class AudioHapticSettingsPresenterTest {
             // No-op for tests
         }
 
+        override fun isDeviceAudioSuppressed(): Boolean {
+            // Return false by default in tests
+            return false
+        }
+
         override fun release() {}
 
         fun isSoundEffectsEnabled(): Boolean = soundEffectsEnabled
