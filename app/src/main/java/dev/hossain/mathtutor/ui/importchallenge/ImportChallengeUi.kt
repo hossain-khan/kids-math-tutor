@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.importchallenge
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
@@ -566,9 +567,12 @@ private fun ShareDetectionBanner(
 /**
  * Helper to open the worksheet creator URL using Chrome Custom Tabs with fallback to ACTION_VIEW.
  * Includes error handling to prevent crashes if no browser is available.
+ *
+ * Note: This duplicates the URL opening pattern from SettingsUi. Consider extracting to a shared
+ * utility function if this pattern is needed in more places.
  */
 private fun openWorksheetCreator(
-    context: android.content.Context,
+    context: Context,
     url: String,
 ) {
     try {
