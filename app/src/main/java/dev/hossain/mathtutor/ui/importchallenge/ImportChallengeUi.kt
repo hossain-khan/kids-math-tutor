@@ -1,5 +1,9 @@
 package dev.hossain.mathtutor.ui.importchallenge
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
@@ -25,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,12 +41,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PreviewData
 import dev.zacsweers.metro.AppScope
+import timber.log.Timber
 import kotlin.time.Duration
 
 /**
@@ -76,6 +88,11 @@ fun ImportChallengeUi(
                         hasValidationErrors = state.validationState is ValidationState.Invalid,
                     )
                 }
+            }
+
+            // Parent information section
+            item {
+                ParentInfoSection()
             }
 
             item {
@@ -136,6 +153,8 @@ private fun JsonInputSection(
     onValidate: () -> Unit,
     onClear: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+
     Card(
         modifier =
             Modifier
@@ -169,7 +188,7 @@ private fun JsonInputSection(
                     )
                 },
                 isError = validationState is ValidationState.Invalid,
-                textStyle = MaterialTheme.typography.bodySmall,
+                textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             )
 
             if (validationState is ValidationState.Invalid) {
@@ -188,7 +207,10 @@ private fun JsonInputSection(
                 }
 
                 Button(
-                    onClick = onValidate,
+                    onClick = {
+                        focusManager.clearFocus()
+                        onValidate()
+                    },
                     enabled = jsonInput.isNotBlank(),
                 ) {
                     Text("Validate & Preview")
@@ -401,6 +423,81 @@ private fun formatDuration(duration: Duration): String {
 }
 
 /**
+ * Information section for parents with instructions and link to the worksheet creator.
+ */
+@Composable
+private fun ParentInfoSection(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val worksheetUrl = "https://math-worksheet.gohk.xyz/"
+
+    Card(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(24.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "For Parents",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "This feature allows you to create custom math challenges for your child using JSON.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text =
+                    "You can easily generate challenge JSON using our online worksheet creator at " +
+                        "math-worksheet.gohk.xyz. Once generated, copy the JSON and paste it below.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = {
+                    openWorksheetCreator(context, worksheetUrl)
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.OpenInBrowser,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Open Worksheet Creator")
+            }
+        }
+    }
+}
+
+/**
  * Share detection banner indicating JSON was detected and extracted from shared content.
  */
 @Composable
@@ -463,6 +560,38 @@ private fun ShareDetectionBanner(
                         },
                 )
             }
+        }
+    }
+}
+
+/**
+ * Helper to open the worksheet creator URL using Chrome Custom Tabs with fallback to ACTION_VIEW.
+ * Includes error handling to prevent crashes if no browser is available.
+ *
+ * Note: This duplicates the URL opening pattern from SettingsUi. Consider extracting to a shared
+ * utility function if this pattern is needed in more places.
+ */
+private fun openWorksheetCreator(
+    context: Context,
+    url: String,
+) {
+    try {
+        val uri = url.toUri()
+        val builder = CustomTabsIntent.Builder().setShowTitle(true)
+        val customTabsIntent = builder.build()
+
+        customTabsIntent.launchUrl(context, uri)
+    } catch (e: Exception) {
+        Timber.e(e, "[ImportChallenge] CustomTabs failed, falling back to ACTION_VIEW for URL=%s", url)
+        // Fallback to ACTION_VIEW if Custom Tabs fails
+        try {
+            val intent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            context.startActivity(intent)
+        } catch (ignored: Exception) {
+            Timber.e(ignored, "[ImportChallenge] Failed to open URL via ACTION_VIEW: %s", url)
         }
     }
 }

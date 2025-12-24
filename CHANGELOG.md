@@ -41,6 +41,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - ParentChallengesScreen displays success message snackbar with imported challenge name
   - Material 3 themed snackbar with primary container colors
 
+### Changed
+- **Import Challenge Flow Improvements** - Enhanced parent-focused UI and experience
+  - Added informational section explaining the feature is for parents with clear instructions
+  - Keyboard automatically dismisses when "Validate & Preview" button is pressed
+  - JSON input field now uses monospace font for better code readability
+  - Added button to open math-worksheet.gohk.xyz worksheet creator directly from the app
+  - Included website URL (math-worksheet.gohk.xyz) in instructions for parents to visit on computer
+  - Updated schema validation reference to https://math-worksheet.gohk.xyz/challenge-schema.json
+
 ## [1.9.0] - 2025-12-22
 
 ### Added
