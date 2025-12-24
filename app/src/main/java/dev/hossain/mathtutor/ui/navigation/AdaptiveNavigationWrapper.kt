@@ -137,39 +137,41 @@ private fun AppBottomNavigation(
 
         // Bottom navigation bar
         NavigationBar {
-            TopLevelDestination.entries.forEach { destination ->
-                val selected = currentDestination == destination
-                val colors = destination.getNavigationItemColors()
+            TopLevelDestination.entries
+                .filter { it != TopLevelDestination.SETTINGS } // Settings is accessible from home screen
+                .forEach { destination ->
+                    val selected = currentDestination == destination
+                    val colors = destination.getNavigationItemColors()
 
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = { onDestinationSelected(destination) },
-                    icon = {
-                        Icon(
-                            imageVector =
-                                if (selected) {
-                                    destination.selectedIcon
-                                } else {
-                                    destination.unselectedIcon
-                                },
-                            contentDescription = destination.contentDescription,
-                        )
-                    },
-                    label = {
-                        Text(text = destination.label)
-                    },
-                    colors =
-                        if (selected) {
-                            NavigationBarItemDefaults.colors(
-                                selectedIconColor = colors.contentColor,
-                                selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                                indicatorColor = colors.containerColor,
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick = { onDestinationSelected(destination) },
+                        icon = {
+                            Icon(
+                                imageVector =
+                                    if (selected) {
+                                        destination.selectedIcon
+                                    } else {
+                                        destination.unselectedIcon
+                                    },
+                                contentDescription = destination.contentDescription,
                             )
-                        } else {
-                            NavigationBarItemDefaults.colors()
                         },
-                )
-            }
+                        label = {
+                            Text(text = destination.label)
+                        },
+                        colors =
+                            if (selected) {
+                                NavigationBarItemDefaults.colors(
+                                    selectedIconColor = colors.contentColor,
+                                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    indicatorColor = colors.containerColor,
+                                )
+                            } else {
+                                NavigationBarItemDefaults.colors()
+                            },
+                    )
+                }
         }
     }
 }
@@ -188,39 +190,41 @@ private fun AppNavigationRail(
         NavigationRail(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ) {
-            TopLevelDestination.entries.forEach { destination ->
-                val selected = currentDestination == destination
-                val colors = destination.getNavigationItemColors()
+            TopLevelDestination.entries
+                .filter { it != TopLevelDestination.SETTINGS } // Settings is accessible from home screen
+                .forEach { destination ->
+                    val selected = currentDestination == destination
+                    val colors = destination.getNavigationItemColors()
 
-                NavigationRailItem(
-                    selected = selected,
-                    onClick = { onDestinationSelected(destination) },
-                    icon = {
-                        Icon(
-                            imageVector =
-                                if (selected) {
-                                    destination.selectedIcon
-                                } else {
-                                    destination.unselectedIcon
-                                },
-                            contentDescription = destination.contentDescription,
-                        )
-                    },
-                    label = {
-                        Text(text = destination.label)
-                    },
-                    colors =
-                        if (selected) {
-                            NavigationRailItemDefaults.colors(
-                                selectedIconColor = colors.contentColor,
-                                selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                                indicatorColor = colors.containerColor,
+                    NavigationRailItem(
+                        selected = selected,
+                        onClick = { onDestinationSelected(destination) },
+                        icon = {
+                            Icon(
+                                imageVector =
+                                    if (selected) {
+                                        destination.selectedIcon
+                                    } else {
+                                        destination.unselectedIcon
+                                    },
+                                contentDescription = destination.contentDescription,
                             )
-                        } else {
-                            NavigationRailItemDefaults.colors()
                         },
-                )
-            }
+                        label = {
+                            Text(text = destination.label)
+                        },
+                        colors =
+                            if (selected) {
+                                NavigationRailItemDefaults.colors(
+                                    selectedIconColor = colors.contentColor,
+                                    selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    indicatorColor = colors.containerColor,
+                                )
+                            } else {
+                                NavigationRailItemDefaults.colors()
+                            },
+                    )
+                }
         }
         // Main content
         Box(
@@ -254,40 +258,42 @@ private fun AppPermanentNavigationDrawer(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                TopLevelDestination.entries.forEach { destination ->
-                    val selected = currentDestination == destination
-                    val colors = destination.getNavigationItemColors()
+                TopLevelDestination.entries
+                    .filter { it != TopLevelDestination.SETTINGS } // Settings is accessible from home screen
+                    .forEach { destination ->
+                        val selected = currentDestination == destination
+                        val colors = destination.getNavigationItemColors()
 
-                    NavigationDrawerItem(
-                        selected = selected,
-                        onClick = { onDestinationSelected(destination) },
-                        icon = {
-                            Icon(
-                                imageVector =
-                                    if (selected) {
-                                        destination.selectedIcon
-                                    } else {
-                                        destination.unselectedIcon
-                                    },
-                                contentDescription = destination.contentDescription,
-                            )
-                        },
-                        label = {
-                            Text(text = destination.label)
-                        },
-                        colors =
-                            if (selected) {
-                                NavigationDrawerItemDefaults.colors(
-                                    selectedIconColor = colors.contentColor,
-                                    selectedTextColor = colors.contentColor,
-                                    selectedContainerColor = colors.containerColor,
+                        NavigationDrawerItem(
+                            selected = selected,
+                            onClick = { onDestinationSelected(destination) },
+                            icon = {
+                                Icon(
+                                    imageVector =
+                                        if (selected) {
+                                            destination.selectedIcon
+                                        } else {
+                                            destination.unselectedIcon
+                                        },
+                                    contentDescription = destination.contentDescription,
                                 )
-                            } else {
-                                NavigationDrawerItemDefaults.colors()
                             },
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                    )
-                }
+                            label = {
+                                Text(text = destination.label)
+                            },
+                            colors =
+                                if (selected) {
+                                    NavigationDrawerItemDefaults.colors(
+                                        selectedIconColor = colors.contentColor,
+                                        selectedTextColor = colors.contentColor,
+                                        selectedContainerColor = colors.containerColor,
+                                    )
+                                } else {
+                                    NavigationDrawerItemDefaults.colors()
+                                },
+                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                        )
+                    }
             }
         },
         modifier = modifier,
