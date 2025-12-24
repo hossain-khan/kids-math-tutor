@@ -148,14 +148,14 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
     {
       id: "g2-divide-basics",
       name: "Divide Basics",
-      description: "Practice basic division (divide by 1-5)",
+      description: "Practice basic division (numbers 2-10)",
       icon: "➗",
       config: {
         title: "Divide Basics",
-        subtitle: "Grade 2 - Basic division with divisors 1-5",
+        subtitle: "Grade 2 - Basic division with numbers 2-10",
         operation: "division",
         problemCount: 10,
-        numberRange: { min: 2, max: 20 },
+        numberRange: { min: 2, max: 10 },
       },
     },
   ],
