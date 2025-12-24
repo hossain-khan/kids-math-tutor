@@ -144,7 +144,7 @@ fun SettingsUi(
 
                     // Audio & Haptics link
                     SettingsLinkItem(
-                        text = "Audio & Haptics",
+                        text = "Audio, Haptics & Accessibility",
                         onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
                     )
 
