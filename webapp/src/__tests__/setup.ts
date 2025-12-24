@@ -1,37 +1,37 @@
-import { vi } from 'vitest'
-import '@testing-library/jest-dom'
+import { vi } from "vitest";
+import "@testing-library/jest-dom";
 
 // Mock navigator.clipboard
 Object.assign(navigator, {
   clipboard: {
     writeText: vi.fn(() => Promise.resolve()),
   },
-})
+});
 
 // Mock URL.createObjectURL and revokeObjectURL
-if (typeof global !== 'undefined') {
-  global.URL.createObjectURL = vi.fn(() => 'mock-url')
-  global.URL.revokeObjectURL = vi.fn()
+if (typeof global !== "undefined") {
+  global.URL.createObjectURL = vi.fn(() => "mock-url");
+  global.URL.revokeObjectURL = vi.fn();
 }
 
 // Mock sessionStorage
 const sessionStorageMock = (() => {
-  let store: Record<string, string> = {}
+  let store: Record<string, string> = {};
 
   return {
     getItem: (key: string) => store[key] || null,
     setItem: (key: string, value: string) => {
-      store[key] = value.toString()
+      store[key] = value.toString();
     },
     removeItem: (key: string) => {
-      delete store[key]
+      delete store[key];
     },
     clear: () => {
-      store = {}
+      store = {};
     },
-  }
-})()
+  };
+})();
 
-Object.defineProperty(window, 'sessionStorage', {
+Object.defineProperty(window, "sessionStorage", {
   value: sessionStorageMock,
-})
+});

@@ -4,16 +4,26 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Card from "@/components/Card";
+import TemplateSection from "@/components/TemplateSection";
+import Toast from "@/components/Toast";
 import {
   ExplicitChallengeSpecSchema,
   type MathOperation,
   type ProblemSpec,
 } from "@/lib/schemas/challenge-schema";
+import {
+  explicitTemplates,
+  type ExplicitTemplate,
+  type GeneratedTemplate,
+} from "@/lib/templates";
 import { z } from "zod";
 
 export default function ExplicitBuilder() {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isTemplateExpanded, setIsTemplateExpanded] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
@@ -30,6 +40,32 @@ export default function ExplicitBuilder() {
     { value: "multiplication", label: "✖️ Multiplication" },
     { value: "division", label: "➗ Division" },
   ];
+
+  const handleTemplateSelect = (
+    template: ExplicitTemplate | GeneratedTemplate,
+  ) => {
+    // Type guard to ensure we have an ExplicitTemplate
+    if (!("problems" in template.config)) {
+      return;
+    }
+    const config = template.config;
+    setFormData({
+      title: config.title,
+      subtitle: config.subtitle,
+    });
+    setProblems(config.problems);
+
+    // Show toast notification
+    setToastMessage(`✨ "${template.name}" template applied!`);
+    setShowToast(true);
+
+    // Scroll to form
+    setTimeout(() => {
+      document
+        .querySelector("form")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
 
   const addProblem = () => {
     if (problems.length < 50) {
@@ -176,19 +212,60 @@ export default function ExplicitBuilder() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-3xl">
+        {/* Toast Notification */}
+        <Toast
+          message={toastMessage}
+          isVisible={showToast}
+          onClose={() => setShowToast(false)}
+        />
+
         {/* Intro Card */}
         <Card className="mb-6 bg-gradient-to-br from-secondary-50 to-purple-50 border-2 border-secondary-200 p-6">
-          <div className="flex items-start gap-4">
-            <div className="text-3xl flex-shrink-0">✏️</div>
-            <div className="flex-1">
-              <h2 className="font-display font-bold text-lg mb-2">
-                Create Each Problem
-              </h2>
-              <p className="text-sm text-gray-600">
-                Enter each math problem exactly how you want it. Perfect for
-                targeting specific skills!
-              </p>
+          <style>{`
+            @keyframes pulse-glow {
+              0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+              50% { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
+            }
+            .template-button-pulse {
+              animation: pulse-glow 2s ease-out forwards;
+            }
+          `}</style>
+
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start gap-4">
+              <div className="text-3xl flex-shrink-0">✏️</div>
+              <div className="flex-1">
+                <h2 className="font-display font-bold text-lg mb-2">
+                  Create Each Problem
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Enter each math problem exactly how you want it. Perfect for
+                  targeting specific skills!
+                </p>
+              </div>
             </div>
+
+            {/* Templates inside Intro Card - with attention wrapper */}
+            <div className="template-button-pulse rounded-lg">
+              <TemplateSection
+                templates={explicitTemplates}
+                onTemplateSelect={handleTemplateSelect}
+                isExpanded={isTemplateExpanded}
+                onToggle={setIsTemplateExpanded}
+                colorScheme="secondary"
+              />
+            </div>
+
+            {/* Quick tip when collapsed */}
+            {!isTemplateExpanded && (
+              <div className="text-xs text-secondary-700 bg-secondary-100 rounded-lg px-3 py-2 flex items-center gap-2">
+                <span>💡</span>
+                <span>
+                  <strong>Pro Tip:</strong> Use templates to quickly create
+                  problem sets!
+                </span>
+              </div>
+            )}
           </div>
         </Card>
 
@@ -221,11 +298,11 @@ export default function ExplicitBuilder() {
 
             {/* Problems List */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <label className="block text-sm font-medium text-gray-700">
                   Math Problems ({problems.length}/50)
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <Select
                     value={defaultOperation}
                     onChange={(e) =>
@@ -240,7 +317,7 @@ export default function ExplicitBuilder() {
                     size="md"
                     onClick={addProblem}
                     disabled={problems.length >= 50}
-                    className="min-w-[160px] font-semibold whitespace-nowrap"
+                    className="w-full sm:w-auto sm:min-w-[160px] font-semibold whitespace-nowrap"
                   >
                     ➕ Add Problem
                   </Button>
@@ -262,14 +339,17 @@ export default function ExplicitBuilder() {
                       className="p-4"
                       data-error={!!problemError}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col md:flex-row md:items-center gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-sm">
                           {index + 1}
                         </div>
 
-                        <div className="flex-1 grid grid-cols-9 gap-2 items-center">
+                        <div className="flex-1 flex flex-col md:grid md:grid-cols-9 gap-2 md:items-center">
                           {/* First Number */}
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              First Number
+                            </label>
                             <Input
                               type="number"
                               min={0}
@@ -287,7 +367,10 @@ export default function ExplicitBuilder() {
                           </div>
 
                           {/* Operation */}
-                          <div className="col-span-3">
+                          <div className="md:col-span-3">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              Operation
+                            </label>
                             <Select
                               options={operationOptions}
                               value={problem.operation}
@@ -303,7 +386,10 @@ export default function ExplicitBuilder() {
                           </div>
 
                           {/* Second Number */}
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              Second Number
+                            </label>
                             <Input
                               type="number"
                               min={0}
@@ -321,7 +407,10 @@ export default function ExplicitBuilder() {
                           </div>
 
                           {/* Result */}
-                          <div className="col-span-2 text-center">
+                          <div className="md:col-span-2 text-center">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              Result
+                            </label>
                             <div
                               className={`px-4 py-3 rounded-xl border-2 ${
                                 validationError
@@ -329,7 +418,7 @@ export default function ExplicitBuilder() {
                                   : "bg-gray-50 border-gray-200"
                               }`}
                             >
-                              <span className="text-gray-400 text-lg font-semibold mr-2">
+                              <span className="text-gray-400 text-lg font-semibold mr-2 hidden md:inline">
                                 =
                               </span>
                               <span
@@ -352,7 +441,7 @@ export default function ExplicitBuilder() {
                             variant="ghost"
                             size="sm"
                             onClick={() => removeProblem(index)}
-                            className="flex-shrink-0 text-red-600 hover:bg-red-50"
+                            className="flex-shrink-0 text-red-600 hover:bg-red-50 self-start"
                           >
                             🗑️
                           </Button>

@@ -21,6 +21,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Only removes practice history while keeping the challenge definition intact
   - Menu item disabled when no practice sessions exist for the challenge
   - Analytics tracking for session clearing actions
+- **Worksheet Template System** - Pre-built templates to simplify custom challenge creation for parents
+  - `TemplateSection` React component with expandable template selector and grade level filtering
+  - Templates organized by builder type: Quick Generator (operation + range based) and Custom Problems (explicit problems)
+  - Grade-level specific templates for Kindergarten, Grade 1, and Grade 2
+  - Color-coded template buttons matching builder themes (primary/secondary)
+  - Auto-fill functionality: selecting a template pre-populates form fields with template values
+  - Toast notifications confirming template selection with auto-scroll to form
+  - Responsive design: tabs for grade selection on desktop, dropdown on mobile
+  - Comprehensive TemplateSection component tests (13 test cases) covering:
+    - Collapsed/expanded state rendering
+    - Grade level filtering functionality
+    - Template selection and callback handling
+    - Color scheme support (primary/secondary)
+    - Empty state handling
+    - Close button functionality
+  - All templates validated to ensure descriptions match actual worksheet generation behavior
 - **Accessibility Settings Application** - High contrast and large text modes now fully functional
   - Enhanced Material 3 high contrast color schemes (dark & light) maintaining WCAG AAA compliance
   - Dark mode: Vivid yellow/bright blue/green on dark backgrounds (4.5:1+ text contrast)
@@ -65,6 +81,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added button to open math-worksheet.gohk.xyz worksheet creator directly from the app
   - Included website URL (math-worksheet.gohk.xyz) in instructions for parents to visit on computer
   - Updated schema validation reference to https://math-worksheet.gohk.xyz/challenge-schema.json
+
+### Fixed
+- **Template Description Accuracy** - Fixed Grade 2 "Divide Basics" template description mismatch
+  - Updated description from "divide by 1-5" to "numbers 2-10" to accurately reflect Quick Generator constraints
+  - Quick Generator can only control operation type and number range, not specific divisors
+  - Changed number range from 2-20 to 2-10 for more appropriate basic division practice
+  - Ensures all template descriptions match actual worksheet generation behavior
+- **TypeScript Type Compatibility in Builders** - Fixed build errors in template handler callbacks
+  - Updated ExplicitBuilder and GeneratedBuilder callback handlers to accept union types
+  - Added type guards to ensure correct template type before accessing type-specific properties
+  - Allows TemplateSection to pass either template type to both builders safely
 
 ## [1.9.0] - 2025-12-22
 
