@@ -4,15 +4,21 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Card from "@/components/Card";
+import TemplateSection from "@/components/TemplateSection";
+import Toast from "@/components/Toast";
 import {
   GeneratedChallengeSpecSchema,
   type MathOperation,
 } from "@/lib/schemas/challenge-schema";
+import { generatedTemplates, type GeneratedTemplate } from "@/lib/templates";
 import { z } from "zod";
 
 export default function GeneratedBuilder() {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isTemplateExpanded, setIsTemplateExpanded] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
@@ -28,6 +34,29 @@ export default function GeneratedBuilder() {
     { value: "multiplication", label: "✖️ Multiplication" },
     { value: "division", label: "➗ Division" },
   ];
+
+  const handleTemplateSelect = (template: GeneratedTemplate) => {
+    const config = template.config;
+    setFormData({
+      title: config.title,
+      subtitle: config.subtitle,
+      operation: config.operation,
+      problemCount: config.problemCount,
+      minNumber: config.numberRange.min,
+      maxNumber: config.numberRange.max,
+    });
+
+    // Show toast notification
+    setToastMessage(`✨ "${template.name}" template applied!`);
+    setShowToast(true);
+
+    // Scroll to form
+    setTimeout(() => {
+      document
+        .querySelector("form")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +122,20 @@ export default function GeneratedBuilder() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-2xl">
+        {/* Toast Notification */}
+        <Toast
+          message={toastMessage}
+          isVisible={showToast}
+          onClose={() => setShowToast(false)}
+        />
+
+        {/* Templates Section */}
+        <TemplateSection
+          templates={generatedTemplates}
+          onTemplateSelect={handleTemplateSelect}
+          isExpanded={isTemplateExpanded}
+          onToggle={setIsTemplateExpanded}
+        />
         {/* Intro Card */}
         <Card className="mb-6 bg-gradient-to-br from-primary-50 to-blue-50 border-2 border-primary-200 p-6">
           <div className="flex items-start gap-4">

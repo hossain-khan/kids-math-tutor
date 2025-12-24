@@ -4,16 +4,22 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import Card from "@/components/Card";
+import TemplateSection from "@/components/TemplateSection";
+import Toast from "@/components/Toast";
 import {
   ExplicitChallengeSpecSchema,
   type MathOperation,
   type ProblemSpec,
 } from "@/lib/schemas/challenge-schema";
+import { explicitTemplates, type ExplicitTemplate } from "@/lib/templates";
 import { z } from "zod";
 
 export default function ExplicitBuilder() {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isTemplateExpanded, setIsTemplateExpanded] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
@@ -30,6 +36,26 @@ export default function ExplicitBuilder() {
     { value: "multiplication", label: "✖️ Multiplication" },
     { value: "division", label: "➗ Division" },
   ];
+
+  const handleTemplateSelect = (template: ExplicitTemplate) => {
+    const config = template.config;
+    setFormData({
+      title: config.title,
+      subtitle: config.subtitle,
+    });
+    setProblems(config.problems);
+
+    // Show toast notification
+    setToastMessage(`✨ "${template.name}" template applied!`);
+    setShowToast(true);
+
+    // Scroll to form
+    setTimeout(() => {
+      document
+        .querySelector("form")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
 
   const addProblem = () => {
     if (problems.length < 50) {
@@ -176,6 +202,20 @@ export default function ExplicitBuilder() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-3xl">
+        {/* Toast Notification */}
+        <Toast
+          message={toastMessage}
+          isVisible={showToast}
+          onClose={() => setShowToast(false)}
+        />
+
+        {/* Templates Section */}
+        <TemplateSection
+          templates={explicitTemplates}
+          onTemplateSelect={handleTemplateSelect}
+          isExpanded={isTemplateExpanded}
+          onToggle={setIsTemplateExpanded}
+        />
         {/* Intro Card */}
         <Card className="mb-6 bg-gradient-to-br from-secondary-50 to-purple-50 border-2 border-secondary-200 p-6">
           <div className="flex items-start gap-4">
