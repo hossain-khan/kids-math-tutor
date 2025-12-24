@@ -139,9 +139,9 @@ class NumberSequencePresenter
                         delay(1000L)
                         timeRemaining--
 
-                        // Play warning at 10 seconds
+                        // Play countdown tick at 10 seconds
                         if (timeRemaining == WARNING_THRESHOLD_SECONDS && !warningPlayed) {
-                            audioService.playWarning()
+                            audioService.playCountdown()
                             hapticService.triggerLongPress()
                             warningPlayed = true
                             Timber.d("[NumberSequence] Warning sound played at $timeRemaining seconds")

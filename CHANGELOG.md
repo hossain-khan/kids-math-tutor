@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **10-Second Warning Audio** - Changed to use countdown tick sound for better audio consistency
+  - When 10 seconds remain during gameplay, now plays `countdown_tick` sound
+  - Applied to Math Race and Number Sequence games
+  - Provides consistent audio cue for time warning
+
 ### Fixed
 - **Math Race Status Bar Overlap** - Fixed timer and score overlapping with Android status bar
   - Added `systemBarsPadding()` modifier to game screen to respect system insets
