@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Release Build Optimization** - Android app now uses R8 code minification for release builds
+  - Enabled minification (`isMinifyEnabled = true`) for production APK/bundle
+  - Added comprehensive ProGuard keep rules for Circuit, Metro, Firebase, Room, and Compose
+  - Reduces APK/bundle size and provides code obfuscation for production
+  - Verified working with clean release build (no ProGuard warnings)
+  - Ready for Google Play Store distribution
+
 ### Added
 - **Daily Accuracy Details Screen** - New screen showing daily accuracy data from practice sessions
   - Accessible by tapping on the "Accuracy" card in the My Stats screen
