@@ -177,6 +177,11 @@ fun ParentChallengesUi(
                         onArchiveClick = {
                             state.eventSink(ParentChallengesScreen.Event.ArchiveChallenge(it.id))
                         },
+                        onClearSessionsClick = {
+                            state.eventSink(
+                                ParentChallengesScreen.Event.ClearSessionsRequested(it),
+                            )
+                        },
                         onDeleteClick = {
                             state.eventSink(
                                 ParentChallengesScreen.Event.DeleteChallengeRequested(it),
@@ -198,6 +203,21 @@ fun ParentChallengesUi(
                 },
                 onDismiss = {
                     state.eventSink(ParentChallengesScreen.Event.CancelDelete)
+                },
+            )
+        }
+
+        // Clear sessions confirmation dialog
+        if (state.showClearSessionsConfirmation && state.challengeToClearSessions != null) {
+            ClearSessionsConfirmationDialog(
+                challenge = state.challengeToClearSessions,
+                onConfirm = {
+                    state.eventSink(
+                        ParentChallengesScreen.Event.ConfirmClearSessions(state.challengeToClearSessions.id),
+                    )
+                },
+                onDismiss = {
+                    state.eventSink(ParentChallengesScreen.Event.CancelClearSessions)
                 },
             )
         }
@@ -329,6 +349,7 @@ private fun ChallengesList(
     challenges: List<CustomChallenge>,
     onChallengeClick: (CustomChallenge) -> Unit,
     onArchiveClick: (CustomChallenge) -> Unit,
+    onClearSessionsClick: (CustomChallenge) -> Unit,
     onDeleteClick: (CustomChallenge) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -341,6 +362,7 @@ private fun ChallengesList(
                 challenge = challenge,
                 onClick = onChallengeClick,
                 onArchiveClick = onArchiveClick,
+                onClearSessionsClick = onClearSessionsClick,
                 onDeleteClick = onDeleteClick,
             )
         }
@@ -356,6 +378,7 @@ private fun ChallengeListItem(
     challenge: CustomChallenge,
     onClick: (CustomChallenge) -> Unit,
     onArchiveClick: (CustomChallenge) -> Unit,
+    onClearSessionsClick: (CustomChallenge) -> Unit,
     onDeleteClick: (CustomChallenge) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -395,6 +418,7 @@ private fun ChallengeListItem(
                 DropdownMenuButton(
                     challenge = challenge,
                     onArchive = onArchiveClick,
+                    onClearSessions = onClearSessionsClick,
                     onDelete = onDeleteClick,
                 )
             }
@@ -415,13 +439,20 @@ private fun ChallengeListItem(
 private fun DropdownMenuButton(
     challenge: CustomChallenge,
     onArchive: (CustomChallenge) -> Unit,
+    onClearSessions: (CustomChallenge) -> Unit,
     onDelete: (CustomChallenge) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = modifier) {
-        IconButton(onClick = { expanded = true }) {
+        IconButton(
+            onClick = { expanded = true },
+            modifier =
+                Modifier
+                    .size(48.dp) // Increased from default 40.dp for bigger touch area
+                    .padding(4.dp), // Padding inside the button for the icon
+        ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "More options",
@@ -445,6 +476,20 @@ private fun DropdownMenuButton(
                         contentDescription = null,
                     )
                 },
+            )
+            DropdownMenuItem(
+                text = { Text("Clear Sessions") },
+                onClick = {
+                    onClearSessions(challenge)
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = null,
+                    )
+                },
+                enabled = challenge.practiceHistory.isNotEmpty(),
             )
             DropdownMenuItem(
                 text = { Text("Delete") },
@@ -570,6 +615,37 @@ private fun DeleteConfirmationDialog(
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text("Delete")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        },
+    )
+}
+
+/**
+ * Confirmation dialog for clearing practice sessions.
+ */
+@Composable
+private fun ClearSessionsConfirmationDialog(
+    challenge: CustomChallenge,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Clear Practice Sessions?") },
+        text = {
+            Text(
+                "Are you sure you want to clear all practice sessions for \"${challenge.title}\"? " +
+                    "This will remove the practice history but keep the challenge. This action cannot be undone.",
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Clear")
             }
         },
         dismissButton = {

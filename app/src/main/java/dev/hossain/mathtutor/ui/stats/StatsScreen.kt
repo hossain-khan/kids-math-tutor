@@ -40,5 +40,10 @@ data object StatsScreen : Screen {
          * User pressed the back button.
          */
         data object BackPressed : Event
+
+        /**
+         * User clicked on the accuracy card.
+         */
+        data object AccuracyClicked : Event
     }
 }

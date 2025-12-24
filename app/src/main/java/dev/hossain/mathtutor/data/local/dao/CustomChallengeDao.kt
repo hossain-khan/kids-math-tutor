@@ -97,4 +97,13 @@ interface CustomChallengeDao {
      */
     @Query("DELETE FROM custom_challenges WHERE id = :id")
     suspend fun deleteChallenge(id: String)
+
+    /**
+     * Deletes all practice sessions for a specific challenge.
+     * This clears the practice history but keeps the challenge itself.
+     *
+     * @param challengeId The unique identifier of the challenge
+     */
+    @Query("DELETE FROM challenge_practice_sessions WHERE challengeId = :challengeId")
+    suspend fun clearChallengeSessions(challengeId: String)
 }
