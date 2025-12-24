@@ -8,6 +8,30 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.ui.component.TopBarFeatureColors
+import dev.hossain.mathtutor.ui.theme.DarkBackground
+import dev.hossain.mathtutor.ui.theme.DarkError
+import dev.hossain.mathtutor.ui.theme.DarkOnBackground
+import dev.hossain.mathtutor.ui.theme.DarkOnError
+import dev.hossain.mathtutor.ui.theme.DarkOnPrimary
+import dev.hossain.mathtutor.ui.theme.DarkOnSecondary
+import dev.hossain.mathtutor.ui.theme.DarkOnSurface
+import dev.hossain.mathtutor.ui.theme.DarkOnTertiary
+import dev.hossain.mathtutor.ui.theme.DarkPrimary
+import dev.hossain.mathtutor.ui.theme.DarkSecondary
+import dev.hossain.mathtutor.ui.theme.DarkSurface
+import dev.hossain.mathtutor.ui.theme.DarkTertiary
+import dev.hossain.mathtutor.ui.theme.LightBackground
+import dev.hossain.mathtutor.ui.theme.LightError
+import dev.hossain.mathtutor.ui.theme.LightOnBackground
+import dev.hossain.mathtutor.ui.theme.LightOnError
+import dev.hossain.mathtutor.ui.theme.LightOnPrimary
+import dev.hossain.mathtutor.ui.theme.LightOnSecondary
+import dev.hossain.mathtutor.ui.theme.LightOnSurface
+import dev.hossain.mathtutor.ui.theme.LightOnTertiary
+import dev.hossain.mathtutor.ui.theme.LightPrimary
+import dev.hossain.mathtutor.ui.theme.LightSecondary
+import dev.hossain.mathtutor.ui.theme.LightSurface
+import dev.hossain.mathtutor.ui.theme.LightTertiary
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -70,6 +94,7 @@ class ColorPaletteViewerPresenter
             listOf(
                 buildNavigationColorsGroup(),
                 buildTopAppBarColorsGroup(),
+                buildThemeColorsGroup(),
             )
 
         /**
@@ -159,6 +184,138 @@ class ColorPaletteViewerPresenter
                             name = "SETTINGS - Dark Mode",
                             color = TopBarFeatureColors.purpleAccentDark,
                             usage = "Settings screen in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                    ),
+            )
+
+        /**
+         * Builds the Theme Colors group with Material 3 semantic colors for light and dark modes.
+         */
+        private fun buildThemeColorsGroup(): ColorPaletteViewerScreen.ColorGroup =
+            ColorPaletteViewerScreen.ColorGroup(
+                title = "Theme Colors",
+                description = "Material 3 semantic colors for light and dark modes",
+                colors =
+                    listOf(
+                        // Light Mode - Primary
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Primary - Light",
+                            color = LightPrimary,
+                            usage = "Primary interactive elements in light mode",
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Primary - Light",
+                            color = LightOnPrimary,
+                            usage = "Content on primary color in light mode",
+                        ),
+                        // Light Mode - Secondary
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Secondary - Light",
+                            color = LightSecondary,
+                            usage = "Secondary interactive elements in light mode",
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Secondary - Light",
+                            color = LightOnSecondary,
+                            usage = "Content on secondary color in light mode",
+                        ),
+                        // Light Mode - Tertiary
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Tertiary - Light",
+                            color = LightTertiary,
+                            usage = "Tertiary interactive elements in light mode",
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Tertiary - Light",
+                            color = LightOnTertiary,
+                            usage = "Content on tertiary color in light mode",
+                        ),
+                        // Light Mode - Error
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Error - Light",
+                            color = LightError,
+                            usage = "Error and warning states in light mode",
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Error - Light",
+                            color = LightOnError,
+                            usage = "Content on error color in light mode",
+                        ),
+                        // Light Mode - Surface
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Surface - Light",
+                            color = LightSurface,
+                            usage = "Surface backgrounds in light mode",
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Surface - Light",
+                            color = LightOnSurface,
+                            usage = "Text and content on surface in light mode",
+                        ),
+                        // Dark Mode - Primary
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Primary - Dark",
+                            color = DarkPrimary,
+                            usage = "Primary interactive elements in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Primary - Dark",
+                            color = DarkOnPrimary,
+                            usage = "Content on primary color in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        // Dark Mode - Secondary
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Secondary - Dark",
+                            color = DarkSecondary,
+                            usage = "Secondary interactive elements in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Secondary - Dark",
+                            color = DarkOnSecondary,
+                            usage = "Content on secondary color in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        // Dark Mode - Tertiary
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Tertiary - Dark",
+                            color = DarkTertiary,
+                            usage = "Tertiary interactive elements in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Tertiary - Dark",
+                            color = DarkOnTertiary,
+                            usage = "Content on tertiary color in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        // Dark Mode - Error
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Error - Dark",
+                            color = DarkError,
+                            usage = "Error and warning states in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Error - Dark",
+                            color = DarkOnError,
+                            usage = "Content on error color in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        // Dark Mode - Surface
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "Surface - Dark",
+                            color = DarkSurface,
+                            usage = "Surface backgrounds in dark mode",
+                            isDarkModeVariant = true,
+                        ),
+                        ColorPaletteViewerScreen.ColorEntry(
+                            name = "On Surface - Dark",
+                            color = DarkOnSurface,
+                            usage = "Text and content on surface in dark mode",
                             isDarkModeVariant = true,
                         ),
                     ),
