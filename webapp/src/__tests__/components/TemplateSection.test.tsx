@@ -297,7 +297,7 @@ describe("TemplateSection Component", () => {
     );
 
     // Check for grade level tabs/buttons on desktop
-    expect(screen.getByRole("button", { name: "K" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Kindergarten" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Grade 1" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Grade 2" })).toBeInTheDocument();
   });
