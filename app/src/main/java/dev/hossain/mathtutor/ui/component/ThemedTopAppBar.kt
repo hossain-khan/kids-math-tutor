@@ -11,6 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dev.hossain.mathtutor.ui.theme.customGreenDark
+import dev.hossain.mathtutor.ui.theme.customGreenLight
+import dev.hossain.mathtutor.ui.theme.customPurpleDark
+import dev.hossain.mathtutor.ui.theme.customPurpleLight
+import dev.hossain.mathtutor.ui.theme.customRaspberryDark
+import dev.hossain.mathtutor.ui.theme.customRaspberryLight
+import dev.hossain.mathtutor.ui.theme.customTealDark
+import dev.hossain.mathtutor.ui.theme.customTealLight
+import dev.hossain.mathtutor.ui.theme.onCustomGreenDark
+import dev.hossain.mathtutor.ui.theme.onCustomPurpleDark
+import dev.hossain.mathtutor.ui.theme.onCustomRaspberryDark
+import dev.hossain.mathtutor.ui.theme.onCustomTealDark
 
 /**
  * Enum for top-level feature colors in the app.
@@ -34,10 +46,10 @@ enum class TopBarFeature {
 }
 
 /**
- * Light and dark mode versions of the vibrant navigation colors.
+ * Material Theme Builder custom colors for top bar features.
  *
- * Light mode: Lighter, soothing versions for excellent readability on white backgrounds
- * Dark mode: Darker, more saturated versions that are easier on eyes in dark mode
+ * Light mode: Lighter, vibrant custom colors for excellent readability on white backgrounds
+ * Dark mode: Darker, more saturated custom colors that are easier on eyes in dark mode
  *
  * All colors maintain high contrast with white text for excellent accessibility.
  *
@@ -45,21 +57,21 @@ enum class TopBarFeature {
  * without exposing the entire TopAppBar styling logic.
  */
 internal object TopBarFeatureColors {
-    // RED: Matches Games nav
-    val redAccentLight = Color(0xFFEF5350) // Light mode
-    val redAccentDark = Color(0xFFE53935) // Dark mode - more saturated
+    // RASPBERRY: Matches Games nav
+    val raspberryAccentLight = customRaspberryLight
+    val raspberryAccentDark = onCustomRaspberryDark
 
-    // BLUE: Matches Parents nav
-    val blueAccentLight = Color(0xFF42A5F5) // Light mode
-    val blueAccentDark = Color(0xFF1565C0) // Dark mode - darker for dark theme
+    // TEAL: Matches Parents nav
+    val tealAccentLight = customTealLight
+    val tealAccentDark = onCustomTealDark
 
     // GREEN: Matches Home nav
-    val greenAccentLight = Color(0xFF66BB6A) // Light mode
-    val greenAccentDark = Color(0xFF2E7D32) // Dark mode - matches nav color
+    val greenAccentLight = customGreenLight
+    val greenAccentDark = onCustomGreenDark
 
     // PURPLE: Matches Settings nav
-    val purpleAccentLight = Color(0xFFAB47BC) // Light mode
-    val purpleAccentDark = Color(0xFF7B1FA2) // Dark mode - matches nav color
+    val purpleAccentLight = customPurpleLight
+    val purpleAccentDark = onCustomPurpleDark
 }
 
 /**
@@ -76,12 +88,12 @@ fun TopBarFeature.getColors(): Pair<androidx.compose.ui.graphics.Color, androidx
 
     return when (this) {
         TopBarFeature.PRACTICE, TopBarFeature.GAMES -> {
-            val color = if (isDarkMode) TopBarFeatureColors.redAccentDark else TopBarFeatureColors.redAccentLight
+            val color = if (isDarkMode) TopBarFeatureColors.raspberryAccentDark else TopBarFeatureColors.raspberryAccentLight
             color to Color.White
         }
 
         TopBarFeature.STATS -> {
-            val color = if (isDarkMode) TopBarFeatureColors.blueAccentDark else TopBarFeatureColors.blueAccentLight
+            val color = if (isDarkMode) TopBarFeatureColors.tealAccentDark else TopBarFeatureColors.tealAccentLight
             color to Color.White
         }
 

@@ -2,76 +2,269 @@ package dev.hossain.mathtutor.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Light Theme Colors - Vibrant and playful for kids
-// Primary: Bright Blue - energetic and friendly
-// Made internal to allow reuse in developer tools (e.g., color palette viewer)
-// for comprehensive color documentation without exposing theme implementation details.
-internal val LightPrimary = Color(0xFF2196F3) // Bright Blue
-internal val LightOnPrimary = Color(0xFFFFFFFF) // White
-internal val LightPrimaryContainer = Color(0xFFBBDEFB) // Light Blue container
-internal val LightOnPrimaryContainer = Color(0xFF0D47A1) // Dark Blue text
+// Material 3 Color Scheme from Material Theme Builder
+// Generated with warm, earthy brown tones
+// See https://material-foundation.github.io/material-theme-builder/
 
-// Secondary: Vibrant Orange - warm and exciting
-internal val LightSecondary = Color(0xFFFF9800) // Vibrant Orange
-internal val LightOnSecondary = Color(0xFFFFFFFF) // White
-internal val LightSecondaryContainer = Color(0xFFFFE0B2) // Light Orange container
-internal val LightOnSecondaryContainer = Color(0xFFE65100) // Dark Orange text
+internal val primaryLight = Color(0xFF835414)
+internal val onPrimaryLight = Color(0xFFFFFFFF)
+internal val primaryContainerLight = Color(0xFFFFDDB9)
+internal val onPrimaryContainerLight = Color(0xFF663E00)
+internal val secondaryLight = Color(0xFF715A41)
+internal val onSecondaryLight = Color(0xFFFFFFFF)
+internal val secondaryContainerLight = Color(0xFFFDDDBD)
+internal val onSecondaryContainerLight = Color(0xFF58432B)
+internal val tertiaryLight = Color(0xFF55633D)
+internal val onTertiaryLight = Color(0xFFFFFFFF)
+internal val tertiaryContainerLight = Color(0xFFD8E9B8)
+internal val onTertiaryContainerLight = Color(0xFF3D4B27)
+internal val errorLight = Color(0xFFBA1A1A)
+internal val onErrorLight = Color(0xFFFFFFFF)
+internal val errorContainerLight = Color(0xFFFFDAD6)
+internal val onErrorContainerLight = Color(0xFF93000A)
+internal val backgroundLight = Color(0xFFFFF8F4)
+internal val onBackgroundLight = Color(0xFF211A13)
+internal val surfaceLight = Color(0xFFFFF8F4)
+internal val onSurfaceLight = Color(0xFF211A13)
+internal val surfaceVariantLight = Color(0xFFE6E3D1)
+internal val onSurfaceVariantLight = Color(0xFF48473A)
+internal val outlineLight = Color(0xFF797869)
+internal val outlineVariantLight = Color(0xFFCAC7B6)
+internal val scrimLight = Color(0xFF000000)
+internal val inverseSurfaceLight = Color(0xFF372F27)
+internal val inverseOnSurfaceLight = Color(0xFFFCEEE2)
+internal val inversePrimaryLight = Color(0xFFF8BB71)
+internal val surfaceDimLight = Color(0xFFE5D8CC)
+internal val surfaceBrightLight = Color(0xFFFFF8F4)
+internal val surfaceContainerLowestLight = Color(0xFFFFFFFF)
+internal val surfaceContainerLowLight = Color(0xFFFFF1E6)
+internal val surfaceContainerLight = Color(0xFFF9EBE0)
+internal val surfaceContainerHighLight = Color(0xFFF4E6DA)
+internal val surfaceContainerHighestLight = Color(0xFFEEE0D5)
 
-// Tertiary: Cheerful Green - positive and encouraging
-internal val LightTertiary = Color(0xFF4CAF50) // Cheerful Green
-internal val LightOnTertiary = Color(0xFFFFFFFF) // White
-internal val LightTertiaryContainer = Color(0xFFC8E6C9) // Light Green container
-internal val LightOnTertiaryContainer = Color(0xFF1B5E20) // Dark Green text
+internal val primaryDark = Color(0xFFF8BB71)
+internal val onPrimaryDark = Color(0xFF472A00)
+internal val primaryContainerDark = Color(0xFF663E00)
+internal val onPrimaryContainerDark = Color(0xFFFFDDB9)
+internal val secondaryDark = Color(0xFFDFC1A2)
+internal val onSecondaryDark = Color(0xFF3F2D17)
+internal val secondaryContainerDark = Color(0xFF58432B)
+internal val onSecondaryContainerDark = Color(0xFFFDDDBD)
+internal val tertiaryDark = Color(0xFFBCCD9D)
+internal val onTertiaryDark = Color(0xFF273513)
+internal val tertiaryContainerDark = Color(0xFF3D4B27)
+internal val onTertiaryContainerDark = Color(0xFFD8E9B8)
+internal val errorDark = Color(0xFFFFB4AB)
+internal val onErrorDark = Color(0xFF690005)
+internal val errorContainerDark = Color(0xFF93000A)
+internal val onErrorContainerDark = Color(0xFFFFDAD6)
+internal val backgroundDark = Color(0xFF18120C)
+internal val onBackgroundDark = Color(0xFFEEE0D5)
+internal val surfaceDark = Color(0xFF18120C)
+internal val onSurfaceDark = Color(0xFFEEE0D5)
+internal val surfaceVariantDark = Color(0xFF48473A)
+internal val onSurfaceVariantDark = Color(0xFFCAC7B6)
+internal val outlineDark = Color(0xFF939182)
+internal val outlineVariantDark = Color(0xFF48473A)
+internal val scrimDark = Color(0xFF000000)
+internal val inverseSurfaceDark = Color(0xFFEEE0D5)
+internal val inverseOnSurfaceDark = Color(0xFF372F27)
+internal val inversePrimaryDark = Color(0xFF835414)
+internal val surfaceDimDark = Color(0xFF18120C)
+internal val surfaceBrightDark = Color(0xFF403830)
+internal val surfaceContainerLowestDark = Color(0xFF130D07)
+internal val surfaceContainerLowDark = Color(0xFF211A13)
+internal val surfaceContainerDark = Color(0xFF251E17)
+internal val surfaceContainerHighDark = Color(0xFF302921)
+internal val surfaceContainerHighestDark = Color(0xFF3B332C)
 
-// Error: Bright Red - clear feedback
-internal val LightError = Color(0xFFF44336) // Bright Red
-internal val LightOnError = Color(0xFFFFFFFF) // White
-internal val LightErrorContainer = Color(0xFFFFCDD2) // Light Red container
-internal val LightOnErrorContainer = Color(0xFFC62828) // Dark Red text
+// Medium contrast variants for light theme
+internal val primaryLightMediumContrast = Color(0xFF4F2F00)
+internal val onPrimaryLightMediumContrast = Color(0xFFFFFFFF)
+internal val primaryContainerLightMediumContrast = Color(0xFF946322)
+internal val onPrimaryContainerLightMediumContrast = Color(0xFFFFFFFF)
+internal val secondaryLightMediumContrast = Color(0xFF45331C)
+internal val onSecondaryLightMediumContrast = Color(0xFFFFFFFF)
+internal val secondaryContainerLightMediumContrast = Color(0xFF81694E)
+internal val onSecondaryContainerLightMediumContrast = Color(0xFFFFFFFF)
+internal val tertiaryLightMediumContrast = Color(0xFF2D3A18)
+internal val onTertiaryLightMediumContrast = Color(0xFFFFFFFF)
+internal val tertiaryContainerLightMediumContrast = Color(0xFF63724A)
+internal val onTertiaryContainerLightMediumContrast = Color(0xFFFFFFFF)
+internal val errorLightMediumContrast = Color(0xFF740006)
+internal val onErrorLightMediumContrast = Color(0xFFFFFFFF)
+internal val errorContainerLightMediumContrast = Color(0xFFCF2C27)
+internal val onErrorContainerLightMediumContrast = Color(0xFFFFFFFF)
+internal val backgroundLightMediumContrast = Color(0xFFFFF8F4)
+internal val onBackgroundLightMediumContrast = Color(0xFF211A13)
+internal val surfaceLightMediumContrast = Color(0xFFFFF8F4)
+internal val onSurfaceLightMediumContrast = Color(0xFF16100A)
+internal val surfaceVariantLightMediumContrast = Color(0xFFE6E3D1)
+internal val onSurfaceVariantLightMediumContrast = Color(0xFF37372A)
+internal val outlineLightMediumContrast = Color(0xFF545345)
+internal val outlineVariantLightMediumContrast = Color(0xFF6F6E5F)
+internal val scrimLightMediumContrast = Color(0xFF000000)
+internal val inverseSurfaceLightMediumContrast = Color(0xFF372F27)
+internal val inverseOnSurfaceLightMediumContrast = Color(0xFFFCEEE2)
+internal val inversePrimaryLightMediumContrast = Color(0xFFF8BB71)
+internal val surfaceDimLightMediumContrast = Color(0xFFD1C4B9)
+internal val surfaceBrightLightMediumContrast = Color(0xFFFFF8F4)
+internal val surfaceContainerLowestLightMediumContrast = Color(0xFFFFFFFF)
+internal val surfaceContainerLowLightMediumContrast = Color(0xFFFFF1E6)
+internal val surfaceContainerLightMediumContrast = Color(0xFFF4E6DA)
+internal val surfaceContainerHighLightMediumContrast = Color(0xFFE8DACF)
+internal val surfaceContainerHighestLightMediumContrast = Color(0xFFDDCFC4)
 
-// Background and Surface: Clean and bright
-internal val LightBackground = Color(0xFFFFFBFE) // Off-white
-internal val LightOnBackground = Color(0xFF1C1B1F) // Dark gray
-internal val LightSurface = Color(0xFFFFFBFE) // Off-white (consistent with background)
-internal val LightOnSurface = Color(0xFF1C1B1F) // Dark gray
+// High contrast variants for light theme
+internal val primaryLightHighContrast = Color(0xFF412600)
+internal val onPrimaryLightHighContrast = Color(0xFFFFFFFF)
+internal val primaryContainerLightHighContrast = Color(0xFF694000)
+internal val onPrimaryContainerLightHighContrast = Color(0xFFFFFFFF)
+internal val secondaryLightHighContrast = Color(0xFF3A2913)
+internal val onSecondaryLightHighContrast = Color(0xFFFFFFFF)
+internal val secondaryContainerLightHighContrast = Color(0xFF5A452D)
+internal val onSecondaryContainerLightHighContrast = Color(0xFFFFFFFF)
+internal val tertiaryLightHighContrast = Color(0xFF23300F)
+internal val onTertiaryLightHighContrast = Color(0xFFFFFFFF)
+internal val tertiaryContainerLightHighContrast = Color(0xFF404E29)
+internal val onTertiaryContainerLightHighContrast = Color(0xFFFFFFFF)
+internal val errorLightHighContrast = Color(0xFF600004)
+internal val onErrorLightHighContrast = Color(0xFFFFFFFF)
+internal val errorContainerLightHighContrast = Color(0xFF98000A)
+internal val onErrorContainerLightHighContrast = Color(0xFFFFFFFF)
+internal val backgroundLightHighContrast = Color(0xFFFFF8F4)
+internal val onBackgroundLightHighContrast = Color(0xFF211A13)
+internal val surfaceLightHighContrast = Color(0xFFFFF8F4)
+internal val onSurfaceLightHighContrast = Color(0xFF000000)
+internal val surfaceVariantLightHighContrast = Color(0xFFE6E3D1)
+internal val onSurfaceVariantLightHighContrast = Color(0xFF000000)
+internal val outlineLightHighContrast = Color(0xFF2D2D21)
+internal val outlineVariantLightHighContrast = Color(0xFF4B4A3D)
+internal val scrimLightHighContrast = Color(0xFF000000)
+internal val inverseSurfaceLightHighContrast = Color(0xFF372F27)
+internal val inverseOnSurfaceLightHighContrast = Color(0xFFFFFFFF)
+internal val inversePrimaryLightHighContrast = Color(0xFFF8BB71)
+internal val surfaceDimLightHighContrast = Color(0xFFC3B7AC)
+internal val surfaceBrightLightHighContrast = Color(0xFFFFF8F4)
+internal val surfaceContainerLowestLightHighContrast = Color(0xFFFFFFFF)
+internal val surfaceContainerLowLightHighContrast = Color(0xFFFCEEE2)
+internal val surfaceContainerLightHighContrast = Color(0xFFEEE0D5)
+internal val surfaceContainerHighLightHighContrast = Color(0xFFDFD2C7)
+internal val surfaceContainerHighestLightHighContrast = Color(0xFFD1C4B9)
 
-internal val LightSurfaceVariant = Color(0xFFF5F5F5) // Very light gray
-internal val LightOnSurfaceVariant = Color(0xFF424242) // Medium gray
-internal val LightOutline = Color(0xFF757575) // Gray
-internal val LightOutlineVariant = Color(0xFFBDBDBD) // Light gray
+// Medium contrast variants for dark theme
+internal val primaryDarkMediumContrast = Color(0xFFFFD5A8)
+internal val onPrimaryDarkMediumContrast = Color(0xFF382000)
+internal val primaryContainerDarkMediumContrast = Color(0xFFBC8642)
+internal val onPrimaryContainerDarkMediumContrast = Color(0xFF000000)
+internal val secondaryDarkMediumContrast = Color(0xFFF6D7B7)
+internal val onSecondaryDarkMediumContrast = Color(0xFF33220D)
+internal val secondaryContainerDarkMediumContrast = Color(0xFFA78C70)
+internal val onSecondaryContainerDarkMediumContrast = Color(0xFF000000)
+internal val tertiaryDarkMediumContrast = Color(0xFFD2E3B2)
+internal val onTertiaryDarkMediumContrast = Color(0xFF1D2909)
+internal val tertiaryContainerDarkMediumContrast = Color(0xFF86966B)
+internal val onTertiaryContainerDarkMediumContrast = Color(0xFF000000)
+internal val errorDarkMediumContrast = Color(0xFFFFD2CC)
+internal val onErrorDarkMediumContrast = Color(0xFF540003)
+internal val errorContainerDarkMediumContrast = Color(0xFFFF5449)
+internal val onErrorContainerDarkMediumContrast = Color(0xFF000000)
+internal val backgroundDarkMediumContrast = Color(0xFF18120C)
+internal val onBackgroundDarkMediumContrast = Color(0xFFEEE0D5)
+internal val surfaceDarkMediumContrast = Color(0xFF18120C)
+internal val onSurfaceDarkMediumContrast = Color(0xFFFFFFFF)
+internal val surfaceVariantDarkMediumContrast = Color(0xFF48473A)
+internal val onSurfaceVariantDarkMediumContrast = Color(0xFFE0DDCB)
+internal val outlineDarkMediumContrast = Color(0xFFB5B2A2)
+internal val outlineVariantDarkMediumContrast = Color(0xFF939181)
+internal val scrimDarkMediumContrast = Color(0xFF000000)
+internal val inverseSurfaceDarkMediumContrast = Color(0xFFEEE0D5)
+internal val inverseOnSurfaceDarkMediumContrast = Color(0xFF302921)
+internal val inversePrimaryDarkMediumContrast = Color(0xFF673F00)
+internal val surfaceDimDarkMediumContrast = Color(0xFF18120C)
+internal val surfaceBrightDarkMediumContrast = Color(0xFF4B433B)
+internal val surfaceContainerLowestDarkMediumContrast = Color(0xFF0B0703)
+internal val surfaceContainerLowDarkMediumContrast = Color(0xFF231C15)
+internal val surfaceContainerDarkMediumContrast = Color(0xFF2E271F)
+internal val surfaceContainerHighDarkMediumContrast = Color(0xFF393129)
+internal val surfaceContainerHighestDarkMediumContrast = Color(0xFF443C34)
 
-// Dark Theme Colors - Softer vibrant colors for dark mode
-// Primary: Soft Blue - easy on eyes in dark mode
-internal val DarkPrimary = Color(0xFF64B5F6) // Soft Blue
-internal val DarkOnPrimary = Color(0xFF0D47A1) // Dark Blue
-internal val DarkPrimaryContainer = Color(0xFF1976D2) // Medium Blue container
-internal val DarkOnPrimaryContainer = Color(0xFFBBDEFB) // Light Blue text
+// High contrast variants for dark theme
+internal val primaryDarkHighContrast = Color(0xFFFFEDDD)
+internal val onPrimaryDarkHighContrast = Color(0xFF000000)
+internal val primaryContainerDarkHighContrast = Color(0xFFF4B76E)
+internal val onPrimaryContainerDarkHighContrast = Color(0xFF140900)
+internal val secondaryDarkHighContrast = Color(0xFFFFEDDD)
+internal val onSecondaryDarkHighContrast = Color(0xFF000000)
+internal val secondaryContainerDarkHighContrast = Color(0xFFDBBE9F)
+internal val onSecondaryContainerDarkHighContrast = Color(0xFF140900)
+internal val tertiaryDarkHighContrast = Color(0xFFE5F7C5)
+internal val onTertiaryDarkHighContrast = Color(0xFF000000)
+internal val tertiaryContainerDarkHighContrast = Color(0xFFB8C99A)
+internal val onTertiaryContainerDarkHighContrast = Color(0xFF060E00)
+internal val errorDarkHighContrast = Color(0xFFFFECE9)
+internal val onErrorDarkHighContrast = Color(0xFF000000)
+internal val errorContainerDarkHighContrast = Color(0xFFFFAEA4)
+internal val onErrorContainerDarkHighContrast = Color(0xFF220001)
+internal val backgroundDarkHighContrast = Color(0xFF18120C)
+internal val onBackgroundDarkHighContrast = Color(0xFFEEE0D5)
+internal val surfaceDarkHighContrast = Color(0xFF18120C)
+internal val onSurfaceDarkHighContrast = Color(0xFFFFFFFF)
+internal val surfaceVariantDarkHighContrast = Color(0xFF48473A)
+internal val onSurfaceVariantDarkHighContrast = Color(0xFFFFFFFF)
+internal val outlineDarkHighContrast = Color(0xFFF4F0DE)
+internal val outlineVariantDarkHighContrast = Color(0xFFC6C3B2)
+internal val scrimDarkHighContrast = Color(0xFF000000)
+internal val inverseSurfaceDarkHighContrast = Color(0xFFEEE0D5)
+internal val inverseOnSurfaceDarkHighContrast = Color(0xFF000000)
+internal val inversePrimaryDarkHighContrast = Color(0xFF673F00)
+internal val surfaceDimDarkHighContrast = Color(0xFF18120C)
+internal val surfaceBrightDarkHighContrast = Color(0xFF574F46)
+internal val surfaceContainerLowestDarkHighContrast = Color(0xFF000000)
+internal val surfaceContainerLowDarkHighContrast = Color(0xFF251E17)
+internal val surfaceContainerDarkHighContrast = Color(0xFF372F27)
+internal val surfaceContainerHighDarkHighContrast = Color(0xFF423A32)
+internal val surfaceContainerHighestDarkHighContrast = Color(0xFF4E453D)
 
-// Secondary: Soft Orange - warm in dark mode
-internal val DarkSecondary = Color(0xFFFFB74D) // Soft Orange
-internal val DarkOnSecondary = Color(0xFFE65100) // Dark Orange
-internal val DarkSecondaryContainer = Color(0xFFF57C00) // Medium Orange container
-internal val DarkOnSecondaryContainer = Color(0xFFFFE0B2) // Light Orange text
+// Custom extended colors
+internal val customGreenLight = Color(0xFF35693E)
+internal val onCustomGreenLight = Color(0xFFFFFFFF)
+internal val customGreenContainerLight = Color(0xFFB7F1BA)
+internal val onCustomGreenContainerLight = Color(0xFF1C5129)
+internal val customTealLight = Color(0xFF006874)
+internal val onCustomTealLight = Color(0xFFFFFFFF)
+internal val customTealContainerLight = Color(0xFF9EEFFD)
+internal val onCustomTealContainerLight = Color(0xFF004F57)
+internal val customPurpleLight = Color(0xFF6E528A)
+internal val onCustomPurpleLight = Color(0xFFFFFFFF)
+internal val customPurpleContainerLight = Color(0xFFEFDBFF)
+internal val onCustomPurpleContainerLight = Color(0xFF553B71)
+internal val customRaspberryLight = Color(0xFF8C4A5E)
+internal val onCustomRaspberryLight = Color(0xFFFFFFFF)
+internal val customRaspberryContainerLight = Color(0xFFFFD9E1)
+internal val onCustomRaspberryContainerLight = Color(0xFF703347)
+internal val customBrownLight = Color(0xFF895020)
+internal val onCustomBrownLight = Color(0xFFFFFFFF)
+internal val customBrownContainerLight = Color(0xFFFFDCC4)
+internal val onCustomBrownContainerLight = Color(0xFF6D3A09)
 
-// Tertiary: Soft Green - calming in dark mode
-internal val DarkTertiary = Color(0xFF81C784) // Soft Green
-internal val DarkOnTertiary = Color(0xFF1B5E20) // Dark Green
-internal val DarkTertiaryContainer = Color(0xFF388E3C) // Medium Green container
-internal val DarkOnTertiaryContainer = Color(0xFFC8E6C9) // Light Green text
-
-// Error: Soft Red - clear but not harsh
-internal val DarkError = Color(0xFFEF5350) // Soft Red
-internal val DarkOnError = Color(0xFFC62828) // Dark Red
-internal val DarkErrorContainer = Color(0xFFD32F2F) // Medium Red container
-internal val DarkOnErrorContainer = Color(0xFFFFCDD2) // Light Red text
-
-// Background and Surface: Dark but not pure black
-internal val DarkBackground = Color(0xFF1C1B1F) // Dark gray
-internal val DarkOnBackground = Color(0xFFE6E1E5) // Light gray
-internal val DarkSurface = Color(0xFF1C1B1F) // Dark gray
-internal val DarkOnSurface = Color(0xFFE6E1E5) // Light gray
-
-internal val DarkSurfaceVariant = Color(0xFF2C2C2C) // Medium gray
-internal val DarkOnSurfaceVariant = Color(0xFFBDBDBD) // Light gray
-internal val DarkOutline = Color(0xFF9E9E9E) // Lighter gray for dark mode
-internal val DarkOutlineVariant = Color(0xFF616161) // Medium gray
+internal val customGreenDark = Color(0xFF9CD4A0)
+internal val onCustomGreenDark = Color(0xFF003914)
+internal val customGreenContainerDark = Color(0xFF1C5129)
+internal val onCustomGreenContainerDark = Color(0xFFB7F1BA)
+internal val customTealDark = Color(0xFF81D3E0)
+internal val onCustomTealDark = Color(0xFF00363D)
+internal val customTealContainerDark = Color(0xFF004F57)
+internal val onCustomTealContainerDark = Color(0xFF9EEFFD)
+internal val customPurpleDark = Color(0xFFDABAF9)
+internal val onCustomPurpleDark = Color(0xFF3E2459)
+internal val customPurpleContainerDark = Color(0xFF553B71)
+internal val onCustomPurpleContainerDark = Color(0xFFEFDBFF)
+internal val customRaspberryDark = Color(0xFFFFB1C6)
+internal val onCustomRaspberryDark = Color(0xFF551D30)
+internal val customRaspberryContainerDark = Color(0xFF703347)
+internal val onCustomRaspberryContainerDark = Color(0xFFFFD9E1)
+internal val customBrownDark = Color(0xFFFFB781)
+internal val onCustomBrownDark = Color(0xFF4E2600)
+internal val customBrownContainerDark = Color(0xFF6D3A09)
+internal val onCustomBrownContainerDark = Color(0xFFFFDCC4)
