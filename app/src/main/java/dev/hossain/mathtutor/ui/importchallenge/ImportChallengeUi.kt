@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.ui.importchallenge
 
 import android.content.Intent
 import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,11 +44,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PreviewData
 import dev.zacsweers.metro.AppScope
+import timber.log.Timber
 import kotlin.time.Duration
 
 /**
@@ -477,8 +480,7 @@ private fun ParentInfoSection(modifier: Modifier = Modifier) {
 
             OutlinedButton(
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(worksheetUrl))
-                    context.startActivity(intent)
+                    openWorksheetCreator(context, worksheetUrl)
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -557,6 +559,35 @@ private fun ShareDetectionBanner(
                         },
                 )
             }
+        }
+    }
+}
+
+/**
+ * Helper to open the worksheet creator URL using Chrome Custom Tabs with fallback to ACTION_VIEW.
+ * Includes error handling to prevent crashes if no browser is available.
+ */
+private fun openWorksheetCreator(
+    context: android.content.Context,
+    url: String,
+) {
+    try {
+        val uri = url.toUri()
+        val builder = CustomTabsIntent.Builder().setShowTitle(true)
+        val customTabsIntent = builder.build()
+
+        customTabsIntent.launchUrl(context, uri)
+    } catch (e: Exception) {
+        Timber.e(e, "[ImportChallenge] CustomTabs failed, falling back to ACTION_VIEW for URL=%s", url)
+        // Fallback to ACTION_VIEW if Custom Tabs fails
+        try {
+            val intent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            context.startActivity(intent)
+        } catch (ignored: Exception) {
+            Timber.e(ignored, "[ImportChallenge] Failed to open URL via ACTION_VIEW: %s", url)
         }
     }
 }
