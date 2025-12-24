@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Daily Accuracy Details Screen** - New screen showing daily accuracy data from practice sessions
+  - Accessible by tapping on the "Accuracy" card in the My Stats screen
+  - Displays date-by-date accuracy breakdown with sessions count, total problems, and accuracy percentage
+  - Shows star rating (1-5 stars) for each day based on accuracy performance
+  - Material 3 design with proper theme colors and empty state handling
+  - Uses Circuit UDF architecture with reactive data flows from SessionRepository
+  - Groups sessions by date automatically using system timezone
+- **Custom Challenge Session Management** - Enhanced management options for custom challenges
+  - New "Clear Sessions" menu item in challenge overflow menu (between Archive and Delete)
+  - Confirmation dialog before clearing practice history for a challenge
+  - Only removes practice history while keeping the challenge definition intact
+  - Menu item disabled when no practice sessions exist for the challenge
+  - Analytics tracking for session clearing actions
 - **Worksheet Template System** - Pre-built templates to simplify custom challenge creation for parents
   - `TemplateSection` React component with expandable template selector and grade level filtering
   - Templates organized by builder type: Quick Generator (operation + range based) and Custom Problems (explicit problems)
@@ -58,6 +71,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Material 3 themed snackbar with primary container colors
 
 ### Changed
+- **Custom Challenges Screen UX Improvements** - Enhanced usability and accessibility
+  - Increased overflow button touch area from 40dp to 48dp for easier interaction
+  - Menu items now show appropriate icons for better visual recognition
 - **Import Challenge Flow Improvements** - Enhanced parent-focused UI and experience
   - Added informational section explaining the feature is for parents with clear instructions
   - Keyboard automatically dismisses when "Validate & Preview" button is pressed

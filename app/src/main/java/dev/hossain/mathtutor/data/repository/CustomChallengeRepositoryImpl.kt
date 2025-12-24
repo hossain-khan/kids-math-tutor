@@ -112,6 +112,17 @@ class CustomChallengeRepositoryImpl
             }
         }
 
+        override suspend fun clearChallengeSessions(challengeId: String) {
+            try {
+                Timber.d("CustomChallengeRepository: Clearing sessions for challenge id=$challengeId")
+                dao.clearChallengeSessions(challengeId)
+                Timber.d("CustomChallengeRepository: Challenge sessions cleared successfully")
+            } catch (e: Exception) {
+                Timber.e(e, "CustomChallengeRepository: Failed to clear challenge sessions")
+                throw e
+            }
+        }
+
         override fun observeAllChallenges(): Flow<List<CustomChallenge>> =
             dao.getAllChallenges().map { entities ->
                 CustomChallengeMapper.toDomainList(entities)

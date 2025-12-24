@@ -29,6 +29,8 @@ data object ParentChallengesScreen : Screen {
      * @property showArchived Whether to show archived challenges
      * @property showDeleteConfirmation Whether to show delete confirmation dialog
      * @property challengeToDelete Challenge pending deletion (for confirmation)
+     * @property showClearSessionsConfirmation Whether to show clear sessions confirmation dialog
+     * @property challengeToClearSessions Challenge pending session clearing (for confirmation)
      * @property importSuccessMessage Success message to show after importing a challenge
      * @property eventSink Handler for screen events
      */
@@ -38,6 +40,8 @@ data object ParentChallengesScreen : Screen {
         val showArchived: Boolean,
         val showDeleteConfirmation: Boolean = false,
         val challengeToDelete: CustomChallenge? = null,
+        val showClearSessionsConfirmation: Boolean = false,
+        val challengeToClearSessions: CustomChallenge? = null,
         val importSuccessMessage: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -83,6 +87,25 @@ data object ParentChallengesScreen : Screen {
          * User cancelled delete operation.
          */
         data object CancelDelete : Event
+
+        /**
+         * User requested to clear sessions for a challenge (shows confirmation).
+         */
+        data class ClearSessionsRequested(
+            val challenge: CustomChallenge,
+        ) : Event
+
+        /**
+         * User confirmed clearing sessions for a challenge.
+         */
+        data class ConfirmClearSessions(
+            val challengeId: String,
+        ) : Event
+
+        /**
+         * User cancelled clear sessions operation.
+         */
+        data object CancelClearSessions : Event
 
         /**
          * User toggled archived challenges visibility.
