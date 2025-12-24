@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Hex code (#RRGGBB format) for design/development reference
     - RGB values (rgb(r, g, b) format) for implementation reference
     - Usage description explaining where color is applied in the app
+  - **Widget Demo Group** - Live Material 3 components showcasing the theme in action:
+    - Primary, Outlined, and Tonal buttons
+    - Cards with semantic container colors (Primary, Secondary containers)
+    - Switches and Assist chips
+    - Semantic color indicators (Success with Tertiary, Warning with Secondary, Error)
+    - Shows how theme colors combine to create cohesive UI patterns
   - Accessible via "Quick Navigation" section in Developer Portal (debug builds only)
   - Helps developers and designers quickly reference and verify color consistency across the app
   - Useful for documenting design system colors and ensuring compliance with brand guidelines
