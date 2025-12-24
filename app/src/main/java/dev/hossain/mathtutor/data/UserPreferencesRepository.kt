@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import dev.hossain.mathtutor.audio.AudioConstants
 import dev.hossain.mathtutor.data.local.userPreferencesDataStore
 import dev.hossain.mathtutor.di.ApplicationContext
 import dev.zacsweers.metro.AppScope
@@ -116,7 +117,7 @@ class UserPreferencesRepositoryImpl
 
         override val volume: Flow<Float> =
             context.userPreferencesDataStore.data.map { preferences ->
-                preferences[PreferencesKeys.VOLUME] ?: 0.5f
+                preferences[PreferencesKeys.VOLUME] ?: AudioConstants.DEFAULT_SOUND_EFFECTS_VOLUME
             }
 
         override suspend fun setVolume(volume: Float) {

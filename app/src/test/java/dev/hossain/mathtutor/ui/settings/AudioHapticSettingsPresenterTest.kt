@@ -159,7 +159,7 @@ class AudioHapticSettingsPresenterTest {
         private val soundEffectsEnabledFlow = MutableStateFlow(true)
         private val backgroundMusicEnabledFlow = MutableStateFlow(false)
         private val hapticsEnabledFlow = MutableStateFlow(true)
-        private val volumeFlow = MutableStateFlow(0.7f)
+        private val volumeFlow = MutableStateFlow(dev.hossain.mathtutor.audio.AudioConstants.DEFAULT_SOUND_EFFECTS_VOLUME)
         private val highContrastEnabledFlow = MutableStateFlow(false)
         private val largeTextEnabledFlow = MutableStateFlow(false)
         private val analyticsEnabledFlow = MutableStateFlow(true)

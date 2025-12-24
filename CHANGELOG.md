@@ -15,6 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Success Sound Effect** - Changed correct answer sound from `success_01` to `success_01_alt2`
   - Provides alternative audio feedback for correct answers
   - Maintains positive and encouraging tone for K-2 learners
+- **Default Sound Effects Volume** - Changed default volume from 100% to 30%
+  - Set to 0.3f (30%) to prevent startling children with loud sounds
+  - Applies to all sound effects: success, errors, badges, countdown, warnings
+  - Users can still adjust volume in settings (0-100%)
+  - Ensures safer, more child-friendly audio experience
+- **Audio Constants Refactoring** - Created centralized `AudioConstants` object
+  - Introduced `DEFAULT_SOUND_EFFECTS_VOLUME` constant to eliminate hardcoded 0.3f values
+  - Used consistently across AudioServiceImpl, UserPreferencesRepository, and test files
+  - Improves maintainability and single source of truth for audio defaults
 
 ### Fixed
 - **Math Race Status Bar Overlap** - Fixed timer and score overlapping with Android status bar

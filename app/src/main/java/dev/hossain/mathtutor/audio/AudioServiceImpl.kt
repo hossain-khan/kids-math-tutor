@@ -60,7 +60,7 @@ class AudioServiceImpl
         // Settings
         private var soundEffectsEnabled: Boolean = true
         private var musicEnabled: Boolean = false // Default OFF - user must enable in settings
-        private var volume: Float = 1.0f
+        private var volume: Float = AudioConstants.DEFAULT_SOUND_EFFECTS_VOLUME
 
         // Sound load listeners (dev UI can register to receive updates)
         private val soundLoadListeners: MutableList<(loaded: Boolean, sampleIds: Map<String, Int>) -> Unit> = mutableListOf()
