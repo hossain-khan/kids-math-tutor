@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Accessibility Settings Application** - High contrast and large text modes now fully functional
+  - High contrast color schemes for both light and dark modes (black on white / white on black)
+  - Text scaling (1.3x) for large text mode across all Material 3 typography styles
+  - Accessibility settings load from UserPreferencesRepository and apply app-wide in Theme
+  - Both features can be toggled independently and work together
+  - WCAG AAA color contrast compliance (4.5:1+) in high contrast mode
 - **Webapp Test Coverage** - Comprehensive test suite for the web-based worksheet creator (#300)
   - Added Vitest configuration with jsdom environment for browser API testing
   - Component tests for GeneratedBuilder, ExplicitBuilder, and Result pages
