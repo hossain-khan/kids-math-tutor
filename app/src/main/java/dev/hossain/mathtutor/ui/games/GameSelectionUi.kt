@@ -133,7 +133,15 @@ fun GameSelectionUi(
                     GameCard(
                         gameInfo = gameInfo,
                         totalProblemsSolved = state.totalProblemsSolved,
-                        onPlayClicked = { state.eventSink(GameSelectionScreen.Event.PlayGame(gameInfo.game)) },
+                        onPlayClicked = {
+                            // If game is locked, it's a trial play
+                            state.eventSink(
+                                GameSelectionScreen.Event.PlayGame(
+                                    game = gameInfo.game,
+                                    isTrial = !gameInfo.isUnlocked,
+                                ),
+                            )
+                        },
                     )
                 }
             }
@@ -226,6 +234,8 @@ private fun GameCard(
                 LockedGameContent(
                     game = game,
                     totalProblemsSolved = totalProblemsSolved,
+                    trialAttempts = gameInfo.trialAttempts,
+                    onTryGameClicked = onPlayClicked,
                 )
             }
         }
@@ -296,8 +306,14 @@ private fun UnlockedGameContent(
 private fun LockedGameContent(
     game: Game,
     totalProblemsSolved: Int,
+    trialAttempts: Int,
+    onTryGameClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val maxTrials = 3
+    val trialsRemaining = maxTrials - trialAttempts
+    val hasTrialsLeft = trialsRemaining > 0
+
     Column(modifier = modifier) {
         // Unlock progress
         val progress = game.unlockProgress(totalProblemsSolved)
@@ -335,28 +351,70 @@ private fun LockedGameContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Locked button (disabled)
-        Button(
-            onClick = { },
-            enabled = false,
-            modifier = Modifier.fillMaxWidth(),
-            colors =
-                ButtonDefaults.buttonColors(
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = null,
-                modifier = Modifier.size(20.dp),
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+        // Trial attempts info
+        if (hasTrialsLeft) {
             Text(
-                text = "LOCKED",
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
+                text = "🎁 Try this game $trialsRemaining ${if (trialsRemaining == 1) "time" else "times"} before unlocking!",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.secondary,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(bottom = 8.dp),
             )
+        } else {
+            Text(
+                text = "✨ Thanks for trying! Practice more to unlock unlimited gameplay!",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.tertiary,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+        }
+
+        // Try Game or Locked button
+        if (hasTrialsLeft) {
+            Button(
+                onClick = onTryGameClicked,
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                    ),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "TRY GAME",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        } else {
+            Button(
+                onClick = { },
+                enabled = false,
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "LOCKED",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
     }
 }
@@ -407,18 +465,21 @@ private fun GameSelectionUiPreview() {
                                 isUnlocked = true,
                                 personalBest = 15,
                                 totalPlays = 5,
+                                trialAttempts = 0,
                             ),
                             GameSelectionScreen.GameInfo(
                                 game = Game.MEMORY_MATCH,
                                 isUnlocked = false,
                                 personalBest = 0,
                                 totalPlays = 0,
+                                trialAttempts = 1,
                             ),
                             GameSelectionScreen.GameInfo(
                                 game = Game.NUMBER_SEQUENCE,
                                 isUnlocked = false,
                                 personalBest = 0,
                                 totalPlays = 0,
+                                trialAttempts = 3,
                             ),
                         ),
                     totalProblemsSolved = 75,
@@ -442,18 +503,21 @@ private fun GameSelectionUiDarkPreview() {
                                 isUnlocked = true,
                                 personalBest = 20,
                                 totalPlays = 8,
+                                trialAttempts = 0,
                             ),
                             GameSelectionScreen.GameInfo(
                                 game = Game.MEMORY_MATCH,
                                 isUnlocked = true,
                                 personalBest = 12,
                                 totalPlays = 3,
+                                trialAttempts = 0,
                             ),
                             GameSelectionScreen.GameInfo(
                                 game = Game.NUMBER_SEQUENCE,
                                 isUnlocked = false,
                                 personalBest = 0,
                                 totalPlays = 0,
+                                trialAttempts = 2,
                             ),
                         ),
                     totalProblemsSolved = 150,

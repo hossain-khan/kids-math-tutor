@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Game Trial Feature** - Allow first-time users to try locked games up to 3 times
+  - Kids can now try locked games up to 3 times before needing to unlock them permanently
+  - Each locked game shows a "TRY GAME" button with remaining trial attempts
+  - After 3 trial plays, displays an encouraging message: "Thanks for trying! Practice more to unlock unlimited gameplay!"
+  - Trial counts are tracked per game using DataStore preferences
+  - Improves first-time user experience by letting kids explore games before unlocking
+  - Trial attempts counter displayed on locked game cards (e.g., "Try this game 2 times before unlocking!")
+
 ## [1.11.0] - 2025-12-24
 
 ### Changed
