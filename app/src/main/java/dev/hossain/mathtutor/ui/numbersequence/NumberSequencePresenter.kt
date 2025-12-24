@@ -266,21 +266,23 @@ class NumberSequencePresenter
                 lastAnswerCorrect = null
                 warningPlayed = false
 
-                // Countdown 3-2-1
+                // Play countdown audio at the start
+                audioService.playGo()
+                hapticService.triggerSuccess()
+                Timber.d("[NumberSequence] Countdown started")
+
+                // Countdown 3-2-1 (visual only, no sound per count)
                 for (count in COUNTDOWN_START downTo 1) {
                     gameState = NumberSequenceScreen.GameState.Countdown(count)
-                    audioService.playCountdown()
                     hapticService.triggerButtonClick()
                     Timber.d("[NumberSequence] Countdown: $count")
                     delay(1000L)
                 }
 
-                // GO!
+                // Transition to playing state
                 gameState = NumberSequenceScreen.GameState.Countdown(0) // 0 represents "GO"
-                audioService.playGo()
-                hapticService.triggerSuccess()
-                Timber.d("[NumberSequence] GO!")
-                delay(500L) // Brief pause to see "GO!"
+                Timber.d("[NumberSequence] Starting game...")
+                delay(500L) // Brief pause before game starts
 
                 // Start game
                 gameStartTime = Instant.now()

@@ -195,21 +195,23 @@ class MemoryMatchPresenter
                 cards = generateCards()
                 Timber.d("[MemoryMatch] Generated ${cards.size} cards")
 
-                // Countdown 3-2-1
+                // Play countdown audio at the start
+                audioService.playGo()
+                hapticService.triggerSuccess()
+                Timber.d("[MemoryMatch] Countdown started")
+
+                // Countdown 3-2-1 (visual only, no sound per count)
                 for (count in COUNTDOWN_START downTo 1) {
                     gameState = MemoryMatchScreen.GameState.Countdown(count)
-                    audioService.playCountdown()
                     hapticService.triggerButtonClick()
                     Timber.d("[MemoryMatch] Countdown: $count")
                     delay(1000L)
                 }
 
-                // GO!
+                // Transition to playing state
                 gameState = MemoryMatchScreen.GameState.Countdown(0) // 0 represents "GO"
-                audioService.playGo()
-                hapticService.triggerSuccess()
-                Timber.d("[MemoryMatch] GO!")
-                delay(500L) // Brief pause to see "GO!"
+                Timber.d("[MemoryMatch] Starting game...")
+                delay(500L) // Brief pause before game starts
 
                 // Start game
                 gameStartTime = Instant.now()

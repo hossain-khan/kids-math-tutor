@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Math Race Status Bar Overlap** - Fixed timer and score overlapping with Android status bar
   - Added `systemBarsPadding()` modifier to game screen to respect system insets
   - Timer and score now properly positioned below status bar on all devices
+- **Number Sequence Status Bar Overlap** - Fixed timer and score overlapping with Android status bar in Number Sequence game
+  - Added `systemBarsPadding()` modifier to game screen
+  - Consistent with Math Race fix
+- **Game Countdown Audio Issue** - Fixed overlapping audio during game countdown
+  - Changed countdown to play single `countdown_go` sound (4 seconds) at start instead of individual tick sounds
+  - Removed duplicate "GO!" sound when game transitions from countdown to playing state
+  - Affects all games: Math Race, Number Sequence, and Memory Match
+  - Prevents audio overlap between countdown sound and continuous background music
 
 ## [1.10.0] - 2025-12-24
 

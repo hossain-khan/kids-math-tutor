@@ -272,21 +272,23 @@ class MathRacePresenter
                 lastAnswerCorrect = null
                 warningPlayed = false
 
-                // Countdown 3-2-1
+                // Play countdown audio at the start
+                audioService.playGo()
+                hapticService.triggerSuccess()
+                Timber.d("[MathRace] Countdown started")
+
+                // Countdown 3-2-1 (visual only, no sound per count)
                 for (count in COUNTDOWN_START downTo 1) {
                     gameState = MathRaceScreen.GameState.Countdown(count)
-                    audioService.playCountdown()
                     hapticService.triggerButtonClick()
                     Timber.d("[MathRace] Countdown: $count")
                     delay(1000L)
                 }
 
-                // GO!
+                // Transition to playing state
                 gameState = MathRaceScreen.GameState.Countdown(0) // 0 represents "GO"
-                audioService.playGo()
-                hapticService.triggerSuccess()
-                Timber.d("[MathRace] GO!")
-                delay(500L) // Brief pause to see "GO!"
+                Timber.d("[MathRace] Starting game...")
+                delay(500L) // Brief pause before game starts
 
                 // Start game
                 gameStartTime = Instant.now()
