@@ -10,7 +10,11 @@ import {
   GeneratedChallengeSpecSchema,
   type MathOperation,
 } from "@/lib/schemas/challenge-schema";
-import { generatedTemplates, type GeneratedTemplate } from "@/lib/templates";
+import {
+  generatedTemplates,
+  type GeneratedTemplate,
+  type ExplicitTemplate,
+} from "@/lib/templates";
 import { z } from "zod";
 
 export default function GeneratedBuilder() {
@@ -35,7 +39,13 @@ export default function GeneratedBuilder() {
     { value: "division", label: "➗ Division" },
   ];
 
-  const handleTemplateSelect = (template: GeneratedTemplate) => {
+  const handleTemplateSelect = (
+    template: GeneratedTemplate | ExplicitTemplate,
+  ) => {
+    // Type guard to ensure we have a GeneratedTemplate
+    if (!("numberRange" in template.config)) {
+      return;
+    }
     const config = template.config;
     setFormData({
       title: config.title,

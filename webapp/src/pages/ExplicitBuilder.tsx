@@ -11,7 +11,11 @@ import {
   type MathOperation,
   type ProblemSpec,
 } from "@/lib/schemas/challenge-schema";
-import { explicitTemplates, type ExplicitTemplate } from "@/lib/templates";
+import {
+  explicitTemplates,
+  type ExplicitTemplate,
+  type GeneratedTemplate,
+} from "@/lib/templates";
 import { z } from "zod";
 
 export default function ExplicitBuilder() {
@@ -37,7 +41,13 @@ export default function ExplicitBuilder() {
     { value: "division", label: "➗ Division" },
   ];
 
-  const handleTemplateSelect = (template: ExplicitTemplate) => {
+  const handleTemplateSelect = (
+    template: ExplicitTemplate | GeneratedTemplate,
+  ) => {
+    // Type guard to ensure we have an ExplicitTemplate
+    if (!("problems" in template.config)) {
+      return;
+    }
     const config = template.config;
     setFormData({
       title: config.title,
