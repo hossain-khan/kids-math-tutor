@@ -46,6 +46,13 @@ Kids Math Pup Tutor makes learning math fun and engaging for Kindergarten throug
 • Session history to monitor learning progress
 • Visual charts and performance insights
 
+👨‍👩‍👧 PARENT TOOLS
+• Create custom math challenges tailored to your child's needs
+• Choose specific operations and difficulty levels
+• 27 pre-built templates for quick problem set creation
+• Generate focused practice worksheets on-demand
+• Track and manage your child's learning progress
+
 🎵 ENGAGING SENSORY FEEDBACK
 • 7 distinct sound effects for interactions and achievements
 • Gentle haptic feedback reinforces correct answers
