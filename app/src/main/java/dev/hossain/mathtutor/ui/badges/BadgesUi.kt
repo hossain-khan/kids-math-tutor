@@ -20,12 +20,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -43,6 +41,8 @@ import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
 import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.component.BadgeGrid
+import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
+import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
@@ -83,10 +83,11 @@ fun BadgesUi(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            FeatureTopAppBar(
                 title = {
                     Text("Your Badges")
                 },
+                feature = TopBarFeature.BADGES,
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(BadgesScreen.Event.BackPressed) }) {
                         Icon(
@@ -95,7 +96,6 @@ fun BadgesUi(
                         )
                     }
                 },
-                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier.fillMaxSize(),

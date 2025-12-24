@@ -42,11 +42,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -60,6 +58,8 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
+import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
+import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
@@ -89,11 +89,11 @@ fun SettingsUi(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
+            FeatureTopAppBar(
                 title = {
                     Text("Settings")
                 },
-                modifier = Modifier.shadow(elevation = 4.dp),
+                feature = TopBarFeature.SETTINGS,
             )
         },
         modifier = modifier.fillMaxSize(),

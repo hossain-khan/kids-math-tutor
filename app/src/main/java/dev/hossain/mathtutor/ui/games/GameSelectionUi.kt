@@ -32,14 +32,11 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.Game
+import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
+import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.zacsweers.metro.AppScope
 
 // Width breakpoints for adaptive layouts
@@ -71,14 +70,9 @@ fun GameSelectionUi(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
+            FeatureTopAppBar(
                 title = { Text("Games") },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    ),
-                modifier = Modifier.shadow(elevation = 4.dp),
+                feature = TopBarFeature.GAMES,
             )
         },
         modifier = modifier,
