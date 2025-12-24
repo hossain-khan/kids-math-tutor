@@ -300,6 +300,7 @@ private fun ProfileField(
             Text(
                 text = actionLabel,
                 style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
