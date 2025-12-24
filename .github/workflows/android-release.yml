@@ -11,12 +11,16 @@ name: Android Release Build
 # - https://github.com/${{ github.repository }}/blob/main/app/build.gradle.kts (signing configuration)
 
 on:
-  push:
-    branches: [ "main" ]
-    paths-ignore:
-      - 'webapp/**'
-      - '**.md'
-      - 'project-resources/**'
+  # Snapshot and release builds are triggered manually or via GitHub releases only.
+  # Disabled push trigger to avoid automatic builds on every commit.
+  # This prevents resource usage and allows more control over release timing.
+  # push:
+  #   branches: [ "main" ]
+  #   paths-ignore:
+  #     - 'webapp/**'
+  #     - '**.md'
+  #     - 'project-resources/**'
+  
   # This allows manual triggering of the workflow, which results in making Android Release APK build
   # Go to the "Actions" tab in the repository, select this workflow, and click the "Run workflow" button to run it manually.
   workflow_dispatch:
@@ -27,7 +31,7 @@ on:
 jobs:
   build-release:
     # TEMPORARILY DISABLED
-    if: false
+    # if: false
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Required to upload release assets
