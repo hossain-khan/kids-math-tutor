@@ -378,37 +378,37 @@ fun GradeSelectionUi(
                     textAlign = TextAlign.Center,
                 )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            // Kindergarten Card
-            GradeCard(
-                gradeLevel = GradeLevel.KINDERGARTEN,
-                description = "Numbers 1-5, Simple addition",
-                isSelected = state.selectedGrade == GradeLevel.KINDERGARTEN,
-                onClick = {
-                    state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.KINDERGARTEN))
-                },
-            )
+                // Kindergarten Card
+                GradeCard(
+                    gradeLevel = GradeLevel.KINDERGARTEN,
+                    description = "Numbers 1-5, Simple addition",
+                    isSelected = state.selectedGrade == GradeLevel.KINDERGARTEN,
+                    onClick = {
+                        state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.KINDERGARTEN))
+                    },
+                )
 
-            // Grade 1 Card
-            GradeCard(
-                gradeLevel = GradeLevel.GRADE_1,
-                description = "Numbers 1-10, Add, subtract",
-                isSelected = state.selectedGrade == GradeLevel.GRADE_1,
-                onClick = {
-                    state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_1))
-                },
-            )
+                // Grade 1 Card
+                GradeCard(
+                    gradeLevel = GradeLevel.GRADE_1,
+                    description = "Numbers 1-10, Add, subtract",
+                    isSelected = state.selectedGrade == GradeLevel.GRADE_1,
+                    onClick = {
+                        state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_1))
+                    },
+                )
 
-            // Grade 2 Card
-            GradeCard(
-                gradeLevel = GradeLevel.GRADE_2,
-                description = "Numbers 1-20, All operations",
-                isSelected = state.selectedGrade == GradeLevel.GRADE_2,
-                onClick = {
-                    state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_2))
-                },
-            )
+                // Grade 2 Card
+                GradeCard(
+                    gradeLevel = GradeLevel.GRADE_2,
+                    description = "Numbers 1-20, All operations",
+                    isSelected = state.selectedGrade == GradeLevel.GRADE_2,
+                    onClick = {
+                        state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_2))
+                    },
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
