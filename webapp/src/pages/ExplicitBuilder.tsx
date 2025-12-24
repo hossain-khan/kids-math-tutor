@@ -221,11 +221,11 @@ export default function ExplicitBuilder() {
 
             {/* Problems List */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <label className="block text-sm font-medium text-gray-700">
                   Math Problems ({problems.length}/50)
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <Select
                     value={defaultOperation}
                     onChange={(e) =>
@@ -240,7 +240,7 @@ export default function ExplicitBuilder() {
                     size="md"
                     onClick={addProblem}
                     disabled={problems.length >= 50}
-                    className="min-w-[160px] font-semibold whitespace-nowrap"
+                    className="w-full sm:w-auto sm:min-w-[160px] font-semibold whitespace-nowrap"
                   >
                     ➕ Add Problem
                   </Button>
@@ -262,14 +262,17 @@ export default function ExplicitBuilder() {
                       className="p-4"
                       data-error={!!problemError}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col md:flex-row md:items-center gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-sm">
                           {index + 1}
                         </div>
 
-                        <div className="flex-1 grid grid-cols-9 gap-2 items-center">
+                        <div className="flex-1 flex flex-col md:grid md:grid-cols-9 gap-2 md:items-center">
                           {/* First Number */}
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              First Number
+                            </label>
                             <Input
                               type="number"
                               min={0}
@@ -287,7 +290,10 @@ export default function ExplicitBuilder() {
                           </div>
 
                           {/* Operation */}
-                          <div className="col-span-3">
+                          <div className="md:col-span-3">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              Operation
+                            </label>
                             <Select
                               options={operationOptions}
                               value={problem.operation}
@@ -303,7 +309,10 @@ export default function ExplicitBuilder() {
                           </div>
 
                           {/* Second Number */}
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              Second Number
+                            </label>
                             <Input
                               type="number"
                               min={0}
@@ -321,7 +330,10 @@ export default function ExplicitBuilder() {
                           </div>
 
                           {/* Result */}
-                          <div className="col-span-2 text-center">
+                          <div className="md:col-span-2 text-center">
+                            <label className="text-xs font-medium text-gray-600 md:hidden block mb-1">
+                              Result
+                            </label>
                             <div
                               className={`px-4 py-3 rounded-xl border-2 ${
                                 validationError
@@ -329,7 +341,7 @@ export default function ExplicitBuilder() {
                                   : "bg-gray-50 border-gray-200"
                               }`}
                             >
-                              <span className="text-gray-400 text-lg font-semibold mr-2">
+                              <span className="text-gray-400 text-lg font-semibold mr-2 hidden md:inline">
                                 =
                               </span>
                               <span
@@ -352,7 +364,7 @@ export default function ExplicitBuilder() {
                             variant="ghost"
                             size="sm"
                             onClick={() => removeProblem(index)}
-                            className="flex-shrink-0 text-red-600 hover:bg-red-50"
+                            className="flex-shrink-0 text-red-600 hover:bg-red-50 self-start"
                           >
                             🗑️
                           </Button>
