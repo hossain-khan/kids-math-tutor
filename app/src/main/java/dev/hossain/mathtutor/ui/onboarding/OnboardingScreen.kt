@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -327,7 +328,7 @@ private fun OnboardingPageContent(
         Card(
             modifier =
                 Modifier
-                    .fillMaxWidth()
+                    .wrapContentSize()
                     .weight(1f),
             shape = RoundedCornerShape(24.dp),
             colors =
@@ -340,9 +341,7 @@ private fun OnboardingPageContent(
                 painter = painterResource(id = page.imageRes),
                 contentDescription = page.title,
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
+                    Modifier.wrapContentSize(),
                 contentScale = ContentScale.Fit,
             )
         }
