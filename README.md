@@ -2,7 +2,7 @@
 
 A fun, free math learning app for K-2 children. No ads. No data collection. Just learning.
 
-[![Android CI](https://github.com/hossain-khan/kids-math-tutor/actions/workflows/android-ci.yml/badge.svg)](https://github.com/hossain-khan/kids-math-tutor/actions/workflows/android-ci.yml)
+[![Android CI](https://github.com/hossain-khan/kids-math-tutor/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/kids-math-tutor/actions/workflows/android.yml)
 
 ## Features
 
