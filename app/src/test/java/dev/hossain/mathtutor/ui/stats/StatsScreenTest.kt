@@ -54,6 +54,7 @@ class StatsScreenTest {
         // When
         val state =
             StatsScreen.State(
+                userName = null,
                 overallStats = overallStats,
                 operationStats = operationStats,
                 recentSessions = recentSessions,
@@ -78,6 +79,7 @@ class StatsScreenTest {
         // When
         val state =
             StatsScreen.State(
+                userName = null,
                 overallStats = overallStats,
                 operationStats = operationStats,
                 recentSessions = recentSessions,
@@ -105,6 +107,7 @@ class StatsScreenTest {
         var receivedEvent: StatsScreen.Event? = null
         val state =
             StatsScreen.State(
+                userName = null,
                 overallStats = SessionStats.EMPTY,
                 operationStats = emptyMap(),
                 recentSessions = emptyList(),
@@ -145,6 +148,7 @@ class StatsScreenTest {
         // When
         val state =
             StatsScreen.State(
+                userName = null,
                 overallStats = SessionStats.EMPTY,
                 operationStats = operationStats,
                 recentSessions = emptyList(),
@@ -187,6 +191,7 @@ class StatsScreenTest {
         // When
         val state =
             StatsScreen.State(
+                userName = null,
                 overallStats = SessionStats.EMPTY,
                 operationStats = emptyMap(),
                 recentSessions = recentSessions,

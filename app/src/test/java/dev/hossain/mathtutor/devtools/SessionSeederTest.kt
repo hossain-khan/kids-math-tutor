@@ -58,6 +58,8 @@ class SessionSeederTest {
                     override fun getStatsByOperation(operation: MathOperation) = throw UnsupportedOperationException()
 
                     override suspend fun clearAllSessions() { /* no-op */ }
+
+                    override fun getDailyAccuracy() = throw UnsupportedOperationException()
                 }
 
             val seeder = SessionSeederImpl(fakeProblemGenerator, fakeRepo)

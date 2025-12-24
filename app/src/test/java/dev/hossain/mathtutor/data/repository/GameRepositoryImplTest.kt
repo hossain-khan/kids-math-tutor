@@ -425,4 +425,6 @@ class FakeSessionRepository : SessionRepository {
     override fun getStatsByOperation(operation: dev.hossain.mathtutor.domain.model.MathOperation) = flowOf(SessionStats.EMPTY)
 
     override suspend fun clearAllSessions() {}
+
+    override fun getDailyAccuracy(): Flow<List<dev.hossain.mathtutor.domain.model.DailyAccuracy>> = flowOf(emptyList())
 }

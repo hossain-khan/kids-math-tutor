@@ -327,4 +327,8 @@ class FakeCustomChallengeDao : CustomChallengeDao {
     override suspend fun deleteChallenge(id: String) {
         deletedChallengeIds.add(id)
     }
+
+    override suspend fun clearChallengeSessions(challengeId: String) {
+        insertedSessions.removeAll { it.challengeId == challengeId }
+    }
 }

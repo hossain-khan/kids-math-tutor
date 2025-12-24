@@ -471,6 +471,10 @@ class FakeCustomChallengeRepository : CustomChallengeRepository {
     override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = activeChallengesFlow
 
     override fun observeAllChallenges(): Flow<List<CustomChallenge>> = activeChallengesFlow
+
+    override suspend fun clearChallengeSessions(challengeId: String) {
+        practiceSessions.removeAll { it.first == challengeId }
+    }
 }
 
 /**

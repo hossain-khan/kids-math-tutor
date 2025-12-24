@@ -258,6 +258,8 @@ class ImportChallengePresenterTest {
         override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = flowOf(emptyList())
 
         override fun observeAllChallenges(): Flow<List<CustomChallenge>> = flowOf(emptyList())
+
+        override suspend fun clearChallengeSessions(challengeId: String) {}
     }
 
     /**
@@ -301,5 +303,7 @@ class ImportChallengePresenterTest {
         override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = flowOf(challenges.filter { !it.isArchived })
 
         override fun observeAllChallenges(): Flow<List<CustomChallenge>> = flowOf(challenges)
+
+        override suspend fun clearChallengeSessions(challengeId: String) {}
     }
 }

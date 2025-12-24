@@ -524,6 +524,8 @@ class CheckBadgeUnlocksUseCaseTest {
         override suspend fun clearAllSessions() {
             // Not needed for these tests
         }
+
+        override fun getDailyAccuracy(): Flow<List<dev.hossain.mathtutor.domain.model.DailyAccuracy>> = flowOf(emptyList())
     }
 
     /**

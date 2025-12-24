@@ -215,4 +215,8 @@ class FakeCustomChallengeService : CustomChallengeService {
     override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = flowOf(challenges.filter { !it.isArchived })
 
     override fun observeAllChallenges(): Flow<List<CustomChallenge>> = flowOf(challenges)
+
+    override suspend fun clearChallengeSessions(challengeId: String) {
+        // Not needed for tests
+    }
 }
