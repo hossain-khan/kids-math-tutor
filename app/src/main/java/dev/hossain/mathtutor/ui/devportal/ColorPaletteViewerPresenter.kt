@@ -68,10 +68,10 @@ class ColorPaletteViewerPresenter
                 )
             }
 
-            val colorGroups = buildColorGroups()
+            val groups = buildGroups()
 
             return ColorPaletteViewerScreen.State(
-                colorGroups = colorGroups,
+                groups = groups,
             ) { event ->
                 when (event) {
                     is ColorPaletteViewerScreen.Event.BackClicked -> {
@@ -88,13 +88,14 @@ class ColorPaletteViewerPresenter
         }
 
         /**
-         * Builds color groups organized by UI component category.
+         * Builds all groups (colors and widgets) organized by category.
          */
-        private fun buildColorGroups(): List<ColorPaletteViewerScreen.ColorGroup> =
+        private fun buildGroups(): List<ColorPaletteViewerScreen.GroupContent> =
             listOf(
                 buildNavigationColorsGroup(),
                 buildTopAppBarColorsGroup(),
                 buildThemeColorsGroup(),
+                buildWidgetDemoGroup(),
             )
 
         /**
@@ -319,5 +320,14 @@ class ColorPaletteViewerPresenter
                             isDarkModeVariant = true,
                         ),
                     ),
+            )
+
+        /**
+         * Builds the Widget Demo group showcasing Material 3 components in the app.
+         */
+        private fun buildWidgetDemoGroup(): ColorPaletteViewerScreen.WidgetDemoGroup =
+            ColorPaletteViewerScreen.WidgetDemoGroup(
+                title = "Widget Demos",
+                description = "Live Material 3 components showcasing the theme in action",
             )
     }

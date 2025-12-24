@@ -87,9 +87,12 @@ fun ColorPaletteViewerUi(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Render each color group
-            state.colorGroups.forEach { group ->
-                ColorGroupCard(group = group, state = state)
+            // Render each group (colors or widgets)
+            state.groups.forEach { group ->
+                when (group) {
+                    is ColorPaletteViewerScreen.ColorGroup -> ColorGroupCard(group = group, state = state)
+                    is ColorPaletteViewerScreen.WidgetDemoGroup -> WidgetDemoGroupCard(group = group)
+                }
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
@@ -227,6 +230,261 @@ private fun ColorSwatchItem(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Card displaying Material 3 widget demonstrations.
+ */
+@Composable
+private fun WidgetDemoGroupCard(group: ColorPaletteViewerScreen.WidgetDemoGroup) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = group.title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = group.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Widget demonstrations
+            WidgetDemosContent()
+        }
+    }
+}
+
+/**
+ * Content showcasing different Material 3 widgets with the current theme.
+ */
+@Composable
+private fun WidgetDemosContent() {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        // Buttons section
+        Text(
+            text = "Buttons",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            androidx.compose.material3.Button(
+                onClick = {},
+                modifier = Modifier.weight(1f),
+            ) {
+                Text("Primary")
+            }
+            androidx.compose.material3.OutlinedButton(
+                onClick = {},
+                modifier = Modifier.weight(1f),
+            ) {
+                Text("Outlined")
+            }
+            androidx.compose.material3.FilledTonalButton(
+                onClick = {},
+                modifier = Modifier.weight(1f),
+            ) {
+                Text("Tonal")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Cards section
+        Text(
+            text = "Cards",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                ),
+        ) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column {
+                    Text(
+                        text = "Card with Primary Container",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    Text(
+                        text = "Content in primary container color",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+        }
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+        ) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column {
+                    Text(
+                        text = "Card with Secondary Container",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Text(
+                        text = "Content in secondary container color",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Switches section
+        Text(
+            text = "Switches & Chips",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                        shape = RoundedCornerShape(8.dp),
+                    ).padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            androidx.compose.material3.Switch(checked = true, onCheckedChange = {})
+            androidx.compose.material3.Switch(checked = false, onCheckedChange = {})
+            androidx.compose.material3.AssistChip(
+                onClick = {},
+                label = { Text("Chip") },
+                modifier = Modifier.weight(1f),
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Semantic colors demo
+        Text(
+            text = "Semantic Colors",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            // Success (using Tertiary as success indicator)
+            Card(
+                modifier = Modifier.weight(1f),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary,
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "✓",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onTertiary,
+                    )
+                    Text(
+                        text = "Success",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onTertiary,
+                    )
+                }
+            }
+
+            // Warning (using Secondary)
+            Card(
+                modifier = Modifier.weight(1f),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "!",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                    Text(
+                        text = "Warning",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                }
+            }
+
+            // Error
+            Card(
+                modifier = Modifier.weight(1f),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "✕",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onError,
+                    )
+                    Text(
+                        text = "Error",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onError,
+                    )
+                }
             }
         }
     }

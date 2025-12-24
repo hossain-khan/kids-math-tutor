@@ -13,6 +13,7 @@ import kotlinx.parcelize.Parcelize
  * - Navigation Colors: Bottom navigation bar colors
  * - TopAppBar Colors: Feature-based top app bar colors (light & dark modes)
  * - Theme Colors: Material 3 theme colors (semantic colors)
+ * - Widget Demos: Live Material 3 components showcasing theme in action
  *
  * This is a debug-only screen accessible from the Developer Portal.
  */
@@ -30,19 +31,32 @@ data object ColorPaletteViewerScreen : Screen {
     )
 
     /**
+     * Sealed class for group content - either colors or composable widgets
+     */
+    sealed interface GroupContent
+
+    /**
      * A group of related colors.
      */
     data class ColorGroup(
         val title: String,
         val description: String,
         val colors: List<ColorEntry>,
-    )
+    ) : GroupContent
+
+    /**
+     * A group showcasing Material 3 widgets and components in the app.
+     */
+    data class WidgetDemoGroup(
+        val title: String,
+        val description: String,
+    ) : GroupContent
 
     /**
      * State for the color palette viewer.
      */
     data class State(
-        val colorGroups: List<ColorGroup> = emptyList(),
+        val groups: List<GroupContent> = emptyList(),
         val eventSink: (Event) -> Unit = {},
     ) : CircuitUiState
 
