@@ -7,12 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Static Theme Colors** - Disabled Material You dynamic colors in favor of vibrant static theme for kids
+  - Replaced Material You dynamic colors with custom vibrant color palette designed for K-2 children
+  - Light mode: Bright, energetic colors (Blue, Orange, Green) for an engaging learning experience
+  - Dark mode: Softer vibrant colors that are easy on eyes while maintaining visual appeal
+  - All colors maintain high contrast (WCAG AAA standards) for excellent readability
+  - Theme no longer changes based on device wallpaper, providing consistent branding
+  - High contrast mode remains available for accessibility needs
+
 ### Fixed
 - **Background Music UI Sync** - Fixed background music toggle state synchronization between home screen and settings
   - Home screen now reads music state from UserPreferences instead of local state
   - Music toggle on home screen now persists state to UserPreferences
   - MainActivity now checks user preference before starting background music on app launch
   - Ensures consistent music state across all screens
+
 ### Added
 - **Device Audio Suppression Detection** - Audio now respects device ringer mode (silent/vibrate)
   - App automatically detects when device is in silent or vibrate mode
