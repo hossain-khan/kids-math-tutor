@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.ChildCare
@@ -166,7 +167,7 @@ fun SettingsUi(
                     // Developer Portal (debug-only)
                     if (state.showDeveloperPortal) {
                         SettingsLinkItem(
-                            icon = Icons.Default.Info,
+                            icon = Icons.Default.Computer,
                             text = "Developer Portal",
                             onClick = { state.eventSink(SettingsScreen.Event.DeveloperPortalClicked) },
                         )
