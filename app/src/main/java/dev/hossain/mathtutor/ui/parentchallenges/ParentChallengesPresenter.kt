@@ -61,6 +61,8 @@ class ParentChallengesPresenter
             var showArchived by rememberSaveable { mutableStateOf(false) }
             var showDeleteConfirmation by remember { mutableStateOf(false) }
             var challengeToDelete by remember { mutableStateOf<CustomChallenge?>(null) }
+            var showClearSessionsConfirmation by remember { mutableStateOf(false) }
+            var challengeToClearSessions by remember { mutableStateOf<CustomChallenge?>(null) }
             var importSuccessMessage by remember { mutableStateOf<String?>(null) }
 
             // Navigator that handles import results using Circuit's PopResult pattern
@@ -89,6 +91,8 @@ class ParentChallengesPresenter
                 showArchived = showArchived,
                 showDeleteConfirmation = showDeleteConfirmation,
                 challengeToDelete = challengeToDelete,
+                showClearSessionsConfirmation = showClearSessionsConfirmation,
+                challengeToClearSessions = challengeToClearSessions,
                 importSuccessMessage = importSuccessMessage,
             ) { event ->
                 when (event) {
@@ -167,6 +171,34 @@ class ParentChallengesPresenter
                         Timber.d("ParentChallenges: Delete cancelled")
                         showDeleteConfirmation = false
                         challengeToDelete = null
+                    }
+
+                    is ParentChallengesScreen.Event.ClearSessionsRequested -> {
+                        challengeToClearSessions = event.challenge
+                        showClearSessionsConfirmation = true
+                    }
+
+                    is ParentChallengesScreen.Event.ConfirmClearSessions -> {
+                        Timber.d("ParentChallenges: Clear sessions confirmed - ${event.challengeId}")
+                        analyticsService.logEvent(
+                            eventName = "custom_challenge_sessions_cleared",
+                            parameters = mapOf(AnalyticsParam.CHALLENGE_ID to event.challengeId),
+                        )
+                        coroutineScope.launch {
+                            try {
+                                challengeService.clearChallengeSessions(event.challengeId)
+                                showClearSessionsConfirmation = false
+                                challengeToClearSessions = null
+                            } catch (e: Exception) {
+                                Timber.e(e, "Failed to clear sessions for challenge: ${event.challengeId}")
+                            }
+                        }
+                    }
+
+                    is ParentChallengesScreen.Event.CancelClearSessions -> {
+                        Timber.d("ParentChallenges: Clear sessions cancelled")
+                        showClearSessionsConfirmation = false
+                        challengeToClearSessions = null
                     }
 
                     is ParentChallengesScreen.Event.ToggleArchived -> {

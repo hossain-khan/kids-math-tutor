@@ -136,6 +136,10 @@ class CustomChallengeServiceImpl
             repository.addPracticeSession(challengeId, session)
         }
 
+        override suspend fun clearChallengeSessions(challengeId: String) {
+            repository.clearChallengeSessions(challengeId)
+        }
+
         override fun observeAllChallenges(): Flow<List<CustomChallenge>> = repository.observeAllChallenges()
 
         override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = repository.observeActiveChallenges()
