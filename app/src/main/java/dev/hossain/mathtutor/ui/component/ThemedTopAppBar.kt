@@ -19,6 +19,10 @@ import dev.hossain.mathtutor.ui.theme.customRaspberryDark
 import dev.hossain.mathtutor.ui.theme.customRaspberryLight
 import dev.hossain.mathtutor.ui.theme.customTealDark
 import dev.hossain.mathtutor.ui.theme.customTealLight
+import dev.hossain.mathtutor.ui.theme.onCustomGreenDark
+import dev.hossain.mathtutor.ui.theme.onCustomPurpleDark
+import dev.hossain.mathtutor.ui.theme.onCustomRaspberryDark
+import dev.hossain.mathtutor.ui.theme.onCustomTealDark
 
 /**
  * Enum for top-level feature colors in the app.
@@ -55,19 +59,19 @@ enum class TopBarFeature {
 internal object TopBarFeatureColors {
     // RASPBERRY: Matches Games nav
     val raspberryAccentLight = customRaspberryLight
-    val raspberryAccentDark = customRaspberryDark
+    val raspberryAccentDark = onCustomRaspberryDark
 
     // TEAL: Matches Parents nav
     val tealAccentLight = customTealLight
-    val tealAccentDark = customTealDark
+    val tealAccentDark = onCustomTealDark
 
     // GREEN: Matches Home nav
     val greenAccentLight = customGreenLight
-    val greenAccentDark = customGreenDark
+    val greenAccentDark = onCustomGreenDark
 
     // PURPLE: Matches Settings nav
     val purpleAccentLight = customPurpleLight
-    val purpleAccentDark = customPurpleDark
+    val purpleAccentDark = onCustomPurpleDark
 }
 
 /**
