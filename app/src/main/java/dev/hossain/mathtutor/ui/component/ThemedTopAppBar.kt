@@ -8,19 +8,21 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
  * Enum for top-level feature colors in the app.
  *
- * Each feature area has a designated vibrant color for consistent visual branding:
- * - PRACTICE: Bright Blue for math practice operations
- * - STATS: Vibrant Orange for performance tracking
- * - BADGES: Cheerful Green for achievement recognition
- * - SETTINGS: Inverse Primary for configuration
- * - GAMES: Bright Blue for game selection (same as practice)
+ * Each feature area has a designated vibrant color for consistent visual branding,
+ * carefully chosen to match and complement the bottom navigation colors:
+ * - PRACTICE: Lighter Red - matches GAMES nav for practice activities
+ * - STATS: Lighter Blue - matches PARENTS nav for data/insights
+ * - BADGES: Lighter Green - matches HOME nav for achievement recognition
+ * - SETTINGS: Lighter Purple - matches SETTINGS nav for configuration
+ * - GAMES: Lighter Red - matches GAMES nav for game selection
  *
- * @see ThemedTopAppBar
+ * @see TopBarFeatureColors
  */
 enum class TopBarFeature {
     PRACTICE,
@@ -31,7 +33,27 @@ enum class TopBarFeature {
 }
 
 /**
+ * Lighter, soothing versions of the vibrant navigation colors.
+ * These are designed to be easier on the eyes while maintaining visual connection
+ * to their corresponding navigation bar items.
+ */
+private object TopBarFeatureColors {
+    // Lighter Red - matches Games nav (0xFFE53935) - for practice activities and games
+    val redAccent = Color(0xFFEF5350)
+
+    // Lighter Blue - matches Parents nav (0xFF1976D2) - for stats and insights
+    val blueAccent = Color(0xFF42A5F5)
+
+    // Lighter Green - matches Home nav (0xFF2E7D32) - for badges and achievements
+    val greenAccent = Color(0xFF66BB6A)
+
+    // Lighter Purple - matches Settings nav (0xFF7B1FA2) - for settings
+    val purpleAccent = Color(0xFFAB47BC)
+}
+
+/**
  * Gets the color scheme for a top-level feature.
+ * Uses lighter, soothing versions of the navigation bar colors to create visual harmony.
  *
  * @param feature The feature to get colors for
  * @return Pair of (containerColor, contentColor)
@@ -40,31 +62,34 @@ enum class TopBarFeature {
 fun TopBarFeature.getColors(): Pair<androidx.compose.ui.graphics.Color, androidx.compose.ui.graphics.Color> =
     when (this) {
         TopBarFeature.PRACTICE, TopBarFeature.GAMES -> {
-            MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+            TopBarFeatureColors.redAccent to Color.White
         }
 
         TopBarFeature.STATS -> {
-            MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
+            TopBarFeatureColors.blueAccent to Color.White
         }
 
         TopBarFeature.BADGES -> {
-            MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
+            TopBarFeatureColors.greenAccent to Color.White
         }
 
         TopBarFeature.SETTINGS -> {
-            MaterialTheme.colorScheme.inversePrimary to MaterialTheme.colorScheme.onSurface
+            TopBarFeatureColors.purpleAccent to Color.White
         }
     }
 
 /**
  * A styled TopAppBar with vibrant color for a top-level feature area.
  *
- * Provides consistent branding across the app with designated colors for each feature:
- * - Practice screens (math practice, results) → primaryContainer (Blue)
- * - Stats screens (stats, accuracy details) → secondaryContainer (Orange)
- * - Badges screen → tertiaryContainer (Green)
- * - Settings screens (settings, audio/haptic) → inversePrimary
- * - Game screens (game selection, games) → primaryContainer (Blue)
+ * Uses lighter, soothing versions of the navigation bar colors to create visual harmony:
+ * - Practice & Games screens → Lighter Red (matches Games nav)
+ * - Stats screen → Lighter Blue (matches Parents nav)
+ * - Badges screen → Lighter Green (matches Home nav)
+ * - Settings screen → Lighter Purple (matches Settings nav)
+ *
+ * White text on these background colors provides excellent contrast and readability.
+ * The lighter color palette is designed to be easy on the eyes while maintaining strong
+ * visual connection to the corresponding bottom navigation items.
  *
  * Usage:
  * ```kotlin
