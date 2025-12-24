@@ -21,12 +21,14 @@ data object GameSelectionScreen : Screen {
      * @property isUnlocked Whether the game is unlocked based on total problems solved
      * @property personalBest The highest score achieved in this game
      * @property totalPlays Total number of times the game has been played
+     * @property trialAttempts Number of trial plays used (0-3) for locked games
      */
     data class GameInfo(
         val game: Game,
         val isUnlocked: Boolean,
         val personalBest: Int,
         val totalPlays: Int,
+        val trialAttempts: Int = 0,
     )
 
     /**
@@ -49,9 +51,11 @@ data object GameSelectionScreen : Screen {
         /**
          * User wants to play a specific game.
          * @property game The game to launch
+         * @property isTrial Whether this is a trial play (for locked games)
          */
         data class PlayGame(
             val game: Game,
+            val isTrial: Boolean = false,
         ) : Event
 
         /**

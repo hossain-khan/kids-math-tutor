@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All colors maintain high contrast (WCAG AAA standards) for excellent readability
   - Theme no longer changes based on device wallpaper, providing consistent branding
   - High contrast mode remains available for accessibility needs
+### Added
+- **Game Trial Feature** - Allow first-time users to try locked games up to 3 times
+  - Kids can now try locked games up to 3 times before needing to unlock them permanently
+  - Each locked game shows a "TRY GAME" button with remaining trial attempts
+  - After 3 trial plays, displays an encouraging message: "Thanks for trying! Practice more to unlock unlimited gameplay!"
+  - Trial counts are tracked per game using DataStore preferences
+  - Improves first-time user experience by letting kids explore games before unlocking
+  - Trial attempts counter displayed on locked game cards (e.g., "Try this game 2 times before unlocking!")
+  - **Trial Mode Badge Restriction**: Badges are NOT awarded when playing games in trial mode
+    - Game screens (Math Race, Memory Match, Number Sequence) now accept `isTrialMode` parameter
+    - Badge checking is skipped when `isTrialMode = true`
+    - Comprehensive Timber logging added around badge logic for debugging
+    - Ensures badges are only earned through unlocked gameplay
 
 ### Fixed
 - **Background Music UI Sync** - Fixed background music toggle state synchronization between home screen and settings

@@ -245,10 +245,11 @@ class MemoryMatchPresenter
 
                     Timber.d(
                         "[MemoryMatch] Game complete - Time: $actualDuration seconds, " +
-                            "Moves: $moves, New record: $isNewRecord",
+                            "Moves: $moves, New record: $isNewRecord, Trial mode: ${screen.isTrialMode}",
                     )
 
                     // Save game session and check for badge unlocks
+                    // Skip badge checking if in trial mode (locked game)
                     try {
                         val session =
                             GameSession(
@@ -265,11 +266,16 @@ class MemoryMatchPresenter
                         gameRepository.saveGameSession(session)
                         Timber.d("[MemoryMatch] Game session saved successfully")
 
-                        // Check for badge unlocks after saving the session
-                        val newBadges = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
-                        Timber.d(
-                            "[MemoryMatch] Badge check complete. Unlocked: ${newBadges.size} badges",
-                        )
+                        // Check for badge unlocks only if NOT in trial mode
+                        val newBadges =
+                            if (screen.isTrialMode) {
+                                Timber.d("[MemoryMatch] Skipping badge check - trial mode active")
+                                emptyList()
+                            } else {
+                                checkBadgeUnlocksUseCase.checkAndUnlockBadges().also {
+                                    Timber.d("[MemoryMatch] Badge check complete. Unlocked: ${it.size} badges")
+                                }
+                            }
 
                         withContext(Dispatchers.Main) {
                             unlockedBadges = newBadges

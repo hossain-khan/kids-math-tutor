@@ -176,10 +176,11 @@ class MathRacePresenter
 
                     Timber.d(
                         "[MathRace] Game ended - Score: $score, Attempts: $totalAttempts, " +
-                            "Accuracy: $accuracy%, New record: $isNewRecord",
+                            "Accuracy: $accuracy%, New record: $isNewRecord, Trial mode: ${screen.isTrialMode}",
                     )
 
                     // Save game session and check for badge unlocks
+                    // Skip badge checking if in trial mode (locked game)
                     coroutineScope.launch(Dispatchers.IO) {
                         try {
                             val session =
@@ -197,9 +198,16 @@ class MathRacePresenter
                             gameRepository.saveGameSession(session)
                             Timber.d("[MathRace] Game session saved successfully")
 
-                            // Check for badge unlocks after saving the session
-                            val newBadges = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
-                            Timber.d("[MathRace] Badge check complete. Unlocked: ${newBadges.size} badges")
+                            // Check for badge unlocks only if NOT in trial mode
+                            val newBadges =
+                                if (screen.isTrialMode) {
+                                    Timber.d("[MathRace] Skipping badge check - trial mode active")
+                                    emptyList()
+                                } else {
+                                    checkBadgeUnlocksUseCase.checkAndUnlockBadges().also {
+                                        Timber.d("[MathRace] Badge check complete. Unlocked: ${it.size} badges")
+                                    }
+                                }
 
                             withContext(Dispatchers.Main) {
                                 unlockedBadges = newBadges

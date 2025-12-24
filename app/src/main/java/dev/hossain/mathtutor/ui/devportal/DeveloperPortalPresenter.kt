@@ -522,17 +522,26 @@ class DeveloperPortalPresenter
 
                     is DeveloperPortalScreen.Event.NavigateToMathRace -> {
                         Timber.d("[DevPortal] Navigating to Math Race")
-                        navigator.goTo(dev.hossain.mathtutor.ui.mathrace.MathRaceScreen)
+                        navigator.goTo(
+                            dev.hossain.mathtutor.ui.mathrace
+                                .MathRaceScreen(),
+                        )
                     }
 
                     is DeveloperPortalScreen.Event.NavigateToMemoryMatch -> {
                         Timber.d("[DevPortal] Navigating to Memory Match")
-                        navigator.goTo(dev.hossain.mathtutor.ui.memorymatch.MemoryMatchScreen)
+                        navigator.goTo(
+                            dev.hossain.mathtutor.ui.memorymatch
+                                .MemoryMatchScreen(),
+                        )
                     }
 
                     is DeveloperPortalScreen.Event.NavigateToNumberSequence -> {
                         Timber.d("[DevPortal] Navigating to Number Sequence")
-                        navigator.goTo(dev.hossain.mathtutor.ui.numbersequence.NumberSequenceScreen)
+                        navigator.goTo(
+                            dev.hossain.mathtutor.ui.numbersequence
+                                .NumberSequenceScreen(),
+                        )
                     }
                 }
             }

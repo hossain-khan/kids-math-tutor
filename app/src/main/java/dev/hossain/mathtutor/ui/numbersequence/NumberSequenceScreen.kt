@@ -21,9 +21,14 @@ import kotlinx.parcelize.Parcelize
  * - Score 1 point for each correct answer
  * - Personal best tracking
  * - Badge unlocks for achievements
+ *
+ * @property isTrialMode Whether this game is being played in trial mode (locked game).
+ *                       When true, no badges will be awarded and progress may not be saved.
  */
 @Parcelize
-data object NumberSequenceScreen : Screen {
+data class NumberSequenceScreen(
+    val isTrialMode: Boolean = false,
+) : Screen {
     /**
      * Represents the different phases of the game.
      */
