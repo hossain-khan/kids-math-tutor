@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Trial counts are tracked per game using DataStore preferences
   - Improves first-time user experience by letting kids explore games before unlocking
   - Trial attempts counter displayed on locked game cards (e.g., "Try this game 2 times before unlocking!")
+### Fixed
+- **Background Music UI Sync** - Fixed background music toggle state synchronization between home screen and settings
+  - Home screen now reads music state from UserPreferences instead of local state
+  - Music toggle on home screen now persists state to UserPreferences
+  - MainActivity now checks user preference before starting background music on app launch
+  - Ensures consistent music state across all screens
+### Added
+- **Device Audio Suppression Detection** - Audio now respects device ringer mode (silent/vibrate)
+  - App automatically detects when device is in silent or vibrate mode
+  - Audio playback is suppressed when device is in silent or vibrate mode
+  - Settings screen displays warning message when device audio is suppressed
+  - Warning message instructs users to change device ringer mode to normal to hear sounds
+  - Improves user experience by providing clear feedback about why audio isn't playing
 
 ## [1.11.0] - 2025-12-24
 

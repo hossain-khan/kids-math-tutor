@@ -118,6 +118,13 @@ interface AudioService {
      */
     fun unregisterSoundLoadListener(listener: (loaded: Boolean, sampleIds: Map<String, Int>) -> Unit)
 
+    /**
+     * Check if the device is in silent or vibrate mode, which would suppress audio playback.
+     *
+     * @return true if device is in silent or vibrate mode, false if in normal mode
+     */
+    fun isDeviceAudioSuppressed(): Boolean
+
     // ==================== Lifecycle ====================
 
     /**
