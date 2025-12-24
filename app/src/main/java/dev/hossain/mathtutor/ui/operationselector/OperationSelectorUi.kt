@@ -27,11 +27,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,7 +37,9 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.OperationCard
+import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 
@@ -72,10 +72,11 @@ fun OperationSelectorUi(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            FeatureTopAppBar(
                 title = {
                     Text("Math Time")
                 },
+                feature = TopBarFeature.PRACTICE,
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -88,7 +89,6 @@ fun OperationSelectorUi(
                         )
                     }
                 },
-                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier.fillMaxSize(),

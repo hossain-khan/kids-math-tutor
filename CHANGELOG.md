@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Vibrant Feature-Based TopAppBar Styling** - Consistent color-coded top navigation across all screens
+  - New reusable `FeatureTopAppBar` component in `ui/component/ThemedTopAppBar.kt`
+  - `TopBarFeature` enum with 5 feature areas: PRACTICE, STATS, BADGES, SETTINGS, GAMES
+  - Each feature has a designated vibrant color:
+    - **PRACTICE** (Blue): `primaryContainer` & `onPrimaryContainer`
+    - **STATS** (Orange): `secondaryContainer` & `onSecondaryContainer`
+    - **BADGES** (Green): `tertiaryContainer` & `onTertiaryContainer`
+    - **SETTINGS** (Inverse Primary): `inversePrimary` & `onSurface`
+    - **GAMES** (Blue): `primaryContainer` & `onPrimaryContainer` (same as PRACTICE)
+  - Updated all top-level screens to use `FeatureTopAppBar`:
+    - `OperationSelectorScreen` → Blue TopBar (PRACTICE)
+    - `StatsScreen` → Orange TopBar (STATS)
+    - `BadgesScreen` → Green TopBar (BADGES)
+    - `SettingsScreen` → Inverse Primary TopBar (SETTINGS)
+    - `GameSelectionScreen` → Blue TopBar (GAMES)
+  - Provides consistent, child-friendly visual hierarchy across the app
+  - All colors follow Material 3 design system guidelines (no hardcoded colors)
+
 ### Changed
 - **Static Theme Colors** - Disabled Material You dynamic colors in favor of vibrant static theme for kids
   - Replaced Material You dynamic colors with custom vibrant color palette designed for K-2 children
@@ -15,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All colors maintain high contrast (WCAG AAA standards) for excellent readability
   - Theme no longer changes based on device wallpaper, providing consistent branding
   - High contrast mode remains available for accessibility needs
+
 ### Added
 - **Game Trial Feature** - Allow first-time users to try locked games up to 3 times
   - Kids can now try locked games up to 3 times before needing to unlock them permanently

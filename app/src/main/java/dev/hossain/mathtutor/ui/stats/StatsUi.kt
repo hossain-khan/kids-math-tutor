@@ -38,7 +38,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -51,6 +50,8 @@ import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
+import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.util.TimeFormatter
 import dev.zacsweers.metro.AppScope
@@ -79,7 +80,7 @@ fun StatsUi(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
+            FeatureTopAppBar(
                 title = {
                     Text(
                         if (state.userName != null) {
@@ -89,6 +90,7 @@ fun StatsUi(
                         },
                     )
                 },
+                feature = TopBarFeature.STATS,
                 navigationIcon = {
                     IconButton(onClick = { state.eventSink(StatsScreen.Event.BackPressed) }) {
                         Icon(
@@ -97,7 +99,6 @@ fun StatsUi(
                         )
                     }
                 },
-                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier.fillMaxSize(),
