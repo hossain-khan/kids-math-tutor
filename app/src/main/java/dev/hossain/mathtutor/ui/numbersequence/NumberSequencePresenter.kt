@@ -75,7 +75,7 @@ class NumberSequencePresenter
             private const val GAME_DURATION_SECONDS = 90
 
             /** Seconds remaining when warning sound plays */
-            private const val WARNING_THRESHOLD_SECONDS = 10
+            private const val WARNING_THRESHOLD_SECONDS = 7
 
             /** Maximum digits allowed in answer */
             private const val MAX_ANSWER_DIGITS = 4

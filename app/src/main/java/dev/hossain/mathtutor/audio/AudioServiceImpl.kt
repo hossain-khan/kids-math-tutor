@@ -103,7 +103,7 @@ class AudioServiceImpl
             // Load sounds and remember how many we requested
             val ids =
                 listOf(
-                    pool.load(context, R.raw.success_01, 1),
+                    pool.load(context, R.raw.success_01_alt2, 1),
                     pool.load(context, R.raw.success_02, 1),
                     pool.load(context, R.raw.success_03, 1),
                     pool.load(context, R.raw.error_gentle, 1),

@@ -8,10 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- **10-Second Warning Audio** - Changed to use countdown tick sound for better audio consistency
-  - When 10 seconds remain during gameplay, now plays `countdown_tick` sound
+- **Warning Sound Timing** - Changed countdown tick warning from 10 to 7 seconds
+  - Adjusted to match 7-second `countdown_tick_fast` audio duration
   - Applied to Math Race and Number Sequence games
-  - Provides consistent audio cue for time warning
+  - Provides better sync between audio and time remaining
+- **Success Sound Effect** - Changed correct answer sound from `success_01` to `success_01_alt2`
+  - Provides alternative audio feedback for correct answers
+  - Maintains positive and encouraging tone for K-2 learners
 
 ### Fixed
 - **Math Race Status Bar Overlap** - Fixed timer and score overlapping with Android status bar
@@ -20,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Number Sequence Status Bar Overlap** - Fixed timer and score overlapping with Android status bar in Number Sequence game
   - Added `systemBarsPadding()` modifier to game screen
   - Consistent with Math Race fix
+- **Results Screens Status Bar Overlap** - Fixed results screens overlapping with status bar and navigation bar
+  - Added `systemBarsPadding()` modifier to all results screens (Math Practice, Math Race, Number Sequence, and Memory Match)
+  - Results content now respects system insets on all edges
 - **Game Countdown Audio Issue** - Fixed overlapping audio during game countdown
   - Changed countdown to play single `countdown_go` sound (4 seconds) at start instead of individual tick sounds
   - Removed duplicate "GO!" sound when game transitions from countdown to playing state
