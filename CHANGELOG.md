@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Background Music UI Sync** - Fixed background music toggle state synchronization between home screen and settings
+  - Home screen now reads music state from UserPreferences instead of local state
+  - Music toggle on home screen now persists state to UserPreferences
+  - MainActivity now checks user preference before starting background music on app launch
+  - Ensures consistent music state across all screens
+
 ## [1.11.0] - 2025-12-24
 
 ### Changed

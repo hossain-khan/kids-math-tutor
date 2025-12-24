@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
@@ -33,6 +34,8 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -91,9 +94,21 @@ class MainActivity
             enableEdgeToEdge()
             super.onCreate(savedInstanceState)
 
-            // Start background music when app launches
-            audioService.startBackgroundMusic()
-            Timber.d("[MainActivity] Started background music on app launch")
+            // Start background music if enabled in user preferences
+            lifecycleScope.launch {
+                try {
+                    val isMusicEnabled = userPreferencesRepository.isBackgroundMusicEnabled.first()
+                    if (isMusicEnabled) {
+                        audioService.setMusicEnabled(true)
+                        audioService.startBackgroundMusic()
+                        Timber.d("[MainActivity] Started background music on app launch (user preference: enabled)")
+                    } else {
+                        Timber.d("[MainActivity] Background music not started (user preference: disabled)")
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "[MainActivity] Failed to check music preference, not starting music")
+                }
+            }
 
             // Register lifecycle observer for music management
             lifecycle.addObserver(musicLifecycleObserver)

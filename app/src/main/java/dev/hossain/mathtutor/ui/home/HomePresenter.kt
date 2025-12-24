@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -16,6 +14,7 @@ import dev.hossain.mathtutor.analytics.AnalyticsParam
 import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.analytics.UserProperty
 import dev.hossain.mathtutor.audio.AudioService
+import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
@@ -32,6 +31,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -48,6 +48,7 @@ class HomePresenter
         private val sessionRepository: SessionRepository,
         private val badgeRepository: BadgeRepository,
         private val userProfileRepository: UserProfileRepository,
+        private val userPreferencesRepository: UserPreferencesRepository,
         private val audioService: AudioService,
         private val analyticsService: AnalyticsService,
     ) : Presenter<HomeScreen.State> {
@@ -98,8 +99,10 @@ class HomePresenter
                 }
             }
 
-            // Track music playing state
-            var isMusicPlaying by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
+
+            // Collect background music state from UserPreferences
+            val isMusicPlaying by userPreferencesRepository.isBackgroundMusicEnabled.collectAsState(initial = false)
 
             // Collect user profile
             val userProfile by userProfileRepository.getProfile().collectAsState(initial = null)
@@ -170,23 +173,26 @@ class HomePresenter
                     }
 
                     is HomeScreen.Event.ToggleMusicClicked -> {
-                        isMusicPlaying = !isMusicPlaying
+                        val newMusicState = !isMusicPlaying
                         analyticsService.logEvent(
                             eventName = AnalyticsEvent.AUDIO_TOGGLED,
                             parameters =
                                 mapOf(
                                     AnalyticsParam.SETTING_NAME to "background_music",
-                                    AnalyticsParam.SETTING_VALUE to isMusicPlaying.toString(),
+                                    AnalyticsParam.SETTING_VALUE to newMusicState.toString(),
                                 ),
                         )
-                        if (isMusicPlaying) {
-                            audioService.setMusicEnabled(true)
+                        audioService.setMusicEnabled(newMusicState)
+                        if (newMusicState) {
                             audioService.startBackgroundMusic()
                             Timber.d("HomeScreen: Started background music")
                         } else {
                             audioService.stopBackgroundMusic()
-                            audioService.setMusicEnabled(false)
                             Timber.d("HomeScreen: Stopped background music")
+                        }
+                        // Persist the state to UserPreferences
+                        scope.launch {
+                            userPreferencesRepository.setBackgroundMusicEnabled(newMusicState)
                         }
                     }
 
