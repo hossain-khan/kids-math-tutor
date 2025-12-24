@@ -99,24 +99,10 @@ fun ParentChallengesUi(
         }
     }
 
-    BackHandler {
-        state.eventSink(ParentChallengesScreen.Event.NavigateBack)
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Custom Challenges") },
-                navigationIcon = {
-                    IconButton(
-                        onClick = { state.eventSink(ParentChallengesScreen.Event.NavigateBack) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
                 modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
