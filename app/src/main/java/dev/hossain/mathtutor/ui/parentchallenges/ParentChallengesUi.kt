@@ -47,7 +47,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,7 +57,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -71,6 +69,8 @@ import dev.hossain.mathtutor.domain.model.ChallengeType
 import dev.hossain.mathtutor.domain.model.CustomChallenge
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
+import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
@@ -101,9 +101,9 @@ fun ParentChallengesUi(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            FeatureTopAppBar(
                 title = { Text("Custom Challenges") },
-                modifier = Modifier.shadow(elevation = 4.dp),
+                feature = TopBarFeature.STATS,
             )
         },
         snackbarHost = {

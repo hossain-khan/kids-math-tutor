@@ -31,11 +31,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,7 +49,9 @@ import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.StreakCard
+import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
@@ -86,10 +86,11 @@ fun HomeUi(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
+            FeatureTopAppBar(
                 title = {
                     Text("Math Pup Tutor")
                 },
+                feature = TopBarFeature.BADGES,
                 actions = {
                     IconButton(onClick = { state.eventSink(HomeScreen.Event.ToggleMusicClicked) }) {
                         Icon(
@@ -114,7 +115,6 @@ fun HomeUi(
                         )
                     }
                 },
-                modifier = Modifier.shadow(elevation = 4.dp),
             )
         },
         modifier = modifier.fillMaxSize(),

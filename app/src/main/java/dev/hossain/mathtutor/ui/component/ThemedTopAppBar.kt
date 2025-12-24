@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.component
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -33,50 +34,65 @@ enum class TopBarFeature {
 }
 
 /**
- * Lighter, soothing versions of the vibrant navigation colors.
- * These are designed to be easier on the eyes while maintaining visual connection
- * to their corresponding navigation bar items.
+ * Light and dark mode versions of the vibrant navigation colors.
+ *
+ * Light mode: Lighter, soothing versions for excellent readability on white backgrounds
+ * Dark mode: Darker, more saturated versions that are easier on eyes in dark mode
+ *
+ * All colors maintain high contrast with white text for excellent accessibility.
  */
 private object TopBarFeatureColors {
-    // Lighter Red - matches Games nav (0xFFE53935) - for practice activities and games
-    val redAccent = Color(0xFFEF5350)
+    // RED: Matches Games nav
+    val redAccentLight = Color(0xFFEF5350) // Light mode
+    val redAccentDark = Color(0xFFE53935) // Dark mode - more saturated
 
-    // Lighter Blue - matches Parents nav (0xFF1976D2) - for stats and insights
-    val blueAccent = Color(0xFF42A5F5)
+    // BLUE: Matches Parents nav
+    val blueAccentLight = Color(0xFF42A5F5) // Light mode
+    val blueAccentDark = Color(0xFF1565C0) // Dark mode - darker for dark theme
 
-    // Lighter Green - matches Home nav (0xFF2E7D32) - for badges and achievements
-    val greenAccent = Color(0xFF66BB6A)
+    // GREEN: Matches Home nav
+    val greenAccentLight = Color(0xFF66BB6A) // Light mode
+    val greenAccentDark = Color(0xFF2E7D32) // Dark mode - matches nav color
 
-    // Lighter Purple - matches Settings nav (0xFF7B1FA2) - for settings
-    val purpleAccent = Color(0xFFAB47BC)
+    // PURPLE: Matches Settings nav
+    val purpleAccentLight = Color(0xFFAB47BC) // Light mode
+    val purpleAccentDark = Color(0xFF7B1FA2) // Dark mode - matches nav color
 }
 
 /**
  * Gets the color scheme for a top-level feature.
- * Uses lighter, soothing versions of the navigation bar colors to create visual harmony.
+ * Uses lighter, soothing versions for light mode and darker versions for dark mode
+ * to optimize readability and eye comfort across themes.
  *
  * @param feature The feature to get colors for
  * @return Pair of (containerColor, contentColor)
  */
 @Composable
-fun TopBarFeature.getColors(): Pair<androidx.compose.ui.graphics.Color, androidx.compose.ui.graphics.Color> =
-    when (this) {
+fun TopBarFeature.getColors(): Pair<androidx.compose.ui.graphics.Color, androidx.compose.ui.graphics.Color> {
+    val isDarkMode = isSystemInDarkTheme()
+
+    return when (this) {
         TopBarFeature.PRACTICE, TopBarFeature.GAMES -> {
-            TopBarFeatureColors.redAccent to Color.White
+            val color = if (isDarkMode) TopBarFeatureColors.redAccentDark else TopBarFeatureColors.redAccentLight
+            color to Color.White
         }
 
         TopBarFeature.STATS -> {
-            TopBarFeatureColors.blueAccent to Color.White
+            val color = if (isDarkMode) TopBarFeatureColors.blueAccentDark else TopBarFeatureColors.blueAccentLight
+            color to Color.White
         }
 
         TopBarFeature.BADGES -> {
-            TopBarFeatureColors.greenAccent to Color.White
+            val color = if (isDarkMode) TopBarFeatureColors.greenAccentDark else TopBarFeatureColors.greenAccentLight
+            color to Color.White
         }
 
         TopBarFeature.SETTINGS -> {
-            TopBarFeatureColors.purpleAccent to Color.White
+            val color = if (isDarkMode) TopBarFeatureColors.purpleAccentDark else TopBarFeatureColors.purpleAccentLight
+            color to Color.White
         }
     }
+}
 
 /**
  * A styled TopAppBar with vibrant color for a top-level feature area.
