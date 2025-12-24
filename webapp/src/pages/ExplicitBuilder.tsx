@@ -209,26 +209,30 @@ export default function ExplicitBuilder() {
           onClose={() => setShowToast(false)}
         />
 
-        {/* Templates Section */}
-        <TemplateSection
-          templates={explicitTemplates}
-          onTemplateSelect={handleTemplateSelect}
-          isExpanded={isTemplateExpanded}
-          onToggle={setIsTemplateExpanded}
-        />
         {/* Intro Card */}
         <Card className="mb-6 bg-gradient-to-br from-secondary-50 to-purple-50 border-2 border-secondary-200 p-6">
-          <div className="flex items-start gap-4">
-            <div className="text-3xl flex-shrink-0">✏️</div>
-            <div className="flex-1">
-              <h2 className="font-display font-bold text-lg mb-2">
-                Create Each Problem
-              </h2>
-              <p className="text-sm text-gray-600">
-                Enter each math problem exactly how you want it. Perfect for
-                targeting specific skills!
-              </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start gap-4">
+              <div className="text-3xl flex-shrink-0">✏️</div>
+              <div className="flex-1">
+                <h2 className="font-display font-bold text-lg mb-2">
+                  Create Each Problem
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Enter each math problem exactly how you want it. Perfect for
+                  targeting specific skills!
+                </p>
+              </div>
             </div>
+
+            {/* Templates inside Intro Card */}
+            <TemplateSection
+              templates={explicitTemplates}
+              onTemplateSelect={handleTemplateSelect}
+              isExpanded={isTemplateExpanded}
+              onToggle={setIsTemplateExpanded}
+              colorScheme="secondary"
+            />
           </div>
         </Card>
 

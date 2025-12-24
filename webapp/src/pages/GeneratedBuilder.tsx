@@ -129,26 +129,29 @@ export default function GeneratedBuilder() {
           onClose={() => setShowToast(false)}
         />
 
-        {/* Templates Section */}
-        <TemplateSection
-          templates={generatedTemplates}
-          onTemplateSelect={handleTemplateSelect}
-          isExpanded={isTemplateExpanded}
-          onToggle={setIsTemplateExpanded}
-        />
         {/* Intro Card */}
         <Card className="mb-6 bg-gradient-to-br from-primary-50 to-blue-50 border-2 border-primary-200 p-6">
-          <div className="flex items-start gap-4">
-            <div className="text-3xl flex-shrink-0">✨</div>
-            <div className="flex-1">
-              <h2 className="font-display font-bold text-lg mb-2">
-                Auto-Generate Problems
-              </h2>
-              <p className="text-sm text-gray-600">
-                Set your rules and we'll create random problems for you. Perfect
-                for quick practice!
-              </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start gap-4">
+              <div className="text-3xl flex-shrink-0">✨</div>
+              <div className="flex-1">
+                <h2 className="font-display font-bold text-lg mb-2">
+                  Auto-Generate Problems
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Set your rules and we'll create random problems for you.
+                  Perfect for quick practice!
+                </p>
+              </div>
             </div>
+
+            {/* Templates inside Intro Card */}
+            <TemplateSection
+              templates={generatedTemplates}
+              onTemplateSelect={handleTemplateSelect}
+              isExpanded={isTemplateExpanded}
+              onToggle={setIsTemplateExpanded}
+            />
           </div>
         </Card>
 

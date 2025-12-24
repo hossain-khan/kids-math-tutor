@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Button from "./Button";
-import Card from "./Card";
 import {
   type GradeLevel,
   type GeneratedTemplate,
@@ -9,11 +8,14 @@ import {
 
 type TemplateType = GeneratedTemplate | ExplicitTemplate;
 
+type ColorScheme = "primary" | "secondary";
+
 interface TemplateSectionProps {
   templates: Record<GradeLevel, TemplateType[]>;
   onTemplateSelect: (template: TemplateType) => void;
   isExpanded: boolean;
   onToggle: (expanded: boolean) => void;
+  colorScheme?: ColorScheme;
 }
 
 export default function TemplateSection({
@@ -21,9 +23,15 @@ export default function TemplateSection({
   onTemplateSelect,
   isExpanded,
   onToggle,
+  colorScheme = "primary",
 }: TemplateSectionProps) {
   const [selectedGrade, setSelectedGrade] =
     useState<GradeLevel>("kindergarten");
+
+  const buttonBgClass =
+    colorScheme === "secondary"
+      ? "bg-secondary-100 text-secondary-700 border-secondary-200 hover:bg-secondary-200"
+      : "bg-primary-100 text-primary-700 border-primary-200 hover:bg-primary-200";
 
   const gradeLevels: { value: GradeLevel; label: string }[] = [
     { value: "kindergarten", label: "K" },
@@ -40,7 +48,7 @@ export default function TemplateSection({
   };
 
   return (
-    <div className="mb-6">
+    <div>
       {/* Collapsed Button */}
       {!isExpanded && (
         <Button
@@ -48,7 +56,7 @@ export default function TemplateSection({
           variant="outline"
           size="md"
           onClick={() => onToggle(true)}
-          className="w-full text-left justify-start"
+          className={`w-full text-left justify-start border ${buttonBgClass}`}
         >
           <span className="text-lg mr-2">📋</span>
           Browse Fun Worksheet Templates
@@ -57,7 +65,7 @@ export default function TemplateSection({
 
       {/* Expanded Templates Section */}
       {isExpanded && (
-        <Card className="p-6 border-2 border-primary-200 bg-gradient-to-br from-primary-50 to-blue-50">
+        <div>
           {/* Close Button */}
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-bold text-gray-900">
@@ -134,7 +142,7 @@ export default function TemplateSection({
               No templates available for this grade level
             </div>
           )}
-        </Card>
+        </div>
       )}
     </div>
   );
