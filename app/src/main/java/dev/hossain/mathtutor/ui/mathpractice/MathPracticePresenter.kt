@@ -242,8 +242,8 @@ class MathPracticePresenter
                                     screen.problemCount,
                                 )
                             }
-                        customChallengeTitle = challenge.title
                         actualGradeLevel = grade // Use user's grade for custom challenges
+                        customChallengeTitle = challenge.title
                         Timber.d(
                             "Loaded ${problems.size} problems from custom challenge '${challenge.title}' (type: ${challenge.type})",
                         )
@@ -256,13 +256,14 @@ class MathPracticePresenter
                                 operation = screen.operation,
                                 gradeLevel = grade,
                             )
+                        // Set grade level before calling generateProblemsWithUniqueStrings
+                        actualGradeLevel = grade
                         // Validate generated problems for unique strings
                         problems =
                             generateProblemsWithUniqueStrings(
                                 generatedProblems,
                                 screen.problemCount,
                             )
-                        actualGradeLevel = grade
                     }
                 } else if (isAdaptiveEnabled) {
                     // Use adaptive problem generator
@@ -272,13 +273,14 @@ class MathPracticePresenter
                             operation = screen.operation,
                             baseGradeLevel = grade,
                         )
+                    // Set grade level before calling generateProblemsWithUniqueStrings
+                    actualGradeLevel = result.actualGradeLevel
                     // Validate adaptive problems for unique strings
                     problems =
                         generateProblemsWithUniqueStrings(
                             result.problems,
                             screen.problemCount,
                         )
-                    actualGradeLevel = result.actualGradeLevel
                     difficultyAdjustment = result.adjustment
                     if (result.wasAdjusted) {
                         showDifficultyChangeNotice = true
@@ -304,13 +306,14 @@ class MathPracticePresenter
                             operation = screen.operation,
                             gradeLevel = grade,
                         )
+                    // Set grade level before calling generateProblemsWithUniqueStrings
+                    actualGradeLevel = grade
                     // Validate standard problems for unique strings
                     problems =
                         generateProblemsWithUniqueStrings(
                             generatedProblems,
                             screen.problemCount,
                         )
-                    actualGradeLevel = grade
                 }
                 Timber.d(
                     "Generated ${problems.size} problems for grade $actualGradeLevel " +
