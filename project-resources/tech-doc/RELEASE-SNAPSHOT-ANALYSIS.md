@@ -274,7 +274,67 @@ git ls-files webapp/dist | wc -l
 - Libraries: Circuit, Metro, Compose, WorkManager, Firebase, etc.
 - Release date (current date when snapshot is created)
 
-### Step 8: Create Release Checklist
+### Step 8: APK Analysis with diffuse (Optional but Recommended)
+
+**Purpose**: Compare APK size changes and identify bloat between releases
+
+**Prerequisites**:
+```bash
+# Install diffuse (macOS with Homebrew)
+brew install diffuse
+
+# Or from GitHub releases: https://github.com/JesusFreke/diffuse/releases
+```
+
+**Commands**:
+```bash
+# Compare two APK releases
+diffuse diff app-v1.12.0.apk app-v1.13.0.apk
+
+# Get info about a single APK
+diffuse info app-v1.13.0.apk
+
+# List methods or fields in APK
+diffuse members app-v1.13.0.apk
+```
+
+**Expected Output** (comparison table):
+```
+APK Component Analysis:
+- dex:       Dalvik executable size and method/string count
+- arsc:      Android resources (colors, strings, layouts)
+- manifest:  Android manifest file changes
+- res:       Resource files (images, layouts, etc.)
+- native:    Native libraries (.so files)
+- asset:     Asset files
+- other:     Miscellaneous files
+
+Shows both compressed (as stored) and uncompressed (memory) sizes
+```
+
+**What to Extract**:
+- Total APK size change (compressed and uncompressed)
+- Component-by-component size changes
+- DEX changes (strings, types, classes, methods, fields)
+- Manifest version changes
+- Warnings about significant bloat in any component
+- File-level changes sorted by size difference
+
+**Interpretation Guide**:
+- **0 B difference**: No changes in component
+- **Negative diff**: Component was reduced (good for optimization)
+- **Positive diff**: Component increased (watch for bloat)
+- **Methods/Strings count**: High counts with minimal changes = healthy
+- **Large single file changes**: May indicate new assets or resources
+
+**Note**: diffuse requires two APK files to compare. Typically:
+- Compare current release with previous release
+- Or compare debug vs release build
+- Or compare against a baseline for size regression detection
+
+---
+
+### Step 9: Create Release Checklist
 
 **Purpose**: Document that release was production-ready
 
@@ -294,6 +354,9 @@ git status  # Should be clean
 
 # 5. Verify proguard configuration
 cat proguard-rules.pro | grep -E "^-keep|^-dontwarn" | head -10
+
+# 6. Analyze APK changes (if comparing releases)
+diffuse diff app-previous.apk app-current.apk
 ```
 
 **Checklist Items**:
@@ -304,6 +367,7 @@ cat proguard-rules.pro | grep -E "^-keep|^-dontwarn" | head -10
 - ✅ GitHub PR merged to main
 - ✅ Version tag created and pushed
 - ✅ Google Play documentation complete
+- ✅ APK analysis complete (no unexpected bloat)
 
 ---
 
@@ -448,6 +512,10 @@ du -sh webapp/node_modules webapp/dist 2>/dev/null
 # 7. Build status
 echo "=== BUILD STATUS ===" && \
 ./gradlew clean build --no-daemon 2>&1 | tail -5
+
+# 8. APK analysis (if comparing releases)
+echo "=== APK COMPARISON ===" && \
+diffuse diff app-v1.12.0.apk app-v1.13.0.apk 2>/dev/null || echo "APK files not available for comparison"
 ```
 
 ---

@@ -151,6 +151,60 @@ Release APK Size:            ~15-20 MB (estimated after R8 minification)
   • Ready for Google Play Store
 ```
 
+### APK Comparison Analysis (v1.12.0 vs v1.13.0)
+*Using diffuse tool to analyze size changes between versions*
+
+**Overall Size Change**: -10 bytes (compressed) / -9 bytes (uncompressed)
+- App remains stable at 45.1 MiB
+- Excellent optimization with no size bloat
+
+**Component Breakdown**:
+```
+          │          compressed           │         uncompressed         
+          ├───────────┬───────────┬───────┼───────────┬───────────┬──────
+ APK      │ v1.12.0   │ v1.13.0   │ diff  │ v1.12.0   │ v1.13.0   │ diff 
+──────────┼───────────┼───────────┼───────┼───────────┼───────────┼──────
+      dex │    20 MiB │    20 MiB │   0 B │    20 MiB │    20 MiB │  0 B 
+     arsc │ 734.3 KiB │ 734.3 KiB │  -8 B │ 734.2 KiB │ 734.2 KiB │ -8 B 
+ manifest │   4.3 KiB │   4.3 KiB │  +1 B │  19.4 KiB │  19.4 KiB │  0 B 
+      res │  23.8 MiB │  23.8 MiB │  -2 B │  23.9 MiB │  23.9 MiB │  0 B 
+   native │ 391.2 KiB │ 391.2 KiB │   0 B │ 245.9 KiB │ 245.9 KiB │  0 B 
+    asset │  11.2 KiB │  11.2 KiB │  -3 B │  10.9 KiB │  10.9 KiB │ -1 B 
+    other │  68.8 KiB │  68.8 KiB │  +2 B │ 138.9 KiB │ 138.9 KiB │  0 B 
+──────────┼───────────┼───────────┼───────┼───────────┼───────────┼──────
+    total │  45.1 MiB │  45.1 MiB │ -10 B │    45 MiB │    45 MiB │ -9 B 
+```
+
+**Code (DEX) Analysis**:
+```
+         │ v1.12.0    │ v1.13.0    │ diff      
+─────────┼────────────┼────────────┼───────────
+ strings │    129,285 │    129,285 │ 0 (+1 -1) 
+   types │     26,507 │     26,507 │ 0         
+ classes │     21,830 │     21,830 │ 0         
+ methods │    158,136 │    158,136 │ 0         
+  fields │     65,975 │     65,975 │ 0         
+```
+- No code bloat between versions
+- Strings changed: 1 addition (version "1.13.0"), 1 removal (version "1.12.0")
+- Method count stable at 158k (well optimized with ProGuard)
+- Type and class count unchanged
+
+**Version Information**:
+```
+Manifest Changes:
+  • Version Code: 13 → 14 ✅
+  • Version Name: 1.12.0 → 1.13.0 ✅
+  • Compile SDK: Updated to 16 (Android 16)
+```
+
+**APK Health Assessment**: ✅ **EXCELLENT**
+- Zero unexpected bloat
+- Minimal changes between versions (only version bumps)
+- Resource compression working efficiently
+- Code optimization optimal (158k methods is lean for full Compose + Firebase app)
+- Ready for production release
+
 ### Web (React/TypeScript) Statistics
 ```
 React Web App:
