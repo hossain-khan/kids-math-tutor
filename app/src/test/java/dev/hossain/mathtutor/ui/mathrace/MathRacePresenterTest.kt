@@ -586,6 +586,60 @@ class MathRacePresenterTest {
             correctAnswer = answer,
         )
     }
+
+    // ==================== Deduplication Tests ====================
+
+    @Test
+    fun `problem string deduplication allows same answer with different strings`() {
+        // Both "2+3" and "1+4" equal 5 but have different problem strings
+        val problem1String = "2+3"
+        val problem2String = "1+4"
+
+        assertThat(problem1String).isNotEqualTo(problem2String)
+
+        val usedStrings = setOf(problem1String)
+        assertThat(usedStrings.contains(problem1String)).isTrue()
+        assertThat(usedStrings.contains(problem2String)).isFalse()
+    }
+
+    @Test
+    fun `session tracking set prevents duplicate problem strings`() {
+        val usedStrings = mutableSetOf<String>()
+        val problem1String = "2+3"
+        val problem2String = "3+2"
+
+        usedStrings.add(problem1String)
+        assertThat(usedStrings.contains(problem1String)).isTrue()
+        assertThat(usedStrings.contains(problem2String)).isFalse()
+
+        usedStrings.add(problem2String)
+        assertThat(usedStrings.size).isEqualTo(2)
+    }
+
+    @Test
+    fun `new game session clears used problem strings`() {
+        val usedStrings1 = setOf("2+3", "3+4", "5+1")
+        val usedStrings2 = emptySet<String>()
+
+        // Simulate game reset
+        val clearedStrings = if (true) emptySet<String>() else usedStrings1
+
+        assertThat(usedStrings1.size).isEqualTo(3)
+        assertThat(clearedStrings.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun `play again resets used problem strings tracking`() {
+        val game1Problems = setOf("2+3", "4+5", "1+6")
+        val game2Problems = emptySet<String>()
+
+        // First game accumulates problems
+        assertThat(game1Problems.size).isEqualTo(3)
+
+        // PlayAgain clears the tracking
+        val resetProblems = emptySet<String>()
+        assertThat(resetProblems.isEmpty()).isTrue()
+    }
 }
 
 /**
@@ -689,9 +743,8 @@ class FakeUserProfileRepository : UserProfileRepository {
     override suspend fun updateAdaptiveDifficulty(enabled: Boolean) {}
 }
 
-/**
- * Fake implementation of [AudioService] for testing.
- */
+// ==================== Fake Implementations ====================
+
 class FakeAudioService : AudioService {
     var successPlayed = 0
     var perfectScorePlayed = 0

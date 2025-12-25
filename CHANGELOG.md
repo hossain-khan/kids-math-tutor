@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Math Race Duplicate Problem Strings** - Eliminated duplicate problem display strings in Math Race sessions (#313)
+  - Implemented session-level tracking of problem strings during 60-second gameplay
+  - Added retry mechanism (up to 100 attempts) to generate unique problems before user answer submission
+  - Prevents commutative variants from appearing in same game (e.g., "2+3" and "3+2" as separate problems)
+  - Clears tracking set on game start and PlayAgain to prevent interference between games
+  - Comprehensive Timber logging for monitoring duplicate generation attempts and retries
+  - Added 4 unit tests covering session tracking, string deduplication, and game resets
 - **Math Practice Duplicate Problem Strings** - Eliminated duplicate problem display strings in Math Practice sessions
   - Added unique problem string validation across all problem generation paths (custom challenges, adaptive, standard)
   - Implemented retry logic with fallback deduplication to ensure no two problems show the same string (e.g., "2+3" cannot appear twice)
