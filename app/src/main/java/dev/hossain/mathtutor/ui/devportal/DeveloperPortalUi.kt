@@ -58,7 +58,7 @@ fun DeveloperPortalUi(
                 "challenges" to false,
                 "streak" to false,
                 "seed" to false,
-                "sounds" to true,
+                "sounds" to false,
                 "diagnostics" to false,
             ),
         )
@@ -672,125 +672,136 @@ fun DeveloperPortalUi(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Sounds & Haptics", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Test audio and haptic feedback",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Success
                     Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlaySuccessSound) },
+                        onClick = {
+                            expandedSections =
+                                expandedSections.toMutableMap().apply { put("sounds", !(this["sounds"] ?: false)) }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Play Success Sound & Haptic")
+                        Text(text = "${if (expandedSections["sounds"] == true) "▼" else "▶"} Sounds & Haptics")
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Error
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayErrorSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Error Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Level Up
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayLevelUpSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Level-Up Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Badge Unlock
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayBadgeUnlockSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Badge Unlock Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Countdown
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayCountdownSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Countdown Sound")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // GO!
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayGoSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play GO! Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Background Music Toggle
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.ToggleBackgroundMusic) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(
-                            imageVector = if (state.isBackgroundMusicPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                            contentDescription = if (state.isBackgroundMusicPlaying) "Pause" else "Play",
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(if (state.isBackgroundMusicPlaying) "Stop Background Music" else "Start Background Music")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Additional sound test buttons
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayPerfectScore) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Perfect Score Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayStreakContinue) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Streak Continue Sound")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayWarning) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Warning Sound")
-                    }
-
-                    // Show feedback message if present
-                    state.soundHapticFeedback?.let { msg ->
-                        Spacer(modifier = Modifier.height(8.dp))
+                    if (expandedSections["sounds"] == true) {
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = msg,
+                            text = "Test audio and haptic feedback",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Success
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlaySuccessSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Success Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Error
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayErrorSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Error Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Level Up
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayLevelUpSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Level-Up Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Badge Unlock
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayBadgeUnlockSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Badge Unlock Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Countdown
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayCountdownSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Countdown Sound")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // GO!
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayGoSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play GO! Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Background Music Toggle
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.ToggleBackgroundMusic) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Icon(
+                                imageVector = if (state.isBackgroundMusicPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                                contentDescription = if (state.isBackgroundMusicPlaying) "Pause" else "Play",
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(if (state.isBackgroundMusicPlaying) "Stop Background Music" else "Start Background Music")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Additional sound test buttons
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayPerfectScore) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Perfect Score Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayStreakContinue) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Streak Continue Sound")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayWarning) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Warning Sound")
+                        }
+
+                        // Show feedback message if present
+                        state.soundHapticFeedback?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = msg,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
                     }
                 }
             }
