@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.1] - 2025-12-25
+
+### Fixed
+- **Math Practice Null Pointer Exception** - Fixed critical crash in `MathPracticePresenter.generateProblemsWithUniqueStrings()`
+  - Root cause: `actualGradeLevel` variable was used with non-null assertion (`!!`) before being initialized
+  - Solution: Reordered code to assign `actualGradeLevel` BEFORE calling `generateProblemsWithUniqueStrings()` in all three code paths
+  - Applied to: custom challenge fallback, adaptive mode, and standard problem generation
+  - Fixes crash that prevented users from starting any practice session
+
 ## [1.14.0] - 2025-12-25
 
 ### Added
@@ -1767,7 +1776,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.1...HEAD
+[1.14.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.0...1.14.1
 [1.14.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.13.0...1.14.0
 [1.13.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.12.0...1.13.0
 [1.12.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.11.0...1.12.0
