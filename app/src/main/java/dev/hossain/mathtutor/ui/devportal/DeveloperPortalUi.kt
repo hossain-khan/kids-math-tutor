@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
+import timber.log.Timber
 
 @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +55,7 @@ fun DeveloperPortalUi(
                 "navigation" to true,
                 "profile" to true,
                 "challenges" to false,
+                "streak" to false,
                 "seed" to false,
                 "sounds" to true,
                 "diagnostics" to false,
@@ -485,6 +487,164 @@ fun DeveloperPortalUi(
                             Text(text = msg)
                         }
                         if (state.importChallengesInProgress || state.deleteChallengesInProgress) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Streak Management
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Button(
+                        onClick = {
+                            expandedSections =
+                                expandedSections.toMutableMap().apply { put("streak", !(this["streak"] ?: false)) }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = "${if (expandedSections["streak"] == true) "▼" else "▶"} Streak Management")
+                    }
+
+                    if (expandedSections["streak"] == true) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "View and force-set daily streak values",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Display current streak status
+                        if (state.currentStreakData != null) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors =
+                                    CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    ),
+                            ) {
+                                Column(modifier = Modifier.padding(12.dp)) {
+                                    Text("Current Streak Status", style = MaterialTheme.typography.bodyLarge)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text("Current Streak: ${state.currentStreakData.currentStreak} 🔥")
+                                    Text("Longest Streak: ${state.currentStreakData.longestStreak}")
+                                    Text("Total Days Practiced: ${state.currentStreakData.totalDaysPracticed}")
+                                    if (state.currentStreakData.lastPracticeDate != null) {
+                                        Text("Last Practice: ${state.currentStreakData.lastPracticeDate}")
+                                    } else {
+                                        Text("Last Practice: Never")
+                                    }
+                                }
+                            }
+                        } else {
+                            Text("No streak data available", style = MaterialTheme.typography.bodySmall)
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text("Force Set Streak Values", style = MaterialTheme.typography.labelMedium)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Current streak input
+                        var currentStreakInput by remember {
+                            mutableStateOf(state.currentStreakData?.currentStreak?.toString() ?: "0")
+                        }
+                        Text("Current Streak:", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = currentStreakInput,
+                            onValueChange = { currentStreakInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Longest streak input
+                        var longestStreakInput by remember {
+                            mutableStateOf(state.currentStreakData?.longestStreak?.toString() ?: "0")
+                        }
+                        Text("Longest Streak:", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = longestStreakInput,
+                            onValueChange = { longestStreakInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Total days input
+                        var totalDaysInput by remember {
+                            mutableStateOf(state.currentStreakData?.totalDaysPracticed?.toString() ?: "0")
+                        }
+                        Text("Total Days Practiced:", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = totalDaysInput,
+                            onValueChange = { totalDaysInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Last practice date input (optional)
+                        var lastPracticeDateInput by remember {
+                            mutableStateOf(state.currentStreakData?.lastPracticeDate?.toString() ?: "")
+                        }
+                        Text("Last Practice Date (YYYY-MM-DD):", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = lastPracticeDateInput,
+                            onValueChange = { lastPracticeDateInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            placeholder = { Text("Leave blank for no date") },
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = {
+                                try {
+                                    val current = currentStreakInput.toIntOrNull() ?: 0
+                                    val longest = longestStreakInput.toIntOrNull() ?: 0
+                                    val totalDays = totalDaysInput.toIntOrNull() ?: 0
+                                    val lastDate =
+                                        if (lastPracticeDateInput.isBlank()) {
+                                            null
+                                        } else {
+                                            java.time.LocalDate.parse(lastPracticeDateInput)
+                                        }
+
+                                    state.eventSink(
+                                        DeveloperPortalScreen.Event.ForceSetStreak(
+                                            currentStreak = current,
+                                            longestStreak = longest,
+                                            lastPracticeDate = lastDate,
+                                            totalDaysPracticed = totalDays,
+                                        ),
+                                    )
+                                } catch (e: Exception) {
+                                    Timber.e(e, "Invalid streak input")
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.setStreakInProgress,
+                        ) {
+                            Text("💾 Save Streak")
+                        }
+
+                        // Show result message if present
+                        state.setStreakResultMessage?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = msg)
+                        }
+                        if (state.setStreakInProgress) {
                             Spacer(modifier = Modifier.height(8.dp))
                             CircularProgressIndicator()
                         }

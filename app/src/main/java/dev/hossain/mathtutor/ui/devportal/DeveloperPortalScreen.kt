@@ -4,9 +4,11 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDate
 
 /**
  * Debug-only Developer Portal screen. Exposes developer tools and helpers for testing.
@@ -42,6 +44,9 @@ data object DeveloperPortalScreen : Screen {
         val soundsLoaded: Boolean = false,
         val soundSampleIds: Map<String, Int> = emptyMap(),
         val totalSessionCount: Int = 0,
+        val currentStreakData: DailyStreak? = null,
+        val setStreakInProgress: Boolean = false,
+        val setStreakResultMessage: String? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -75,6 +80,13 @@ data object DeveloperPortalScreen : Screen {
         data object DeleteAllChallengesClicked : Event
 
         data object ForceBadgeCheckClicked : Event
+
+        data class ForceSetStreak(
+            val currentStreak: Int,
+            val longestStreak: Int,
+            val lastPracticeDate: LocalDate?,
+            val totalDaysPracticed: Int,
+        ) : Event
 
         data class ForceUnlockBadge(
             val badgeId: String,

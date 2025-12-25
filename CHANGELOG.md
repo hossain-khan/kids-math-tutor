@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Developer Portal Streak Management** - Added tools to view and force-set daily streak values for testing
+  - New "Streak Management" expandable section in Developer Portal UI
+  - View current streak status: current streak count, longest streak, total days practiced, last practice date
+  - Force-set streak values with input fields for all streak properties
+  - Input validation and error handling for streak values (supports LocalDate format YYYY-MM-DD)
+  - Real-time streak data updates from StreakRepository
+  - Progress indication and result messages for save status
+  - Enables testing of streak-related features without manual date manipulation
 - **Developer Portal Sample Challenge Import** - Added convenience feature to import 6 sample custom challenges with various problem types
   - New "Import Sample Challenges" expandable section in Developer Portal UI
   - Imports 6 pre-configured challenges: Quick Addition, Quick Subtraction, Multiply by 5, Divide by 2, Number Bonds to 10, and Doubles Practice
