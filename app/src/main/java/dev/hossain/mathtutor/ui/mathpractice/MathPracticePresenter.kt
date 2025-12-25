@@ -225,16 +225,27 @@ class MathPracticePresenter
                     Timber.d("Loading custom challenge: ${screen.customChallengeId}")
                     val challenge = customChallengeService.getChallengeById(screen.customChallengeId)
                     if (challenge != null) {
-                        // Validate custom challenge problems for unique strings
+                        // For EXPLICIT challenges, use problems as-is (parent-created, should not deduplicate)
+                        // For GENERATED challenges, validate for unique strings
                         problems =
-                            generateProblemsWithUniqueStrings(
-                                challenge.problems,
-                                screen.problemCount,
-                            )
+                            if (challenge.type == dev.hossain.mathtutor.domain.model.ChallengeType.EXPLICIT) {
+                                Timber.d(
+                                    "[MathPractice] Using EXPLICIT custom challenge '${challenge.title}' without deduplication",
+                                )
+                                challenge.problems
+                            } else {
+                                Timber.d(
+                                    "[MathPractice] Validating GENERATED custom challenge '${challenge.title}' for unique strings",
+                                )
+                                generateProblemsWithUniqueStrings(
+                                    challenge.problems,
+                                    screen.problemCount,
+                                )
+                            }
                         customChallengeTitle = challenge.title
                         actualGradeLevel = grade // Use user's grade for custom challenges
                         Timber.d(
-                            "Loaded ${problems.size} problems from custom challenge '${challenge.title}'",
+                            "Loaded ${problems.size} problems from custom challenge '${challenge.title}' (type: ${challenge.type})",
                         )
                     } else {
                         Timber.e("Custom challenge not found: ${screen.customChallengeId}")

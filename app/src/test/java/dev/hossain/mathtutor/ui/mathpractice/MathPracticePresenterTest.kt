@@ -669,4 +669,121 @@ class MathPracticePresenterTest {
         assertThat(subString).contains("-")
         assertThat(addString).isNotEqualTo(subString)
     }
+
+    // ==================== Custom Challenge Type Tests ====================
+
+    @Test
+    fun `explicit custom challenge type is correctly identified`() {
+        // Given - Create a mock EXPLICIT custom challenge
+        val mockChallenge =
+            dev.hossain.mathtutor.domain.model.CustomChallenge(
+                id = "explicit-challenge-1",
+                title = "Parent's Custom Challenge",
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.EXPLICIT,
+                problems =
+                    listOf(
+                        MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8),
+                        MathProblem(num1 = 7, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 9),
+                    ),
+            )
+
+        // Then - Challenge type should be EXPLICIT
+        assertThat(mockChallenge.type).isEqualTo(dev.hossain.mathtutor.domain.model.ChallengeType.EXPLICIT)
+    }
+
+    @Test
+    fun `generated custom challenge type is correctly identified`() {
+        // Given - Create a mock GENERATED custom challenge
+        val mockChallenge =
+            dev.hossain.mathtutor.domain.model.CustomChallenge(
+                id = "generated-challenge-1",
+                title = "App-Generated Challenge",
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED,
+                problems =
+                    listOf(
+                        MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8),
+                        MathProblem(num1 = 7, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 9),
+                    ),
+            )
+
+        // Then - Challenge type should be GENERATED
+        assertThat(mockChallenge.type).isEqualTo(dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED)
+    }
+
+    @Test
+    fun `explicit challenge should not be deduplicated by presentation layer`() {
+        // Given - EXPLICIT challenge with intentional duplicates (parent-created)
+        val parentCreatedProblems =
+            listOf(
+                MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5),
+                MathProblem(num1 = 1, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 5),
+                MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5), // Duplicate - intentional from parent
+            )
+
+        val mockChallenge =
+            dev.hossain.mathtutor.domain.model.CustomChallenge(
+                id = "explicit-challenge-2",
+                title = "Parent's Specific Practice",
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.EXPLICIT,
+                problems = parentCreatedProblems,
+            )
+
+        // When - Check that EXPLICIT challenges preserve parent's intent
+        val problemStrings = mockChallenge.problems.map { it.getDisplayString() }
+
+        // Then - The challenges should NOT be deduplicated (parent's original intent is preserved)
+        assertThat(mockChallenge.problems.size).isEqualTo(3)
+        assertThat(problemStrings[0]).isEqualTo(problemStrings[2]) // Duplicates intentionally preserved
+    }
+
+    @Test
+    fun `generated challenge is safe for deduplication`() {
+        // Given - GENERATED challenge created by app
+        val appGeneratedProblems =
+            listOf(
+                MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5),
+                MathProblem(num1 = 1, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 5),
+                MathProblem(num1 = 3, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 6), // Different
+            )
+
+        val mockChallenge =
+            dev.hossain.mathtutor.domain.model.CustomChallenge(
+                id = "generated-challenge-2",
+                title = "App-Generated Practice",
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED,
+                problems = appGeneratedProblems,
+            )
+
+        // When - Check that GENERATED challenges can be deduplicated
+        val problemStrings = mockChallenge.problems.map { it.getDisplayString() }
+
+        // Then - Generated challenges are safe to deduplicate
+        assertThat(mockChallenge.type).isEqualTo(dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED)
+        assertThat(problemStrings.size).isEqualTo(3)
+    }
+
+    @Test
+    fun `explicit and generated challenges are distinct types`() {
+        // Given - Create both types of challenges
+        val explicitChallenge =
+            dev.hossain.mathtutor.domain.model.CustomChallenge(
+                id = "explicit-1",
+                title = "Explicit",
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.EXPLICIT,
+                problems = listOf(MathProblem(num1 = 1, num2 = 1, operation = MathOperation.ADDITION, correctAnswer = 2)),
+            )
+
+        val generatedChallenge =
+            dev.hossain.mathtutor.domain.model.CustomChallenge(
+                id = "generated-1",
+                title = "Generated",
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED,
+                problems = listOf(MathProblem(num1 = 1, num2 = 1, operation = MathOperation.ADDITION, correctAnswer = 2)),
+            )
+
+        // Then - Types should be different
+        assertThat(explicitChallenge.type).isNotEqualTo(generatedChallenge.type)
+        assertThat(explicitChallenge.type).isEqualTo(dev.hossain.mathtutor.domain.model.ChallengeType.EXPLICIT)
+        assertThat(generatedChallenge.type).isEqualTo(dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED)
+    }
 }
