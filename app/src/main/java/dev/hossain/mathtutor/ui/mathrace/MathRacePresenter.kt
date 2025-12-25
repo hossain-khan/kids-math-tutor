@@ -84,6 +84,9 @@ class MathRacePresenter
 
             /** Countdown start value (3-2-1-GO) */
             private const val COUNTDOWN_START = 3
+
+            /** Maximum attempts to find a unique problem string during generation */
+            private const val MAX_UNIQUE_GENERATION_ATTEMPTS = 100
         }
 
         @Composable
@@ -256,50 +259,60 @@ class MathRacePresenter
             }
 
             /**
+             * Extracts the problem string representation from a [MathProblem].
+             * Format: "num1operationsymbolnum2" (e.g., "2+3", "5-1", "3×4")
+             */
+            fun getProblemString(problem: MathProblem): String = "${problem.num1}${problem.operation.symbol}${problem.num2}"
+
+            /**
              * Generates a new math problem appropriate for the grade level.
              * Ensures the problem string doesn't match any previously shown problems in this session.
+             * Uses retry logic to find unique problems before falling back to returning any generated problem.
              */
             fun generateNewProblem(): MathProblem {
                 var attempts = 0
-                val maxAttempts = 100
 
-                while (attempts < maxAttempts) {
-                    val problems =
-                        problemGenerator.generateProblems(
-                            count = 1,
-                            operation = MathOperation.MIXED,
-                            gradeLevel = gradeLevel,
-                        )
-                    val problem = problems.first()
-                    val problemString = "${problem.num1}${problem.operation.symbol}${problem.num2}"
+                while (attempts < MAX_UNIQUE_GENERATION_ATTEMPTS) {
+                    val problem =
+                        problemGenerator
+                            .generateProblems(
+                                count = 1,
+                                operation = MathOperation.MIXED,
+                                gradeLevel = gradeLevel,
+                            ).first()
+                    val problemString = getProblemString(problem)
 
                     if (!usedProblemStrings.contains(problemString)) {
                         usedProblemStrings = usedProblemStrings + problemString
-                        Timber.d("Generated unique problem: $problemString (attempt ${attempts + 1})")
+                        Timber.d(
+                            "Generated unique problem: $problemString (attempt ${attempts + 1})",
+                        )
                         return problem
                     }
 
                     attempts++
                     if (attempts == 1 || attempts % 10 == 0) {
                         Timber.w(
-                            "Duplicate problem detected: $problemString, retrying (attempt $attempts/$maxAttempts)",
+                            "Duplicate problem detected: $problemString, retrying (attempt $attempts/$MAX_UNIQUE_GENERATION_ATTEMPTS)",
                         )
                     }
                 }
 
-                // Fallback: If we couldn't find a unique problem after retries, return one anyway
-                // This should rarely happen given the large problem space
-                val problem =
+                // Fallback: If we couldn't find unique after retries, return duplicate anyway
+                // This should rarely happen given the large problem space and relatively short sessions
+                val fallbackProblem =
                     problemGenerator
                         .generateProblems(
                             count = 1,
                             operation = MathOperation.MIXED,
                             gradeLevel = gradeLevel,
                         ).first()
-                val problemString = "${problem.num1}${problem.operation.symbol}${problem.num2}"
-                usedProblemStrings = usedProblemStrings + problemString
-                Timber.w("Fallback problem after $maxAttempts retries: $problemString")
-                return problem
+                val fallbackString = getProblemString(fallbackProblem)
+                usedProblemStrings = usedProblemStrings + fallbackString
+                Timber.w(
+                    "Fallback problem after $MAX_UNIQUE_GENERATION_ATTEMPTS retries: $fallbackString",
+                )
+                return fallbackProblem
             }
 
             /**
