@@ -754,7 +754,7 @@ class DeveloperPortalPresenter
                     )
                 try {
                     customChallengeService.recordPracticeSession(quickSubtractionChallenge.second, session)
-                    Timber.d("[DevPortal] Recorded session for Quick Subtraction (50% accuracy)")
+                    Timber.d("[DevPortal] Recorded session for Quick Subtraction (50 percent accuracy)")
                 } catch (e: Exception) {
                     Timber.e(e, "[DevPortal] Failed to record session for Quick Subtraction")
                 }
