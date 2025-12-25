@@ -15,12 +15,17 @@ import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.ChallengeImportSpec
+import dev.hossain.mathtutor.domain.model.ChallengePracticeSession
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.domain.model.NumberRange
+import dev.hossain.mathtutor.domain.model.ProblemSpec
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
+import dev.hossain.mathtutor.domain.service.CustomChallengeService
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.zacsweers.metro.AppScope
@@ -32,6 +37,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.time.Instant
 
 /**
  * Basic scaffold presenter for `DeveloperPortalScreen`.
@@ -52,6 +58,7 @@ class DeveloperPortalPresenter
         private val hapticService: HapticService,
         private val analyticsService: AnalyticsService,
         private val sessionSeeder: dev.hossain.mathtutor.devtools.SessionSeeder,
+        private val customChallengeService: CustomChallengeService,
     ) : Presenter<DeveloperPortalScreen.State> {
         @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
         @AssistedFactory
@@ -80,6 +87,10 @@ class DeveloperPortalPresenter
             var resetOnboardingResultMessage by remember { mutableStateOf<String?>(null) }
             var seedInProgress by remember { mutableStateOf(false) }
             var seedResultMessage by remember { mutableStateOf<String?>(null) }
+            var importChallengesInProgress by remember { mutableStateOf(false) }
+            var importChallengesResultMessage by remember { mutableStateOf<String?>(null) }
+            var deleteChallengesInProgress by remember { mutableStateOf(false) }
+            var deleteChallengesResultMessage by remember { mutableStateOf<String?>(null) }
 
             var badges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var isAnalyticsEnabled by remember { mutableStateOf(true) }
@@ -161,6 +172,10 @@ class DeveloperPortalPresenter
                 resetOnboardingResultMessage = resetOnboardingResultMessage,
                 seedInProgress = seedInProgress,
                 seedResultMessage = seedResultMessage,
+                importChallengesInProgress = importChallengesInProgress,
+                importChallengesResultMessage = importChallengesResultMessage,
+                deleteChallengesInProgress = deleteChallengesInProgress,
+                deleteChallengesResultMessage = deleteChallengesResultMessage,
                 badges = badges,
                 forceUnlockInProgress = forceUnlockInProgress,
                 forceUnlockResultMessage = forceUnlockResultMessage,
@@ -376,6 +391,60 @@ class DeveloperPortalPresenter
                         }
                     }
 
+                    is DeveloperPortalScreen.Event.ImportSampleChallengesClicked -> {
+                        // Import 6 sample challenges with various problem types
+                        importChallengesInProgress = true
+                        importChallengesResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val imported = importSampleChallenges()
+                                withContext(Dispatchers.Main) {
+                                    importChallengesResultMessage = "Imported $imported challenges"
+                                    importChallengesInProgress = false
+                                }
+                                Timber.d("[DevPortal] Imported $imported sample challenges")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to import sample challenges")
+                                withContext(Dispatchers.Main) {
+                                    importChallengesResultMessage = "Import failed: ${e.message}"
+                                    importChallengesInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.DeleteAllChallengesClicked -> {
+                        // Delete all custom challenges
+                        deleteChallengesInProgress = true
+                        deleteChallengesResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val allChallenges = customChallengeService.getAllChallenges()
+                                var deletedCount = 0
+                                for (challenge in allChallenges) {
+                                    try {
+                                        customChallengeService.deleteChallenge(challenge.id)
+                                        deletedCount++
+                                        Timber.d("[DevPortal] Deleted challenge: ${challenge.title}")
+                                    } catch (e: Exception) {
+                                        Timber.e(e, "[DevPortal] Failed to delete challenge: ${challenge.title}")
+                                    }
+                                }
+                                withContext(Dispatchers.Main) {
+                                    deleteChallengesResultMessage = "Deleted $deletedCount challenges"
+                                    deleteChallengesInProgress = false
+                                }
+                                Timber.d("[DevPortal] Deleted $deletedCount challenges")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to delete challenges")
+                                withContext(Dispatchers.Main) {
+                                    deleteChallengesResultMessage = "Delete failed: ${e.message}"
+                                    deleteChallengesInProgress = false
+                                }
+                            }
+                        }
+                    }
+
                     is DeveloperPortalScreen.Event.ForceBadgeCheckClicked -> {
                         scope.launch(Dispatchers.IO) {
                             val unlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
@@ -550,5 +619,147 @@ class DeveloperPortalPresenter
                     }
                 }
             }
+        }
+
+        /**
+         * Imports 6 sample custom challenges with various problem types.
+         * Returns the count of successfully imported challenges.
+         */
+        private suspend fun importSampleChallenges(): Int {
+            val challenges =
+                listOf(
+                    // 1. Addition Practice (Addition with Grade 1 range)
+                    ChallengeImportSpec.Generated(
+                        title = "Quick Addition",
+                        subtitle = "Practice adding numbers 0-10",
+                        operation = MathOperation.ADDITION,
+                        problemCount = 10,
+                        numberRange = NumberRange(0, 10),
+                    ),
+                    // 2. Subtraction Practice (Subtraction with Grade 1 range)
+                    ChallengeImportSpec.Generated(
+                        title = "Quick Subtraction",
+                        subtitle = "Practice subtracting numbers 0-10",
+                        operation = MathOperation.SUBTRACTION,
+                        problemCount = 10,
+                        numberRange = NumberRange(0, 10),
+                    ),
+                    // 3. Multiplication Basics (Multiplication with Grade 2 range)
+                    ChallengeImportSpec.Generated(
+                        title = "Multiply by 5",
+                        subtitle = "Practice multiplying numbers by 5",
+                        operation = MathOperation.MULTIPLICATION,
+                        problemCount = 10,
+                        numberRange = NumberRange(1, 10),
+                    ),
+                    // 4. Division Basics
+                    ChallengeImportSpec.Generated(
+                        title = "Divide by 2",
+                        subtitle = "Practice dividing even numbers by 2",
+                        operation = MathOperation.DIVISION,
+                        problemCount = 10,
+                        numberRange = NumberRange(2, 20),
+                    ),
+                    // 5. Mixed Operations (Custom problems)
+                    ChallengeImportSpec.Explicit(
+                        title = "Number Bonds to 10",
+                        subtitle = "Find pairs that make 10",
+                        problems =
+                            listOf(
+                                ProblemSpec(1, 9, MathOperation.ADDITION),
+                                ProblemSpec(2, 8, MathOperation.ADDITION),
+                                ProblemSpec(3, 7, MathOperation.ADDITION),
+                                ProblemSpec(4, 6, MathOperation.ADDITION),
+                                ProblemSpec(5, 5, MathOperation.ADDITION),
+                                ProblemSpec(6, 4, MathOperation.ADDITION),
+                                ProblemSpec(7, 3, MathOperation.ADDITION),
+                                ProblemSpec(8, 2, MathOperation.ADDITION),
+                                ProblemSpec(9, 1, MathOperation.ADDITION),
+                                ProblemSpec(10, 0, MathOperation.ADDITION),
+                            ),
+                    ),
+                    // 6. Mixed Operations (Addition & Subtraction)
+                    ChallengeImportSpec.Explicit(
+                        title = "Mixed Operations Review",
+                        subtitle = "Practice addition and subtraction together",
+                        problems =
+                            listOf(
+                                ProblemSpec(3, 2, MathOperation.ADDITION),
+                                ProblemSpec(8, 2, MathOperation.SUBTRACTION),
+                                ProblemSpec(4, 3, MathOperation.ADDITION),
+                                ProblemSpec(7, 1, MathOperation.SUBTRACTION),
+                                ProblemSpec(6, 2, MathOperation.ADDITION),
+                                ProblemSpec(9, 3, MathOperation.SUBTRACTION),
+                                ProblemSpec(5, 4, MathOperation.ADDITION),
+                                ProblemSpec(10, 5, MathOperation.SUBTRACTION),
+                                ProblemSpec(7, 3, MathOperation.ADDITION),
+                                ProblemSpec(6, 1, MathOperation.SUBTRACTION),
+                            ),
+                    ),
+                )
+
+            var count = 0
+            val createdChallengeIds = mutableListOf<Pair<String, String>>() // (title, id)
+            for (spec in challenges) {
+                val result = customChallengeService.createChallengeFromSpec(spec)
+                if (result.isSuccess) {
+                    count++
+                    val challenge = result.getOrNull()
+                    if (challenge != null) {
+                        createdChallengeIds.add(challenge.title to challenge.id)
+                        Timber.d("[DevPortal] Successfully imported challenge: ${spec.title}")
+                    }
+                } else {
+                    Timber.e(
+                        result.exceptionOrNull(),
+                        "[DevPortal] Failed to import challenge: ${spec.title}",
+                    )
+                }
+            }
+
+            // Add practice sessions for 2 of the challenges
+            // Quick Addition: 3 sessions at 90% accuracy
+            val quickAdditionChallenge = createdChallengeIds.find { it.first == "Quick Addition" }
+            if (quickAdditionChallenge != null) {
+                repeat(3) { sessionIndex ->
+                    val now = Instant.now()
+                    val session =
+                        ChallengePracticeSession(
+                            startTime = now.minusSeconds((3 - sessionIndex).toLong() * 300), // Stagger sessions
+                            endTime = now.minusSeconds((3 - sessionIndex).toLong() * 300).plusSeconds(120),
+                            problemsAttempted = 10,
+                            correctAnswers = 9, // 90% accuracy
+                            totalTimeMs = 120000,
+                        )
+                    try {
+                        customChallengeService.recordPracticeSession(quickAdditionChallenge.second, session)
+                        Timber.d("[DevPortal] Recorded session $sessionIndex for Quick Addition (90% accuracy)")
+                    } catch (e: Exception) {
+                        Timber.e(e, "[DevPortal] Failed to record session for Quick Addition")
+                    }
+                }
+            }
+
+            // Quick Subtraction: 1 session at 45% accuracy
+            val quickSubtractionChallenge = createdChallengeIds.find { it.first == "Quick Subtraction" }
+            if (quickSubtractionChallenge != null) {
+                val now = Instant.now()
+                val session =
+                    ChallengePracticeSession(
+                        startTime = now.minusSeconds(600),
+                        endTime = now.minusSeconds(600).plusSeconds(90),
+                        problemsAttempted = 10,
+                        correctAnswers = 5, // 50% accuracy (close to 45%)
+                        totalTimeMs = 90000,
+                    )
+                try {
+                    customChallengeService.recordPracticeSession(quickSubtractionChallenge.second, session)
+                    Timber.d("[DevPortal] Recorded session for Quick Subtraction (50 percent accuracy)")
+                } catch (e: Exception) {
+                    Timber.e(e, "[DevPortal] Failed to record session for Quick Subtraction")
+                }
+            }
+
+            return count
         }
     }

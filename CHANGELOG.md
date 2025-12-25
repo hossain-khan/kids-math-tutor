@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Developer Portal Sample Challenge Import** - Added convenience feature to import 6 sample custom challenges with various problem types
+  - New "Import Sample Challenges" expandable section in Developer Portal UI
+  - Imports 6 pre-configured challenges: Quick Addition, Quick Subtraction, Multiply by 5, Divide by 2, Number Bonds to 10, and Doubles Practice
+  - Mix of generated and explicit challenge types for comprehensive testing
+  - Each challenge includes descriptive title and subtitle for context
+  - Progress indication and result messages for import status
+  - Streamlines developer workflow by eliminating need to manually create test challenges
+
 ### Fixed
 - **Custom Challenge Unarchive Functionality** - Fixed unarchive not working for archived challenges
   - Added `unarchiveChallenge()` method throughout the persistence layer (DAO, repository, service)
