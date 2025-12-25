@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.12.0] - 2025-12-24
+## [1.13.0] - 2025-12-24
+
+### Changed
+- **App Display Name** - Updated app name from "Math Pup Tutor" to "Math Pup" for Google Play Store
+  - Shorter, more memorable name for app launchers and store listings
+  - Maintains brand consistency while improving discoverability
+
+### Added
+- **Google Play Store Screenshots** - Added comprehensive screenshots for app store listing
+  - 20+ mobile phone screenshots (Pixel 9 Pro XL) showcasing app features
+  - 15+ tablet screenshots (Pixel Tablet) demonstrating responsive design
+  - Screenshots cover all major user flows: onboarding, practice modes, games, stats, and badges
+  - Visual documentation of Material Theme Builder color scheme in action
+  - Ready for Google Play Store submission
 
 ### Fixed
 - **Memory Match Game Duplicate Solutions** - Eliminated duplicate answers and problem strings in Memory Match game
@@ -1710,7 +1723,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.12.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.13.0...HEAD
+[1.13.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.12.0...1.13.0
 [1.12.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.9.0...1.10.0
