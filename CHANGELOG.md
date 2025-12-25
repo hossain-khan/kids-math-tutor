@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2025-12-24
+
 ### Fixed
 - **Memory Match Game Duplicate Solutions** - Eliminated duplicate answers and problem strings in Memory Match game
   - Added unique answer validation to prevent confusing matches (e.g., "2+3=5" and "1+4=5" both showing "5")
@@ -16,6 +18,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Kids will no longer encounter matching cards that don't resolve correctly due to duplicate answers
 
 ### Added
+- **Material Theme Builder Color Scheme Integration** - Comprehensive color palette from Material Theme Builder
+  - Integrated 269+ color definitions from Material Theme Builder generated palette
+  - Replaces Material You dynamic colors with professional, curated color scheme
+  - Light mode: Bright, vibrant colors optimized for children's engagement
+  - Dark mode: Darker, carefully calibrated shades for eye comfort
+  - All colors use theme-aware tokens throughout the app (no hardcoded colors)
+  - Material 3 semantic colors: Primary, Secondary, Tertiary, Error, Surface, Outline with variants
+  - Custom color families (Green, Teal, Purple, Raspberry, Brown) with light/dark/container variants
+  - Surface containers (Lowest, Low, High, Highest) for layered UI design
+  - High contrast scheme variants for accessibility
+  - Extended color family support for future component customization
+
+- **Custom Navigation Colors** - Redesigned navigation with Material Theme Builder custom colors
+  - Bottom navigation bar uses custom color variants:
+    - HOME: Custom Green (darker container variant for better visibility)
+    - GAMES: Custom Raspberry (vibrant for game screens)
+    - PARENTS: Custom Teal (suitable for parent/challenge screens)
+    - SETTINGS: Custom Purple (distinguishes configuration area)
+  - Navigation Rail (tablet) and Navigation Drawer (large screens) follow same color mapping
+  - Darker, more saturated container variants provide better visual hierarchy and differentiation
+  - Consistent color-coded navigation across all screen sizes
+
+- **Settings Navigation Optimization** - Streamlined navigation structure
+  - Settings removed from global bottom navigation (no longer appears as tab)
+  - Settings enum and colors preserved for potential future use
+  - Settings screen accessible from home screen with back button
+  - Reduces clutter in navigation with 3 primary destinations (Home, Games, Parents)
+  - Back navigation with BackHandler prevents ANR on system back button
+  - Users can easily return from Settings via back button
+  - More intuitive navigation hierarchy for K-2 children
+
+### Changed
 - **Color Palette Viewer** — New developer portal tool for visualizing all colors used throughout the app
   - Created `ColorPaletteViewerScreen` with comprehensive color organization by UI component category
   - New `ColorPaletteViewerPresenter` manages color palette data and groups colors by usage
@@ -63,7 +97,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Provides consistent, child-friendly visual hierarchy across the app
   - All colors use custom hex codes (not Material 3 theme tokens) for precise brand control
 
-### Changed
 - **Static Theme Colors** - Disabled Material You dynamic colors in favor of vibrant static theme for kids
   - Replaced Material You dynamic colors with custom vibrant color palette designed for K-2 children
   - Light mode: Bright, energetic colors (Red, Blue, Green, Purple) for an engaging learning experience
@@ -72,7 +105,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Theme no longer changes based on device wallpaper, providing consistent branding
   - High contrast mode remains available for accessibility needs
 
-### Added
 - **Game Trial Feature** - Allow first-time users to try locked games up to 3 times
   - Kids can now try locked games up to 3 times before needing to unlock them permanently
   - Each locked game shows a "TRY GAME" button with remaining trial attempts
@@ -86,20 +118,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Comprehensive Timber logging added around badge logic for debugging
     - Ensures badges are only earned through unlocked gameplay
 
-### Fixed
 - **Background Music UI Sync** - Fixed background music toggle state synchronization between home screen and settings
   - Home screen now reads music state from UserPreferences instead of local state
   - Music toggle on home screen now persists state to UserPreferences
   - MainActivity now checks user preference before starting background music on app launch
   - Ensures consistent music state across all screens
 
-### Added
 - **Device Audio Suppression Detection** - Audio now respects device ringer mode (silent/vibrate)
   - App automatically detects when device is in silent or vibrate mode
   - Audio playback is suppressed when device is in silent or vibrate mode
   - Settings screen displays warning message when device audio is suppressed
-  - Warning message instructs users to change device ringer mode to normal to hear sounds
-  - Improves user experience by providing clear feedback about why audio isn't playing
 
 ## [1.11.0] - 2025-12-24
 
@@ -1682,7 +1710,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.11.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.12.0...HEAD
+[1.12.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.9.0...1.10.0
 [1.9.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.8.0...1.9.0
