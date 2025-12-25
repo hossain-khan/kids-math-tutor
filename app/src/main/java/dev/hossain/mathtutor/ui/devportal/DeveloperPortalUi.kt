@@ -53,6 +53,7 @@ fun DeveloperPortalUi(
                 "dataOps" to true,
                 "navigation" to true,
                 "profile" to true,
+                "challenges" to false,
                 "seed" to false,
                 "sounds" to true,
                 "diagnostics" to false,
@@ -431,7 +432,53 @@ fun DeveloperPortalUi(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Sounds & Haptics Testing
+            // Import Sample Challenges
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Button(
+                        onClick = {
+                            expandedSections =
+                                expandedSections.toMutableMap().apply { put("challenges", !(this["challenges"] ?: false)) }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = "${if (expandedSections["challenges"] == true) "▼" else "▶"} Import Sample Challenges")
+                    }
+
+                    if (expandedSections["challenges"] == true) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Import 6 sample challenges with various problem types",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.ImportSampleChallengesClicked) },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.importChallengesInProgress,
+                        ) {
+                            Text("📚 Import Challenges")
+                        }
+
+                        // Show result message if present
+                        state.importChallengesResultMessage?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = msg)
+                        }
+                        if (state.importChallengesInProgress) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

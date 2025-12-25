@@ -15,12 +15,16 @@ import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.ChallengeImportSpec
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.domain.model.NumberRange
+import dev.hossain.mathtutor.domain.model.ProblemSpec
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.hossain.mathtutor.domain.repository.GameRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
+import dev.hossain.mathtutor.domain.service.CustomChallengeService
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.zacsweers.metro.AppScope
@@ -52,6 +56,7 @@ class DeveloperPortalPresenter
         private val hapticService: HapticService,
         private val analyticsService: AnalyticsService,
         private val sessionSeeder: dev.hossain.mathtutor.devtools.SessionSeeder,
+        private val customChallengeService: CustomChallengeService,
     ) : Presenter<DeveloperPortalScreen.State> {
         @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
         @AssistedFactory
@@ -80,6 +85,8 @@ class DeveloperPortalPresenter
             var resetOnboardingResultMessage by remember { mutableStateOf<String?>(null) }
             var seedInProgress by remember { mutableStateOf(false) }
             var seedResultMessage by remember { mutableStateOf<String?>(null) }
+            var importChallengesInProgress by remember { mutableStateOf(false) }
+            var importChallengesResultMessage by remember { mutableStateOf<String?>(null) }
 
             var badges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var isAnalyticsEnabled by remember { mutableStateOf(true) }
@@ -161,6 +168,8 @@ class DeveloperPortalPresenter
                 resetOnboardingResultMessage = resetOnboardingResultMessage,
                 seedInProgress = seedInProgress,
                 seedResultMessage = seedResultMessage,
+                importChallengesInProgress = importChallengesInProgress,
+                importChallengesResultMessage = importChallengesResultMessage,
                 badges = badges,
                 forceUnlockInProgress = forceUnlockInProgress,
                 forceUnlockResultMessage = forceUnlockResultMessage,
@@ -376,6 +385,28 @@ class DeveloperPortalPresenter
                         }
                     }
 
+                    is DeveloperPortalScreen.Event.ImportSampleChallengesClicked -> {
+                        // Import 6 sample challenges with various problem types
+                        importChallengesInProgress = true
+                        importChallengesResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val imported = importSampleChallenges()
+                                withContext(Dispatchers.Main) {
+                                    importChallengesResultMessage = "Imported $imported challenges"
+                                    importChallengesInProgress = false
+                                }
+                                Timber.d("[DevPortal] Imported $imported sample challenges")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to import sample challenges")
+                                withContext(Dispatchers.Main) {
+                                    importChallengesResultMessage = "Import failed: ${e.message}"
+                                    importChallengesInProgress = false
+                                }
+                            }
+                        }
+                    }
+
                     is DeveloperPortalScreen.Event.ForceBadgeCheckClicked -> {
                         scope.launch(Dispatchers.IO) {
                             val unlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
@@ -550,5 +581,99 @@ class DeveloperPortalPresenter
                     }
                 }
             }
+        }
+
+        /**
+         * Imports 6 sample custom challenges with various problem types.
+         * Returns the count of successfully imported challenges.
+         */
+        private suspend fun importSampleChallenges(): Int {
+            val challenges =
+                listOf(
+                    // 1. Addition Practice (Addition with Grade 1 range)
+                    ChallengeImportSpec.Generated(
+                        title = "Quick Addition",
+                        subtitle = "Practice adding numbers 0-10",
+                        operation = MathOperation.ADDITION,
+                        problemCount = 10,
+                        numberRange = NumberRange(0, 10),
+                    ),
+                    // 2. Subtraction Practice (Subtraction with Grade 1 range)
+                    ChallengeImportSpec.Generated(
+                        title = "Quick Subtraction",
+                        subtitle = "Practice subtracting numbers 0-10",
+                        operation = MathOperation.SUBTRACTION,
+                        problemCount = 10,
+                        numberRange = NumberRange(0, 10),
+                    ),
+                    // 3. Multiplication Basics (Multiplication with Grade 2 range)
+                    ChallengeImportSpec.Generated(
+                        title = "Multiply by 5",
+                        subtitle = "Practice multiplying numbers by 5",
+                        operation = MathOperation.MULTIPLICATION,
+                        problemCount = 10,
+                        numberRange = NumberRange(1, 10),
+                    ),
+                    // 4. Division Basics
+                    ChallengeImportSpec.Generated(
+                        title = "Divide by 2",
+                        subtitle = "Practice dividing even numbers by 2",
+                        operation = MathOperation.DIVISION,
+                        problemCount = 10,
+                        numberRange = NumberRange(2, 20),
+                    ),
+                    // 5. Mixed Operations (Custom problems)
+                    ChallengeImportSpec.Explicit(
+                        title = "Number Bonds to 10",
+                        subtitle = "Find pairs that make 10",
+                        problems =
+                            listOf(
+                                ProblemSpec(1, 9, MathOperation.ADDITION),
+                                ProblemSpec(2, 8, MathOperation.ADDITION),
+                                ProblemSpec(3, 7, MathOperation.ADDITION),
+                                ProblemSpec(4, 6, MathOperation.ADDITION),
+                                ProblemSpec(5, 5, MathOperation.ADDITION),
+                                ProblemSpec(6, 4, MathOperation.ADDITION),
+                                ProblemSpec(7, 3, MathOperation.ADDITION),
+                                ProblemSpec(8, 2, MathOperation.ADDITION),
+                                ProblemSpec(9, 1, MathOperation.ADDITION),
+                                ProblemSpec(10, 0, MathOperation.ADDITION),
+                            ),
+                    ),
+                    // 6. Mixed Operations (Addition & Subtraction)
+                    ChallengeImportSpec.Explicit(
+                        title = "Mixed Operations Review",
+                        subtitle = "Practice addition and subtraction together",
+                        problems =
+                            listOf(
+                                ProblemSpec(3, 2, MathOperation.ADDITION),
+                                ProblemSpec(8, 2, MathOperation.SUBTRACTION),
+                                ProblemSpec(4, 3, MathOperation.ADDITION),
+                                ProblemSpec(7, 1, MathOperation.SUBTRACTION),
+                                ProblemSpec(6, 2, MathOperation.ADDITION),
+                                ProblemSpec(9, 3, MathOperation.SUBTRACTION),
+                                ProblemSpec(5, 4, MathOperation.ADDITION),
+                                ProblemSpec(10, 5, MathOperation.SUBTRACTION),
+                                ProblemSpec(7, 3, MathOperation.ADDITION),
+                                ProblemSpec(6, 1, MathOperation.SUBTRACTION),
+                            ),
+                    ),
+                )
+
+            var count = 0
+            for (spec in challenges) {
+                val result = customChallengeService.createChallengeFromSpec(spec)
+                if (result.isSuccess) {
+                    count++
+                    Timber.d("[DevPortal] Successfully imported challenge: ${spec.title}")
+                } else {
+                    Timber.e(
+                        result.exceptionOrNull(),
+                        "[DevPortal] Failed to import challenge: ${spec.title}",
+                    )
+                }
+            }
+
+            return count
         }
     }

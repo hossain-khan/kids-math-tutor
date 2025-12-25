@@ -25,6 +25,8 @@ data object DeveloperPortalScreen : Screen {
         val resetOnboardingResultMessage: String? = null,
         val seedInProgress: Boolean = false,
         val seedResultMessage: String? = null,
+        val importChallengesInProgress: Boolean = false,
+        val importChallengesResultMessage: String? = null,
         val badges: List<Badge> = emptyList(),
         val forceUnlockInProgress: Boolean = false,
         val forceUnlockResultMessage: String? = null,
@@ -65,6 +67,8 @@ data object DeveloperPortalScreen : Screen {
         ) : Event
 
         data object SeedSessionsClicked : Event
+
+        data object ImportSampleChallengesClicked : Event
 
         data object ForceBadgeCheckClicked : Event
 
