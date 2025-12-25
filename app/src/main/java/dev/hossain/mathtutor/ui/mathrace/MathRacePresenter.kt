@@ -118,6 +118,9 @@ class MathRacePresenter
             var gameStartTime by remember { mutableStateOf<Instant?>(null) }
             var warningPlayed by remember { mutableStateOf(false) }
 
+            // Session-level tracking for duplicate prevention
+            var usedProblemStrings by remember { mutableStateOf(setOf<String>()) }
+
             // Load user profile and personal best
             LaunchedEffect(Unit) {
                 Timber.d("[MathRace] Loading user profile and personal best...")
@@ -254,15 +257,49 @@ class MathRacePresenter
 
             /**
              * Generates a new math problem appropriate for the grade level.
+             * Ensures the problem string doesn't match any previously shown problems in this session.
              */
             fun generateNewProblem(): MathProblem {
-                val problems =
-                    problemGenerator.generateProblems(
-                        count = 1,
-                        operation = MathOperation.MIXED,
-                        gradeLevel = gradeLevel,
-                    )
-                return problems.first()
+                var attempts = 0
+                val maxAttempts = 100
+
+                while (attempts < maxAttempts) {
+                    val problems =
+                        problemGenerator.generateProblems(
+                            count = 1,
+                            operation = MathOperation.MIXED,
+                            gradeLevel = gradeLevel,
+                        )
+                    val problem = problems.first()
+                    val problemString = "${problem.num1}${problem.operation.symbol}${problem.num2}"
+
+                    if (!usedProblemStrings.contains(problemString)) {
+                        usedProblemStrings = usedProblemStrings + problemString
+                        Timber.d("Generated unique problem: $problemString (attempt ${attempts + 1})")
+                        return problem
+                    }
+
+                    attempts++
+                    if (attempts == 1 || attempts % 10 == 0) {
+                        Timber.w(
+                            "Duplicate problem detected: $problemString, retrying (attempt $attempts/$maxAttempts)",
+                        )
+                    }
+                }
+
+                // Fallback: If we couldn't find a unique problem after retries, return one anyway
+                // This should rarely happen given the large problem space
+                val problem =
+                    problemGenerator
+                        .generateProblems(
+                            count = 1,
+                            operation = MathOperation.MIXED,
+                            gradeLevel = gradeLevel,
+                        ).first()
+                val problemString = "${problem.num1}${problem.operation.symbol}${problem.num2}"
+                usedProblemStrings = usedProblemStrings + problemString
+                Timber.w("Fallback problem after $maxAttempts retries: $problemString")
+                return problem
             }
 
             /**
@@ -279,6 +316,7 @@ class MathRacePresenter
                 currentAnswer = ""
                 lastAnswerCorrect = null
                 warningPlayed = false
+                usedProblemStrings = emptySet() // Clear used problems for new game session
 
                 // Play countdown audio at the start
                 audioService.playGo()
@@ -393,6 +431,7 @@ class MathRacePresenter
                             correctAnswers = 0
                             lastAnswerCorrect = null
                             warningPlayed = false
+                            usedProblemStrings = emptySet() // Clear used problems for new game
                             Timber.d("[MathRace] Reset for new game")
                         }
                     }
