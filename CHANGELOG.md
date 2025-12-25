@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.0] - 2025-12-25
+
 ### Added
 - **Developer Portal Streak Management** - Added tools to view and force-set daily streak values for testing
   - New "Streak Management" expandable section in Developer Portal UI
@@ -23,6 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Each challenge includes descriptive title and subtitle for context
   - Progress indication and result messages for import status
   - Streamlines developer workflow by eliminating need to manually create test challenges
+- **Developer Portal UI Improvements** - Consistent expandable section pattern across all tool sections
+  - Applied expandable pattern to Badge Controls (collapsed by default)
+  - Applied expandable pattern to Sounds & Haptics (collapsed by default)
+  - Added ▶/▼ toggle indicators for visual feedback on section state
+  - Improved Developer Portal organization and reduced screen clutter
 
 ### Fixed
 - **Custom Challenge Unarchive Functionality** - Fixed unarchive not working for archived challenges
@@ -1760,7 +1767,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.13.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.0...HEAD
+[1.14.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.13.0...1.14.0
 [1.13.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.12.0...1.13.0
 [1.12.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.10.0...1.11.0
