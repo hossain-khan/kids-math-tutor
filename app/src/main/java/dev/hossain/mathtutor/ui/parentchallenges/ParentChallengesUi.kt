@@ -435,6 +435,18 @@ private fun ChallengeListItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                // Operation icon
+                val operationIcon = getMathOperationIcon(challenge)
+                Image(
+                    painter = painterResource(id = operationIcon),
+                    contentDescription = "Math operation type",
+                    modifier =
+                        Modifier
+                            .size(48.dp)
+                            .padding(end = 12.dp),
+                    contentScale = ContentScale.Fit,
+                )
+
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = challenge.title,
@@ -791,5 +803,32 @@ private fun EmptyStatePreview() {
 private fun EmptyStateArchivedPreview() {
     KidsMathTutorAppTheme {
         EmptyState(showArchived = true, onImportClick = {})
+    }
+}
+
+/**
+ * Maps a CustomChallenge to its operation icon drawable resource.
+ * Determines the primary operation from the challenge's problems and returns the corresponding icon.
+ */
+private fun getMathOperationIcon(challenge: CustomChallenge): Int {
+    if (challenge.problems.isEmpty()) return R.drawable.pup_tutor_sticker_operation_mixed
+
+    // Check if all problems have the same operation (single operation challenge)
+    val operations = challenge.problems.map { it.operation }.distinct()
+
+    return when {
+        operations.size == 1 -> {
+            when (operations.first()) {
+                MathOperation.ADDITION -> R.drawable.pup_tutor_sticker_opreation_addition
+                MathOperation.SUBTRACTION -> R.drawable.pup_tutor_sticker_operation_subtraction
+                MathOperation.MULTIPLICATION -> R.drawable.pup_tutor_sticker_operation_multiplication
+                MathOperation.DIVISION -> R.drawable.pup_tutor_sticker_operation_division
+                MathOperation.MIXED -> R.drawable.pup_tutor_sticker_operation_mixed
+            }
+        }
+
+        else -> {
+            R.drawable.pup_tutor_sticker_operation_mixed
+        }
     }
 }
