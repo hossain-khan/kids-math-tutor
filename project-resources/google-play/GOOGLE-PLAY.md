@@ -301,6 +301,21 @@ Enable Pre-Launch Report in Play Console to:
 - Get accessibility recommendations
 - Performance benchmarks
 
+### Release Notes
+```
+🎉 Initial Release - Math Pup is here!
+
+Welcome to Math Pup, making math fun for K-2 learners! 🐶
+
+✨ Features:
+• Grade-appropriate math practice with engaging simple games
+• 20+ achievement badges to unlock
+• Custom challenges by parents with 25+ templates to mix and match
+• No ads, no purchases, no data collection
+
+Perfect for daily practice and building math confidence!
+```
+
 ---
 
 ## Localization
