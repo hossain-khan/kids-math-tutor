@@ -17,6 +17,7 @@ import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.ChallengeImportSpec
 import dev.hossain.mathtutor.domain.model.ChallengePracticeSession
+import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.NumberRange
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.time.Instant
+import java.time.LocalDate
 
 /**
  * Basic scaffold presenter for `DeveloperPortalScreen`.
@@ -59,6 +61,7 @@ class DeveloperPortalPresenter
         private val analyticsService: AnalyticsService,
         private val sessionSeeder: dev.hossain.mathtutor.devtools.SessionSeeder,
         private val customChallengeService: CustomChallengeService,
+        private val streakRepository: dev.hossain.mathtutor.domain.repository.StreakRepository,
     ) : Presenter<DeveloperPortalScreen.State> {
         @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
         @AssistedFactory
@@ -159,6 +162,16 @@ class DeveloperPortalPresenter
 
             var forceUnlockInProgress by remember { mutableStateOf(false) }
             var forceUnlockResultMessage by remember { mutableStateOf<String?>(null) }
+            var currentStreakData by remember { mutableStateOf<DailyStreak?>(null) }
+            var setStreakInProgress by remember { mutableStateOf(false) }
+            var setStreakResultMessage by remember { mutableStateOf<String?>(null) }
+
+            LaunchedEffect(Unit) {
+                // Collect streak data
+                streakRepository.getStreak().collect { streak ->
+                    currentStreakData = streak
+                }
+            }
 
             return DeveloperPortalScreen.State(
                 showSeedSection = showSeedSection,
@@ -189,6 +202,9 @@ class DeveloperPortalPresenter
                 soundsLoaded = soundsLoadedState,
                 soundSampleIds = sampleIdMap,
                 totalSessionCount = totalSessionCount,
+                currentStreakData = currentStreakData,
+                setStreakInProgress = setStreakInProgress,
+                setStreakResultMessage = setStreakResultMessage,
             ) { event ->
                 when (event) {
                     is DeveloperPortalScreen.Event.ForceUnlockBadge -> {
@@ -580,6 +596,38 @@ class DeveloperPortalPresenter
                                 Timber.e(e, "[DevPortal] Failed to update profile name")
                                 withContext(Dispatchers.Main) {
                                     profileUpdateResultMessage = "Update failed: ${e.message}"
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.ForceSetStreak -> {
+                        setStreakInProgress = true
+                        setStreakResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val newStreak =
+                                    DailyStreak(
+                                        currentStreak = event.currentStreak,
+                                        longestStreak = event.longestStreak,
+                                        lastPracticeDate = event.lastPracticeDate,
+                                        totalDaysPracticed = event.totalDaysPracticed,
+                                    )
+                                streakRepository.saveStreak(newStreak)
+                                withContext(Dispatchers.Main) {
+                                    setStreakResultMessage =
+                                        "Streak updated: ${event.currentStreak}/${event.longestStreak}"
+                                    setStreakInProgress = false
+                                }
+                                Timber.d(
+                                    "[DevPortal] Force set streak: current=${event.currentStreak}, " +
+                                        "longest=${event.longestStreak}",
+                                )
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to force set streak")
+                                withContext(Dispatchers.Main) {
+                                    setStreakResultMessage = "Set failed: ${e.message}"
+                                    setStreakInProgress = false
                                 }
                             }
                         }

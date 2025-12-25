@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
+import timber.log.Timber
 
 @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,9 +54,11 @@ fun DeveloperPortalUi(
                 "dataOps" to true,
                 "navigation" to true,
                 "profile" to true,
+                "badges" to false,
                 "challenges" to false,
+                "streak" to false,
                 "seed" to false,
-                "sounds" to true,
+                "sounds" to false,
                 "diagnostics" to false,
             ),
         )
@@ -359,72 +362,85 @@ fun DeveloperPortalUi(
 
                         // Force unlock per-badge controls
                         Spacer(modifier = Modifier.height(12.dp))
-                        Text(text = "Force Unlock Badges", style = MaterialTheme.typography.bodyLarge)
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Unlock All button
-                        if (state.badges.isNotEmpty()) {
-                            Button(
-                                onClick = { state.eventSink(DeveloperPortalScreen.Event.UnlockAllBadges) },
-                                modifier = Modifier.fillMaxWidth(),
-                                enabled = !state.forceUnlockInProgress,
-                            ) {
-                                Text("🔓 Unlock All Badges")
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = {
+                                expandedSections =
+                                    expandedSections.toMutableMap().apply { put("badges", !(this["badges"] ?: false)) }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = "${if (expandedSections["badges"] == true) "▼" else "▶"} Badge Controls")
                         }
 
-                        Spacer(modifier = Modifier.height(6.dp))
-                        if (state.badges.isEmpty()) {
-                            Text(text = "No badges available")
-                        } else {
-                            state.badges.chunked(3).forEach { badgeRow ->
-                                Row(
+                        if (expandedSections["badges"] == true) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(text = "Force Unlock Badges", style = MaterialTheme.typography.bodyLarge)
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Unlock All button
+                            if (state.badges.isNotEmpty()) {
+                                Button(
+                                    onClick = { state.eventSink(DeveloperPortalScreen.Event.UnlockAllBadges) },
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    enabled = !state.forceUnlockInProgress,
                                 ) {
-                                    badgeRow.forEach { badge ->
-                                        Column(
-                                            modifier =
-                                                Modifier
-                                                    .weight(1f)
-                                                    .padding(8.dp),
-                                        ) {
-                                            Text(
-                                                text = badge.name,
-                                                style = MaterialTheme.typography.labelMedium,
-                                                maxLines = 2,
-                                            )
-                                            Spacer(modifier = Modifier.height(6.dp))
-                                            Button(
-                                                onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
-                                                enabled = !badge.isUnlocked(),
-                                                modifier = Modifier.fillMaxWidth(),
-                                            ) {
-                                                Text(
-                                                    text = if (badge.isUnlocked()) "Unlocked" else "Unlock",
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                )
-                                            }
-                                        }
-                                    }
-                                    // Add spacer if only 1 item in row
-                                    if (badgeRow.size == 1) {
-                                        Spacer(modifier = Modifier.weight(1f))
-                                    }
+                                    Text("🔓 Unlock All Badges")
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
-                        }
 
-                        // Show force unlock progress/result
-                        state.forceUnlockResultMessage?.let { msg ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = msg)
-                        }
-                        if (state.forceUnlockInProgress) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(6.dp))
+                            if (state.badges.isEmpty()) {
+                                Text(text = "No badges available")
+                            } else {
+                                state.badges.chunked(3).forEach { badgeRow ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    ) {
+                                        badgeRow.forEach { badge ->
+                                            Column(
+                                                modifier =
+                                                    Modifier
+                                                        .weight(1f)
+                                                        .padding(8.dp),
+                                            ) {
+                                                Text(
+                                                    text = badge.name,
+                                                    style = MaterialTheme.typography.labelMedium,
+                                                    maxLines = 2,
+                                                )
+                                                Spacer(modifier = Modifier.height(6.dp))
+                                                Button(
+                                                    onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
+                                                    enabled = !badge.isUnlocked(),
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                ) {
+                                                    Text(
+                                                        text = if (badge.isUnlocked()) "Unlocked" else "Unlock",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        // Add spacer if only 1 item in row
+                                        if (badgeRow.size == 1) {
+                                            Spacer(modifier = Modifier.weight(1f))
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+                            }
+
+                            // Show force unlock progress/result
+                            state.forceUnlockResultMessage?.let { msg ->
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = msg)
+                            }
+                            if (state.forceUnlockInProgress) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                CircularProgressIndicator()
+                            }
                         }
                     }
                 }
@@ -493,130 +509,299 @@ fun DeveloperPortalUi(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+
+            // Streak Management
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Sounds & Haptics", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Test audio and haptic feedback",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Success
                     Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlaySuccessSound) },
+                        onClick = {
+                            expandedSections =
+                                expandedSections.toMutableMap().apply { put("streak", !(this["streak"] ?: false)) }
+                        },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Play Success Sound & Haptic")
+                        Text(text = "${if (expandedSections["streak"] == true) "▼" else "▶"} Streak Management")
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Error
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayErrorSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Error Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Level Up
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayLevelUpSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Level-Up Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Badge Unlock
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayBadgeUnlockSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Badge Unlock Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Countdown
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayCountdownSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Countdown Sound")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // GO!
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayGoSound) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play GO! Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Background Music Toggle
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.ToggleBackgroundMusic) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(
-                            imageVector = if (state.isBackgroundMusicPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                            contentDescription = if (state.isBackgroundMusicPlaying) "Pause" else "Play",
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(if (state.isBackgroundMusicPlaying) "Stop Background Music" else "Start Background Music")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Additional sound test buttons
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayPerfectScore) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Perfect Score Sound & Haptic")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayStreakContinue) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Streak Continue Sound")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(
-                        onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayWarning) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Play Warning Sound")
-                    }
-
-                    // Show feedback message if present
-                    state.soundHapticFeedback?.let { msg ->
-                        Spacer(modifier = Modifier.height(8.dp))
+                    if (expandedSections["streak"] == true) {
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = msg,
+                            text = "View and force-set daily streak values",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Display current streak status
+                        if (state.currentStreakData != null) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors =
+                                    CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    ),
+                            ) {
+                                Column(modifier = Modifier.padding(12.dp)) {
+                                    Text("Current Streak Status", style = MaterialTheme.typography.bodyLarge)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text("Current Streak: ${state.currentStreakData.currentStreak} 🔥")
+                                    Text("Longest Streak: ${state.currentStreakData.longestStreak}")
+                                    Text("Total Days Practiced: ${state.currentStreakData.totalDaysPracticed}")
+                                    if (state.currentStreakData.lastPracticeDate != null) {
+                                        Text("Last Practice: ${state.currentStreakData.lastPracticeDate}")
+                                    } else {
+                                        Text("Last Practice: Never")
+                                    }
+                                }
+                            }
+                        } else {
+                            Text("No streak data available", style = MaterialTheme.typography.bodySmall)
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text("Force Set Streak Values", style = MaterialTheme.typography.labelMedium)
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Current streak input
+                        var currentStreakInput by remember {
+                            mutableStateOf(state.currentStreakData?.currentStreak?.toString() ?: "0")
+                        }
+                        Text("Current Streak:", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = currentStreakInput,
+                            onValueChange = { currentStreakInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Longest streak input
+                        var longestStreakInput by remember {
+                            mutableStateOf(state.currentStreakData?.longestStreak?.toString() ?: "0")
+                        }
+                        Text("Longest Streak:", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = longestStreakInput,
+                            onValueChange = { longestStreakInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Total days input
+                        var totalDaysInput by remember {
+                            mutableStateOf(state.currentStreakData?.totalDaysPracticed?.toString() ?: "0")
+                        }
+                        Text("Total Days Practiced:", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = totalDaysInput,
+                            onValueChange = { totalDaysInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Last practice date input (optional)
+                        var lastPracticeDateInput by remember {
+                            mutableStateOf(state.currentStreakData?.lastPracticeDate?.toString() ?: "")
+                        }
+                        Text("Last Practice Date (YYYY-MM-DD):", style = MaterialTheme.typography.labelSmall)
+                        TextField(
+                            value = lastPracticeDateInput,
+                            onValueChange = { lastPracticeDateInput = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            placeholder = { Text("Leave blank for no date") },
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = {
+                                try {
+                                    val current = currentStreakInput.toIntOrNull() ?: 0
+                                    val longest = longestStreakInput.toIntOrNull() ?: 0
+                                    val totalDays = totalDaysInput.toIntOrNull() ?: 0
+                                    val lastDate =
+                                        if (lastPracticeDateInput.isBlank()) {
+                                            null
+                                        } else {
+                                            java.time.LocalDate.parse(lastPracticeDateInput)
+                                        }
+
+                                    state.eventSink(
+                                        DeveloperPortalScreen.Event.ForceSetStreak(
+                                            currentStreak = current,
+                                            longestStreak = longest,
+                                            lastPracticeDate = lastDate,
+                                            totalDaysPracticed = totalDays,
+                                        ),
+                                    )
+                                } catch (e: Exception) {
+                                    Timber.e(e, "Invalid streak input")
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.setStreakInProgress,
+                        ) {
+                            Text("💾 Save Streak")
+                        }
+
+                        // Show result message if present
+                        state.setStreakResultMessage?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = msg)
+                        }
+                        if (state.setStreakInProgress) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Button(
+                        onClick = {
+                            expandedSections =
+                                expandedSections.toMutableMap().apply { put("sounds", !(this["sounds"] ?: false)) }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = "${if (expandedSections["sounds"] == true) "▼" else "▶"} Sounds & Haptics")
+                    }
+
+                    if (expandedSections["sounds"] == true) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Test audio and haptic feedback",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Success
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlaySuccessSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Success Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Error
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayErrorSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Error Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Level Up
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayLevelUpSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Level-Up Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Badge Unlock
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayBadgeUnlockSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Badge Unlock Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Countdown
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayCountdownSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Countdown Sound")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // GO!
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayGoSound) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play GO! Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Background Music Toggle
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.ToggleBackgroundMusic) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Icon(
+                                imageVector = if (state.isBackgroundMusicPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                                contentDescription = if (state.isBackgroundMusicPlaying) "Pause" else "Play",
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(if (state.isBackgroundMusicPlaying) "Stop Background Music" else "Start Background Music")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Additional sound test buttons
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayPerfectScore) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Perfect Score Sound & Haptic")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayStreakContinue) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Streak Continue Sound")
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.PlayWarning) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Play Warning Sound")
+                        }
+
+                        // Show feedback message if present
+                        state.soundHapticFeedback?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = msg,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
                     }
                 }
             }
