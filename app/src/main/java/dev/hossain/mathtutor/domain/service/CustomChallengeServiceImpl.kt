@@ -125,6 +125,10 @@ class CustomChallengeServiceImpl
             repository.archiveChallenge(id)
         }
 
+        override suspend fun unarchiveChallenge(id: String) {
+            repository.unarchiveChallenge(id)
+        }
+
         override suspend fun deleteChallenge(id: String) {
             repository.deleteChallenge(id)
         }

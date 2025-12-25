@@ -134,14 +134,45 @@ fun ParentChallengesUi(
                     .fillMaxSize()
                     .padding(paddingValues),
         ) {
-            // Toggle archived section
+            // Stats and filter header
             Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
+                // Stats on the left
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text =
+                            if (state.showArchived) {
+                                "Archived Challenges"
+                            } else {
+                                "Active Challenges"
+                            },
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = "${state.challenges.size} challenge${if (state.challenges.size != 1) "s" else ""}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    val totalSessions =
+                        state.challenges.sumOf { it.practiceHistory.size }
+                    if (totalSessions > 0) {
+                        Text(
+                            text =
+                                "$totalSessions practice session${if (totalSessions != 1) "s" else ""}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+
+                // Toggle button on the right
                 FilterChip(
                     selected = state.showArchived,
                     onClick = {
@@ -149,7 +180,11 @@ fun ParentChallengesUi(
                             ParentChallengesScreen.Event.ToggleArchived(!state.showArchived),
                         )
                     },
-                    label = { Text(if (state.showArchived) "Show Active Only" else "Show Archived") },
+                    label = {
+                        Text(
+                            if (state.showArchived) "Show Active Only" else "Show Archived",
+                        )
+                    },
                 )
             }
 
@@ -175,7 +210,7 @@ fun ParentChallengesUi(
                             state.eventSink(ParentChallengesScreen.Event.ChallengeSelected(it))
                         },
                         onArchiveClick = {
-                            state.eventSink(ParentChallengesScreen.Event.ArchiveChallenge(it.id))
+                            state.eventSink(ParentChallengesScreen.Event.ArchiveChallenge(it))
                         },
                         onClearSessionsClick = {
                             state.eventSink(
@@ -364,6 +399,7 @@ private fun ChallengesList(
                 onArchiveClick = onArchiveClick,
                 onClearSessionsClick = onClearSessionsClick,
                 onDeleteClick = onDeleteClick,
+                modifier = Modifier.animateItem(),
             )
         }
         // Add bottom padding for FAB

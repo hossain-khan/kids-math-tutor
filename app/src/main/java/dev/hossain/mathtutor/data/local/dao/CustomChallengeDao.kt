@@ -91,6 +91,14 @@ interface CustomChallengeDao {
     suspend fun archiveChallenge(id: String)
 
     /**
+     * Unarchives a challenge by setting its isArchived flag to false.
+     *
+     * @param id The unique identifier of the challenge to unarchive
+     */
+    @Query("UPDATE custom_challenges SET isArchived = 0 WHERE id = :id")
+    suspend fun unarchiveChallenge(id: String)
+
+    /**
      * Deletes a challenge and all its related data (problems and sessions will cascade delete).
      *
      * @param id The unique identifier of the challenge to delete

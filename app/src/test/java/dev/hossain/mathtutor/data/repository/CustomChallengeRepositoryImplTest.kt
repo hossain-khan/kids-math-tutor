@@ -324,6 +324,10 @@ class FakeCustomChallengeDao : CustomChallengeDao {
         archivedChallengeIds.add(id)
     }
 
+    override suspend fun unarchiveChallenge(id: String) {
+        // Not used in tests
+    }
+
     override suspend fun deleteChallenge(id: String) {
         deletedChallengeIds.add(id)
     }

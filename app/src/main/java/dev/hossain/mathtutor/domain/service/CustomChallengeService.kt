@@ -66,6 +66,14 @@ interface CustomChallengeService {
     suspend fun archiveChallenge(id: String)
 
     /**
+     * Unarchives a challenge by marking it as active.
+     * Unarchived challenges will appear in the active challenges list.
+     *
+     * @param id The unique identifier of the challenge to unarchive
+     */
+    suspend fun unarchiveChallenge(id: String)
+
+    /**
      * Permanently deletes a challenge and all its related data.
      *
      * @param id The unique identifier of the challenge to delete

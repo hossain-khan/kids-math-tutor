@@ -248,6 +248,8 @@ class ImportChallengePresenterTest {
 
         override suspend fun archiveChallenge(id: String) {}
 
+        override suspend fun unarchiveChallenge(id: String) {}
+
         override suspend fun deleteChallenge(id: String) {}
 
         override suspend fun recordPracticeSession(
@@ -288,6 +290,13 @@ class ImportChallengePresenterTest {
             challenges.firstOrNull { it.id == id }?.let { challenge ->
                 challenges.removeIf { it.id == id }
                 challenges.add(challenge.copy(isArchived = true))
+            }
+        }
+
+        override suspend fun unarchiveChallenge(id: String) {
+            challenges.firstOrNull { it.id == id }?.let { challenge ->
+                challenges.removeIf { it.id == id }
+                challenges.add(challenge.copy(isArchived = false))
             }
         }
 

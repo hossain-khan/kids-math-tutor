@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Custom Challenge Unarchive Functionality** - Fixed unarchive not working for archived challenges
+  - Added `unarchiveChallenge()` method throughout the persistence layer (DAO, repository, service)
+  - Modified `ArchiveChallenge` event to pass the challenge object to check its current archived state
+  - Updated presenter logic to toggle between archive and unarchive based on challenge's current state
+  - Added analytics event logging for unarchive actions ("custom_challenge_unarchived")
 - **Math Race Duplicate Problem Strings** - Eliminated duplicate problem display strings in Math Race sessions (#313)
   - Implemented session-level tracking of problem strings during 60-second gameplay
   - Added retry mechanism (up to 100 attempts) to generate unique problems before user answer submission

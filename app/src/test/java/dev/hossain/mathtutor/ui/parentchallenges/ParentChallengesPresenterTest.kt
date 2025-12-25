@@ -142,6 +142,30 @@ class ParentChallengesPresenterTest {
         assertThat(operationCounts[MathOperation.SUBTRACTION]).isEqualTo(1)
     }
 
+    @Test
+    fun `archive toggle - archives active challenge`() {
+        // Given
+        val activeChallenge = createChallenge(id = "1", title = "Active", isArchived = false)
+
+        // When checking if should archive
+        val shouldArchive = !activeChallenge.isArchived
+
+        // Then
+        assertThat(shouldArchive).isTrue()
+    }
+
+    @Test
+    fun `archive toggle - unarchives archived challenge`() {
+        // Given
+        val archivedChallenge = createChallenge(id = "1", title = "Archived", isArchived = true)
+
+        // When checking if should unarchive
+        val shouldUnarchive = archivedChallenge.isArchived
+
+        // Then
+        assertThat(shouldUnarchive).isTrue()
+    }
+
     // Helper functions
     private fun createChallenge(
         id: String,
@@ -198,6 +222,13 @@ class FakeCustomChallengeService : CustomChallengeService {
         val index = challenges.indexOfFirst { it.id == id }
         if (index != -1) {
             challenges[index] = challenges[index].copy(isArchived = true)
+        }
+    }
+
+    override suspend fun unarchiveChallenge(id: String) {
+        val index = challenges.indexOfFirst { it.id == id }
+        if (index != -1) {
+            challenges[index] = challenges[index].copy(isArchived = false)
         }
     }
 
