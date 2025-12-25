@@ -47,6 +47,74 @@ Contributors:
   • renovate[bot]               20 commits (3%)
 ```
 
+### Repository Size Analysis (git-sizer)
+*Comprehensive repository health analysis using GitHub's git-sizer tool*
+
+```
+| Name                         | Value     | Level of concern               |
+| ---------------------------- | --------- | ------------------------------ |
+| Overall repository size      |           |                                |
+| * Commits                    |           |                                |
+|   * Count                    |   762     |                                |
+|   * Total size               |   551 KiB |                                |
+| * Trees                      |           |                                |
+|   * Count                    |  4.84 k   |                                |
+|   * Total size               |  1.19 MiB |                                |
+|   * Total tree entries       |  31.6 k   |                                |
+| * Blobs                      |           |                                |
+|   * Count                    |  1.96 k   |                                |
+|   * Total size               |   807 MiB |                                |
+| * Annotated tags             |           |                                |
+|   * Count                    |    14     |                                |
+| * References                 |           |                                |
+|   * Count                    |    27     |                                |
+|     * Branches               |     2     |                                |
+|     * Tags                   |    14     |                                |
+|     * Remote-tracking refs   |    10     |                                |
+|     * Git stash              |     1     |                                |
+|                              |           |                                |
+| Biggest objects              |           |                                |
+| * Commits                    |           |                                |
+|   * Maximum size         [1] |  1.73 KiB |                                |
+|   * Maximum parents      [2] |     2     |                                |
+| * Trees                      |           |                                |
+|   * Maximum entries      [3] |    43     |                                |
+| * Blobs                      |           |                                |
+|   * Maximum size         [4] |  18.7 MiB | *                              |
+|                              |           |                                |
+| History structure            |           |                                |
+| * Maximum history depth      |   640     |                                |
+| * Maximum tag depth      [5] |     1     |                                |
+|                              |           |                                |
+| Biggest checkouts            |           |                                |
+| * Number of directories  [6] |   158     |                                |
+| * Maximum path depth     [6] |    11     | *                              |
+| * Maximum path length    [6] |   101 B   | *                              |
+| * Number of files        [6] |   661     |                                |
+| * Total size of files    [6] |   767 MiB |                                |
+| * Number of symlinks         |     0     |                                |
+| * Number of submodules       |     0     |                                |
+```
+
+**Repository Health Assessment**: ✅ **EXCELLENT**
+- No critical concerns (no asterisks for major metrics)
+- Only 3 minor concerns, all within acceptable ranges:
+  - Single large blob (18.7 MiB design file) - expected for hero image assets
+  - Path depth of 11 - normal for complex project
+  - Path length of 101 bytes - well within limits
+- Clean git structure with 2 branches (main + develop pattern)
+- Healthy history depth (640 commits)
+- No merge octopuses (max 2 parents)
+- Zero symlinks or submodules - simpler maintenance
+
+**Key Reference Objects**:
+- [1] d7429a676d00b50063ea5bec8ee073eff986bd47 - Maximum commit size
+- [2] eaf47605a27567fb6828821ce19615b4b021bed2 (refs/heads/main) - Merge commit
+- [3] 2ea45053d0724e0d36f36e2c4c0801af062cc5b5 (refs/heads/main:app/src/main/res/drawable-xxxhdpi) - Largest tree
+- [4] 1db5ee0ceec609771d5939fd85141c3eae72b0ac (refs/heads/main:project-resources/hero-image-exports/your_badges_hero_image.pxd) - Largest blob
+- [5] a67a71d77ef5d98a834090a0aba0863e6d05c715 (refs/tags/1.0.0) - Single-level tag
+- [6] 660ed82ab412b6a646b38aa624bb9757dbae0857 (refs/heads/main^{tree}) - Root commit tree
+
 ### App Build Information
 ```
 Version Name:       1.13.0

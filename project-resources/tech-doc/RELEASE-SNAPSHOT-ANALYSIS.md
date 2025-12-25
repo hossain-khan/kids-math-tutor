@@ -84,6 +84,62 @@ Total Commits: 747
 - Contributor percentages
 - Latest version tags
 
+### Step 2.5: Analyze Repository Size with git-sizer (Optional but Recommended)
+
+**Purpose**: Get detailed repository bloat analysis and identify potential git performance issues
+
+**Prerequisites**:
+```bash
+# Install git-sizer (macOS with Homebrew)
+brew install git-sizer
+
+# Or from GitHub releases: https://github.com/github/git-sizer/releases
+# Download the binary for your platform and add to PATH
+```
+
+**Commands**:
+```bash
+# Run git-sizer with verbose output
+git-sizer --verbose
+
+# Or get JSON output for structured analysis
+git-sizer --json
+```
+
+**Expected Output Summary**:
+```
+| Name                         | Value     | Level of concern
+| Overall repository size      |           |
+| * Commits                    |   747     | (low concern)
+| * Trees                      |  X.XX MiB | (low concern)
+| * Blobs                      |   X.XX MB | (low concern)
+| Biggest objects              |           |
+| * Commits max size           |  X.X KiB  |
+| * Blobs max size             |  X.X MiB  |
+| History structure            |           |
+| * Maximum history depth      |   747     |
+| Biggest checkouts            |           |
+| * Number of directories      |   X.XX k  |
+| * Number of files            |   X.XX k  |
+| * Total size of files        |   X.XX MB |
+```
+
+**What to Extract**:
+- Repository size concerns (asterisks indicate severity)
+- Biggest individual objects (commits, trees, blobs)
+- Maximum history depth (git operations cost)
+- Largest single checkout (disk space when cloned)
+- Path depth and file count
+- Any warnings about potential issues (excessive branching, huge blobs, etc.)
+
+**Interpretation Guide**:
+- **No asterisks**: Normal range (healthy)
+- **\* to \*\***: Minor concern (monitor)
+- **\*\*\* to \*\*\*\*\***: Significant concern (may impact performance)
+- **\!\*\*\*\*\***: Critical concern (definite problems)
+
+**Note**: For the kids-math-tutor project, git-sizer should show low concern across all metrics since it's a healthy, well-maintained repository under 1 GiB total size.
+
 ### Step 3: Get App Build Information
 
 **Source File**: `app/build.gradle.kts`
@@ -276,6 +332,16 @@ Use this structure for the release snapshot:
 ### Git Statistics
 [Include contributor breakdown]
 
+### Repository Size Analysis (git-sizer)
+*Optional but provides valuable insights into repository health and performance*
+
+[Include git-sizer output showing:
+- Overall repository size and concerns
+- Biggest objects (commits, trees, blobs)
+- History structure metrics
+- Biggest checkout stats
+- Any warnings or alerts]
+
 ### App Build Information
 [Include versionCode, versionName, SDKs]
 
@@ -357,6 +423,10 @@ echo "=== GIT STATISTICS ===" && \
 echo "Total commits: $(git rev-list --count HEAD)" && \
 git shortlog -sn
 
+# 2.5. Repository size analysis (optional)
+echo "=== REPOSITORY SIZE ANALYSIS ===" && \
+git-sizer --verbose
+
 # 3. App version info
 echo "=== APP BUILD INFO ===" && \
 grep -E "versionCode|versionName|minSdk|targetSdk|compileSdk" app/build.gradle.kts
@@ -390,6 +460,8 @@ echo "=== BUILD STATUS ===" && \
 4. **Forgetting to exclude generated files**: node_modules, dist/, build/ must be excluded
 5. **Incorrect SDK version mapping**: Document SDK numbers with Android version names (28=Android 9, 36=Android 15)
 6. **Missing date context**: Always include the date the snapshot was created (release date)
+7. **Skipping git-sizer output**: While optional, git-sizer provides valuable performance insights - don't skip it for production releases
+8. **Misinterpreting git-sizer results**: Remember that asterisks indicate concern levels; no asterisks = healthy, more asterisks = potential problems
 
 ---
 
