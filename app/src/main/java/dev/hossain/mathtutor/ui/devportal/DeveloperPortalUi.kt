@@ -54,6 +54,7 @@ fun DeveloperPortalUi(
                 "dataOps" to true,
                 "navigation" to true,
                 "profile" to true,
+                "badges" to false,
                 "challenges" to false,
                 "streak" to false,
                 "seed" to false,
@@ -361,72 +362,85 @@ fun DeveloperPortalUi(
 
                         // Force unlock per-badge controls
                         Spacer(modifier = Modifier.height(12.dp))
-                        Text(text = "Force Unlock Badges", style = MaterialTheme.typography.bodyLarge)
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Unlock All button
-                        if (state.badges.isNotEmpty()) {
-                            Button(
-                                onClick = { state.eventSink(DeveloperPortalScreen.Event.UnlockAllBadges) },
-                                modifier = Modifier.fillMaxWidth(),
-                                enabled = !state.forceUnlockInProgress,
-                            ) {
-                                Text("🔓 Unlock All Badges")
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = {
+                                expandedSections =
+                                    expandedSections.toMutableMap().apply { put("badges", !(this["badges"] ?: false)) }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = "${if (expandedSections["badges"] == true) "▼" else "▶"} Badge Controls")
                         }
 
-                        Spacer(modifier = Modifier.height(6.dp))
-                        if (state.badges.isEmpty()) {
-                            Text(text = "No badges available")
-                        } else {
-                            state.badges.chunked(3).forEach { badgeRow ->
-                                Row(
+                        if (expandedSections["badges"] == true) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(text = "Force Unlock Badges", style = MaterialTheme.typography.bodyLarge)
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Unlock All button
+                            if (state.badges.isNotEmpty()) {
+                                Button(
+                                    onClick = { state.eventSink(DeveloperPortalScreen.Event.UnlockAllBadges) },
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    enabled = !state.forceUnlockInProgress,
                                 ) {
-                                    badgeRow.forEach { badge ->
-                                        Column(
-                                            modifier =
-                                                Modifier
-                                                    .weight(1f)
-                                                    .padding(8.dp),
-                                        ) {
-                                            Text(
-                                                text = badge.name,
-                                                style = MaterialTheme.typography.labelMedium,
-                                                maxLines = 2,
-                                            )
-                                            Spacer(modifier = Modifier.height(6.dp))
-                                            Button(
-                                                onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
-                                                enabled = !badge.isUnlocked(),
-                                                modifier = Modifier.fillMaxWidth(),
-                                            ) {
-                                                Text(
-                                                    text = if (badge.isUnlocked()) "Unlocked" else "Unlock",
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                )
-                                            }
-                                        }
-                                    }
-                                    // Add spacer if only 1 item in row
-                                    if (badgeRow.size == 1) {
-                                        Spacer(modifier = Modifier.weight(1f))
-                                    }
+                                    Text("🔓 Unlock All Badges")
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
-                        }
 
-                        // Show force unlock progress/result
-                        state.forceUnlockResultMessage?.let { msg ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = msg)
-                        }
-                        if (state.forceUnlockInProgress) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(6.dp))
+                            if (state.badges.isEmpty()) {
+                                Text(text = "No badges available")
+                            } else {
+                                state.badges.chunked(3).forEach { badgeRow ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    ) {
+                                        badgeRow.forEach { badge ->
+                                            Column(
+                                                modifier =
+                                                    Modifier
+                                                        .weight(1f)
+                                                        .padding(8.dp),
+                                            ) {
+                                                Text(
+                                                    text = badge.name,
+                                                    style = MaterialTheme.typography.labelMedium,
+                                                    maxLines = 2,
+                                                )
+                                                Spacer(modifier = Modifier.height(6.dp))
+                                                Button(
+                                                    onClick = { state.eventSink(DeveloperPortalScreen.Event.ForceUnlockBadge(badge.id)) },
+                                                    enabled = !badge.isUnlocked(),
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                ) {
+                                                    Text(
+                                                        text = if (badge.isUnlocked()) "Unlocked" else "Unlock",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        // Add spacer if only 1 item in row
+                                        if (badgeRow.size == 1) {
+                                            Spacer(modifier = Modifier.weight(1f))
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+                            }
+
+                            // Show force unlock progress/result
+                            state.forceUnlockResultMessage?.let { msg ->
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = msg)
+                            }
+                            if (state.forceUnlockInProgress) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                CircularProgressIndicator()
+                            }
                         }
                     }
                 }
