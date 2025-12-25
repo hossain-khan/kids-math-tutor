@@ -89,6 +89,8 @@ class DeveloperPortalPresenter
             var seedResultMessage by remember { mutableStateOf<String?>(null) }
             var importChallengesInProgress by remember { mutableStateOf(false) }
             var importChallengesResultMessage by remember { mutableStateOf<String?>(null) }
+            var deleteChallengesInProgress by remember { mutableStateOf(false) }
+            var deleteChallengesResultMessage by remember { mutableStateOf<String?>(null) }
 
             var badges by remember { mutableStateOf<List<Badge>>(emptyList()) }
             var isAnalyticsEnabled by remember { mutableStateOf(true) }
@@ -172,6 +174,8 @@ class DeveloperPortalPresenter
                 seedResultMessage = seedResultMessage,
                 importChallengesInProgress = importChallengesInProgress,
                 importChallengesResultMessage = importChallengesResultMessage,
+                deleteChallengesInProgress = deleteChallengesInProgress,
+                deleteChallengesResultMessage = deleteChallengesResultMessage,
                 badges = badges,
                 forceUnlockInProgress = forceUnlockInProgress,
                 forceUnlockResultMessage = forceUnlockResultMessage,
@@ -404,6 +408,38 @@ class DeveloperPortalPresenter
                                 withContext(Dispatchers.Main) {
                                     importChallengesResultMessage = "Import failed: ${e.message}"
                                     importChallengesInProgress = false
+                                }
+                            }
+                        }
+                    }
+
+                    is DeveloperPortalScreen.Event.DeleteAllChallengesClicked -> {
+                        // Delete all custom challenges
+                        deleteChallengesInProgress = true
+                        deleteChallengesResultMessage = null
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                val allChallenges = customChallengeService.getAllChallenges()
+                                var deletedCount = 0
+                                for (challenge in allChallenges) {
+                                    try {
+                                        customChallengeService.deleteChallenge(challenge.id)
+                                        deletedCount++
+                                        Timber.d("[DevPortal] Deleted challenge: ${challenge.title}")
+                                    } catch (e: Exception) {
+                                        Timber.e(e, "[DevPortal] Failed to delete challenge: ${challenge.title}")
+                                    }
+                                }
+                                withContext(Dispatchers.Main) {
+                                    deleteChallengesResultMessage = "Deleted $deletedCount challenges"
+                                    deleteChallengesInProgress = false
+                                }
+                                Timber.d("[DevPortal] Deleted $deletedCount challenges")
+                            } catch (e: Exception) {
+                                Timber.e(e, "[DevPortal] Failed to delete challenges")
+                                withContext(Dispatchers.Main) {
+                                    deleteChallengesResultMessage = "Delete failed: ${e.message}"
+                                    deleteChallengesInProgress = false
                                 }
                             }
                         }

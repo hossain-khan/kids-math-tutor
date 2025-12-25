@@ -465,12 +465,26 @@ fun DeveloperPortalUi(
                             Text("📚 Import Challenges")
                         }
 
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = { state.eventSink(DeveloperPortalScreen.Event.DeleteAllChallengesClicked) },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.deleteChallengesInProgress,
+                        ) {
+                            Text("🗑️ Delete All Challenges")
+                        }
+
                         // Show result message if present
                         state.importChallengesResultMessage?.let { msg ->
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(text = msg)
                         }
-                        if (state.importChallengesInProgress) {
+                        state.deleteChallengesResultMessage?.let { msg ->
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = msg)
+                        }
+                        if (state.importChallengesInProgress || state.deleteChallengesInProgress) {
                             Spacer(modifier = Modifier.height(8.dp))
                             CircularProgressIndicator()
                         }

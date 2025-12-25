@@ -27,6 +27,8 @@ data object DeveloperPortalScreen : Screen {
         val seedResultMessage: String? = null,
         val importChallengesInProgress: Boolean = false,
         val importChallengesResultMessage: String? = null,
+        val deleteChallengesInProgress: Boolean = false,
+        val deleteChallengesResultMessage: String? = null,
         val badges: List<Badge> = emptyList(),
         val forceUnlockInProgress: Boolean = false,
         val forceUnlockResultMessage: String? = null,
@@ -69,6 +71,8 @@ data object DeveloperPortalScreen : Screen {
         data object SeedSessionsClicked : Event
 
         data object ImportSampleChallengesClicked : Event
+
+        data object DeleteAllChallengesClicked : Event
 
         data object ForceBadgeCheckClicked : Event
 
