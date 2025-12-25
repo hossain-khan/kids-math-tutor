@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Math Practice Duplicate Problem Strings** - Eliminated duplicate problem display strings in Math Practice sessions
+  - Added unique problem string validation across all problem generation paths (custom challenges, adaptive, standard)
+  - Implemented retry logic with fallback deduplication to ensure no two problems show the same string (e.g., "2+3" cannot appear twice)
+  - Prevents commutative variants from appearing in same session (e.g., "2+3" and "3+2" as separate problems)
+  - Allows duplicate answers as intended (e.g., "2+3=5" and "1+4=5" both showing in same session is OK)
+  - Comprehensive Timber logging for monitoring duplicate generation attempts
+
 ## [1.13.0] - 2025-12-24
 
 ### Changed
