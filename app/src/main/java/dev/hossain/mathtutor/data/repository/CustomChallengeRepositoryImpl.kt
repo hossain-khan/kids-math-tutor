@@ -83,6 +83,17 @@ class CustomChallengeRepositoryImpl
             }
         }
 
+        override suspend fun unarchiveChallenge(id: String) {
+            try {
+                Timber.d("CustomChallengeRepository: Unarchiving challenge with id=$id")
+                dao.unarchiveChallenge(id)
+                Timber.d("CustomChallengeRepository: Challenge unarchived successfully")
+            } catch (e: Exception) {
+                Timber.e(e, "CustomChallengeRepository: Failed to unarchive challenge")
+                throw e
+            }
+        }
+
         override suspend fun deleteChallenge(id: String) {
             try {
                 Timber.d("CustomChallengeRepository: Deleting challenge with id=$id")

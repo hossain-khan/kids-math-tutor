@@ -175,7 +175,7 @@ fun ParentChallengesUi(
                             state.eventSink(ParentChallengesScreen.Event.ChallengeSelected(it))
                         },
                         onArchiveClick = {
-                            state.eventSink(ParentChallengesScreen.Event.ArchiveChallenge(it.id))
+                            state.eventSink(ParentChallengesScreen.Event.ArchiveChallenge(it))
                         },
                         onClearSessionsClick = {
                             state.eventSink(

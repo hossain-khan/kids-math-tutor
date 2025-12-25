@@ -63,10 +63,12 @@ data object ParentChallengesScreen : Screen {
         ) : Event
 
         /**
-         * User requested to archive a challenge.
+         * User requested to toggle archive state of a challenge.
+         * If the challenge is archived, it will be unarchived.
+         * If the challenge is active, it will be archived.
          */
         data class ArchiveChallenge(
-            val challengeId: String,
+            val challenge: CustomChallenge,
         ) : Event
 
         /**

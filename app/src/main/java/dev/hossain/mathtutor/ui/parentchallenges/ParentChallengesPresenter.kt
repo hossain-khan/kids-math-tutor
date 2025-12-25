@@ -132,15 +132,24 @@ class ParentChallengesPresenter
                     }
 
                     is ParentChallengesScreen.Event.ArchiveChallenge -> {
-                        analyticsService.logEvent(
-                            eventName = AnalyticsEvent.CUSTOM_CHALLENGE_ARCHIVED,
-                            parameters = mapOf(AnalyticsParam.CHALLENGE_ID to event.challengeId),
-                        )
+                        val challenge = event.challenge
                         coroutineScope.launch {
                             try {
-                                challengeService.archiveChallenge(event.challengeId)
+                                if (challenge.isArchived) {
+                                    analyticsService.logEvent(
+                                        eventName = "custom_challenge_unarchived",
+                                        parameters = mapOf(AnalyticsParam.CHALLENGE_ID to challenge.id),
+                                    )
+                                    challengeService.unarchiveChallenge(challenge.id)
+                                } else {
+                                    analyticsService.logEvent(
+                                        eventName = AnalyticsEvent.CUSTOM_CHALLENGE_ARCHIVED,
+                                        parameters = mapOf(AnalyticsParam.CHALLENGE_ID to challenge.id),
+                                    )
+                                    challengeService.archiveChallenge(challenge.id)
+                                }
                             } catch (e: Exception) {
-                                Timber.e(e, "Failed to archive challenge: ${event.challengeId}")
+                                Timber.e(e, "Failed to toggle archive state for challenge: ${challenge.id}")
                             }
                         }
                     }
