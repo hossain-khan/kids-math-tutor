@@ -548,4 +548,125 @@ class MathPracticePresenterTest {
         // Then - Custom challenge title should be null
         assertThat(state.customChallengeTitle).isNull()
     }
+
+    // ==================== Deduplication Tests ====================
+
+    @Test
+    fun `problem generator produces unique problem strings by default`() {
+        // Given - Generate multiple problems
+        val problems = problemGenerator.generateProblems(10, MathOperation.ADDITION, GradeLevel.GRADE_1)
+
+        // When - Extract problem strings
+        val problemStrings = problems.map { it.getDisplayString() }
+
+        // Then - All problem strings should be unique
+        assertThat(problemStrings.size).isEqualTo(problemStrings.toSet().size)
+    }
+
+    @Test
+    fun `deduplication correctly identifies duplicate problem strings`() {
+        // Given - Create problems with intentional duplicates
+        val problem1 = MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5)
+        val problem2 = MathProblem(num1 = 1, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 5)
+        val problem3 = MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5) // Duplicate string
+
+        val problemsWithDuplicates = listOf(problem1, problem2, problem3)
+
+        // When - Extract problem strings
+        val problemStrings = problemsWithDuplicates.map { it.getDisplayString() }
+
+        // Then - Duplicates should be detected
+        assertThat(problemStrings.size).isEqualTo(3)
+        assertThat(problemStrings.toSet().size).isEqualTo(2) // Only 2 unique strings
+        assertThat(problemStrings[0]).isEqualTo(problemStrings[2]) // First and third are same
+    }
+
+    @Test
+    fun `duplicate answers are allowed with different problem strings`() {
+        // Given - Create problems with same answer but different strings
+        val problem1 = MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5)
+        val problem2 = MathProblem(num1 = 1, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 5)
+
+        // When
+        val strings = setOf(problem1.getDisplayString(), problem2.getDisplayString())
+        val answers = listOf(problem1.correctAnswer, problem2.correctAnswer)
+
+        // Then - Problem strings should be different but answers can be same
+        assertThat(strings.size).isEqualTo(2) // Different strings
+        assertThat(answers.toSet().size).isEqualTo(1) // Same answer
+        assertThat(problem1.correctAnswer).isEqualTo(problem2.correctAnswer)
+    }
+
+    @Test
+    fun `commutative variants are different problem strings`() {
+        // Given - Create problems that are commutative variants (2+3 vs 3+2)
+        val problem1 = MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5)
+        val problem2 = MathProblem(num1 = 3, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 5)
+
+        // When - Extract problem strings
+        val string1 = problem1.getDisplayString()
+        val string2 = problem2.getDisplayString()
+
+        // Then - Commutative variants should have different strings
+        assertThat(string1).isNotEqualTo(string2)
+        // One should be "2 + 3 = ?" and the other "3 + 2 = ?"
+        assertThat(string1).isAnyOf("2 + 3 = ?", "3 + 2 = ?")
+        assertThat(string2).isAnyOf("2 + 3 = ?", "3 + 2 = ?")
+    }
+
+    @Test
+    fun `problem string uniqueness validation works correctly`() {
+        // Given - Create a set of problems
+        val problems = problemGenerator.generateProblems(5, MathOperation.ADDITION, GradeLevel.GRADE_1)
+
+        // When - Check if all problem strings are unique
+        val problemStrings = problems.map { it.getDisplayString() }
+        val hasUniqueProblemStrings = problemStrings.size == problemStrings.toSet().size
+
+        // Then - For 5 different generated problems, should all be unique
+        assertThat(hasUniqueProblemStrings).isTrue()
+    }
+
+    @Test
+    fun `large batch of problems maintains uniqueness`() {
+        // Given - Generate a larger batch of problems
+        val problems = problemGenerator.generateProblems(20, MathOperation.ADDITION, GradeLevel.GRADE_2)
+
+        // When - Extract and deduplicate strings
+        val problemStrings = problems.map { it.getDisplayString() }
+        val uniqueStringCount = problemStrings.toSet().size
+
+        // Then - All strings should be unique
+        assertThat(uniqueStringCount).isEqualTo(problems.size)
+    }
+
+    @Test
+    fun `mixed operations maintain problem string uniqueness`() {
+        // Given - Generate problems with different operations
+        val additionProblems = problemGenerator.generateProblems(3, MathOperation.ADDITION, GradeLevel.GRADE_1)
+        val subtractionProblems = problemGenerator.generateProblems(3, MathOperation.SUBTRACTION, GradeLevel.GRADE_1)
+
+        // When - Combine and check strings
+        val allProblems = additionProblems + subtractionProblems
+        val problemStrings = allProblems.map { it.getDisplayString() }
+
+        // Then - No duplicates within mixed operations
+        assertThat(problemStrings.size).isEqualTo(problemStrings.toSet().size)
+    }
+
+    @Test
+    fun `problem string extraction works for all operations`() {
+        // Given - Problems from different operations
+        val addition = MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5)
+        val subtraction = MathProblem(num1 = 5, num2 = 2, operation = MathOperation.SUBTRACTION, correctAnswer = 3)
+
+        // When - Extract display strings
+        val addString = addition.getDisplayString()
+        val subString = subtraction.getDisplayString()
+
+        // Then - Strings should contain operation symbols
+        assertThat(addString).contains("+")
+        assertThat(subString).contains("-")
+        assertThat(addString).isNotEqualTo(subString)
+    }
 }
