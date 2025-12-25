@@ -16,6 +16,7 @@ import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.ChallengeImportSpec
+import dev.hossain.mathtutor.domain.model.ChallengePracticeSession
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.NumberRange
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.time.Instant
 
 /**
  * Basic scaffold presenter for `DeveloperPortalScreen`.
@@ -661,16 +663,64 @@ class DeveloperPortalPresenter
                 )
 
             var count = 0
+            val createdChallengeIds = mutableListOf<Pair<String, String>>() // (title, id)
             for (spec in challenges) {
                 val result = customChallengeService.createChallengeFromSpec(spec)
                 if (result.isSuccess) {
                     count++
-                    Timber.d("[DevPortal] Successfully imported challenge: ${spec.title}")
+                    val challenge = result.getOrNull()
+                    if (challenge != null) {
+                        createdChallengeIds.add(challenge.title to challenge.id)
+                        Timber.d("[DevPortal] Successfully imported challenge: ${spec.title}")
+                    }
                 } else {
                     Timber.e(
                         result.exceptionOrNull(),
                         "[DevPortal] Failed to import challenge: ${spec.title}",
                     )
+                }
+            }
+
+            // Add practice sessions for 2 of the challenges
+            // Quick Addition: 3 sessions at 90% accuracy
+            val quickAdditionChallenge = createdChallengeIds.find { it.first == "Quick Addition" }
+            if (quickAdditionChallenge != null) {
+                repeat(3) { sessionIndex ->
+                    val now = Instant.now()
+                    val session =
+                        ChallengePracticeSession(
+                            startTime = now.minusSeconds((3 - sessionIndex).toLong() * 300), // Stagger sessions
+                            endTime = now.minusSeconds((3 - sessionIndex).toLong() * 300).plusSeconds(120),
+                            problemsAttempted = 10,
+                            correctAnswers = 9, // 90% accuracy
+                            totalTimeMs = 120000,
+                        )
+                    try {
+                        customChallengeService.recordPracticeSession(quickAdditionChallenge.second, session)
+                        Timber.d("[DevPortal] Recorded session $sessionIndex for Quick Addition (90% accuracy)")
+                    } catch (e: Exception) {
+                        Timber.e(e, "[DevPortal] Failed to record session for Quick Addition")
+                    }
+                }
+            }
+
+            // Quick Subtraction: 1 session at 45% accuracy
+            val quickSubtractionChallenge = createdChallengeIds.find { it.first == "Quick Subtraction" }
+            if (quickSubtractionChallenge != null) {
+                val now = Instant.now()
+                val session =
+                    ChallengePracticeSession(
+                        startTime = now.minusSeconds(600),
+                        endTime = now.minusSeconds(600).plusSeconds(90),
+                        problemsAttempted = 10,
+                        correctAnswers = 5, // 50% accuracy (close to 45%)
+                        totalTimeMs = 90000,
+                    )
+                try {
+                    customChallengeService.recordPracticeSession(quickSubtractionChallenge.second, session)
+                    Timber.d("[DevPortal] Recorded session for Quick Subtraction (50% accuracy)")
+                } catch (e: Exception) {
+                    Timber.e(e, "[DevPortal] Failed to record session for Quick Subtraction")
                 }
             }
 
