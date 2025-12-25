@@ -717,7 +717,12 @@ class MathPracticePresenterTest {
             listOf(
                 MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5),
                 MathProblem(num1 = 1, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 5),
-                MathProblem(num1 = 2, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 5), // Duplicate - intentional from parent
+                MathProblem(
+                    num1 = 2,
+                    num2 = 3,
+                    operation = MathOperation.ADDITION,
+                    correctAnswer = 5,
+                ), // Duplicate - intentional from parent
             )
 
         val mockChallenge =
