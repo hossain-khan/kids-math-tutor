@@ -112,6 +112,102 @@ class MathPracticePresenter
             var userName by remember { mutableStateOf<String?>(null) }
             var customChallengeTitle by remember { mutableStateOf<String?>(null) }
 
+            /**
+             * Manually deduplicates problems by removing duplicate problem strings,
+             * then generates additional problems to reach the target count.
+             */
+            fun deduplicateProblems(
+                problems: List<MathProblem>,
+                targetCount: Int,
+            ): List<MathProblem> {
+                val seenProblemStrings = mutableSetOf<String>()
+                val uniqueProblems = mutableListOf<MathProblem>()
+
+                // First pass: collect unique problems
+                for (problem in problems) {
+                    val problemString = problem.getDisplayString()
+
+                    if (problemString !in seenProblemStrings) {
+                        seenProblemStrings.add(problemString)
+                        uniqueProblems.add(problem)
+                    }
+                }
+
+                // Generate more problems if needed
+                var additionalAttempts = 0
+                val maxAdditionalAttempts = 100
+
+                while (uniqueProblems.size < targetCount && additionalAttempts < maxAdditionalAttempts) {
+                    val newProblem =
+                        problemGenerator
+                            .generateProblems(
+                                count = 1,
+                                operation = screen.operation,
+                                gradeLevel = actualGradeLevel!!,
+                            ).first()
+
+                    val problemString = newProblem.getDisplayString()
+
+                    if (problemString !in seenProblemStrings) {
+                        seenProblemStrings.add(problemString)
+                        uniqueProblems.add(newProblem)
+                    }
+
+                    additionalAttempts++
+                }
+
+                Timber.d("[MathPractice] Deduplication complete: ${uniqueProblems.size} unique problems")
+
+                return uniqueProblems
+            }
+
+            /**
+             * Generates problems with unique problem strings.
+             * Ensures no two problems have the same display string (e.g., "2+3" doesn't appear twice).
+             * Duplicate answers are allowed (2+3=5 and 1+4=5 can both appear).
+             */
+            fun generateProblemsWithUniqueStrings(
+                problems: List<MathProblem>,
+                targetCount: Int,
+                maxRetries: Int = 100,
+            ): List<MathProblem> {
+                var attempts = 0
+                var currentProblems = problems
+
+                // Retry: Check if all problem strings are unique
+                do {
+                    val problemStrings = currentProblems.map { it.getDisplayString() }
+                    val hasUniqueProblemStrings = problemStrings.size == problemStrings.toSet().size
+
+                    if (hasUniqueProblemStrings) {
+                        Timber.d(
+                            "[MathPractice] Generated $targetCount problems with unique problem strings " +
+                                "in ${attempts + 1} attempt(s)",
+                        )
+                        return currentProblems
+                    }
+
+                    // Regenerate if duplicates found
+                    currentProblems =
+                        problemGenerator.generateProblems(
+                            count = targetCount,
+                            operation = screen.operation,
+                            gradeLevel = actualGradeLevel!!,
+                        )
+                    attempts++
+                    Timber.d(
+                        "[MathPractice] Attempt $attempts: Found duplicate problem strings, regenerating...",
+                    )
+                } while (attempts < maxRetries)
+
+                // Fallback: Manual deduplication
+                Timber.w(
+                    "[MathPractice] Could not generate unique problems after $maxRetries attempts, " +
+                        "using fallback deduplication",
+                )
+                return deduplicateProblems(currentProblems, targetCount)
+            }
+
             // Fetch user profile and generate problems in a single LaunchedEffect
             LaunchedEffect(Unit) {
                 Timber.d("Starting problem generation for operation ${screen.operation}")
@@ -129,7 +225,12 @@ class MathPracticePresenter
                     Timber.d("Loading custom challenge: ${screen.customChallengeId}")
                     val challenge = customChallengeService.getChallengeById(screen.customChallengeId)
                     if (challenge != null) {
-                        problems = challenge.problems
+                        // Validate custom challenge problems for unique strings
+                        problems =
+                            generateProblemsWithUniqueStrings(
+                                challenge.problems,
+                                screen.problemCount,
+                            )
                         customChallengeTitle = challenge.title
                         actualGradeLevel = grade // Use user's grade for custom challenges
                         Timber.d(
@@ -138,11 +239,17 @@ class MathPracticePresenter
                     } else {
                         Timber.e("Custom challenge not found: ${screen.customChallengeId}")
                         // Fall back to regular problem generation
-                        problems =
+                        val generatedProblems =
                             problemGenerator.generateProblems(
                                 count = screen.problemCount,
                                 operation = screen.operation,
                                 gradeLevel = grade,
+                            )
+                        // Validate generated problems for unique strings
+                        problems =
+                            generateProblemsWithUniqueStrings(
+                                generatedProblems,
+                                screen.problemCount,
                             )
                         actualGradeLevel = grade
                     }
@@ -154,7 +261,12 @@ class MathPracticePresenter
                             operation = screen.operation,
                             baseGradeLevel = grade,
                         )
-                    problems = result.problems
+                    // Validate adaptive problems for unique strings
+                    problems =
+                        generateProblemsWithUniqueStrings(
+                            result.problems,
+                            screen.problemCount,
+                        )
                     actualGradeLevel = result.actualGradeLevel
                     difficultyAdjustment = result.adjustment
                     if (result.wasAdjusted) {
@@ -175,11 +287,17 @@ class MathPracticePresenter
                     }
                 } else {
                     // Use standard problem generator
-                    problems =
+                    val generatedProblems =
                         problemGenerator.generateProblems(
                             count = screen.problemCount,
                             operation = screen.operation,
                             gradeLevel = grade,
+                        )
+                    // Validate standard problems for unique strings
+                    problems =
+                        generateProblemsWithUniqueStrings(
+                            generatedProblems,
+                            screen.problemCount,
                         )
                     actualGradeLevel = grade
                 }
