@@ -364,6 +364,7 @@ private fun ChallengesList(
                 onArchiveClick = onArchiveClick,
                 onClearSessionsClick = onClearSessionsClick,
                 onDeleteClick = onDeleteClick,
+                modifier = Modifier.animateItem(),
             )
         }
         // Add bottom padding for FAB
