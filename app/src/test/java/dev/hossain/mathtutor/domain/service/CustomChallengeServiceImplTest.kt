@@ -386,6 +386,14 @@ class CustomChallengeServiceImplTest {
         }
 
     @Test
+    fun `unarchiveChallenge calls repository unarchive method`() =
+        runTest {
+            service.unarchiveChallenge("c1")
+
+            assertThat(fakeRepository.unarchivedChallengeIds).contains("c1")
+        }
+
+    @Test
     fun `deleteChallenge calls repository delete method`() =
         runTest {
             service.deleteChallenge("c1")
@@ -441,6 +449,7 @@ class CustomChallengeServiceImplTest {
 class FakeCustomChallengeRepository : CustomChallengeRepository {
     val savedChallenges = mutableListOf<CustomChallenge>()
     val archivedChallengeIds = mutableListOf<String>()
+    val unarchivedChallengeIds = mutableListOf<String>()
     val deletedChallengeIds = mutableListOf<String>()
     val practiceSessions = mutableListOf<Pair<String, ChallengePracticeSession>>()
     val activeChallengesFlow = MutableStateFlow<List<CustomChallenge>>(emptyList())
@@ -455,6 +464,10 @@ class FakeCustomChallengeRepository : CustomChallengeRepository {
 
     override suspend fun archiveChallenge(id: String) {
         archivedChallengeIds.add(id)
+    }
+
+    override suspend fun unarchiveChallenge(id: String) {
+        unarchivedChallengeIds.add(id)
     }
 
     override suspend fun deleteChallenge(id: String) {
