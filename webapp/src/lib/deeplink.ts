@@ -18,10 +18,9 @@
  * @returns The deeplink URL string
  */
 export function generateDeeplink(jsonData: object | string): string {
-  const jsonString =
-    typeof jsonData === "string" ? jsonData : JSON.stringify(jsonData);
-
   try {
+    const jsonString =
+      typeof jsonData === "string" ? jsonData : JSON.stringify(jsonData);
     const encodedJson = encodeURIComponent(jsonString);
     return `mathpup://import?json=${encodedJson}`;
   } catch (error) {

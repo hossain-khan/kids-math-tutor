@@ -182,8 +182,9 @@ describe("TemplateSection Component", () => {
       />,
     );
 
-    const templateButton = screen.getByRole("button", { name: /Add to 5/i });
-    fireEvent.click(templateButton);
+    // Find the "Use Template" button for the first template
+    const useTemplateButtons = screen.getAllByRole("button", { name: /Use Template/i });
+    fireEvent.click(useTemplateButtons[0]);
 
     expect(mockOnSelect).toHaveBeenCalledWith(mockTemplates.kindergarten[0]);
   });
@@ -201,8 +202,9 @@ describe("TemplateSection Component", () => {
       />,
     );
 
-    const templateButton = screen.getByRole("button", { name: /Add to 5/i });
-    fireEvent.click(templateButton);
+    // Find the "Use Template" button for the first template
+    const useTemplateButtons = screen.getAllByRole("button", { name: /Use Template/i });
+    fireEvent.click(useTemplateButtons[0]);
 
     expect(mockOnToggle).toHaveBeenCalledWith(false);
   });

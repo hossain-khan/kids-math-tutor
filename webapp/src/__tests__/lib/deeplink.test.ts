@@ -69,6 +69,7 @@ describe("deeplink utilities", () => {
 
       const deeplink = generateDeeplink(circular);
 
+      // Circular reference should cause JSON.stringify to throw, resulting in empty string
       expect(deeplink).toBe("");
     });
 
@@ -119,6 +120,7 @@ describe("deeplink utilities", () => {
     });
 
     it("should return empty string on error", () => {
+      // openInApp should return empty string when generateDeeplink fails
       const circular: any = { prop: "value" };
       circular.self = circular;
 
