@@ -132,6 +132,126 @@ Additionally:
 │                            ▼                                            │
 │                   ParentChallengesScreen                                │
 │                                                                          │
+│  (Deeplink URL) ──► ImportChallengeScreen                               │
+│                    mathpup://import?json=...                           │
+│                            │                                            │
+│                          goTo                                           │
+│                            │                                            │
+│                            ▼                                            │
+│                   ParentChallengesScreen                                │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## Deep Linking for Challenge Import
+
+The app supports Android deep links for one-click challenge import from the web-based worksheet creator. This enables seamless integration between the web app and mobile app.
+
+### Deep Link Scheme
+
+**Format**: `mathpup://import?json=<url-encoded-json>`
+
+**Example**:
+```
+mathpup://import?json=%7B%22type%22%3A%22explicit%22%2C%22title%22%3A%22Addition%20Practice%22%2C%22problems%22%3A%5B%7B%22operand1%22%3A5%2C%22operand2%22%3A3%2C%22operation%22%3A%22addition%22%7D%5D%7D
+```
+
+### How It Works
+
+#### Android Implementation
+
+1. **Intent Filter Registration** (`AndroidManifest.xml`):
+   ```xml
+   <intent-filter>
+       <action android:name="android.intent.action.VIEW" />
+       <category android:name="android.intent.category.DEFAULT" />
+       <category android:name="android.intent.category.BROWSABLE" />
+       <data
+           android:scheme="mathpup"
+           android:host="import" />
+   </intent-filter>
+   ```
+
+2. **Deep Link Handling** (`MainActivity.kt`):
+   - Checks for incoming deep link intent in `onCreate()` and `onNewIntent()`
+   - Extracts JSON from URI query parameter using `DeeplinkHandler.extractJsonFromDeeplink()`
+   - Navigates to `ImportChallengeScreen` with the challenge data
+   - Falls back to share intent or normal app start if no deep link
+
+3. **DeeplinkHandler Utility** (`deeplink/DeeplinkHandler.kt`):
+   - `extractJsonFromDeeplink(uri: Uri?): String?` - Safely decodes URL-encoded JSON from deep link
+   - `generateDeeplink(jsonData: String): String` - Encodes challenge JSON as deep link URI
+   - Handles error cases gracefully with Timber logging
+
+#### Web App Integration
+
+The web-based worksheet creator provides one-click import buttons for Android users:
+
+1. **Device Detection**: `isLikelyAndroidDevice()` detects Android via user agent
+2. **Deep Link Generation**: `generateDeeplink(jsonData)` creates the `mathpup://` URI
+3. **Import Triggers**:
+   - "Open in Math Pup App" button on Result page (Android only)
+   - "📱 Open in App" buttons on template cards (Android only)
+4. **User Experience**:
+   - Clicking button generates deep link and sets `window.location.href`
+   - If app is installed: Opens app and navigates to `ImportChallengeScreen`
+   - If app is not installed: Deep link fails gracefully, user can copy JSON manually
+
+### Data Flow
+
+```
+Web App (Result.tsx)
+    │
+    ├─► isLikelyAndroidDevice() → Check if Android
+    │
+    ├─► generateDeeplink(challengeJson)
+    │   └─► URL encode challenge JSON
+    │
+    └─► window.location.href = deeplink
+        │
+        ├─► [App Installed] → mathpup:// intent received
+        │   │
+        │   └─► MainActivity.handleDeeplink()
+        │       │
+        │       └─► DeeplinkHandler.extractJsonFromDeeplink()
+        │           │
+        │           └─► Navigator.goTo(ImportChallengeScreen)
+        │
+        └─► [App Not Installed] → Deep link fails gracefully
+            └─► User can still copy JSON or use other methods
+```
+
+### Technical Details
+
+**URL Encoding**: JSON is encoded using `URLEncoder` (Android) and `encodeURIComponent` (JavaScript) to safely transmit special characters in URI query parameters.
+
+**Error Handling**:
+- Invalid scheme/host: Returns null
+- Missing JSON parameter: Returns null
+- Malformed JSON: Logged to Timber, empty string returned
+- Circular references: Caught during JSON.stringify, empty string returned
+
+**Security Considerations**:
+- Only accepts challenges from `mathpup://import` scheme
+- JSON is validated by `ImportChallengeScreen` against challenge schema
+- No sensitive data exposed in URI (challenge data only)
+
+### Usage Examples
+
+#### From Web App Result Page
+User creates a challenge in the worksheet creator → Clicks "Open in Math Pup App" → App opens and loads challenge automatically
+
+#### From Template Cards
+User selects a template → Clicks "📱 Open in App" → Challenge data is passed via deep link → Loaded in app
+
+#### Manual Deep Link Testing
+```
+adb shell am start -W \
+  -a android.intent.action.VIEW \
+  -d "mathpup://import?json=%7B%22type%22%3A%22generated%22%2C%22title%22%3A%22Test%22%7D" \
+  dev.hossain.mathtutor
+```
+
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
