@@ -205,7 +205,7 @@ Web App (Result.tsx)
     ├─► isLikelyAndroidDevice() → Check if Android
     │
     ├─► generateDeeplink(challengeJson)
-    │   └─► URL encode challenge JSON
+    │   └─► URL encode challenge JSON (already Zod-validated)
     │
     └─► window.location.href = deeplink
         │
@@ -215,11 +215,38 @@ Web App (Result.tsx)
         │       │
         │       └─► DeeplinkHandler.extractJsonFromDeeplink()
         │           │
-        │           └─► Navigator.goTo(ImportChallengeScreen)
+        │           └─► ChallengeJsonParser.parseFromText()
+        │               │
+        │               └─► validateSpec() → Schema validation
+        │                   │
+        │                   └─► Navigator.goTo(ImportChallengeScreen)
         │
         └─► [App Not Installed] → Deep link fails gracefully
             └─► User can still copy JSON or use other methods
 ```
+
+### Validation Strategy
+
+The app uses **defense-in-depth** validation:
+
+1. **Web App Side** (`webapp/src/lib/schemas/challenge-schema.ts`):
+   - Zod schema validation before generating deeplink
+   - Ensures data is well-formed before transmission
+
+2. **Android Side** (`domain/parser/ChallengeJsonParser.kt`):
+   - `parseFromText()` deserializes JSON
+   - `validateSpec()` performs comprehensive validation:
+     - Type checking (generated vs explicit)
+     - Field requirement validation
+     - Range validation (min/max operands, problem counts)
+     - Operation enum validation
+   - Throws `ValidationException` if validation fails
+
+**Important**: The Android app does NOT trust the incoming deeplink data. Even if the webapp validated it, the Android app re-validates on receipt using the same `ChallengeJsonParser` to handle:
+- Manually crafted deep links
+- Deep links from older/different webapp versions
+- Potential data corruption during transmission
+- Security: Don't trust external input
 
 ### Technical Details
 

@@ -1,6 +1,10 @@
 /**
  * Utilities for generating deeplinks for importing challenges into the Math Pup Tutor app.
  *
+ * Challenge data should be validated using the challenge schema before generating a deeplink.
+ * The Android app will perform additional validation on receipt using ChallengeJsonParser
+ * to ensure data integrity and security.
+ *
  * Usage:
  * ```tsx
  * const deeplink = generateDeeplink(challengeJson);
@@ -14,7 +18,11 @@
  *
  * Format: `mathpup://import?json=<url-encoded-json>`
  *
- * @param jsonData The challenge JSON object or string to encode
+ * Note: While this function accepts any JSON, the Android app will validate it against
+ * the challenge schema using ChallengeJsonParser. For production use, ensure the data
+ * is validated using the Zod schemas before generating the deeplink.
+ *
+ * @param jsonData The challenge JSON object or string to encode (should be pre-validated)
  * @returns The deeplink URL string
  */
 export function generateDeeplink(jsonData: object | string): string {
