@@ -16,22 +16,5 @@
       "id": "1a434626c9c143ec874e6c2e1ec2348a",
       "preview_id": "b94eac3c955f44df8eb8722850956947"
     }
-  ],
-  "env": {
-    "development": {
-      "routes": [
-        {
-          "pattern": "localhost:8787/api/*"
-        }
-      ]
-    },
-    "production": {
-      "routes": [
-        {
-          "pattern": "math-worksheet.gohk.xyz/api/*",
-          "zone_name": "math-worksheet.gohk.xyz"
-        }
-      ]
-    }
-  }
+  ]
 }

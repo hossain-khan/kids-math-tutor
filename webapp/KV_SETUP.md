@@ -28,31 +28,31 @@ After creating the namespaces:
 
 ### 3. Update wrangler.json
 
-In `/webapp/wrangler.json`, replace the placeholder IDs:
+In `/webapp/wrangler.json`, the KV namespace is configured:
 
 ```json
 "kv_namespaces": [
   {
-    "binding": "WORKSHEETS_KV",
-    "id": "YOUR_PRODUCTION_NAMESPACE_ID",        // ← Replace with production ID
-    "preview_id": "YOUR_PREVIEW_NAMESPACE_ID"    // ← Replace with preview ID
+    "binding": "KV",
+    "id": "1a434626c9c143ec874e6c2e1ec2348a",        // Production: worksheets-storage
+    "preview_id": "b94eac3c955f44df8eb8722850956947"   // Preview: for local dev
   }
 ]
 ```
 
-### 4. Configure Routes (Production Only)
+> **Note**: These IDs are already configured. Only update if creating new namespaces.
 
-The `wrangler.json` includes environment-specific routing:
+### 4. KV Usage by Environment
 
-- **Development** (`wrangler dev`):
+- **Local Development** (`wrangler dev` / `pnpm run worker:dev`):
   - Runs on `localhost:8787`
-  - Uses preview KV namespace
-  - No Cloudflare domain required
+  - Uses **preview KV** namespace (`preview_id`)
+  - Data is separate from production
 
-- **Production** (`wrangler deploy`):
-  - Routes `/api/*` requests to `mathpup.dev`
-  - Uses production KV namespace
-  - Requires `mathpup.dev` to be in your Cloudflare account
+- **Production** (`npx wrangler deploy`):
+  - Deploys to `math-worksheet.gohk.xyz`
+  - Uses **production KV** namespace (`id`)
+  - Data persists across deployments
 
 ## Local Development
 
@@ -92,22 +92,23 @@ curl http://localhost:8787/api/v1/worksheets?grades=kindergarten&sort=newest
 
 ### Prerequisites
 
-- Domain `mathpup.dev` must be in your Cloudflare account
-- KV namespaces created with production IDs in `wrangler.json`
+- Cloudflare account with `math-worksheet.gohk.xyz` configured
+- KV namespaces created (already configured in `wrangler.json`)
 
 ### Deploy
 
 ```bash
-# Build and deploy worker + assets
-pnpm run build
-pnpm run worker:deploy
+# Build and deploy
+pnpm build && npx wrangler deploy
 ```
 
 This:
 1. Builds React app to `/dist`
-2. Deploys Hono worker to Cloudflare
-3. Routes `/api/*` traffic to worker
-4. Serves SPA from `/` with fallback to index.html
+2. Deploys Hono worker + static assets to Cloudflare
+3. API routes (`/api/*`) handled by Hono worker
+4. SPA routes served with fallback to `index.html`
+
+**Live URL**: https://math-worksheet.gohk.xyz/
 
 ## Data Model in KV
 
@@ -156,13 +157,12 @@ ratelimit:192.168.1.1:2025-12-26 → "5"
 - Complex requests need explicit CORS handling
 - Check browser console for specific CORS errors
 
-## Next Steps
+## Quick Reference
 
-1. [ ] Create KV namespaces in Cloudflare Dashboard
-2. [ ] Get production and preview namespace IDs
-3. [ ] Update `wrangler.json` with actual IDs
-4. [ ] Test locally with `pnpm run worker:dev`
-5. [ ] Deploy to production with `pnpm run worker:deploy`
+| Environment | Command | KV Used | URL |
+|-------------|---------|---------|-----|
+| Local Dev | `pnpm run worker:dev` | Preview | http://localhost:8787 |
+| Production | `npx wrangler deploy` | Production | https://math-worksheet.gohk.xyz |
 
 ## Resources
 
