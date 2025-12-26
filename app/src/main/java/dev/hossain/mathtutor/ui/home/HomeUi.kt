@@ -167,8 +167,14 @@ fun HomeUi(
                                         containerColor = MaterialTheme.colorScheme.primary,
                                     ),
                             ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.dog_outline),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "🐶 Start Practice",
+                                    text = "Start Practice",
                                     style = MaterialTheme.typography.titleLarge,
                                 )
                             }
@@ -205,8 +211,14 @@ fun HomeUi(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                 ),
                         ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.dog_outline),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "🐶 Start Practice",
+                                text = "Start Practice",
                                 style = MaterialTheme.typography.titleLarge,
                             )
                         }
