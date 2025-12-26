@@ -297,7 +297,7 @@ private fun ProfileSection(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
-                    text = "Profile",
+                    text = "Kids Profile",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
