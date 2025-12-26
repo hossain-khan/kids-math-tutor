@@ -64,7 +64,7 @@ describe("deeplink utilities", () => {
 
     it("should return empty string on error", () => {
       // Create circular reference to trigger JSON.stringify error
-      const circular: any = { prop: "value" };
+      const circular: Record<string, unknown> = { prop: "value" };
       circular.self = circular;
 
       const deeplink = generateDeeplink(circular);
@@ -75,13 +75,13 @@ describe("deeplink utilities", () => {
 
     it("should encode JSON with all special characters", () => {
       const testCases = [
-        { data: { title: "Test with spaces" }, shouldContain: "spaces" },
-        { data: { char: "!@#$%^&*()" }, shouldContain: "char" },
-        { data: { quote: 'Say "hello"' }, shouldContain: "Say" },
-        { data: { slash: "path/to/file" }, shouldContain: "path" },
+        { data: { title: "Test with spaces" } },
+        { data: { char: "!@#$%^&*()" } },
+        { data: { quote: 'Say "hello"' } },
+        { data: { slash: "path/to/file" } },
       ];
 
-      testCases.forEach(({ data, shouldContain }) => {
+      testCases.forEach(({ data }) => {
         const deeplink = generateDeeplink(data);
         expect(deeplink).toMatch(/^mathpup:\/\/import\?json=.+$/);
         expect(deeplink).toContain("json=");
@@ -121,7 +121,7 @@ describe("deeplink utilities", () => {
 
     it("should return empty string on error", () => {
       // openInApp should return empty string when generateDeeplink fails
-      const circular: any = { prop: "value" };
+      const circular: Record<string, unknown> = { prop: "value" };
       circular.self = circular;
 
       const result = openInApp(circular);
