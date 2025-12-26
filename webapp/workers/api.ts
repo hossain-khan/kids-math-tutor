@@ -14,6 +14,9 @@ import {
   saveWorksheet,
   getWorksheet,
   listWorksheets,
+  searchWorksheets,
+  rateWorksheet,
+  calculateWorksheetRatingStats,
   incrementViews,
   incrementDownloads,
   type SharedWorksheet,
@@ -139,6 +142,8 @@ app.post('/api/v1/worksheets/share', async (c) => {
       stats: {
         views: 0,
         downloads: 0,
+        averageRating: 0,
+        ratingCount: 0,
       },
     };
 
@@ -179,22 +184,72 @@ app.get('/api/v1/worksheets', async (c) => {
   try {
     const grades = c.req.query('grades')?.split(',') as GradeLevel[] | undefined;
     const sortBy = (c.req.query('sort') ||
-      'newest') as 'newest' | 'views' | 'downloads';
+      'newest') as 'newest' | 'views' | 'downloads' | 'ratings';
+    const limit = parseInt(c.req.query('limit') || '20', 10);
+    const offset = parseInt(c.req.query('offset') || '0', 10);
 
-    const worksheets = await listWorksheets(
+    const result = await listWorksheets(
       { env: { KV: c.env.KV } },
       {
         grades,
         sortBy,
+        limit: Math.min(limit, 100), // Cap at 100
+        offset,
       },
     );
 
-    return c.json(worksheets);
+    return c.json(result);
   } catch (error) {
     console.error('List worksheets error:', error);
     return c.json(
       {
         error: 'Failed to list worksheets',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500,
+    );
+  }
+});
+
+/**
+ * GET /api/v1/worksheets/search
+ * Search worksheets by keyword with optional filters
+ */
+app.get('/api/v1/worksheets/search', async (c) => {
+  try {
+    const q = c.req.query('q');
+    if (!q) {
+      return c.json(
+        {
+          error: 'Search query (q) is required',
+        },
+        400,
+      );
+    }
+
+    const grades = c.req.query('grades')?.split(',') as GradeLevel[] | undefined;
+    const sortBy = (c.req.query('sort') ||
+      'newest') as 'newest' | 'views' | 'downloads' | 'ratings';
+    const limit = parseInt(c.req.query('limit') || '20', 10);
+    const offset = parseInt(c.req.query('offset') || '0', 10);
+
+    const result = await searchWorksheets(
+      { env: { KV: c.env.KV } },
+      q,
+      {
+        grades,
+        sortBy,
+        limit: Math.min(limit, 100), // Cap at 100
+        offset,
+      },
+    );
+
+    return c.json(result);
+  } catch (error) {
+    console.error('Search worksheets error:', error);
+    return c.json(
+      {
+        error: 'Failed to search worksheets',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       500,
@@ -283,6 +338,91 @@ app.post('/api/v1/worksheets/:id/download', async (c) => {
     return c.json(
       {
         error: 'Failed to track download',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500,
+    );
+  }
+});
+
+/**
+ * POST /api/v1/worksheets/:id/rate
+ * Rate a worksheet (1-5 stars)
+ */
+app.post('/api/v1/worksheets/:id/rate', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const body = await c.req.json();
+
+    const worksheet = await getWorksheet(
+      { env: { KV: c.env.KV } },
+      id,
+    );
+
+    if (!worksheet) {
+      return c.json(
+        {
+          error: 'Worksheet not found',
+        },
+        404,
+      );
+    }
+
+    const { rating, sessionId } = body;
+
+    if (!rating || !sessionId) {
+      return c.json(
+        {
+          error: 'Rating and sessionId are required',
+        },
+        400,
+      );
+    }
+
+    if (typeof rating !== 'number' || rating < 1 || rating > 5) {
+      return c.json(
+        {
+          error: 'Rating must be a number between 1 and 5',
+        },
+        400,
+      );
+    }
+
+    // Save rating
+    const success = await rateWorksheet(
+      { env: { KV: c.env.KV } },
+      id,
+      rating,
+      sessionId,
+    );
+
+    if (!success) {
+      return c.json(
+        {
+          error: 'Failed to save rating',
+        },
+        500,
+      );
+    }
+
+    // Get updated stats
+    const stats = await calculateWorksheetRatingStats(
+      { env: { KV: c.env.KV } },
+      id,
+    );
+
+    return c.json(
+      {
+        success: true,
+        stats,
+      },
+      201,
+    );
+  } catch (error) {
+    console.error('Rating error:', error);
+    return c.json(
+      {
+        error: 'Failed to rate worksheet',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       500,

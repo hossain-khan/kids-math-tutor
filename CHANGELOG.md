@@ -37,6 +37,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Only shown on Android devices via automatic device detection
   - Updated `TemplateSection.tsx` to display deeplink buttons alongside template selection
 
+- **Shared Worksheets Community Library — Phase 2 (Search, Pagination, Ratings)** - Enhancements to the Community Library to improve discoverability, scalability, and engagement (see #343, PR #344)
+  - **Search**: New endpoint `GET /api/v1/worksheets/search?q=...` — case-insensitive keyword search across title, subtitle, and description with grade filters, sorting, and pagination support
+  - **Pagination**: `limit` & `offset` on `GET /api/v1/worksheets` and search; responses now include `{ items, total, limit, offset, hasMore }` (default limit: 20, max: 100)
+  - **Ratings**: Anonymous 1–5 star ratings with `POST /api/v1/worksheets/:id/rate` (client-side `sessionId` used for deduplication); worksheet stats include `averageRating` and `ratingCount`
+  - **Frontend**: Search input, "Load More" pagination, and star rating widget added to list and detail views; `sessionId` stored in `localStorage` for anonymous rating dedupe
+  - **Notes**: No user-auth or PII storage is introduced; search is simple substring matching (consider indexing for scale)
+
 ## [1.15.0] - 2025-12-26
 
 ### Added
