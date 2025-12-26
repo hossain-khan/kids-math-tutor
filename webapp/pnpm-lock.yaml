@@ -98,7 +98,7 @@ importers:
         version: 16.5.0
       hono:
         specifier: ^4.6.3
-        version: 4.11.2
+        version: 4.11.3
       jsdom:
         specifier: ^27.3.0
         version: 27.3.0
@@ -1785,8 +1785,8 @@ packages:
   highlightjs-vue@1.0.0:
     resolution: {integrity: sha512-PDEfEF102G23vHmPhLyPboFCD+BkMGu+GuJe2d9/eH4FsCwvgBpnc9n0pGE+ffKdph38s6foEZiEjdgHdzp+IA==}
 
-  hono@4.11.2:
-    resolution: {integrity: sha512-o+avdUAD1v94oHkjGBhiMhBV4WBHxhbu0+CUVH78hhphKy/OKQLxtKjkmmNcrMlbYAhAbsM/9F+l3KnYxyD3Lg==}
+  hono@4.11.3:
+    resolution: {integrity: sha512-PmQi306+M/ct/m5s66Hrg+adPnkD5jiO6IjA7WhWw0gSBSo1EcRegwuI1deZ+wd5pzCGynCcn2DprnE4/yEV4w==}
     engines: {node: '>=16.9.0'}
 
   html-encoding-sniffer@4.0.0:
@@ -4631,7 +4631,7 @@ snapshots:
 
   highlightjs-vue@1.0.0: {}
 
-  hono@4.11.2: {}
+  hono@4.11.3: {}
 
   html-encoding-sniffer@4.0.0:
     dependencies:
