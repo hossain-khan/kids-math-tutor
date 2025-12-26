@@ -6,10 +6,10 @@
 import { Hono } from 'hono';
 import { nanoid } from 'nanoid';
 import type { Context } from 'hono';
-import type { GradeLevel, ProblemSpec } from '../lib/schemas/challenge-schema';
-import { ExplicitChallengeSpecSchema } from '../lib/schemas/challenge-schema';
-import { validateWorksheetContent } from '../lib/server/profanity';
-import { detectGrades } from '../lib/server/grades';
+import type { GradeLevel, ProblemSpec } from '@/lib/schemas/challenge-schema';
+import { ExplicitChallengeSpecSchema } from '@/lib/schemas/challenge-schema';
+import { validateWorksheetContent } from '@/lib/server/profanity';
+import { detectGrades } from '@/lib/server/grades';
 import {
   saveWorksheet,
   getWorksheet,
@@ -17,12 +17,12 @@ import {
   incrementViews,
   incrementDownloads,
   type SharedWorksheet,
-} from '../lib/server/worksheetStorage';
+} from '@/lib/server/worksheetStorage';
 import {
   checkRateLimit,
   incrementShareCount,
   type RateLimitContext,
-} from '../lib/server/rateLimiter';
+} from '@/lib/server/rateLimiter';
 
 interface Env {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -252,7 +252,7 @@ app.post('/api/v1/worksheets/:id/download', async (c) => {
     const id = c.req.param('id');
 
     const worksheet = await getWorksheet(
-      { env: { WORKSHEETS_KV: c.env.WORKSHEETS_KV } },
+      { env: { KV: c.env.KV } },
       id,
     );
 
