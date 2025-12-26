@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import Card from '@/components/Card';
+import StarRating from '@/components/StarRating';
 import { generateDeeplink, isLikelyAndroidDevice } from '@/lib/deeplink';
+import { getOrCreateSessionId } from '@/lib/sessionId';
 import type { GradeLevel } from '@/lib/schemas/challenge-schema';
 
 interface SharedWorksheet {
@@ -21,6 +23,8 @@ interface SharedWorksheet {
   stats: {
     views: number;
     downloads: number;
+    averageRating: number;
+    ratingCount: number;
   };
 }
 
@@ -34,7 +38,17 @@ interface WorksheetListItem {
   stats: {
     views: number;
     downloads: number;
+    averageRating: number;
+    ratingCount: number;
   };
+}
+
+interface PaginatedResults<T> {
+  items: T[];
+  total: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
 }
 
 const gradeLabels: Record<GradeLevel, string> = {
@@ -47,22 +61,27 @@ export default function SharedWorksheets() {
   const { id } = useParams<{ id?: string }>();
   const [worksheet, setWorksheet] = useState<SharedWorksheet | null>(null);
   const [worksheets, setWorksheets] = useState<WorksheetListItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedGrades, setSelectedGrades] = useState<GradeLevel[]>([
     'kindergarten',
     'grade1',
     'grade2',
   ]);
-  const [sortBy, setSortBy] = useState<'newest' | 'views' | 'downloads'>(
-    'newest',
-  );
+  const [sortBy, setSortBy] = useState<
+    'newest' | 'views' | 'downloads' | 'ratings'
+  >('newest');
+  const [offset, setOffset] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAndroid, setIsAndroid] = useState(false);
   const [usingWorksheet, setUsingWorksheet] = useState(false);
-
-  // Check if running on Android
+  const [sessionId, setSessionId] = useState('');
+  // Initialize session ID and Android check
   useEffect(() => {
     setIsAndroid(isLikelyAndroidDevice());
+    setSessionId(getOrCreateSessionId());
   }, []);
 
   // Load single worksheet if ID provided
@@ -112,7 +131,7 @@ export default function SharedWorksheets() {
     }
   };
 
-  // Load worksheets list
+  // Load worksheets list with pagination and search
   useEffect(() => {
     if (id) return; // Don't load list if viewing single worksheet
 
@@ -122,20 +141,41 @@ export default function SharedWorksheets() {
 
       try {
         const params = new URLSearchParams();
+        
+        if (searchQuery) {
+          params.append('q', searchQuery);
+        }
+        
         if (selectedGrades.length > 0) {
           params.append('grades', selectedGrades.join(','));
         }
+        
         params.append('sort', sortBy);
+        params.append('limit', '20');
+        params.append('offset', offset.toString());
 
-        const response = await fetch(`/api/v1/worksheets?${params}`);
+        // Use search endpoint if query present, otherwise use list endpoint
+        const endpoint = searchQuery
+          ? `/api/v1/worksheets/search?${params}`
+          : `/api/v1/worksheets?${params}`;
+
+        const response = await fetch(endpoint);
 
         if (!response.ok) {
           setError('Failed to load worksheets');
           return;
         }
 
-        const data = await response.json();
-        setWorksheets(data);
+        const data: PaginatedResults<WorksheetListItem> = await response.json();
+        
+        if (offset === 0) {
+          setWorksheets(data.items);
+        } else {
+          setWorksheets((prev) => [...prev, ...data.items]);
+        }
+        
+        setTotal(data.total);
+        setHasMore(data.hasMore);
       } catch (err) {
         console.error('Failed to fetch worksheets:', err);
         setError('Failed to load worksheets');
@@ -145,7 +185,9 @@ export default function SharedWorksheets() {
     };
 
     fetchWorksheets();
-  }, [id, selectedGrades, sortBy]);
+  }, [id, searchQuery, selectedGrades, sortBy, offset]);
+
+
 
   const handleUseWorksheet = async () => {
     if (!worksheet) return;
@@ -285,6 +327,32 @@ export default function SharedWorksheets() {
                     </strong>
                   </span>
                 </div>
+
+                {/* Rating */}
+                <div className="flex items-center gap-4 ml-auto">
+                  <StarRating
+                    rating={worksheet.stats.averageRating}
+                    count={worksheet.stats.ratingCount}
+                    onRate={async (stars) => {
+                      try {
+                        const res = await fetch(`/api/v1/worksheets/${worksheet.id}/rate`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ rating: stars, sessionId }),
+                        });
+                        if (res.ok) {
+                          const data = await res.json();
+                          setWorksheet((prev) =>
+                            prev ? { ...prev, stats: { ...prev.stats, averageRating: data.stats.averageRating, ratingCount: data.stats.ratingCount } } : prev,
+                          );
+                        }
+                      } catch (err) {
+                        console.error('Failed to submit rating:', err);
+                      }
+                    }}
+                    size="md"
+                  />
+                </div>
               </div>
             </div>
           </Card>
@@ -392,6 +460,31 @@ export default function SharedWorksheets() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Search */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search by title, subtitle, or description..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setOffset(0); // Reset pagination on new search
+            }}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setOffset(0);
+              }}
+              className="mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Clear search
+            </button>
+          )}
+        </div>
+
         {/* Filters */}
         <Card className="mb-6 p-6">
           <div className="space-y-4">
@@ -431,13 +524,16 @@ export default function SharedWorksheets() {
               <select
                 value={sortBy}
                 onChange={(e) =>
-                  setSortBy(e.target.value as 'newest' | 'views' | 'downloads')
+                  setSortBy(
+                    e.target.value as 'newest' | 'views' | 'downloads' | 'ratings',
+                  )
                 }
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               >
                 <option value="newest">Newest First</option>
                 <option value="views">Most Viewed</option>
                 <option value="downloads">Most Downloaded</option>
+                <option value="ratings">Highest Rated</option>
               </select>
             </div>
           </div>
@@ -465,43 +561,105 @@ export default function SharedWorksheets() {
             </p>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-sm text-gray-600">
+                Showing {offset + 1} - {offset + worksheets.length} of {total} results
+              </div>
+              <div className="text-sm text-gray-500">Limit: 20</div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {worksheets.map((ws) => (
-              <Link key={ws.id} to={`/worksheets/${ws.id}`}>
-                <Card className="p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer">
-                  <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
-                    {ws.title}
-                  </h3>
+              <div key={ws.id}>
+                <Link to={`/worksheets/${ws.id}`}>
+                  <Card className="p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer">
+                    <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                      {ws.title}
+                    </h3>
 
-                  {ws.subtitle && (
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {ws.subtitle}
-                    </p>
-                  )}
+                    {ws.subtitle && (
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                        {ws.subtitle}
+                      </p>
+                    )}
 
-                  <div className="space-y-2 mb-4 text-sm text-gray-700">
-                    <div className="flex items-center gap-2">
-                      <span>📝</span>
-                      <span>{ws.problemCount} problems</span>
+                    <div className="space-y-2 mb-4 text-sm text-gray-700">
+                      <div className="flex items-center gap-2">
+                        <span>📝</span>
+                        <span>{ws.problemCount} problems</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span>🎓</span>
+                        <span>
+                          {ws.grades.map((g) => gradeLabels[g]).join(', ')}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <span>👁️</span>
+                        <span>{ws.stats.views} views</span>
+                      </div>
+                      <div className="mt-2">
+                        <StarRating
+                          rating={ws.stats.averageRating}
+                          count={ws.stats.ratingCount}
+                          onRate={async (stars) => {
+                            // Submit rating and update local state
+                            try {
+                              const res = await fetch(
+                                `/api/v1/worksheets/${ws.id}/rate`,
+                                {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ rating: stars, sessionId }),
+                                },
+                              );
+                              if (res.ok) {
+                                const data = await res.json();
+                                setWorksheets((prev) =>
+                                  prev.map((p) =>
+                                    p.id === ws.id
+                                      ? { ...p, stats: { ...p.stats, averageRating: data.stats.averageRating, ratingCount: data.stats.ratingCount } }
+                                      : p,
+                                  ),
+                                );
+                                // If viewing detail, update worksheet state too
+                                if (worksheet && worksheet.id === ws.id) {
+                                  setWorksheet((prev) =>
+                                    prev ? { ...prev, stats: { ...prev.stats, averageRating: data.stats.averageRating, ratingCount: data.stats.ratingCount } } : prev,
+                                  );
+                                }
+                              }
+                            } catch (error) {
+                              console.error('Failed to submit rating:', error);
+                            }
+                          }}
+                          size="sm"
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span>🎓</span>
-                      <span>
-                        {ws.grades.map((g) => gradeLabels[g]).join(', ')}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <span>👁️</span>
-                      <span>{ws.stats.views} views</span>
-                    </div>
-                  </div>
 
-                  <div className="text-xs text-gray-500">
-                    {new Date(ws.createdAt).toLocaleDateString()}
-                  </div>
-                </Card>
-              </Link>
+                    <div className="text-xs text-gray-500">
+                      {new Date(ws.createdAt).toLocaleDateString()}
+                    </div>
+                  </Card>
+                </Link>
+              </div>
             ))}
+          </div>
+
+            {/* Load More */}
+            {hasMore && (
+              <div className="mt-6 text-center">
+                <Button
+                  variant="primary"
+                  onClick={() => setOffset((o) => o + 20)}
+                  className="px-6"
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </main>
