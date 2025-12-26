@@ -18,8 +18,16 @@ export default function Help() {
           </h2>
           <p className="text-gray-600 mb-4">
             The Math Pup Worksheet Creator helps you create custom math practice
-            problems for your child to solve in the Kids Math Pup Tutor Android
-            app.
+            problems for your child to solve in the{" "}
+            <a
+              href="https://play.google.com/store/apps/details?id=dev.hossain.mathtutor&pcampaignid=web_share"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary-600 font-semibold hover:underline"
+            >
+              Kids Math Pup Tutor
+            </a>{" "}
+            Android app.
           </p>
 
           <h3 className="font-bold text-lg mb-2">Two Ways to Create:</h3>
