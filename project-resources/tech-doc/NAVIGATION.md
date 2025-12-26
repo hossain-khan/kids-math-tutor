@@ -57,90 +57,56 @@ Additionally:
 
 ### Visual Navigation Flow
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           ONBOARDING FLOW                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  OnboardingScreen ──goTo──► GradeSelectionScreen ──goTo──► NameEntryScreen  │
-│                                                                    │        │
-│                                                              resetRoot      │
-│                                                                    │        │
-│                                                                    ▼        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                           MAIN APP FLOW                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│                              HomeScreen                                     │
-│                 ┌────────────────┼────────────────┐                         │
-│           ┌─────┴──────┐    ┌────┴─────┐    ┌────┴─────┐                  │
-│           │            │    │          │    │          │                  │
-│         goTo         goTo  goTo       goTo  goTo       goTo                │
-│           │            │    │          │    │          │                  │
-│           ▼            ▼    ▼          ▼    ▼          ▼                  │
-│   ┌──────────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌──────────────┐      │
-│   │  Operation   │ │ Stats  │ │ Badges │ │Settings│ │    Games     │      │
-│   │  Selector    │ │ Screen │ │ Screen │ │ Screen │ │  Selection   │      │
-│   │ (Practice)   │ └────┬───┘ └────────┘ └───┬────┘ └──────┬───────┘      │
-│   └────┬─────────┘      │                  ┌──┴──┐        │               │
-│        │                │                  │     │        │               │
-│      goTo             goTo               goTo   goTo    goTo              │
-│        │                │                  │     │        │               │
-│        ▼                ▼            ┌─────▼──┐ │        ▼               │
-│   ┌─────────┐   ┌─────────────────┐│AudioHap.│ │   ┌──────────┐          │
-│   │  Math   │   │   Accuracy      ││Settings │ │   │ MathRace │          │
-│   │Practice │   │   Details       │└─────────┘ │   │  Screen  │          │
-│   └────┬────┘   │   Screen        │            │   └──────────┘          │
-│        │        └─────────────────┘            │                         │
-│      goTo                                    goTo                        │
-│        │                                       │                         │
-│        ▼                                       ▼                         │
-│   ┌─────────┐                          ┌──────────────┐                  │
-│   │ Results │                          │GradeSelection│                  │
-│   │ Screen  │                          │    Screen    │                  │
-│   └────┬────┘                          └──────────────┘                  │
-│        │                                                                 │
-│   resetRoot ────────────────────► HomeScreen                             │
-│                                                                          │
-├─────────────────────────────────────────────────────────────────────────┤
-│                   CUSTOM CHALLENGES & GAMES FLOW                         │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  HomeScreen ──goTo──► GameSelectionScreen                               │
-│                            │                                            │
-│                          goTo (for each mini-game)                      │
-│                            │                                            │
-│                    ┌───────┼────────┐                                   │
-│                    ▼       ▼        ▼                                   │
-│            ┌────────────┐ ┌──────────────┐ ┌──────────────┐             │
-│            │ MathRace   │ │   Number     │ │   Memory     │             │
-│            │  Screen    │ │  Sequence    │ │    Match     │             │
-│            │            │ │   Screen     │ │    Screen    │             │
-│            └────────────┘ └──────────────┘ └──────────────┘             │
-│                                                                          │
-│  HomeScreen ──goTo──► ParentChallengesScreen                            │
-│                            │                                            │
-│                          pop back                                        │
-│                            │                                            │
-│                            ▼                                            │
-│                       HomeScreen                                        │
-│                                                                          │
-│  (Share Intent) ──► ImportChallengeScreen                               │
-│                            │                                            │
-│                          goTo                                           │
-│                            │                                            │
-│                            ▼                                            │
-│                   ParentChallengesScreen                                │
-│                                                                          │
-│  (Deeplink URL) ──► ImportChallengeScreen                               │
-│                    mathpup://import?json=...                           │
-│                            │                                            │
-│                          goTo                                           │
-│                            │                                            │
-│                            ▼                                            │
-│                   ParentChallengesScreen                                │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Start([App Start]) --> CheckOnboarding{Onboarding<br/>Complete?}
+    CheckOnboarding -->|No| OnboardingScreen["🎓 OnboardingScreen"]
+    CheckOnboarding -->|Yes| HomeScreen["🏠 HomeScreen"]
+    
+    OnboardingScreen -->|goTo| GradeSelectionScreen["📊 GradeSelectionScreen"]
+    GradeSelectionScreen -->|goTo| NameEntryScreen["✏️ NameEntryScreen"]
+    NameEntryScreen -->|resetRoot| HomeScreen
+    
+    HomeScreen -->|goTo| OperationSelectorScreen["➕ OperationSelectorScreen<br/>primaryContainer"]
+    HomeScreen -->|goTo| StatsScreen["📈 StatsScreen<br/>secondaryContainer"]
+    HomeScreen -->|goTo| BadgesScreen["🏅 BadgesScreen<br/>tertiaryContainer"]
+    HomeScreen -->|goTo| SettingsScreen["⚙️ SettingsScreen<br/>inversePrimary"]
+    HomeScreen -->|goTo| GameSelectionScreen["🎮 GameSelectionScreen<br/>primaryContainer"]
+    HomeScreen -->|goTo| ParentChallengesScreen["📋 ParentChallengesScreen"]
+    
+    OperationSelectorScreen -->|goTo| MathPracticeScreen["🧮 MathPracticeScreen<br/>primaryContainer"]
+    MathPracticeScreen -->|goTo| ResultsScreen["✅ ResultsScreen<br/>primaryContainer"]
+    ResultsScreen -->|resetRoot| HomeScreen
+    
+    StatsScreen -->|goTo| AccuracyDetailsScreen["📊 AccuracyDetailsScreen<br/>secondaryContainer"]
+    AccuracyDetailsScreen -->|pop| StatsScreen
+    StatsScreen -->|pop| HomeScreen
+    
+    BadgesScreen -->|pop| HomeScreen
+    
+    SettingsScreen -->|goTo| GradeSelectionScreen
+    SettingsScreen -->|goTo| AudioHapticSettingsScreen["🔊 AudioHapticSettingsScreen<br/>inversePrimary"]
+    AudioHapticSettingsScreen -->|pop| SettingsScreen
+    SettingsScreen -->|pop| HomeScreen
+    
+    GameSelectionScreen -->|goTo| MathRaceScreen["🏎️ MathRaceScreen<br/>primaryContainer"]
+    GameSelectionScreen -->|goTo| NumberSequenceScreen["🔢 NumberSequenceScreen<br/>primaryContainer"]
+    GameSelectionScreen -->|goTo| MemoryMatchScreen["🧠 MemoryMatchScreen<br/>primaryContainer"]
+    MathRaceScreen -->|pop| GameSelectionScreen
+    NumberSequenceScreen -->|pop| GameSelectionScreen
+    MemoryMatchScreen -->|pop| GameSelectionScreen
+    GameSelectionScreen -->|pop| HomeScreen
+    
+    ShareIntent["↔️ Share Intent"] -->|Initial| ImportChallengeScreen["📥 ImportChallengeScreen"]
+    DeeplinkURL["🔗 Deeplink URL<br/>mathpup://import?json=..."] -->|Initial| ImportChallengeScreen
+    ImportChallengeScreen -->|goTo| ParentChallengesScreen
+    ParentChallengesScreen -->|pop| HomeScreen
+    
+    style OnboardingScreen fill:#e1f5ff
+    style HomeScreen fill:#fff3e0
+    style ImportChallengeScreen fill:#f3e5f5
+    style SettingsScreen fill:#fce4ec
+    style BadgesScreen fill:#ede7f6
 ```
 
 ## Deep Linking for Challenge Import
