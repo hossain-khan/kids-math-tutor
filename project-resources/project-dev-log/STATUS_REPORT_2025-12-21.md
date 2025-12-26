@@ -18,7 +18,7 @@ The app is in a stable state for core K-2 practice and three mini-games (Math Ra
   - Math Race (60s timed challenge)
   - Memory Match (4×4 card matching)
   - Number Sequence (pattern recognition) — **NEW in v1.9.0**
-- Badges: 23 badges across 6 categories (GETTING_STARTED, VOLUME, OPERATION_MASTERY, SPEED_ACCURACY, STREAK, GAMES)
+- Badges: 27 badges across 6 categories (GETTING_STARTED, VOLUME, OPERATION_MASTERY, SPEED_ACCURACY, STREAK, GAMES)
 - Settings: Edit name/grade, adaptive difficulty toggle, analytics opt-in/out, app version display
 - Audio/Haptics settings: Sound effects, music, haptics, volume, high contrast, large text
 - Custom Challenges: Parent-created worksheets with import via JSON/share intent, 27+ templates
