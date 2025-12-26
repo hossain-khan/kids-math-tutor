@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.BuildConfig
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
@@ -486,11 +487,6 @@ private fun SettingsLinks(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         SettingsLinkItem(
-            icon = Icons.Default.Info,
-            text = "About",
-            onClick = { openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/", toolbarColor) },
-        )
-        SettingsLinkItem(
             icon = Icons.Outlined.Description,
             text = "Terms of Service",
             onClick = {
@@ -504,6 +500,39 @@ private fun SettingsLinks(modifier: Modifier = Modifier) {
                 openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/privacy.html", toolbarColor)
             },
         )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { openExternalUrl(context, "https://liquidlabs.ca/android/math-tutor/", toolbarColor) }
+                        .padding(vertical = 16.dp, horizontal = 8.dp)
+                        .weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text = "About",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            Text(
+                text = "v${BuildConfig.VERSION_NAME}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(end = 8.dp),
+            )
+        }
     }
 }
 

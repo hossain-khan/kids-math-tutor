@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Settings Screen App Version Display** - Added app version text to the About row on the right side
+  - Displays version in format "v1.14.1" using `BuildConfig.VERSION_NAME`
+  - Uses Material 3 `bodySmall` typography with `onSurfaceVariant` color for subtle appearance
+
 ## [1.14.1] - 2025-12-25
 
 ### Fixed
