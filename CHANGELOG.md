@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.16.0] - 2025-12-26
+
 ### Added
 - **Shared Worksheets API Backend** - Phase 1 implementation of the community worksheet sharing feature
   - New Hono-based Cloudflare Workers API for managing shared worksheets
@@ -36,8 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - "Use Template" button for standard builder flow remains available
   - Only shown on Android devices via automatic device detection
   - Updated `TemplateSection.tsx` to display deeplink buttons alongside template selection
-
-- **Shared Worksheets Community Library — Phase 2 (Search, Pagination, Ratings)** - Enhancements to the Community Library to improve discoverability, scalability, and engagement (see #343, PR #344)
+- **Shared Worksheets Community Library — Phase 2 (Search, Pagination, Ratings)** - Enhancements to the Community Library to improve discoverability, scalability, and engagement
   - **Search**: New endpoint `GET /api/v1/worksheets/search?q=...` — case-insensitive keyword search across title, subtitle, and description with grade filters, sorting, and pagination support
   - **Pagination**: `limit` & `offset` on `GET /api/v1/worksheets` and search; responses now include `{ items, total, limit, offset, hasMore }` (default limit: 20, max: 100)
   - **Ratings**: Anonymous 1–5 star ratings with `POST /api/v1/worksheets/:id/rate` (client-side `sessionId` used for deduplication); worksheet stats include `averageRating` and `ratingCount`
@@ -1829,7 +1830,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.15.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.0...HEAD
+[1.16.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.15.0...1.16.0
 [1.15.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.1...1.15.0
 [1.14.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.0...1.14.1
 [1.14.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.13.0...1.14.0
