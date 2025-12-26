@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import TemplateSection from "@/components/TemplateSection";
 import { type GeneratedTemplate, type GradeLevel } from "@/lib/templates";
 
@@ -297,7 +297,9 @@ describe("TemplateSection Component", () => {
     );
 
     // Check for grade level tabs/buttons on desktop
-    expect(screen.getByRole("button", { name: "Kindergarten" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Kindergarten" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Grade 1" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Grade 2" })).toBeInTheDocument();
   });

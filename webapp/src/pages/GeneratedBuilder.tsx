@@ -152,7 +152,7 @@ export default function GeneratedBuilder() {
                   Auto-Generate Problems
                 </h2>
                 <p className="text-sm text-gray-600">
-                  Set your rules and we'll create random problems for you.
+                  Set your rules and we&apos;ll create random problems for you.
                   Perfect for quick practice!
                 </p>
               </div>

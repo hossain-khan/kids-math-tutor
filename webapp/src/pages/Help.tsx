@@ -76,7 +76,7 @@ export default function Help() {
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-sm font-bold">
                 4
               </span>
-              <span>Paste the code and tap "Save Challenge"</span>
+              <span>Paste the code and tap &quot;Save Challenge&quot;</span>
             </li>
           </ol>
         </div>

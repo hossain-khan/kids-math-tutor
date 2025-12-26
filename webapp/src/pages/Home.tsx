@@ -159,7 +159,9 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8 text-center">
           {/* Get the App CTA */}
           <div className="mb-6 pb-6 border-b border-gray-200">
-            <p className="text-gray-600 font-medium mb-3">Try the full app experience:</p>
+            <p className="text-gray-600 font-medium mb-3">
+              Try the full app experience:
+            </p>
             <a
               href="https://play.google.com/store/apps/details?id=dev.hossain.mathtutor&pcampaignid=web_share"
               target="_blank"
@@ -174,8 +176,10 @@ export default function Home() {
               />
             </a>
           </div>
-          
-          <p className="text-gray-600 text-sm mb-2">Made with ❤️ for Kids Math Pup Tutor</p>
+
+          <p className="text-gray-600 text-sm mb-2">
+            Made with ❤️ for Kids Math Pup Tutor
+          </p>
           <Link
             to="/help"
             className="text-primary-600 hover:underline text-sm inline-block"

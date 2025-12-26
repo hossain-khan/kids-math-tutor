@@ -7,8 +7,10 @@ describe("cn (className utility)", () => {
   });
 
   it("should handle conditional classes", () => {
-    expect(cn("foo", false && "bar", "baz")).toBe("foo baz");
-    expect(cn("foo", true && "bar")).toBe("foo bar");
+    const falsyValue = false;
+    const truthyValue = true;
+    expect(cn("foo", falsyValue && "bar", "baz")).toBe("foo baz");
+    expect(cn("foo", truthyValue && "bar")).toBe("foo bar");
   });
 
   it("should handle Tailwind conflicts correctly", () => {
@@ -63,7 +65,7 @@ describe("downloadJson", () => {
       href: "",
       download: "",
       click: vi.fn(),
-    } as any;
+    } as Record<string, unknown>;
 
     // Setup document mocks
     vi.stubGlobal("document", {

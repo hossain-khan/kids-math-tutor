@@ -107,7 +107,9 @@ export default function TemplateSection({
       )}
 
       {/* Expanded Templates Section */}
-      <div className={`template-content ${isExpanded ? "expanded" : "collapsed"}`}>
+      <div
+        className={`template-content ${isExpanded ? "expanded" : "collapsed"}`}
+      >
         {isExpanded && (
           <>
             {/* Close Button */}
@@ -176,7 +178,9 @@ export default function TemplateSection({
                   <h4 className="font-bold text-gray-900 mb-1">
                     {template.name}
                   </h4>
-                  <p className="text-xs text-gray-600">{template.description}</p>
+                  <p className="text-xs text-gray-600">
+                    {template.description}
+                  </p>
                 </button>
               ))}
             </div>
