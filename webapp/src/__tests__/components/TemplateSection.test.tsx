@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TemplateSection from "@/components/TemplateSection";
 import { type GeneratedTemplate, type GradeLevel } from "@/lib/templates";
+import * as deeplink from "@/lib/deeplink";
 
 // Mock templates for testing
 const mockTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
@@ -66,6 +67,10 @@ const mockTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
 };
 
 describe("TemplateSection Component", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should render collapsed button when not expanded", () => {
     const mockOnSelect = vi.fn();
     const mockOnToggle = vi.fn();
@@ -177,8 +182,11 @@ describe("TemplateSection Component", () => {
       />,
     );
 
-    const templateButton = screen.getByRole("button", { name: /Add to 5/i });
-    fireEvent.click(templateButton);
+    // Find the "Use Template" button for the first template
+    const useTemplateButtons = screen.getAllByRole("button", {
+      name: /Use Template/i,
+    });
+    fireEvent.click(useTemplateButtons[0]);
 
     expect(mockOnSelect).toHaveBeenCalledWith(mockTemplates.kindergarten[0]);
   });
@@ -196,8 +204,11 @@ describe("TemplateSection Component", () => {
       />,
     );
 
-    const templateButton = screen.getByRole("button", { name: /Add to 5/i });
-    fireEvent.click(templateButton);
+    // Find the "Use Template" button for the first template
+    const useTemplateButtons = screen.getAllByRole("button", {
+      name: /Use Template/i,
+    });
+    fireEvent.click(useTemplateButtons[0]);
 
     expect(mockOnToggle).toHaveBeenCalledWith(false);
   });
@@ -322,5 +333,128 @@ describe("TemplateSection Component", () => {
     expect(
       screen.getByText("Practice adding numbers up to 5"),
     ).toBeInTheDocument();
+  });
+
+  describe("Android deeplink functionality", () => {
+    it("should not show 'Open in App' button on non-Android devices", () => {
+      const mockOnSelect = vi.fn();
+      const mockOnToggle = vi.fn();
+      vi.spyOn(deeplink, "isLikelyAndroidDevice").mockReturnValue(false);
+
+      render(
+        <TemplateSection
+          templates={mockTemplates}
+          onTemplateSelect={mockOnSelect}
+          isExpanded={true}
+          onToggle={mockOnToggle}
+        />,
+      );
+
+      expect(screen.queryByText(/Open in App/i)).not.toBeInTheDocument();
+    });
+
+    it("should show 'Open in App' button on Android devices", () => {
+      const mockOnSelect = vi.fn();
+      const mockOnToggle = vi.fn();
+      vi.spyOn(deeplink, "isLikelyAndroidDevice").mockReturnValue(true);
+
+      render(
+        <TemplateSection
+          templates={mockTemplates}
+          onTemplateSelect={mockOnSelect}
+          isExpanded={true}
+          onToggle={mockOnToggle}
+        />,
+      );
+
+      // Each template should have an "Open in App" button
+      const openInAppButtons = screen.getAllByText(/Open in App/i);
+      expect(openInAppButtons.length).toBeGreaterThan(0);
+    });
+
+    it("should generate deeplink when Open in App is clicked on Android", () => {
+      const originalLocation = window.location;
+      delete (window as Partial<Window>).location;
+      window.location = { href: "" } as Location;
+
+      const mockOnSelect = vi.fn();
+      const mockOnToggle = vi.fn();
+      const mockDeeplink =
+        "mathpup://import?json=%7B%22type%22%3A%22generated%22%7D";
+
+      vi.spyOn(deeplink, "isLikelyAndroidDevice").mockReturnValue(true);
+      vi.spyOn(deeplink, "generateDeeplink").mockReturnValue(mockDeeplink);
+
+      render(
+        <TemplateSection
+          templates={mockTemplates}
+          onTemplateSelect={mockOnSelect}
+          isExpanded={true}
+          onToggle={mockOnToggle}
+        />,
+      );
+
+      const openInAppButton = screen.getAllByText(/Open in App/i)[0];
+      fireEvent.click(openInAppButton);
+
+      expect(deeplink.generateDeeplink).toHaveBeenCalled();
+      expect(window.location.href).toBe(mockDeeplink);
+
+      // Restore
+      window.location = originalLocation;
+    });
+
+    it("should still show 'Use Template' button alongside 'Open in App' on Android", () => {
+      const mockOnSelect = vi.fn();
+      const mockOnToggle = vi.fn();
+      vi.spyOn(deeplink, "isLikelyAndroidDevice").mockReturnValue(true);
+
+      render(
+        <TemplateSection
+          templates={mockTemplates}
+          onTemplateSelect={mockOnSelect}
+          isExpanded={true}
+          onToggle={mockOnToggle}
+        />,
+      );
+
+      // Should have both buttons
+      expect(screen.getAllByText(/Use Template/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Open in App/i).length).toBeGreaterThan(0);
+    });
+
+    it("should pass template config to generateDeeplink", () => {
+      const originalLocation = window.location;
+      delete (window as Partial<Window>).location;
+      window.location = { href: "" } as Location;
+
+      const mockOnSelect = vi.fn();
+      const mockOnToggle = vi.fn();
+      const generateDeeplinkSpy = vi
+        .spyOn(deeplink, "generateDeeplink")
+        .mockReturnValue("mathpup://import?json=test");
+
+      vi.spyOn(deeplink, "isLikelyAndroidDevice").mockReturnValue(true);
+
+      render(
+        <TemplateSection
+          templates={mockTemplates}
+          onTemplateSelect={mockOnSelect}
+          isExpanded={true}
+          onToggle={mockOnToggle}
+        />,
+      );
+
+      const openInAppButton = screen.getAllByText(/Open in App/i)[0];
+      fireEvent.click(openInAppButton);
+
+      // Verify generateDeeplink was called with the template config
+      expect(generateDeeplinkSpy).toHaveBeenCalledWith(
+        mockTemplates.kindergarten[0].config,
+      );
+
+      // Restore
+      window.location = originalLocation;
+    });
   });
 });

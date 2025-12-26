@@ -5,6 +5,7 @@ import {
   type GeneratedTemplate,
   type ExplicitTemplate,
 } from "@/lib/templates";
+import { generateDeeplink, isLikelyAndroidDevice } from "@/lib/deeplink";
 
 type TemplateType = GeneratedTemplate | ExplicitTemplate;
 
@@ -27,6 +28,7 @@ export default function TemplateSection({
 }: TemplateSectionProps) {
   const [selectedGrade, setSelectedGrade] =
     useState<GradeLevel>("kindergarten");
+  const [isAndroid] = useState(isLikelyAndroidDevice());
 
   const buttonBgClass =
     colorScheme === "secondary"
@@ -168,20 +170,48 @@ export default function TemplateSection({
             {/* Templates Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               {currentTemplates.map((template) => (
-                <button
+                <div
                   key={template.id}
-                  type="button"
-                  onClick={() => handleTemplateSelect(template)}
-                  className="text-left p-4 rounded-lg border-2 border-gray-200 bg-white hover:border-primary-400 hover:shadow-lg transition-all duration-200"
+                  className="flex flex-col text-left p-4 rounded-lg border-2 border-gray-200 bg-white hover:border-primary-400 hover:shadow-lg transition-all duration-200 h-full"
                 >
-                  <div className="text-3xl mb-2">{template.icon}</div>
-                  <h4 className="font-bold text-gray-900 mb-1">
-                    {template.name}
-                  </h4>
-                  <p className="text-xs text-gray-600">
-                    {template.description}
-                  </p>
-                </button>
+                  <div>
+                    <div className="text-3xl mb-2">{template.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-1">
+                      {template.name}
+                    </h4>
+                    <p className="text-xs text-gray-600 mb-3">
+                      {template.description}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2 mt-auto pt-3 border-t border-gray-100">
+                    <button
+                      type="button"
+                      onClick={() => handleTemplateSelect(template)}
+                      className="flex-1 px-3 py-2 text-sm font-medium text-primary-700 bg-primary-100 border border-primary-200 rounded hover:bg-primary-200 transition-colors"
+                    >
+                      Use Template
+                    </button>
+                    {isAndroid && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const deeplink = generateDeeplink(template.config);
+                          if (deeplink) {
+                            window.location.href = deeplink;
+                          }
+                        }}
+                        title="Open template directly in Math Pup app"
+                        className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded hover:from-purple-600 hover:to-pink-600 transition-colors"
+                      >
+                        <span aria-hidden="true" className="mr-1">
+                          📱
+                        </span>
+                        <span>Open in App</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
 

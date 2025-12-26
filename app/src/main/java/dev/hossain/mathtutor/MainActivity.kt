@@ -23,6 +23,7 @@ import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.deeplink.DeeplinkHandler
 import dev.hossain.mathtutor.di.ActivityKey
 import dev.hossain.mathtutor.ui.home.HomeScreen
 import dev.hossain.mathtutor.ui.importchallenge.ImportChallengeScreen
@@ -113,9 +114,9 @@ class MainActivity
             // Register lifecycle observer for music management
             lifecycle.addObserver(musicLifecycleObserver)
 
-            // Handle share intent
-            val sharedText = handleShareIntent(intent)
-            Timber.d("[MainActivity] onCreate - sharedText: ${if (sharedText != null) "present" else "null"}")
+            // Handle deeplink or share intent
+            val prefilledJson = handleDeeplink(intent) ?: handleShareIntent(intent)
+            Timber.d("[MainActivity] onCreate - prefilledJson: ${if (prefilledJson != null) "present" else "null"}")
 
             setContent {
                 // Load accessibility settings
@@ -142,9 +143,9 @@ class MainActivity
                     }
 
                     val initialScreen =
-                        if (sharedText != null) {
-                            // Share intent detected - go directly to import screen with prefilled JSON
-                            ImportChallengeScreen(prefilledJson = sharedText)
+                        if (prefilledJson != null) {
+                            // Deeplink or share intent detected - go directly to import screen with prefilled JSON
+                            ImportChallengeScreen(prefilledJson = prefilledJson)
                         } else if (isOnboardingCompleted == true) {
                             HomeScreen
                         } else {
@@ -215,22 +216,41 @@ class MainActivity
          * Handles share intents when a new intent is received while the app is already running.
          *
          * This is called when the app is in the background or foreground and receives a new
-         * share intent. It's not called on initial app launch (that's handled in onCreate).
+         * share intent or deeplink. It's not called on initial app launch (that's handled in onCreate).
          */
         override fun onNewIntent(intent: Intent) {
             super.onNewIntent(intent)
             setIntent(intent)
 
-            // Handle share intent while app is running
-            val sharedText = handleShareIntent(intent)
-            if (sharedText != null) {
-                Timber.d("[MainActivity] onNewIntent - Share intent received with text")
+            // Handle deeplink or share intent while app is running
+            val prefilledJson = handleDeeplink(intent) ?: handleShareIntent(intent)
+            if (prefilledJson != null) {
+                Timber.d("[MainActivity] onNewIntent - Intent received with JSON")
                 // Note: Navigation to ImportChallengeScreen would need to be handled
                 // through the Circuit Navigator, which isn't easily accessible here.
-                // For now, we log and rely on onCreate for share handling on app start.
+                // For now, we log and rely on onCreate for handling on app start.
                 // A more complete solution would involve using a shared state or event bus.
             }
         }
+
+        /**
+         * Extracts JSON from a deeplink intent.
+         *
+         * Handles the `mathpup://import?json=<encoded-json>` scheme.
+         *
+         * @param intent The intent to check
+         * @return The decoded JSON if this is a valid deeplink, null otherwise
+         */
+        private fun handleDeeplink(intent: Intent): String? =
+            if (intent.action == Intent.ACTION_VIEW) {
+                DeeplinkHandler.extractJsonFromDeeplink(intent.data).also { json ->
+                    if (json != null) {
+                        Timber.d("[MainActivity] Deeplink detected with JSON of length ${json.length}")
+                    }
+                }
+            } else {
+                null
+            }
 
         /**
          * Extracts shared text from a share intent.
