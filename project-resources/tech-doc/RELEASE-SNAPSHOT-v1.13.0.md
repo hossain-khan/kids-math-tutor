@@ -1,4 +1,8 @@
 # Math Pup v1.13.0 - Initial Release Snapshot
+
+> **Note**: This is a historical snapshot from the initial Google Play Store release.
+> Current app version is v1.15.0. See [CHANGELOG.md](/CHANGELOG.md) for recent changes.
+
 **Release Date**: December 24, 2025  
 **Version**: 1.13.0 (versionCode: 14)  
 **Status**: Google Play Store Ready ✅

@@ -10,7 +10,7 @@ A fun, free math learning app for K-2 children. No ads. No data collection. Just
 |----------|-------|-------|
 | Addition, Subtraction, Multiplication, Division | 🏎️ Math Race (60-sec challenge) | 👨‍👩‍👧 Custom worksheets for parents |
 | Grade-appropriate difficulty (K-2) | 🧩 Memory Match (4×4 cards) | 📋 27 pre-built templates |
-| Instant feedback with animations | 🏆 23 Achievement Badges | 📊 Progress tracking & stats |
+| Instant feedback with animations | 🏆 27 Achievement Badges | 📊 Progress tracking & stats |
 
 **Accessibility**: TalkBack support, high contrast mode, dynamic text sizing (WCAG 2.1 AA)
 
