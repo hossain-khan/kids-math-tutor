@@ -7,6 +7,7 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { type ChallengeImportSpec } from "@/lib/schemas/challenge-schema";
 import { copyToClipboard, downloadJson } from "@/lib/utils";
+import { generateDeeplink, isLikelyAndroidDevice } from "@/lib/deeplink";
 
 // Register JSON language
 SyntaxHighlighter.registerLanguage("json", json);
@@ -17,6 +18,8 @@ export default function Result() {
     useState<ChallengeImportSpec | null>(null);
   const [copied, setCopied] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [deeplinkOpened, setDeeplinkOpened] = useState(false);
 
   useEffect(() => {
     const data = sessionStorage.getItem("challengeData");
@@ -32,6 +35,9 @@ export default function Result() {
       console.error("Failed to parse challenge data:", error);
       navigate("/");
     }
+
+    // Check if running on Android
+    setIsAndroid(isLikelyAndroidDevice());
   }, [navigate]);
 
   const handleCopy = async () => {
@@ -43,6 +49,19 @@ export default function Result() {
     if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
+    }
+  };
+
+  const handleOpenInApp = () => {
+    if (!challengeData) return;
+
+    const deeplink = generateDeeplink(challengeData);
+    if (deeplink) {
+      setDeeplinkOpened(true);
+      // Open the deeplink - this will only work if Math Pup app is installed
+      window.location.href = deeplink;
+      // Reset the state after a short delay in case the app isn't installed
+      setTimeout(() => setDeeplinkOpened(false), 3000);
     }
   };
 
@@ -170,7 +189,27 @@ export default function Result() {
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 mb-6">
+        <div className="flex gap-3 mb-6 flex-col sm:flex-row">
+          {isAndroid && (
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handleOpenInApp}
+              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            >
+              {deeplinkOpened ? (
+                <>
+                  <span className="mr-2">📱</span>
+                  Opening Math Pup...
+                </>
+              ) : (
+                <>
+                  <span className="mr-2">🚀</span>
+                  Open in Math Pup App
+                </>
+              )}
+            </Button>
+          )}
           <Button
             variant="primary"
             size="lg"

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Deeplink Support for Challenge Import** - Parents can now import challenges directly from the webapp with a single click
+  - Android: Added `mathpup://import?json=<encoded-json>` deeplink scheme support
+  - Webapp: New "Open in Math Pup App" button on Result page (only shown on Android devices)
+  - New `DeeplinkHandler.kt` utility for encoding/decoding JSON in deeplinks
+  - New `deeplink.ts` utility for webapp-side deeplink generation and detection
+  - Updated `MainActivity.kt` to handle deeplink intents via `handleDeeplink()` method
+  - Updated `AndroidManifest.xml` with deeplink intent filter configuration
+  - Seamless fallback to existing share intent mechanism if app not installed
+  - Automatic Android device detection on webapp
+
 ## [1.15.0] - 2025-12-26
 
 ### Added
