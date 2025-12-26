@@ -224,13 +224,19 @@ app.get('/api/v1/worksheets/:id', async (c) => {
       );
     }
 
-    // Increment view count (async, don't await)
-    incrementViews(
+    // Increment view count and fetch updated worksheet
+    await incrementViews(
       { env: { KV: c.env.KV } },
       id,
     ).catch((err) => console.error('Failed to increment views:', err));
 
-    return c.json(worksheet);
+    // Fetch the updated worksheet with new view count
+    const updatedWorksheet = await getWorksheet(
+      { env: { KV: c.env.KV } },
+      id,
+    );
+
+    return c.json(updatedWorksheet || worksheet);
   } catch (error) {
     console.error('Get worksheet error:', error);
     return c.json(
