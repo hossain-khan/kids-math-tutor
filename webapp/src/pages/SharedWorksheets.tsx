@@ -98,6 +98,20 @@ export default function SharedWorksheets() {
     fetchWorksheet();
   }, [id]);
 
+  // Helper function to refetch worksheet (for updated stats)
+  const refetchWorksheet = async () => {
+    if (!id) return;
+    try {
+      const response = await fetch(`/api/v1/worksheets/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setWorksheet(data);
+      }
+    } catch (err) {
+      console.error('Failed to refetch worksheet:', err);
+    }
+  };
+
   // Load worksheets list
   useEffect(() => {
     if (id) return; // Don't load list if viewing single worksheet
@@ -143,6 +157,9 @@ export default function SharedWorksheets() {
       await fetch(`/api/v1/worksheets/${worksheet.id}/download`, {
         method: 'POST',
       });
+
+      // Refetch to get updated stats
+      await refetchWorksheet();
 
       // Generate deeplink with the worksheet data
       const deeplink = generateDeeplink({
@@ -297,31 +314,30 @@ export default function SharedWorksheets() {
 
           {/* Action Buttons */}
           <div className="flex gap-3 flex-col sm:flex-row">
-            {isAndroid && (
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={handleUseWorksheet}
-                disabled={usingWorksheet}
-                className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
-              >
-                {usingWorksheet ? (
-                  <>
-                    <span aria-hidden="true" className="mr-2">
-                      ⏳
-                    </span>
-                    Opening...
-                  </>
-                ) : (
-                  <>
-                    <span aria-hidden="true" className="mr-2">
-                      🚀
-                    </span>
-                    Use This Worksheet
-                  </>
-                )}
-              </Button>
-            )}
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handleUseWorksheet}
+              disabled={usingWorksheet}
+              className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+              title={!isAndroid ? 'Works best on Android devices with Math Pup app installed' : ''}
+            >
+              {usingWorksheet ? (
+                <>
+                  <span aria-hidden="true" className="mr-2">
+                    ⏳
+                  </span>
+                  Opening...
+                </>
+              ) : (
+                <>
+                  <span aria-hidden="true" className="mr-2">
+                    🚀
+                  </span>
+                  Use This Worksheet
+                </>
+              )}
+            </Button>
             <Link to="/worksheets" className="flex-1">
               <Button variant="secondary" size="lg" className="w-full">
                 <span aria-hidden="true" className="mr-2">
@@ -331,6 +347,22 @@ export default function SharedWorksheets() {
               </Button>
             </Link>
           </div>
+
+          {/* Non-Android Note */}
+          {!isAndroid && (
+            <Card className="mt-6 bg-blue-50 border-blue-200 p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl flex-shrink-0">📱</span>
+                <div className="text-sm text-blue-900">
+                  <p className="font-bold mb-1">Android Only</p>
+                  <p>
+                    Click &quot;Use This Worksheet&quot; to open this worksheet
+                    in the Kids Math Pup Tutor app on your Android device.
+                  </p>
+                </div>
+              </div>
+            </Card>
+          )}
         </main>
       </div>
     );
