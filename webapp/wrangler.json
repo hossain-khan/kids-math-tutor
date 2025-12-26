@@ -1,9 +1,23 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "pup-tutor-worksheet-generator",
+  "main": "workers/index.ts",
   "compatibility_date": "2025-12-22",
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "WORKSHEETS_KV",
+      "id": "worksheets_storage",
+      "preview_id": "worksheets_storage_preview"
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "/api/*",
+      "zone_name": "mathpup.dev"
+    }
+  ]
 }

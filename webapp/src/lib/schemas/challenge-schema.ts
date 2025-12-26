@@ -158,3 +158,11 @@ export const ChallengeImportSpecSchema = z.discriminatedUnion("type", [
 ]);
 
 export type ChallengeImportSpec = z.infer<typeof ChallengeImportSpecSchema>;
+// Grade level for worksheets
+export const GradeLevelSchema = z.enum([
+  "kindergarten",
+  "grade1",
+  "grade2",
+]);
+
+export type GradeLevel = z.infer<typeof GradeLevelSchema>;
