@@ -58,13 +58,6 @@ export default function ExplicitBuilder() {
     // Show toast notification
     setToastMessage(`✨ "${template.name}" template applied!`);
     setShowToast(true);
-
-    // Scroll to form
-    setTimeout(() => {
-      document
-        .querySelector("form")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
   };
 
   const addProblem = () => {
