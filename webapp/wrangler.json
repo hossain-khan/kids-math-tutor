@@ -10,14 +10,25 @@
   "kv_namespaces": [
     {
       "binding": "WORKSHEETS_KV",
-      "id": "worksheets_storage",
-      "preview_id": "worksheets_storage_preview"
+      "id": "REPLACE_WITH_ACTUAL_KV_NAMESPACE_ID",
+      "preview_id": "REPLACE_WITH_ACTUAL_PREVIEW_ID"
     }
   ],
-  "routes": [
-    {
-      "pattern": "/api/*",
-      "zone_name": "mathpup.dev"
+  "env": {
+    "development": {
+      "routes": [
+        {
+          "pattern": "localhost:8787/api/*"
+        }
+      ]
+    },
+    "production": {
+      "routes": [
+        {
+          "pattern": "mathpup.dev/api/*",
+          "zone_name": "mathpup.dev"
+        }
+      ]
     }
-  ]
+  }
 }
