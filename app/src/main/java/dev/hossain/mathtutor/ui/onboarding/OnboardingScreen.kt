@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.ui.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -175,11 +176,10 @@ fun OnboardingContent(
     val coroutineScope = rememberCoroutineScope()
     val currentPage = onboardingPages[pagerState.currentPage]
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
+    val isDarkMode = isSystemInDarkTheme()
 
-    // Use theme colors for background based on page index
-    // Rotate through theme color containers for variety
-    val colorScheme = MaterialTheme.colorScheme
-    val pageColors = getPageColors(pagerState.currentPage, colorScheme)
+    // Use configured colors based on page index and theme mode
+    val pageColors = getPageColors(pagerState.currentPage, isDarkMode)
 
     Box(
         modifier =
@@ -271,8 +271,8 @@ fun OnboardingContent(
                             .height(56.dp),
                     colors =
                         ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = pageColors.buttonColor,
+                            contentColor = pageColors.contentColor,
                         ),
                     shape = RoundedCornerShape(28.dp),
                 ) {
@@ -280,11 +280,13 @@ fun OnboardingContent(
                         text = "Next",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
                     )
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
                         modifier = Modifier.padding(start = 8.dp),
+                        tint = MaterialTheme.colorScheme.inverseOnSurface,
                     )
                 }
             } else {
@@ -296,8 +298,8 @@ fun OnboardingContent(
                             .height(56.dp),
                     colors =
                         ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = pageColors.buttonColor,
+                            contentColor = pageColors.contentColor,
                         ),
                     shape = RoundedCornerShape(28.dp),
                 ) {
@@ -305,6 +307,7 @@ fun OnboardingContent(
                         text = "Get Started! 🎉",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
                     )
                 }
             }
@@ -369,52 +372,38 @@ private fun OnboardingPageContent(
 }
 
 /**
- * Data class to hold background and content color pairs for onboarding pages.
+ * Data class to hold background, content, and button color for onboarding pages.
  */
 private data class PageColors(
     val backgroundColor: Color,
     val contentColor: Color,
+    val buttonColor: Color,
 )
 
 /**
- * Returns theme-aware colors for onboarding pages based on page index.
- * Rotates through Material 3 color containers for visual variety while maintaining accessibility.
+ * Returns configured colors for onboarding pages based on page index and theme mode.
+ * Uses hardcoded colors from OnboardingColorConfig based on image themes.
  */
 private fun getPageColors(
     pageIndex: Int,
-    colorScheme: androidx.compose.material3.ColorScheme,
+    isDarkMode: Boolean,
 ): PageColors {
-    // Number of different color schemes to rotate through
-    val colorRotationCount = 4
+    val config =
+        onboardingPageColorsConfig.getOrNull(pageIndex % onboardingPageColorsConfig.size)
+            ?: onboardingPageColorsConfig[0]
 
-    return when (pageIndex % colorRotationCount) {
-        0 -> {
-            PageColors(
-                backgroundColor = colorScheme.primaryContainer,
-                contentColor = colorScheme.onPrimaryContainer,
-            )
-        }
-
-        1 -> {
-            PageColors(
-                backgroundColor = colorScheme.secondaryContainer,
-                contentColor = colorScheme.onSecondaryContainer,
-            )
-        }
-
-        2 -> {
-            PageColors(
-                backgroundColor = colorScheme.tertiaryContainer,
-                contentColor = colorScheme.onTertiaryContainer,
-            )
-        }
-
-        else -> {
-            PageColors(
-                backgroundColor = colorScheme.surfaceVariant,
-                contentColor = colorScheme.onSurfaceVariant,
-            )
-        }
+    return if (isDarkMode) {
+        PageColors(
+            backgroundColor = config.darkBackgroundColor,
+            contentColor = config.darkTextColor,
+            buttonColor = config.darkButtonColor,
+        )
+    } else {
+        PageColors(
+            backgroundColor = config.lightBackgroundColor,
+            contentColor = config.lightTextColor,
+            buttonColor = config.lightButtonColor,
+        )
     }
 }
 

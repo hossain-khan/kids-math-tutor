@@ -102,7 +102,7 @@ fun ParentChallengesUi(
     Scaffold(
         topBar = {
             FeatureTopAppBar(
-                title = { Text("Custom Challenges") },
+                title = { Text("Challenges by Parents") },
                 feature = TopBarFeature.STATS,
             )
         },

@@ -324,10 +324,7 @@ fun NameEntryUi(
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = { state.eventSink(NameEntryScreen.Event.NameChanged(it)) },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(80.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     label = { Text("Your Name", style = MaterialTheme.typography.titleMedium) },
                     placeholder = { Text("Enter your name", style = MaterialTheme.typography.titleMedium) },
                     textStyle = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
