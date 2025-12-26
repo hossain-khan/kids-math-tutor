@@ -8,7 +8,7 @@ The app uses [Circuit](https://slackhq.github.io/circuit/) for navigation with a
 
 ## Screen Inventory
 
-The app contains **19 Circuit screens** organized by feature:
+The app contains **20 Circuit screens** organized by feature:
 
 | # | Screen | Location | Type | Description |
 |---|--------|----------|------|-------------|
@@ -25,12 +25,13 @@ The app contains **19 Circuit screens** organized by feature:
 | 11 | `SettingsScreen` | `ui/settings/` | `data object` | App settings |
 | 12 | `AudioHapticSettingsScreen` | `ui/settings/` | `data object` | Sound & haptic preferences |
 | 13 | `GameSelectionScreen` | `ui/games/` | `data object` | Mini-game selection |
-| 14 | `MathRaceScreen` | `ui/mathrace/` | `data object` | Math race mini-game |
-| 15 | `NumberSequenceScreen` | `ui/numbersequence/` | `data object` | Number sequence mini-game |
-| 16 | `MemoryMatchScreen` | `ui/memorymatch/` | `data object` | Memory match mini-game |
+| 14 | `MathRaceScreen` | `ui/mathrace/` | `data class` | Math race mini-game |
+| 15 | `NumberSequenceScreen` | `ui/numbersequence/` | `data class` | Number sequence mini-game |
+| 16 | `MemoryMatchScreen` | `ui/memorymatch/` | `data class` | Memory match mini-game |
 | 17 | `ImportChallengeScreen` | `ui/importchallenge/` | `data class` | Import custom challenges via QR/JSON |
 | 18 | `ParentChallengesScreen` | `ui/parentchallenges/` | `data object` | Manage custom parent challenges |
 | 19 | `DeveloperPortalScreen` | `ui/devportal/` | `data object` | Developer tools & testing |
+| 20 | `ColorPaletteViewerScreen` | `ui/devportal/` | `data object` | Color palette visualization (debug) |
 
 ## Navigation Graph
 

@@ -1,7 +1,7 @@
 package dev.hossain.mathtutor.domain.model
 
 /**
- * Defines the initial set of 19 badges available in the app.
+ * Defines the initial set of 27 badges available in the app.
  * Each badge has specific requirements that must be met to unlock it.
  */
 object BadgeDefinitions {
@@ -13,9 +13,9 @@ object BadgeDefinitions {
      * - Operation Mastery (3 badges)
      * - Speed & Accuracy (3 badges)
      * - Streak (2 badges)
-     * - Games (4 badges)
+     * - Games (4 badges for Math Race, 4 for Memory Match, 4 for Number Sequence)
      *
-     * @return List of all 19 badges
+     * @return List of all 27 badges
      */
     fun getAllBadges(): List<Badge> =
         listOf(
