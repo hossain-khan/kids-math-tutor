@@ -460,7 +460,7 @@ private fun GradeCard(
             Text(
                 text = gradeLevel.displayName,
                 style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
             )
 
