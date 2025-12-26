@@ -1,0 +1,62 @@
+package dev.hossain.mathtutor.ui.onboarding
+
+import androidx.compose.ui.graphics.Color
+
+/**
+ * Color configuration for onboarding pages.
+ * Each page has distinct colors for light and dark modes.
+ */
+data class OnboardingPageColors(
+    // Light mode
+    val lightBackgroundColor: Color,
+    val lightTextColor: Color,
+    val lightButtonColor: Color,
+    // Dark mode
+    val darkBackgroundColor: Color,
+    val darkTextColor: Color,
+    val darkButtonColor: Color,
+)
+
+/**
+ * Onboarding color configurations for each page.
+ * Customize these colors based on the image themes.
+ */
+val onboardingPageColorsConfig =
+    listOf(
+        // Page 1: Welcome
+        OnboardingPageColors(
+            lightBackgroundColor = Color(0xFFF5E1D0), // Light warm beige
+            lightTextColor = Color(0xFF6B4423), // Dark brown
+            lightButtonColor = Color(0xFF8B5A3C), // Warm brown
+            darkBackgroundColor = Color(0xFF4A2C1A), // Dark brown
+            darkTextColor = Color(0xFFF5E1D0), // Light beige
+            darkButtonColor = Color(0xFFD4A574), // Light brown
+        ),
+        // Page 2: Creative Learning (Red theme)
+        OnboardingPageColors(
+            lightBackgroundColor = Color(0xFFFFE5E0), // Light red/pink
+            lightTextColor = Color(0xFFC41C3B), // Deep red
+            lightButtonColor = Color(0xFFE63946), // Bright red
+            darkBackgroundColor = Color(0xFF8B1A2E), // Dark red
+            darkTextColor = Color(0xFFFFCDD2), // Light pink
+            darkButtonColor = Color(0xFFFF6B7A), // Light red
+        ),
+        // Page 3: Discover Numbers (Green theme)
+        OnboardingPageColors(
+            lightBackgroundColor = Color(0xFFE3F2E0), // Light green
+            lightTextColor = Color(0xFF2E7D32), // Dark green
+            lightButtonColor = Color(0xFF43A047), // Medium green
+            darkBackgroundColor = Color(0xFF1B5E20), // Dark green
+            darkTextColor = Color(0xFFC8E6C9), // Light green
+            darkButtonColor = Color(0xFF66BB6A), // Light green
+        ),
+        // Page 4: Master Math Skills (Blue theme)
+        OnboardingPageColors(
+            lightBackgroundColor = Color(0xFFE3F2FD), // Light blue
+            lightTextColor = Color(0xFF1565C0), // Dark blue
+            lightButtonColor = Color(0xFF2196F3), // Bright blue
+            darkBackgroundColor = Color(0xFF0D47A1), // Dark blue
+            darkTextColor = Color(0xFFBBDEFB), // Light blue
+            darkButtonColor = Color(0xFF64B5F6), // Light blue
+        ),
+    )

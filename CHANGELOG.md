@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Onboarding Screen Color Configuration** - Created centralized color config system for onboarding pages
+  - New `OnboardingColorConfig.kt` with `OnboardingPageColors` data class
+  - Supports both light and dark mode colors for each page
+  - Colors for: background, text, and button per page and theme
+  - Easily customizable color values for each of the 4 onboarding pages
+  - Updated `OnboardingScreen.kt` to use hardcoded page-specific colors instead of rotating theme colors
+  - Buttons now use page-specific colors that match image themes
+  - System theme detection for automatic light/dark mode support
 - **Settings Screen App Version Display** - Added app version text to the About row on the right side
   - Displays version in format "v1.14.1" using `BuildConfig.VERSION_NAME`
   - Uses Material 3 `bodySmall` typography with `onSurfaceVariant` color for subtle appearance
