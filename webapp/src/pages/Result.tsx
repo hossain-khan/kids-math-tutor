@@ -20,6 +20,10 @@ export default function Result() {
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
   const [deeplinkOpened, setDeeplinkOpened] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareError, setShareError] = useState<string | null>(null);
+  const [shareSuccess, setShareSuccess] = useState(false);
+  const [shareLink, setShareLink] = useState<string | null>(null);
 
   // Cleanup copied state after 3 seconds
   useEffect(() => {
@@ -41,6 +45,22 @@ export default function Result() {
     const timeout = setTimeout(() => setDeeplinkOpened(false), 3000);
     return () => clearTimeout(timeout);
   }, [deeplinkOpened]);
+
+  // Cleanup share states
+  useEffect(() => {
+    if (!shareSuccess) return;
+    const timeout = setTimeout(() => {
+      setShareSuccess(false);
+      setShareLink(null);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [shareSuccess]);
+
+  useEffect(() => {
+    if (!shareError) return;
+    const timeout = setTimeout(() => setShareError(null), 5000);
+    return () => clearTimeout(timeout);
+  }, [shareError]);
 
   useEffect(() => {
     const data = sessionStorage.getItem("challengeData");
@@ -89,6 +109,40 @@ export default function Result() {
     const filename = `${challengeData.title.toLowerCase().replace(/\s+/g, "-")}-worksheet.json`;
     downloadJson(challengeData, filename);
     setDownloadSuccess(true);
+  };
+
+  const handleShareToCommunity = async () => {
+    if (!challengeData || challengeData.type !== "explicit") return;
+
+    setShareLoading(true);
+    setShareError(null);
+
+    try {
+      const response = await fetch("/api/v1/worksheets/share", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(challengeData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setShareError(
+          data.error || "Failed to share worksheet. Please try again.",
+        );
+        return;
+      }
+
+      setShareSuccess(true);
+      setShareLink(data.shareLink);
+    } catch (error) {
+      console.error("Share error:", error);
+      setShareError(
+        "Network error. Please check your connection and try again.",
+      );
+    } finally {
+      setShareLoading(false);
+    }
   };
 
   const handleCreateAnother = () => {
@@ -232,6 +286,38 @@ export default function Result() {
               )}
             </Button>
           )}
+          {challengeData.type === "explicit" && (
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handleShareToCommunity}
+              disabled={shareLoading}
+              className="flex-1 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"
+            >
+              {shareLoading ? (
+                <>
+                  <span aria-hidden="true" className="mr-2 animate-spin">
+                    ⏳
+                  </span>
+                  Sharing...
+                </>
+              ) : shareSuccess ? (
+                <>
+                  <span aria-hidden="true" className="mr-2">
+                    🎉
+                  </span>
+                  Shared!
+                </>
+              ) : (
+                <>
+                  <span aria-hidden="true" className="mr-2">
+                    🌍
+                  </span>
+                  Share to Community
+                </>
+              )}
+            </Button>
+          )}
           <Button
             variant="primary"
             size="lg"
@@ -273,6 +359,41 @@ export default function Result() {
             )}
           </Button>
         </div>
+
+        {/* Share Success Message */}
+        {shareSuccess && shareLink && (
+          <Card className="mb-6 bg-green-50 border-green-300 p-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl flex-shrink-0">✨</span>
+              <div className="flex-1">
+                <h3 className="font-bold text-green-900 mb-1">
+                  Shared to Community!
+                </h3>
+                <p className="text-sm text-green-800 mb-3">
+                  Your worksheet has been shared to the community library.
+                </p>
+                <div className="bg-white rounded p-2 text-xs font-mono text-gray-700 break-all cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => copyToClipboard(shareLink)}>
+                  {shareLink}
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Share Error Message */}
+        {shareError && (
+          <Card className="mb-6 bg-red-50 border-red-300 p-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl flex-shrink-0">⚠️</span>
+              <div className="flex-1">
+                <h3 className="font-bold text-red-900 mb-1">
+                  Could not share worksheet
+                </h3>
+                <p className="text-sm text-red-800">{shareError}</p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* JSON Preview */}
         <Card className="p-6">

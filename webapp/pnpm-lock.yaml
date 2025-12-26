@@ -81,6 +81,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.23(postcss@8.5.6)
+      bad-words:
+        specifier: ^4.0.0
+        version: 4.0.0
       eslint:
         specifier: ^9.0.0
         version: 9.39.2(jiti@1.21.7)
@@ -102,6 +105,9 @@ importers:
       jsdom:
         specifier: ^27.3.0
         version: 27.3.0
+      nanoid:
+        specifier: ^5.1.6
+        version: 5.1.6
       postcss:
         specifier: ^8.4.47
         version: 8.5.6
@@ -1269,6 +1275,13 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
+  bad-words@4.0.0:
+    resolution: {integrity: sha512-fLjG/I0N3I7xhurqGnGitSRD10UeEE63a7hyXtutQDpxo4+Eal+i7veWeZxZJPNtsl6X1mUIoWPwt8gQ7NMQUw==}
+    engines: {node: '>=8.0.0'}
+
+  badwords-list@2.0.1-4:
+    resolution: {integrity: sha512-FxfZUp7B9yCnesNtFQS9v6PvZdxTYa14Q60JR6vhjdQdWI4naTjJIyx22JzoER8ooeT8SAAKoHLjKfCV7XgYUQ==}
+
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
@@ -2209,6 +2222,11 @@ packages:
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@5.1.6:
+    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
+    engines: {node: ^18 || >=20}
     hasBin: true
 
   natural-compare@1.4.0:
@@ -3981,6 +3999,12 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
+  bad-words@4.0.0:
+    dependencies:
+      badwords-list: 2.0.1-4
+
+  badwords-list@2.0.1-4: {}
+
   balanced-match@1.0.2: {}
 
   baseline-browser-mapping@2.9.11: {}
@@ -5055,6 +5079,8 @@ snapshots:
       thenify-all: 1.6.0
 
   nanoid@3.3.11: {}
+
+  nanoid@5.1.6: {}
 
   natural-compare@1.4.0: {}
 

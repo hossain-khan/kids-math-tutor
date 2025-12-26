@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Builder from "./pages/Builder";
 import Result from "./pages/Result";
 import Help from "./pages/Help";
+import SharedWorksheets from "./pages/SharedWorksheets";
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
         <Route path="/builder/:type" element={<Builder />} />
         <Route path="/result" element={<Result />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/worksheets" element={<SharedWorksheets />} />
+        <Route path="/worksheets/:id" element={<SharedWorksheets />} />
       </Routes>
     </Router>
   );

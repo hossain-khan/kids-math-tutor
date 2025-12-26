@@ -1,9 +1,37 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "pup-tutor-worksheet-generator",
+  "main": "workers/index.ts",
   "compatibility_date": "2025-12-22",
+  "observability": {
+    "enabled": true
+  },
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "1a434626c9c143ec874e6c2e1ec2348a",
+      "preview_id": "b94eac3c955f44df8eb8722850956947"
+    }
+  ],
+  "env": {
+    "development": {
+      "routes": [
+        {
+          "pattern": "localhost:8787/api/*"
+        }
+      ]
+    },
+    "production": {
+      "routes": [
+        {
+          "pattern": "math-worksheet.gohk.xyz/api/*",
+          "zone_name": "math-worksheet.gohk.xyz"
+        }
+      ]
+    }
   }
 }

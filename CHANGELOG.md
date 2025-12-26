@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Shared Worksheets API Backend** - Phase 1 implementation of the community worksheet sharing feature
+  - New Hono-based Cloudflare Workers API for managing shared worksheets
+  - `POST /api/v1/worksheets/share` - Create and share custom worksheets to community
+  - `GET /api/v1/worksheets` - List shared worksheets with grade filtering and sorting
+  - `GET /api/v1/worksheets/:id` - Retrieve full worksheet data
+  - `POST /api/v1/worksheets/:id/download` - Track worksheet usage statistics (views/downloads)
+  - **Automatic Grade Detection** - Analyzes problem operands to determine grade level (K-2)
+    - Kindergarten (0-10), Grade 1 (1-20), Grade 2 (1-100)
+  - **Content Moderation** - Automatic profanity filtering using `bad-words` library
+  - **Rate Limiting** - Anonymous users limited to 10 shares per day per IP address
+  - **KV Storage** - Persistent worksheet storage in Cloudflare KV with metadata and statistics
+  - Updated TypeScript schemas with `GradeLevel` type for worksheet classification
+  - Updated Wrangler configuration with KV namespace bindings and API routing
 - **Deeplink Support for Challenge Import** - Parents can now import challenges directly from the webapp with a single click
   - Android: Added `mathpup://import?json=<encoded-json>` deeplink scheme support
   - Webapp: New "Open in Math Pup App" button on Result page (only shown on Android devices)
