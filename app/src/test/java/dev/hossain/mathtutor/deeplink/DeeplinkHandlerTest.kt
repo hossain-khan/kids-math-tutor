@@ -3,6 +3,8 @@ package dev.hossain.mathtutor.deeplink
 import android.net.Uri
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import java.net.URLEncoder
 
 /**
@@ -11,6 +13,7 @@ import java.net.URLEncoder
  * Tests deeplink encoding/decoding for importing challenges
  * from the webapp to the Android app.
  */
+@RunWith(RobolectricTestRunner::class)
 class DeeplinkHandlerTest {
     @Test
     fun extractJsonFromDeeplink_validDeeplink_extractsJson() {
