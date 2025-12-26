@@ -35,7 +35,7 @@ export interface WorksheetListItem {
 export interface KVContext {
   env: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    WORKSHEETS_KV: any; // KVNamespace from @cloudflare/workers-types
+    KV: any; // KVNamespace from @cloudflare/workers-types
   };
 }
 
@@ -47,7 +47,7 @@ export async function saveWorksheet(
   worksheet: SharedWorksheet,
 ): Promise<void> {
   const key = `worksheet:${worksheet.id}`;
-  await context.env.WORKSHEETS_KV.put(key, JSON.stringify(worksheet));
+  await context.env.KV.put(key, JSON.stringify(worksheet));
 }
 
 /**
@@ -59,7 +59,7 @@ export async function getWorksheet(
 ): Promise<SharedWorksheet | null> {
   try {
     const key = `worksheet:${id}`;
-    const data = await context.env.WORKSHEETS_KV.get(key, 'json');
+    const data = await context.env.KV.get(key, 'json');
     return data as SharedWorksheet | null;
   } catch (error) {
     console.error('Failed to get worksheet:', error);
@@ -85,13 +85,13 @@ export async function listWorksheets(
     const worksheets: WorksheetListItem[] = [];
 
     // List all worksheet keys
-    const listResult = await context.env.WORKSHEETS_KV.list({
+    const listResult = await context.env.KV.list({
       prefix: 'worksheet:',
     });
 
     // Fetch each worksheet
     for (const key of listResult.keys) {
-      const data = await context.env.WORKSHEETS_KV.get(key.name, 'json');
+      const data = await context.env.KV.get(key.name, 'json');
       if (data) {
         const worksheet = data as SharedWorksheet;
 

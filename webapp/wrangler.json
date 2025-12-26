@@ -3,15 +3,18 @@
   "name": "pup-tutor-worksheet-generator",
   "main": "workers/index.ts",
   "compatibility_date": "2025-12-22",
+  "observability": {
+    "enabled": true
+  },
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"
   },
   "kv_namespaces": [
     {
-      "binding": "WORKSHEETS_KV",
-      "id": "REPLACE_WITH_ACTUAL_KV_NAMESPACE_ID",
-      "preview_id": "REPLACE_WITH_ACTUAL_PREVIEW_ID"
+      "binding": "KV",
+      "id": "1a434626c9c143ec874e6c2e1ec2348a",
+      "preview_id": "b94eac3c955f44df8eb8722850956947"
     }
   ],
   "env": {

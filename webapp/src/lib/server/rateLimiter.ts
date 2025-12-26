@@ -6,7 +6,7 @@
 export interface RateLimitContext {
   env: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    WORKSHEETS_KV: any; // KVNamespace from @cloudflare/workers-types
+    KV: any; // KVNamespace from @cloudflare/workers-types
   };
   clientIp: string;
 }
@@ -44,7 +44,7 @@ export async function checkRateLimit(
 
   try {
     // Get current count
-    const countStr = await context.env.WORKSHEETS_KV.get(key);
+    const countStr = await context.env.KV.get(key);
     const count = countStr ? parseInt(countStr, 10) : 0;
 
     const remaining = Math.max(0, SHARES_PER_DAY - count);
@@ -82,12 +82,12 @@ export async function incrementShareCount(
   const key = getRateLimitKey(context.clientIp, today);
 
   try {
-    const countStr = await context.env.WORKSHEETS_KV.get(key);
+    const countStr = await context.env.KV.get(key);
     const count = countStr ? parseInt(countStr, 10) : 0;
     const newCount = count + 1;
 
     // Set with expiry of 24 hours (86400 seconds)
-    await context.env.WORKSHEETS_KV.put(key, newCount.toString(), {
+    await context.env.KV.put(key, newCount.toString(), {
       expirationTtl: 86400,
     });
   } catch (error) {

@@ -26,7 +26,7 @@ import {
 
 interface Env {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  WORKSHEETS_KV: any; // KVNamespace from Cloudflare Workers
+  KV: any; // KVNamespace from Cloudflare Workers
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -107,7 +107,7 @@ app.post('/api/v1/worksheets/share', async (c) => {
     // Check rate limit
     const clientIp = getClientIp(c);
     const rateLimitContext: RateLimitContext = {
-      env: { WORKSHEETS_KV: c.env.WORKSHEETS_KV },
+      env: { KV: c.env.KV },
       clientIp,
     };
 
@@ -144,7 +144,7 @@ app.post('/api/v1/worksheets/share', async (c) => {
 
     // Save to KV
     await saveWorksheet(
-      { env: { WORKSHEETS_KV: c.env.WORKSHEETS_KV } },
+      { env: { KV: c.env.KV } },
       sharedWorksheet,
     );
 
@@ -182,7 +182,7 @@ app.get('/api/v1/worksheets', async (c) => {
       'newest') as 'newest' | 'views' | 'downloads';
 
     const worksheets = await listWorksheets(
-      { env: { WORKSHEETS_KV: c.env.WORKSHEETS_KV } },
+      { env: { KV: c.env.KV } },
       {
         grades,
         sortBy,
@@ -211,7 +211,7 @@ app.get('/api/v1/worksheets/:id', async (c) => {
     const id = c.req.param('id');
 
     const worksheet = await getWorksheet(
-      { env: { WORKSHEETS_KV: c.env.WORKSHEETS_KV } },
+      { env: { KV: c.env.KV } },
       id,
     );
 
@@ -226,7 +226,7 @@ app.get('/api/v1/worksheets/:id', async (c) => {
 
     // Increment view count (async, don't await)
     incrementViews(
-      { env: { WORKSHEETS_KV: c.env.WORKSHEETS_KV } },
+      { env: { KV: c.env.KV } },
       id,
     ).catch((err) => console.error('Failed to increment views:', err));
 
@@ -267,7 +267,7 @@ app.post('/api/v1/worksheets/:id/download', async (c) => {
 
     // Increment download count
     await incrementDownloads(
-      { env: { WORKSHEETS_KV: c.env.WORKSHEETS_KV } },
+      { env: { KV: c.env.KV } },
       id,
     );
 
