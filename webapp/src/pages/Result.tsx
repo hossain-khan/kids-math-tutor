@@ -21,6 +21,27 @@ export default function Result() {
   const [isAndroid, setIsAndroid] = useState(false);
   const [deeplinkOpened, setDeeplinkOpened] = useState(false);
 
+  // Cleanup copied state after 3 seconds
+  useEffect(() => {
+    if (!copied) return;
+    const timeout = setTimeout(() => setCopied(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
+  // Cleanup download success state after 3 seconds
+  useEffect(() => {
+    if (!downloadSuccess) return;
+    const timeout = setTimeout(() => setDownloadSuccess(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [downloadSuccess]);
+
+  // Cleanup deeplink opened state after 3 seconds
+  useEffect(() => {
+    if (!deeplinkOpened) return;
+    const timeout = setTimeout(() => setDeeplinkOpened(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [deeplinkOpened]);
+
   useEffect(() => {
     const data = sessionStorage.getItem("challengeData");
     if (!data) {
@@ -48,7 +69,6 @@ export default function Result() {
 
     if (success) {
       setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
     }
   };
 
@@ -60,8 +80,6 @@ export default function Result() {
       setDeeplinkOpened(true);
       // Open the deeplink - this will only work if Math Pup app is installed
       window.location.href = deeplink;
-      // Reset the state after a short delay in case the app isn't installed
-      setTimeout(() => setDeeplinkOpened(false), 3000);
     }
   };
 
@@ -71,7 +89,6 @@ export default function Result() {
     const filename = `${challengeData.title.toLowerCase().replace(/\s+/g, "-")}-worksheet.json`;
     downloadJson(challengeData, filename);
     setDownloadSuccess(true);
-    setTimeout(() => setDownloadSuccess(false), 3000);
   };
 
   const handleCreateAnother = () => {
@@ -200,12 +217,16 @@ export default function Result() {
             >
               {deeplinkOpened ? (
                 <>
-                  <span className="mr-2">📱</span>
+                  <span aria-hidden="true" className="mr-2">
+                    📱
+                  </span>
                   Opening Math Pup...
                 </>
               ) : (
                 <>
-                  <span className="mr-2">🚀</span>
+                  <span aria-hidden="true" className="mr-2">
+                    🚀
+                  </span>
                   Open in Math Pup App
                 </>
               )}
@@ -219,12 +240,16 @@ export default function Result() {
           >
             {copied ? (
               <>
-                <span className="mr-2">✅</span>
+                <span aria-hidden="true" className="mr-2">
+                  ✅
+                </span>
                 Copied!
               </>
             ) : (
               <>
-                <span className="mr-2">📋</span>
+                <span aria-hidden="true" className="mr-2">
+                  📋
+                </span>
                 Copy Code
               </>
             )}

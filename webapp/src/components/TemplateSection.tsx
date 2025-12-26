@@ -204,7 +204,10 @@ export default function TemplateSection({
                         title="Open template directly in Math Pup app"
                         className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded hover:from-purple-600 hover:to-pink-600 transition-colors"
                       >
-                        📱 Open in App
+                        <span aria-hidden="true" className="mr-1">
+                          📱
+                        </span>
+                        <span>Open in App</span>
                       </button>
                     )}
                   </div>

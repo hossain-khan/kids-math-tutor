@@ -183,7 +183,9 @@ describe("TemplateSection Component", () => {
     );
 
     // Find the "Use Template" button for the first template
-    const useTemplateButtons = screen.getAllByRole("button", { name: /Use Template/i });
+    const useTemplateButtons = screen.getAllByRole("button", {
+      name: /Use Template/i,
+    });
     fireEvent.click(useTemplateButtons[0]);
 
     expect(mockOnSelect).toHaveBeenCalledWith(mockTemplates.kindergarten[0]);
@@ -203,7 +205,9 @@ describe("TemplateSection Component", () => {
     );
 
     // Find the "Use Template" button for the first template
-    const useTemplateButtons = screen.getAllByRole("button", { name: /Use Template/i });
+    const useTemplateButtons = screen.getAllByRole("button", {
+      name: /Use Template/i,
+    });
     fireEvent.click(useTemplateButtons[0]);
 
     expect(mockOnToggle).toHaveBeenCalledWith(false);
