@@ -19,11 +19,13 @@ data class OnboardingPageColors(
 
 /**
  * Onboarding color configurations for each page.
- * Customize these colors based on the image themes.
+ * Colors are chosen based on the dominant colors shown in each page's onboarding image.
+ * Update these values when the onboarding images are changed or color adjustments are needed.
  */
 val onboardingPageColorsConfig =
     listOf(
         // Page 1: Welcome
+        // Based on: R.drawable.onboarding_1_app_name_welcome
         OnboardingPageColors(
             lightBackgroundColor = Color(0xFFF5E1D0), // Light warm beige
             lightTextColor = Color(0xFF6B4423), // Dark brown
@@ -33,6 +35,7 @@ val onboardingPageColorsConfig =
             darkButtonColor = Color(0xFFD4A574), // Light brown
         ),
         // Page 2: Creative Learning (Red theme)
+        // Based on: R.drawable.onboarding_2_creative_math_red_theme
         OnboardingPageColors(
             lightBackgroundColor = Color(0xFFFFE5E0), // Light red/pink
             lightTextColor = Color(0xFFC41C3B), // Deep red
@@ -42,6 +45,7 @@ val onboardingPageColorsConfig =
             darkButtonColor = Color(0xFFFF6B7A), // Light red
         ),
         // Page 3: Discover Numbers (Green theme)
+        // Based on: R.drawable.onboarding_3_explore_numbers_green_theme
         OnboardingPageColors(
             lightBackgroundColor = Color(0xFFE3F2E0), // Light green
             lightTextColor = Color(0xFF2E7D32), // Dark green
@@ -51,6 +55,7 @@ val onboardingPageColorsConfig =
             darkButtonColor = Color(0xFF66BB6A), // Light green
         ),
         // Page 4: Master Math Skills (Blue theme)
+        // Based on: R.drawable.onboarding_4_master_math_blue_theme
         OnboardingPageColors(
             lightBackgroundColor = Color(0xFFE3F2FD), // Light blue
             lightTextColor = Color(0xFF1565C0), // Dark blue
