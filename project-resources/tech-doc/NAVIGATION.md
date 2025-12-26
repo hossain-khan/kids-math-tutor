@@ -101,12 +101,6 @@ graph TD
     DeeplinkURL["🔗 Deeplink URL<br/>mathpup://import?json=..."] -->|Initial| ImportChallengeScreen
     ImportChallengeScreen -->|goTo| ParentChallengesScreen
     ParentChallengesScreen -->|pop| HomeScreen
-    
-    style OnboardingScreen fill:#e1f5ff
-    style HomeScreen fill:#fff3e0
-    style ImportChallengeScreen fill:#f3e5f5
-    style SettingsScreen fill:#fce4ec
-    style BadgesScreen fill:#ede7f6
 ```
 
 ## Deep Linking for Challenge Import
