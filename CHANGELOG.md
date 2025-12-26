@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated `AndroidManifest.xml` with deeplink intent filter configuration
   - Seamless fallback to existing share intent mechanism if app not installed
   - Automatic Android device detection on webapp
+- **Template Quick Import** - Added "Open in App" button directly on template cards for Android users
+  - One-click import templates without going through full builder workflow
+  - "Use Template" button for standard builder flow remains available
+  - Only shown on Android devices via automatic device detection
+  - Updated `TemplateSection.tsx` to display deeplink buttons alongside template selection
 
 ## [1.15.0] - 2025-12-26
 
