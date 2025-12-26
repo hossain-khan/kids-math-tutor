@@ -156,11 +156,33 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="container mx-auto px-4 py-6 text-center text-gray-600 text-sm">
-          <p>Made with ❤️ for Kids Math Pup Tutor</p>
+        <div className="container mx-auto px-4 py-8 text-center">
+          {/* Get the App CTA */}
+          <div className="mb-6 pb-6 border-b border-gray-200">
+            <p className="text-gray-600 font-medium mb-3">
+              Try the full app experience:
+            </p>
+            <a
+              href="https://play.google.com/store/apps/details?id=dev.hossain.mathtutor&pcampaignid=web_share"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block hover:opacity-90 transition-opacity"
+              aria-label="Download Math Pup Tutor from Google Play"
+            >
+              <img
+                src="https://liquidlabs.ca/img/google-play.svg"
+                alt="Get it on Google Play"
+                className="h-10"
+              />
+            </a>
+          </div>
+
+          <p className="text-gray-600 text-sm mb-2">
+            Made with ❤️ for Kids Math Pup Tutor
+          </p>
           <Link
             to="/help"
-            className="text-primary-600 hover:underline mt-2 inline-block"
+            className="text-primary-600 hover:underline text-sm inline-block"
           >
             Need Help?
           </Link>

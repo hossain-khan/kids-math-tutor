@@ -59,13 +59,6 @@ export default function GeneratedBuilder() {
     // Show toast notification
     setToastMessage(`✨ "${template.name}" template applied!`);
     setShowToast(true);
-
-    // Scroll to form
-    setTimeout(() => {
-      document
-        .querySelector("form")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -159,7 +152,7 @@ export default function GeneratedBuilder() {
                   Auto-Generate Problems
                 </h2>
                 <p className="text-sm text-gray-600">
-                  Set your rules and we'll create random problems for you.
+                  Set your rules and we&apos;ll create random problems for you.
                   Perfect for quick practice!
                 </p>
               </div>

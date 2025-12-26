@@ -163,7 +163,7 @@ export default function Result() {
                 4
               </span>
               <span>
-                Paste the code and tap <strong>"Save Challenge"</strong>
+                Paste the code and tap <strong>&quot;Save Challenge&quot;</strong>
               </span>
             </li>
           </ol>
