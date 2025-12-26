@@ -115,10 +115,12 @@ class MathPracticePresenter
             /**
              * Manually deduplicates problems by removing duplicate problem strings,
              * then generates additional problems to reach the target count.
+             * @param gradeLevel The grade level to use when generating additional problems
              */
             fun deduplicateProblems(
                 problems: List<MathProblem>,
                 targetCount: Int,
+                gradeLevel: GradeLevel,
             ): List<MathProblem> {
                 val seenProblemStrings = mutableSetOf<String>()
                 val uniqueProblems = mutableListOf<MathProblem>()
@@ -143,7 +145,7 @@ class MathPracticePresenter
                             .generateProblems(
                                 count = 1,
                                 operation = screen.operation,
-                                gradeLevel = actualGradeLevel!!,
+                                gradeLevel = gradeLevel,
                             ).first()
 
                     val problemString = newProblem.getDisplayString()
@@ -165,10 +167,12 @@ class MathPracticePresenter
              * Generates problems with unique problem strings.
              * Ensures no two problems have the same display string (e.g., "2+3" doesn't appear twice).
              * Duplicate answers are allowed (2+3=5 and 1+4=5 can both appear).
+             * @param gradeLevel The grade level to use when regenerating problems
              */
             fun generateProblemsWithUniqueStrings(
                 problems: List<MathProblem>,
                 targetCount: Int,
+                gradeLevel: GradeLevel,
                 maxRetries: Int = 100,
             ): List<MathProblem> {
                 var attempts = 0
@@ -192,7 +196,7 @@ class MathPracticePresenter
                         problemGenerator.generateProblems(
                             count = targetCount,
                             operation = screen.operation,
-                            gradeLevel = actualGradeLevel!!,
+                            gradeLevel = gradeLevel,
                         )
                     attempts++
                     Timber.d(
@@ -205,7 +209,7 @@ class MathPracticePresenter
                     "[MathPractice] Could not generate unique problems after $maxRetries attempts, " +
                         "using fallback deduplication",
                 )
-                return deduplicateProblems(currentProblems, targetCount)
+                return deduplicateProblems(currentProblems, targetCount, gradeLevel)
             }
 
             // Fetch user profile and generate problems in a single LaunchedEffect
@@ -240,9 +244,10 @@ class MathPracticePresenter
                                 generateProblemsWithUniqueStrings(
                                     challenge.problems,
                                     screen.problemCount,
+                                    grade,
                                 )
                             }
-                        actualGradeLevel = grade // Use user's grade for custom challenges
+                        actualGradeLevel = grade
                         customChallengeTitle = challenge.title
                         Timber.d(
                             "Loaded ${problems.size} problems from custom challenge '${challenge.title}' (type: ${challenge.type})",
@@ -256,14 +261,14 @@ class MathPracticePresenter
                                 operation = screen.operation,
                                 gradeLevel = grade,
                             )
-                        // Set grade level before calling generateProblemsWithUniqueStrings
-                        actualGradeLevel = grade
                         // Validate generated problems for unique strings
                         problems =
                             generateProblemsWithUniqueStrings(
                                 generatedProblems,
                                 screen.problemCount,
+                                grade,
                             )
+                        actualGradeLevel = grade
                     }
                 } else if (isAdaptiveEnabled) {
                     // Use adaptive problem generator
@@ -273,14 +278,14 @@ class MathPracticePresenter
                             operation = screen.operation,
                             baseGradeLevel = grade,
                         )
-                    // Set grade level before calling generateProblemsWithUniqueStrings
-                    actualGradeLevel = result.actualGradeLevel
                     // Validate adaptive problems for unique strings
                     problems =
                         generateProblemsWithUniqueStrings(
                             result.problems,
                             screen.problemCount,
+                            result.actualGradeLevel,
                         )
+                    actualGradeLevel = result.actualGradeLevel
                     difficultyAdjustment = result.adjustment
                     if (result.wasAdjusted) {
                         showDifficultyChangeNotice = true
@@ -306,14 +311,14 @@ class MathPracticePresenter
                             operation = screen.operation,
                             gradeLevel = grade,
                         )
-                    // Set grade level before calling generateProblemsWithUniqueStrings
-                    actualGradeLevel = grade
                     // Validate standard problems for unique strings
                     problems =
                         generateProblemsWithUniqueStrings(
                             generatedProblems,
                             screen.problemCount,
+                            grade,
                         )
+                    actualGradeLevel = grade
                 }
                 Timber.d(
                     "Generated ${problems.size} problems for grade $actualGradeLevel " +
