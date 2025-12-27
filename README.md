@@ -6,23 +6,23 @@ A fun, free math learning app for K-2 children. No ads. No data collection. Just
 
 ## Features
 
-| Learning | Games | Tools |
-|----------|-------|-------|
+| Learning                                        | Games                            | Tools                                  |
+|-------------------------------------------------|----------------------------------|----------------------------------------|
 | Addition, Subtraction, Multiplication, Division | 🏎️ Math Race (60-sec challenge) | 👨‍👩‍👧 Custom worksheets for parents |
-| Grade-appropriate difficulty (K-2) | 🧩 Memory Match (4×4 cards) | 📋 27 pre-built templates |
-| Instant feedback with animations | 🏆 27 Achievement Badges | 📊 Progress tracking & stats |
+| Grade-appropriate difficulty (K-2)              | 🧩 Memory Match (4×4 cards)      | 📋 27 pre-built templates              |
+| Instant feedback with animations                | 🏆 27 Achievement Badges         | 📊 Progress tracking & stats           |
 
 **Accessibility**: TalkBack support, high contrast mode, dynamic text sizing (WCAG 2.1 AA)
 
 ## Tech Stack
 
-| | |
-|---|---|
-| **UI** | Jetpack Compose + Material 3 |
+|                  |                                                     |
+|------------------|-----------------------------------------------------|
+| **UI**           | Jetpack Compose + Material 3                        |
 | **Architecture** | [Circuit](https://github.com/slackhq/circuit) (UDF) |
-| **DI** | [Metro](https://zacsweers.github.io/metro/) |
-| **Storage** | Room + DataStore |
-| **Audio** | Media3 ExoPlayer |
+| **DI**           | [Metro](https://zacsweers.github.io/metro/)         |
+| **Storage**      | Room + DataStore                                    |
+| **Audio**        | Media3 ExoPlayer                                    |
 
 ## Quick Start
 
@@ -44,12 +44,12 @@ cd kids-math-tutor
 
 ## Documentation
 
-| Development | Google Play |
-|-------------|-------------|
-| [CHANGELOG](CHANGELOG.md) | [Store Listing](project-resources/google-play/GOOGLE-PLAY.md) |
-| [RELEASE](RELEASE.md) | [Privacy Policy](project-resources/google-play/PRIVACY-POLICY.md) |
-| [ACCESSIBILITY](ACCESSIBILITY.md) | [Terms of Service](project-resources/google-play/TERMS-OF-SERVICE.md) |
-| [ANALYTICS](project-resources/tech-doc/ANALYTICS.md) | [Release Notes](project-resources/google-play/RELEASE-NOTES.md) |
+| Development                                          | Google Play                                                           |
+|------------------------------------------------------|-----------------------------------------------------------------------|
+| [CHANGELOG](CHANGELOG.md)                            | [Store Listing](project-resources/google-play/GOOGLE-PLAY.md)         |
+| [RELEASE](RELEASE.md)                                | [Privacy Policy](project-resources/google-play/PRIVACY-POLICY.md)     |
+| [ACCESSIBILITY](ACCESSIBILITY.md)                    | [Terms of Service](project-resources/google-play/TERMS-OF-SERVICE.md) |
+| [ANALYTICS](project-resources/tech-doc/ANALYTICS.md) | [Release Notes](project-resources/google-play/RELEASE-NOTES.md)       |
 
 ## Privacy
 
