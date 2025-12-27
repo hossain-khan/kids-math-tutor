@@ -20,6 +20,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Error messages are more noticeable and easier to read
   - Preview section remains below input field for easy reference while editing
 
+### Fixed
+- **Challenge Import JSON Parser** - Fixed error when importing challenges without the `"type"` field
+  - Parser now automatically detects challenge type based on JSON structure
+  - Generated challenges detected by presence of `operation` and `problemCount` fields
+  - Explicit challenges detected by presence of `problems` array
+  - Provides helpful error messages if type cannot be inferred
+  - Added comprehensive unit tests for type auto-detection scenarios
+- **Webapp Template Deeplinks** - Fixed "Open in App" button generating invalid JSON
+  - All template configs now include the required `"type"` field (`"generated"` or `"explicit"`)
+  - Ensures deeplinks work without requiring auto-detection fallback
+  - Matches official JSON schema at https://math-worksheet.gohk.xyz/challenge-schema.json
+
 ### Improved
 - **Enhanced Import Challenge UI** - Applied Material 3 design improvements
   - Better visual hierarchy with updated card elevations and colors
