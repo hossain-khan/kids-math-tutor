@@ -20,7 +20,7 @@
   "env": {
     "production": {
       "vars": {
-        "ADMIN_PASSWORD": "CHANGE_THIS_TO_YOUR_SECRET_PASSWORD"
+        "ADMIN_PASSWORD": "sharingiscaring!"
       }
     },
     "development": {
