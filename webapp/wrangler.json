@@ -19,11 +19,24 @@
   ],
   "env": {
     "production": {
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "1a434626c9c143ec874e6c2e1ec2348a"
+        }
+      ],
       "vars": {
         "ADMIN_PASSWORD": "sharingiscaring!"
-      }
+      },
+      "workers_dev": false
     },
     "development": {
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "preview_id": "b94eac3c955f44df8eb8722850956947"
+        }
+      ],
       "vars": {
         "ADMIN_PASSWORD": "admin123"
       }

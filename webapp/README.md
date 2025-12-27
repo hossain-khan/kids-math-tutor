@@ -80,12 +80,25 @@ The webapp is deployed to Cloudflare Workers with static assets.
 
 **Live URL**: https://math-worksheet.gohk.xyz/
 
+#### Deployment Steps
+
 ```bash
 # Login to Cloudflare (first time only)
 npx wrangler login
 
-# Build and deploy
-pnpm build && npx wrangler deploy
+# Build and deploy to production
+pnpm build && wrangler deploy --env production
+```
+
+#### Environment Configuration
+
+The deployment uses environment-specific configurations in `wrangler.json`:
+- **Production**: Uses Cloudflare secrets for the admin password
+- **Development**: Uses local password from `wrangler.json`
+
+For production, set the admin password as a Cloudflare secret:
+```bash
+wrangler secret put ADMIN_PASSWORD
 ```
 
 ## Project Structure
@@ -116,8 +129,8 @@ The webapp is deployed as a static SPA to Cloudflare Workers.
 # Build for production
 pnpm build
 
-# Deploy to Cloudflare Workers
-npx wrangler deploy
+# Deploy to Cloudflare Workers (production environment)
+wrangler deploy --env production
 ```
 
 ### First-Time Setup
@@ -128,14 +141,33 @@ If you haven't deployed before:
 # 1. Login to Cloudflare
 npx wrangler login
 
-# 2. Build and deploy
-pnpm build && npx wrangler deploy
+# 2. Set the admin password as a Cloudflare secret
+wrangler secret put ADMIN_PASSWORD
+# Enter your secure admin password when prompted
+
+# 3. Build and deploy
+pnpm build && wrangler deploy --env production
 ```
 
 The configuration is in `wrangler.json`:
 - Worker name: `pup-tutor-worksheet-generator`
 - Static assets directory: `./dist`
 - SPA mode enabled (all routes serve `index.html`)
+- KV Namespace binding for storing shared worksheets
+- Admin password from environment variables
+
+### Admin Portal
+
+Once deployed, access the admin portal at:
+**https://math-worksheet.gohk.xyz/manage-worksheets**
+
+Features:
+- View all community-shared worksheets
+- See worksheet statistics (views, downloads, ratings)
+- Delete inappropriate or duplicate worksheets
+- Password-protected access with 24-hour session tokens
+
+See [ADMIN_SETUP.md](./ADMIN_SETUP.md) for complete admin portal documentation.
 
 ### View Deployment
 

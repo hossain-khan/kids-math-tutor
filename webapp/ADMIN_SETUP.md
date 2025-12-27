@@ -2,7 +2,7 @@
 
 ## Overview
 
-The admin portal at `/worksheets/manage` allows you to:
+The admin portal at `/manage-worksheets` allows you to:
 - View all shared community worksheets
 - Delete inappropriate or duplicate worksheets
 - See worksheet statistics (views, downloads, ratings)
@@ -94,7 +94,7 @@ wrangler deploy --env production
 
 ### 3. Access the Admin Portal
 
-1. Navigate to: `https://math-worksheet.gohk.xyz/worksheets/manage`
+1. Navigate to: `https://math-worksheet.gohk.xyz/manage-worksheets`
 2. Enter your admin password
 3. You'll get a 24-hour session token automatically
 4. Browse and manage worksheets

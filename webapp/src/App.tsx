@@ -14,9 +14,9 @@ function App() {
         <Route path="/builder/:type" element={<Builder />} />
         <Route path="/result" element={<Result />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/manage-worksheets" element={<AdminManage />} />
         <Route path="/worksheets" element={<SharedWorksheets />} />
         <Route path="/worksheets/:id" element={<SharedWorksheets />} />
-        <Route path="/worksheets/manage" element={<AdminManage />} />
       </Routes>
     </Router>
   );

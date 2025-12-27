@@ -2,7 +2,7 @@
 
 ### Access the Admin Portal
 ```
-https://math-worksheet.gohk.xyz/worksheets/manage
+https://math-worksheet.gohk.xyz/manage-worksheets
 ```
 
 ### Set Your Admin Password

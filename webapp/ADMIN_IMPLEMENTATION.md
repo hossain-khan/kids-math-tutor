@@ -51,7 +51,7 @@ All endpoints validate Bearer token before allowing access.
 ### 5. Routing
 
 **File:** `webapp/src/App.tsx` (updated)
-- New route: `/worksheets/manage`
+- New route: `/manage-worksheets`
 - Imports AdminManage component
 - Integrated into main router
 
@@ -59,7 +59,7 @@ All endpoints validate Bearer token before allowing access.
 
 ### Authentication Flow
 
-1. **User visits** `/worksheets/manage`
+1. **User visits** `/manage-worksheets`
 2. **Frontend checks** if token exists in localStorage and is valid
 3. **If no valid token**, shows password login modal
 4. **User enters password**, sends to `/api/v1/admin/auth`
@@ -124,7 +124,7 @@ All endpoints validate Bearer token before allowing access.
 # e.g., "ADMIN_PASSWORD": "dev_password_123"
 
 # Then access:
-# http://localhost:5173/worksheets/manage
+# http://localhost:5173/manage-worksheets
 ```
 
 ### 2. Production
@@ -136,7 +136,7 @@ wrangler secret put ADMIN_PASSWORD
 wrangler deploy --env production
 
 # Access:
-# https://math-worksheet.gohk.xyz/worksheets/manage
+# https://math-worksheet.gohk.xyz/manage-worksheets
 ```
 
 ## File Structure
@@ -193,7 +193,7 @@ webapp/
 
 1. Set password in wrangler.json
 2. Run `pnpm dev`
-3. Visit `http://localhost:5173/worksheets/manage`
+3. Visit `http://localhost:5173/manage-worksheets`
 4. Enter password
 5. Verify worksheet list loads
 6. Test delete functionality
@@ -208,5 +208,5 @@ webapp/
 - ✅ Delete removes from list immediately
 - ✅ Session expires after 24 hours
 - ✅ Logout clears session
-- ✅ Can't access `/worksheets/manage` without token
+- ✅ Can't access `/manage-worksheets` without token
 
