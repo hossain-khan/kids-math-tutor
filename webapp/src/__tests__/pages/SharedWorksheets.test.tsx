@@ -148,37 +148,35 @@ describe("SharedWorksheets UI", () => {
 
   it("submits rating and updates UI on success", async () => {
     // initial list contains one item with rating 4.0/1
-    fetchMock.mockImplementation(
-      async (input: RequestInfo) => {
-        const url = typeof input === "string" ? input : input.url;
+    fetchMock.mockImplementation(async (input: RequestInfo) => {
+      const url = typeof input === "string" ? input : input.url;
 
-        if (url.includes("/api/v1/worksheets?")) {
-          return {
-            ok: true,
-            json: async () => ({
-              items: [makeItem("r1", "Rate Me", 4.0, 1)],
-              total: 1,
-              hasMore: false,
-              limit: 20,
-              offset: 0,
-            }),
-          } as MockResponse;
-        }
+      if (url.includes("/api/v1/worksheets?")) {
+        return {
+          ok: true,
+          json: async () => ({
+            items: [makeItem("r1", "Rate Me", 4.0, 1)],
+            total: 1,
+            hasMore: false,
+            limit: 20,
+            offset: 0,
+          }),
+        } as MockResponse;
+      }
 
-        if (url.includes("/api/v1/worksheets/r1/rate")) {
-          // simulate successful rating POST response
-          return {
-            ok: true,
-            json: async () => ({
-              success: true,
-              stats: { averageRating: 4.5, ratingCount: 2 },
-            }),
-          } as MockResponse;
-        }
+      if (url.includes("/api/v1/worksheets/r1/rate")) {
+        // simulate successful rating POST response
+        return {
+          ok: true,
+          json: async () => ({
+            success: true,
+            stats: { averageRating: 4.5, ratingCount: 2 },
+          }),
+        } as MockResponse;
+      }
 
-        return { ok: true, json: async () => ({}) } as MockResponse;
-      },
-    );
+      return { ok: true, json: async () => ({}) } as MockResponse;
+    });
 
     const user = userEvent.setup();
 
