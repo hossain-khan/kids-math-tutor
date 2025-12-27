@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -593,7 +594,7 @@ private fun ParentInfoSection(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedButton(
+            ElevatedButton(
                 onClick = {
                     openWorksheetCreator(context, worksheetUrl)
                 },
@@ -632,7 +633,7 @@ private fun ShareDetectionBanner(
                         if (hasValidationErrors) {
                             MaterialTheme.colorScheme.errorContainer
                         } else {
-                            MaterialTheme.colorScheme.primaryContainer
+                            MaterialTheme.colorScheme.tertiaryContainer
                         },
                 ),
         ) {
