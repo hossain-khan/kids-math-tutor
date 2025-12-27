@@ -17,6 +17,7 @@ import dev.hossain.mathtutor.domain.parser.ChallengeJsonParser
 import dev.hossain.mathtutor.domain.parser.ValidationException
 import dev.hossain.mathtutor.domain.repository.CustomChallengeRepository
 import dev.hossain.mathtutor.domain.service.CustomChallengeService
+import dev.hossain.mathtutor.ui.parentchallenges.ParentChallengesScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -185,13 +186,22 @@ class ImportChallengePresenter
                                                 // Persist to repository
                                                 challengeRepository.saveChallenge(challenge)
                                                 Timber.d("ImportChallenge: Challenge saved: ${challenge.title}")
-                                                // Navigate back with result for parent to show success message
-                                                navigator.pop(
-                                                    result =
-                                                        ImportChallengeScreen.ImportResult(
-                                                            challengeTitle = challenge.title,
-                                                        ),
-                                                )
+
+                                                // If we came from a deeplink (no back stack), navigate to ParentChallengesScreen
+                                                // Otherwise, pop back to the previous screen
+                                                if (screen.prefilledJson != null) {
+                                                    // Deeplink scenario - go to challenges list
+                                                    Timber.d("ImportChallenge: Deeplink import - navigating to ParentChallengesScreen")
+                                                    navigator.resetRoot(ParentChallengesScreen)
+                                                } else {
+                                                    // Normal flow - pop back with result for parent to show success message
+                                                    navigator.pop(
+                                                        result =
+                                                            ImportChallengeScreen.ImportResult(
+                                                                challengeTitle = challenge.title,
+                                                            ),
+                                                    )
+                                                }
                                             }.onFailure { error ->
                                                 Timber.e(error, "Failed to create challenge")
                                                 validationState =

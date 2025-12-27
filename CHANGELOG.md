@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All template configs now include the required `"type"` field (`"generated"` or `"explicit"`)
   - Ensures deeplinks work without requiring auto-detection fallback
   - Matches official JSON schema at https://math-worksheet.gohk.xyz/challenge-schema.json
+- **Deeplink Import Navigation** - Fixed app closing after importing challenge via deeplink
+  - App now navigates to challenges list after successful deeplink import instead of closing
+  - Users can immediately see their imported challenge from webapp "Open in App" button
+  - Normal import flow (from within app) remains unchanged with proper back navigation
 
 ### Improved
 - **Enhanced Import Challenge UI** - Applied Material 3 design improvements
