@@ -4,6 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import SharedWorksheets from "@/pages/SharedWorksheets";
 
+type MockResponse = {
+  ok: boolean;
+  json: () => Promise<unknown>;
+};
+
 function makeItem(id: string, title: string, avg = 0, count = 0) {
   return {
     id,
@@ -36,7 +41,7 @@ describe("SharedWorksheets UI", () => {
             limit: 20,
             offset: 0,
           }),
-        } as any;
+        } as MockResponse;
       }
 
       if (url.includes("/api/v1/worksheets?")) {
@@ -49,11 +54,11 @@ describe("SharedWorksheets UI", () => {
             limit: 20,
             offset: 0,
           }),
-        } as any;
+        } as MockResponse;
       }
 
       // fallback
-      return { ok: true, json: async () => ({}) } as any;
+      return { ok: true, json: async () => ({}) } as MockResponse;
     });
 
     vi.stubGlobal("fetch", fetchMock);
@@ -95,7 +100,7 @@ describe("SharedWorksheets UI", () => {
             limit: 20,
             offset: 0,
           }),
-        } as any;
+        } as MockResponse;
       }
       if (url.includes("/api/v1/worksheets?") && url.includes("offset=20")) {
         return {
@@ -107,7 +112,7 @@ describe("SharedWorksheets UI", () => {
             limit: 20,
             offset: 20,
           }),
-        } as any;
+        } as MockResponse;
       }
       return {
         ok: true,
@@ -118,7 +123,7 @@ describe("SharedWorksheets UI", () => {
           limit: 20,
           offset: 0,
         }),
-      } as any;
+      } as MockResponse;
     });
 
     const user = userEvent.setup();
@@ -144,7 +149,7 @@ describe("SharedWorksheets UI", () => {
   it("submits rating and updates UI on success", async () => {
     // initial list contains one item with rating 4.0/1
     fetchMock.mockImplementation(
-      async (input: RequestInfo, init?: RequestInit) => {
+      async (input: RequestInfo) => {
         const url = typeof input === "string" ? input : input.url;
 
         if (url.includes("/api/v1/worksheets?")) {
@@ -157,7 +162,7 @@ describe("SharedWorksheets UI", () => {
               limit: 20,
               offset: 0,
             }),
-          } as any;
+          } as MockResponse;
         }
 
         if (url.includes("/api/v1/worksheets/r1/rate")) {
@@ -168,10 +173,10 @@ describe("SharedWorksheets UI", () => {
               success: true,
               stats: { averageRating: 4.5, ratingCount: 2 },
             }),
-          } as any;
+          } as MockResponse;
         }
 
-        return { ok: true, json: async () => ({}) } as any;
+        return { ok: true, json: async () => ({}) } as MockResponse;
       },
     );
 

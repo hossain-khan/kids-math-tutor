@@ -72,7 +72,7 @@ export default function AdminManage() {
       setShowAuthModal(false);
       setPassword("");
       fetchWorksheets();
-    } catch (err) {
+    } catch {
       setAuthError("Connection error. Please try again.");
     }
   };

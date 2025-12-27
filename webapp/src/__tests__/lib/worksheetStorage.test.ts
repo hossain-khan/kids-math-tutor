@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import type { KVNamespace } from "@cloudflare/workers-types";
 import {
-  saveWorksheet,
   getWorksheet,
   listWorksheets,
   searchWorksheets,
@@ -28,7 +27,7 @@ function createMockKV() {
       const keys = Array.from(store.keys())
         .filter((k) => (prefix ? k.startsWith(prefix) : true))
         .map((name) => ({ name }));
-      return { keys } as any;
+      return { keys } as { keys: Array<{ name: string }> };
     },
   };
 
@@ -59,7 +58,7 @@ function makeWorksheet(
 
 describe("worksheetStorage - search, pagination, ratings", () => {
   let mock: ReturnType<typeof createMockKV>;
-  let ctx: any;
+  let ctx: { env: { KV: Partial<KVNamespace> } };
 
   beforeEach(() => {
     mock = createMockKV();
