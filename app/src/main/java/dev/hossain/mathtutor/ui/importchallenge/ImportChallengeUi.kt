@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -593,7 +594,7 @@ private fun ParentInfoSection(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedButton(
+            ElevatedButton(
                 onClick = {
                     openWorksheetCreator(context, worksheetUrl)
                 },
@@ -632,7 +633,7 @@ private fun ShareDetectionBanner(
                         if (hasValidationErrors) {
                             MaterialTheme.colorScheme.errorContainer
                         } else {
-                            MaterialTheme.colorScheme.primaryContainer
+                            MaterialTheme.colorScheme.tertiaryContainer
                         },
                 ),
         ) {
@@ -707,5 +708,262 @@ private fun openWorksheetCreator(
         } catch (ignored: Exception) {
             Timber.e(ignored, "[ImportChallenge] Failed to open URL via ACTION_VIEW: %s", url)
         }
+    }
+}
+
+// ==================== Previews ====================
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiWithJsonPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "Addition Practice",
+                          "subtitle": "Numbers 1-20",
+                          "operation": "addition",
+                          "problemCount": 10,
+                          "numberRange": {"min": 1, "max": 20}
+                        }
+                        """.trimIndent(),
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiWithValidationSuccessPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "Subtraction Challenge",
+                          "operation": "subtraction",
+                          "problemCount": 5,
+                          "numberRange": {"min": 0, "max": 10}
+                        }
+                        """.trimIndent(),
+                    validationState = ValidationState.Valid,
+                    previewData =
+                        PreviewData(
+                            title = "Subtraction Challenge",
+                            subtitle = null,
+                            problemCount = 5,
+                            operationsSummary = mapOf(MathOperation.SUBTRACTION to 5),
+                            sampleProblems =
+                                listOf(
+                                    MathProblem(
+                                        id = "1",
+                                        num1 = 10,
+                                        num2 = 3,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 7,
+                                    ),
+                                    MathProblem(
+                                        id = "2",
+                                        num1 = 7,
+                                        num2 = 2,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 5,
+                                    ),
+                                    MathProblem(
+                                        id = "3",
+                                        num1 = 9,
+                                        num2 = 4,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 5,
+                                    ),
+                                ),
+                            estimatedDuration = Duration.parse("PT5M"),
+                        ),
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiWithValidationErrorsPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "",
+                          "operation": "addition",
+                          "problemCount": 0,
+                          "numberRange": {"min": 10, "max": 5}
+                        }
+                        """.trimIndent(),
+                    validationState =
+                        ValidationState.Invalid(
+                            mapOf(
+                                "title" to "Title is required",
+                                "problemCount" to "Problem count must be between 1 and 50",
+                                "numberRange" to "Minimum must be less than maximum",
+                            ),
+                        ),
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiLoadingPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "explicit",
+                          "title": "Mixed Practice",
+                          "problems": [
+                            {"operand1": 5, "operand2": 3, "operation": "addition"},
+                            {"operand1": 8, "operand2": 2, "operation": "subtraction"}
+                          ]
+                        }
+                        """.trimIndent(),
+                    validationState = ValidationState.Valid,
+                    previewData =
+                        PreviewData(
+                            title = "Mixed Practice",
+                            subtitle = null,
+                            problemCount = 2,
+                            operationsSummary =
+                                mapOf(
+                                    MathOperation.ADDITION to 1,
+                                    MathOperation.SUBTRACTION to 1,
+                                ),
+                            sampleProblems =
+                                listOf(
+                                    MathProblem(
+                                        id = "1",
+                                        num1 = 5,
+                                        num2 = 3,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 8,
+                                    ),
+                                    MathProblem(
+                                        id = "2",
+                                        num1 = 8,
+                                        num2 = 2,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 6,
+                                    ),
+                                ),
+                            estimatedDuration = Duration.parse("PT2M"),
+                        ),
+                    isLoading = true,
+                    detectedJsonFromShare = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiWithShareDetectionPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "Addition Practice",
+                          "subtitle": "From shared link",
+                          "operation": "addition",
+                          "problemCount": 10,
+                          "numberRange": {"min": 1, "max": 20}
+                        }
+                        """.trimIndent(),
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiWithShareDetectionAndErrorsPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "",
+                          "operation": "addition",
+                          "problemCount": 0
+                        }
+                        """.trimIndent(),
+                    validationState =
+                        ValidationState.Invalid(
+                            mapOf(
+                                "title" to "Title is required",
+                                "problemCount" to "Problem count must be between 1 and 50",
+                                "numberRange" to "Number range is required",
+                            ),
+                        ),
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = true,
+                    eventSink = {},
+                ),
+        )
     }
 }
