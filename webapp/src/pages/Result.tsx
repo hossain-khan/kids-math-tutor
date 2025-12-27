@@ -46,15 +46,7 @@ export default function Result() {
     return () => clearTimeout(timeout);
   }, [deeplinkOpened]);
 
-  // Cleanup share states
-  useEffect(() => {
-    if (!shareSuccess) return;
-    const timeout = setTimeout(() => {
-      setShareSuccess(false);
-      setShareLink(null);
-    }, 5000);
-    return () => clearTimeout(timeout);
-  }, [shareSuccess]);
+  // Share states are no longer auto-cleaned - they persist until user navigates away
 
   useEffect(() => {
     if (!shareError) return;
@@ -291,7 +283,7 @@ export default function Result() {
               variant="primary"
               size="lg"
               onClick={handleShareToCommunity}
-              disabled={shareLoading}
+              disabled={shareLoading || shareSuccess}
               className="flex-1 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"
             >
               {shareLoading ? (
@@ -372,8 +364,17 @@ export default function Result() {
                 <p className="text-sm text-green-800 mb-3">
                   Your worksheet has been shared to the community library.
                 </p>
-                <div className="bg-white rounded p-2 text-xs font-mono text-gray-700 break-all cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => copyToClipboard(shareLink)}>
-                  {shareLink}
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1 bg-white rounded p-3 text-xs font-mono text-gray-700 break-all cursor-pointer hover:bg-gray-50 transition-colors" 
+                       onClick={() => copyToClipboard(shareLink)}>
+                    {shareLink}
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(shareLink)}
+                    className="flex-shrink-0 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-xs font-medium transition-colors whitespace-nowrap"
+                  >
+                    {copied ? "✅ Copied" : "📋 Copy"}
+                  </button>
                 </div>
               </div>
             </div>
