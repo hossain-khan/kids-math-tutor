@@ -114,4 +114,16 @@ interface CustomChallengeService {
      * @return Flow of list of active custom challenges
      */
     fun observeActiveChallenges(): Flow<List<CustomChallenge>>
+
+    /**
+     * Checks if a challenge with matching content already exists in the repository.
+     *
+     * A duplicate is identified when:
+     * - The challenge type matches (GENERATED or EXPLICIT)
+     * - All problems match (same operands, operation, and answer)
+     *
+     * @param spec The challenge import specification to check
+     * @return The title of the existing challenge if a duplicate is found, null otherwise
+     */
+    suspend fun findDuplicateChallenge(spec: ChallengeImportSpec): String?
 }

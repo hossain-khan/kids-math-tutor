@@ -11,6 +11,7 @@ export interface GeneratedTemplate {
   description: string;
   icon: string;
   config: {
+    type: "generated";
     title: string;
     subtitle: string;
     operation: MathOperation;
@@ -28,6 +29,7 @@ export interface ExplicitTemplate {
   description: string;
   icon: string;
   config: {
+    type: "explicit";
     title: string;
     subtitle: string;
     problems: ProblemSpec[];
@@ -43,6 +45,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice adding numbers up to 5",
       icon: "🔢",
       config: {
+        type: "generated",
         title: "Add to 5",
         subtitle: "Kindergarten - Adding numbers up to 5",
         operation: "addition",
@@ -56,6 +59,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice subtracting numbers up to 5",
       icon: "➖",
       config: {
+        type: "generated",
         title: "Subtract Within 5",
         subtitle: "Kindergarten - Subtracting numbers up to 5",
         operation: "subtraction",
@@ -71,6 +75,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice adding numbers up to 10",
       icon: "➕",
       config: {
+        type: "generated",
         title: "Add to 10",
         subtitle: "Grade 1 - Adding numbers up to 10",
         operation: "addition",
@@ -84,6 +89,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice subtracting numbers within 10",
       icon: "➖",
       config: {
+        type: "generated",
         title: "Subtract Within 10",
         subtitle: "Grade 1 - Subtracting within 10",
         operation: "subtraction",
@@ -97,6 +103,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice basic multiplication (1-5)",
       icon: "✖️",
       config: {
+        type: "generated",
         title: "Multiply Basics",
         subtitle: "Grade 1 - Basic multiplication with numbers 1-5",
         operation: "multiplication",
@@ -112,6 +119,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice adding numbers up to 20",
       icon: "➕",
       config: {
+        type: "generated",
         title: "Add to 20",
         subtitle: "Grade 2 - Adding numbers up to 20",
         operation: "addition",
@@ -125,6 +133,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice subtracting within 20",
       icon: "➖",
       config: {
+        type: "generated",
         title: "Subtract Within 20",
         subtitle: "Grade 2 - Subtracting within 20",
         operation: "subtraction",
@@ -138,6 +147,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice multiplication with numbers 1-10",
       icon: "✖️",
       config: {
+        type: "generated",
         title: "Multiply Extended",
         subtitle: "Grade 2 - Multiplying numbers 1-10",
         operation: "multiplication",
@@ -151,6 +161,7 @@ export const generatedTemplates: Record<GradeLevel, GeneratedTemplate[]> = {
       description: "Practice basic division (numbers 2-10)",
       icon: "➗",
       config: {
+        type: "generated",
         title: "Divide Basics",
         subtitle: "Grade 2 - Basic division with numbers 2-10",
         operation: "division",
@@ -170,6 +181,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Practice adding same numbers",
       icon: "👯",
       config: {
+        type: "explicit",
         title: "Doubles",
         subtitle: "Kindergarten - Adding same numbers together",
         problems: [
@@ -187,6 +199,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Find pairs that make 5",
       icon: "🔗",
       config: {
+        type: "explicit",
         title: "Number Bonds to 5",
         subtitle: "Kindergarten - Finding pairs that make 5",
         problems: [
@@ -204,6 +217,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Quick addition facts within 5",
       icon: "⚡",
       config: {
+        type: "explicit",
         title: "Speed Drills",
         subtitle: "Kindergarten - Build fluency with quick addition",
         problems: [
@@ -221,6 +235,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Easy addition facts to build confidence",
       icon: "➕",
       config: {
+        type: "explicit",
         title: "Simple Addition",
         subtitle: "Kindergarten - Building addition foundations",
         problems: [
@@ -240,6 +255,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Adding 5 to multiples of 5",
       icon: "5️⃣",
       config: {
+        type: "explicit",
         title: "Add 5s Practice",
         subtitle: "Grade 1 - Adding to multiples of 5",
         problems: [
@@ -262,6 +278,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Practice adding same numbers",
       icon: "👯",
       config: {
+        type: "explicit",
         title: "Doubles Practice",
         subtitle: "Grade 1 - Adding same numbers together",
         problems: [
@@ -280,6 +297,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Numbers close to doubles (5+4, 6+7)",
       icon: "📊",
       config: {
+        type: "explicit",
         title: "Near Doubles",
         subtitle: "Grade 1 - Adding numbers near doubles",
         problems: [
@@ -302,6 +320,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Add to 10, then add more",
       icon: "🔟",
       config: {
+        type: "explicit",
         title: "10 Plus Numbers",
         subtitle: "Grade 1 - 10 plus other numbers",
         problems: [
@@ -324,6 +343,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Find pairs that make 10",
       icon: "🔗",
       config: {
+        type: "explicit",
         title: "Number Bonds to 10",
         subtitle: "Grade 1 - Finding pairs that make 10",
         problems: [
@@ -341,6 +361,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Simple related addition & subtraction facts",
       icon: "👨‍👩‍👧‍👦",
       config: {
+        type: "explicit",
         title: "Fact Families",
         subtitle: "Grade 1 - Related addition and subtraction facts",
         problems: [
@@ -361,6 +382,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Quick addition facts within 10",
       icon: "⚡",
       config: {
+        type: "explicit",
         title: "Speed Drills",
         subtitle: "Grade 1 - Build fluency with quick addition",
         problems: [
@@ -381,6 +403,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Add and subtract for variety",
       icon: "🎲",
       config: {
+        type: "explicit",
         title: "Mixed Operations Review",
         subtitle: "Grade 1 - Mix of addition and subtraction",
         problems: [
@@ -403,6 +426,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Adding 5 to multiples of 5",
       icon: "5️⃣",
       config: {
+        type: "explicit",
         title: "Add 5s Practice",
         subtitle: "Grade 2 - Adding to multiples of 5",
         problems: [
@@ -425,6 +449,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Practice adding same numbers",
       icon: "👯",
       config: {
+        type: "explicit",
         title: "Doubles Practice",
         subtitle: "Grade 2 - Adding same numbers together",
         problems: [
@@ -447,6 +472,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Add to 100, then add more",
       icon: "💯",
       config: {
+        type: "explicit",
         title: "100 Plus Numbers",
         subtitle: "Grade 2 - 100 plus other numbers",
         problems: [
@@ -469,6 +495,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Practice multiplying by 10",
       icon: "✖️",
       config: {
+        type: "explicit",
         title: "Multiply by 10",
         subtitle: "Grade 2 - Multiplying numbers by 10",
         problems: [
@@ -491,6 +518,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Practice dividing by 2",
       icon: "➗",
       config: {
+        type: "explicit",
         title: "Divide by 2",
         subtitle: "Grade 2 - Dividing numbers by 2",
         problems: [
@@ -513,6 +541,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Practice with 2-digit numbers",
       icon: "🔢",
       config: {
+        type: "explicit",
         title: "Tens and Ones",
         subtitle: "Grade 2 - Adding tens and ones",
         problems: [
@@ -535,6 +564,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Related addition & subtraction facts",
       icon: "👨‍👩‍👧‍👦",
       config: {
+        type: "explicit",
         title: "Fact Families",
         subtitle: "Grade 2 - Related addition and subtraction facts",
         problems: [
@@ -557,6 +587,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Count by 2s, 5s, and 10s (multiplication prep)",
       icon: "🔢",
       config: {
+        type: "explicit",
         title: "Skip Counting",
         subtitle: "Grade 2 - Multiplication preparation with patterns",
         problems: [
@@ -579,6 +610,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Random mix of +, -, × for skill review",
       icon: "🎲",
       config: {
+        type: "explicit",
         title: "Mixed Operations Review",
         subtitle: "Grade 2 - Mix of addition, subtraction, and multiplication",
         problems: [
@@ -601,6 +633,7 @@ export const explicitTemplates: Record<GradeLevel, ExplicitTemplate[]> = {
       description: "Quick facts for building automaticity",
       icon: "⚡",
       config: {
+        type: "explicit",
         title: "Speed Drills",
         subtitle: "Grade 2 - Build fluency with quick practice",
         problems: [

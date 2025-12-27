@@ -147,6 +147,76 @@ class ChallengeJsonParserTest {
         assertThat(result.isFailure).isTrue()
     }
 
+    @Test
+    fun `parseFromText with missing type field auto-detects generated type`() {
+        // This is the exact scenario from the user's error - JSON without "type" field
+        val json =
+            """
+            {
+              "title": "Add to 5",
+              "subtitle": "Kindergarten - Adding numbers up to 5",
+              "operation": "addition",
+              "problemCount": 10,
+              "numberRange": {"min": 0, "max": 5}
+            }
+            """.trimIndent()
+
+        val result = parser.parseFromText(json)
+
+        // Should succeed by auto-detecting as "generated" type
+        assertThat(result.isSuccess).isTrue()
+        val spec = result.getOrThrow()
+        assertThat(spec).isInstanceOf(ChallengeImportSpec.Generated::class.java)
+
+        val generated = spec as ChallengeImportSpec.Generated
+        assertThat(generated.title).isEqualTo("Add to 5")
+        assertThat(generated.operation).isEqualTo(MathOperation.ADDITION)
+        assertThat(generated.problemCount).isEqualTo(10)
+    }
+
+    @Test
+    fun `parseFromText with missing type field auto-detects explicit type`() {
+        val json =
+            """
+            {
+              "title": "Mixed Practice",
+              "subtitle": "Various problems",
+              "problems": [
+                {"operand1": 5, "operand2": 3, "operation": "addition"},
+                {"operand1": 9, "operand2": 5, "operation": "addition"}
+              ]
+            }
+            """.trimIndent()
+
+        val result = parser.parseFromText(json)
+
+        // Should succeed by auto-detecting as "explicit" type
+        assertThat(result.isSuccess).isTrue()
+        val spec = result.getOrThrow()
+        assertThat(spec).isInstanceOf(ChallengeImportSpec.Explicit::class.java)
+
+        val explicit = spec as ChallengeImportSpec.Explicit
+        assertThat(explicit.title).isEqualTo("Mixed Practice")
+        assertThat(explicit.problems).hasSize(2)
+    }
+
+    @Test
+    fun `parseFromText with missing type and ambiguous structure fails with helpful error`() {
+        val json =
+            """
+            {
+              "title": "Test"
+            }
+            """.trimIndent()
+
+        val result = parser.parseFromText(json)
+
+        assertThat(result.isFailure).isTrue()
+        val exception = result.exceptionOrNull()
+        assertThat(exception?.message).contains("Cannot determine challenge type")
+        assertThat(exception?.message).contains("'type' field")
+    }
+
     // ==================== Validation Tests ====================
 
     @Test

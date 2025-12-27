@@ -95,10 +95,22 @@ fun ImportChallengeUi(
                 ParentInfoSection()
             }
 
+            // Validation messages (shown above input field)
+            if (state.validationState is ValidationState.Invalid) {
+                item {
+                    ValidationErrorsSection(errors = state.validationState.fieldErrors)
+                }
+            }
+
+            if (state.validationState is ValidationState.Valid && state.previewData != null) {
+                item {
+                    ValidationSuccessSection()
+                }
+            }
+
             item {
                 JsonInputSection(
                     jsonInput = state.jsonInput,
-                    validationState = state.validationState,
                     onJsonChanged = { state.eventSink(ImportChallengeScreen.Event.JsonInputChanged(it)) },
                     onValidate = { state.eventSink(ImportChallengeScreen.Event.ValidateAndPreview) },
                     onClear = { state.eventSink(ImportChallengeScreen.Event.ClearInput) },
@@ -148,7 +160,6 @@ private fun ImportTopBar(onNavigateBack: () -> Unit) {
 @Composable
 private fun JsonInputSection(
     jsonInput: String,
-    validationState: ValidationState,
     onJsonChanged: (String) -> Unit,
     onValidate: () -> Unit,
     onClear: () -> Unit,
@@ -187,14 +198,8 @@ private fun JsonInputSection(
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 },
-                isError = validationState is ValidationState.Invalid,
                 textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             )
-
-            if (validationState is ValidationState.Invalid) {
-                Spacer(modifier = Modifier.height(8.dp))
-                ValidationErrorsDisplay(errors = validationState.fieldErrors)
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -253,6 +258,102 @@ private fun ValidationErrorsDisplay(errors: Map<String, String>) {
 }
 
 /**
+ * Display validation errors as a section above the input field.
+ */
+@Composable
+private fun ValidationErrorsSection(errors: Map<String, String>) {
+    Card(
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+            ),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(24.dp),
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Validation Failed",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                errors.forEach { (field, error) ->
+                    Text(
+                        text = if (field == "general" || field == "duplicate") error else "• $field: $error",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Display validation success message as a section above the input field.
+ */
+@Composable
+private fun ValidationSuccessSection() {
+    Card(
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp),
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column {
+                Text(
+                    text = "Validation Successful",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Your challenge is valid! Review the preview below and tap \"Save Challenge\" to add it to your library.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+        }
+    }
+}
+
+/**
  * Section for previewing the challenge.
  */
 @Composable
@@ -268,14 +369,25 @@ private fun PreviewSection(
                 .fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+            // Header section with title
+            Text(
+                text = "Challenge Preview",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Challenge title and subtitle
             Text(
                 text = previewData.title,
                 style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.primary,
             )
 
             if (previewData.subtitle != null) {
@@ -283,7 +395,7 @@ private fun PreviewSection(
                 Text(
                     text = previewData.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
@@ -297,8 +409,8 @@ private fun PreviewSection(
             // Sample problems preview
             Text(
                 text = "Sample Problems:",
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -327,6 +439,8 @@ private fun PreviewSection(
                         modifier = Modifier.size(16.dp),
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Saving...")
                 } else {
                     Text("Save Challenge")
                 }

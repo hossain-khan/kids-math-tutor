@@ -9,6 +9,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Parser for custom challenge JSON specifications.
@@ -58,6 +60,7 @@ class DefaultChallengeJsonParser
                 ignoreUnknownKeys = true
                 isLenient = false
                 coerceInputValues = true
+                classDiscriminator = "type"
             }
 
         override fun parseFromText(text: String): Result<ChallengeImportSpec> =
@@ -65,8 +68,19 @@ class DefaultChallengeJsonParser
                 // Try to find JSON in the text first
                 val jsonText = findJsonInText(text) ?: text.trim()
 
-                // Parse the JSON
-                val spec = json.decodeFromString<ChallengeImportSpec>(jsonText)
+                // Try to parse the JSON
+                val spec =
+                    try {
+                        json.decodeFromString<ChallengeImportSpec>(jsonText)
+                    } catch (e: SerializationException) {
+                        // Check if this is the missing discriminator error
+                        if (e.message?.contains("discriminator") == true) {
+                            // Try to infer the type from the JSON structure
+                            inferAndParseType(jsonText)
+                        } else {
+                            throw e
+                        }
+                    }
 
                 // Validate the parsed spec
                 when (val validationResult = validateSpec(spec)) {
@@ -79,6 +93,48 @@ class DefaultChallengeJsonParser
                     }
                 }
             }
+
+        /**
+         * Attempts to infer the challenge type from JSON structure and parse accordingly.
+         * Falls back to throwing a helpful error if type cannot be inferred.
+         */
+        private fun inferAndParseType(jsonText: String): ChallengeImportSpec {
+            // Parse as JsonElement to inspect structure
+            val jsonElement = json.parseToJsonElement(jsonText)
+            if (jsonElement !is JsonObject) {
+                throw IllegalArgumentException(
+                    "Invalid JSON: Root must be an object. " +
+                        "Please add a 'type' field with value 'generated' or 'explicit'.",
+                )
+            }
+
+            // Try to infer type from structure
+            val inferredType =
+                when {
+                    jsonElement.containsKey("problems") -> {
+                        "explicit"
+                    }
+
+                    jsonElement.containsKey("operation") && jsonElement.containsKey("problemCount") -> {
+                        "generated"
+                    }
+
+                    else -> {
+                        throw IllegalArgumentException(
+                            "Cannot determine challenge type. JSON must include a 'type' field with value 'generated' or 'explicit'. " +
+                                "Generated challenges need: operation, problemCount, numberRange. " +
+                                "Explicit challenges need: problems array.",
+                        )
+                    }
+                }
+
+            // Add the type field and re-parse
+            val mutableMap: MutableMap<String, kotlinx.serialization.json.JsonElement> = jsonElement.toMutableMap()
+            mutableMap["type"] = JsonPrimitive(inferredType)
+            val fixedJson = JsonObject(mutableMap).toString()
+
+            return json.decodeFromString<ChallengeImportSpec>(fixedJson)
+        }
 
         override fun findJsonInText(text: String): String? {
             val trimmedText = text.trim()

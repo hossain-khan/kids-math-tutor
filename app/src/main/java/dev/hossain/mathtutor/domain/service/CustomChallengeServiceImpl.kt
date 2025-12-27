@@ -148,6 +148,64 @@ class CustomChallengeServiceImpl
 
         override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = repository.observeActiveChallenges()
 
+        override suspend fun findDuplicateChallenge(spec: ChallengeImportSpec): String? {
+            Timber.d("Checking for duplicate challenge: type=${spec::class.simpleName}, title=${spec.title}")
+
+            // Get all existing challenges
+            val existingChallenges = repository.getAllChallenges()
+
+            // Generate problems from the spec to compare
+            val newProblems =
+                when (spec) {
+                    is ChallengeImportSpec.Generated -> generateProblemsFromSpec(spec)
+                    is ChallengeImportSpec.Explicit -> processExplicitProblems(spec.problems)
+                }
+
+            // Determine the challenge type
+            val newChallengeType =
+                when (spec) {
+                    is ChallengeImportSpec.Generated -> ChallengeType.GENERATED
+                    is ChallengeImportSpec.Explicit -> ChallengeType.EXPLICIT
+                }
+
+            // Check if any existing challenge matches
+            for (existingChallenge in existingChallenges) {
+                // Skip if type doesn't match
+                if (existingChallenge.type != newChallengeType) {
+                    continue
+                }
+
+                // Check if problems match
+                if (problemsMatch(existingChallenge.problems, newProblems)) {
+                    Timber.d("Duplicate challenge found: ${existingChallenge.title}")
+                    return existingChallenge.title
+                }
+            }
+
+            Timber.d("No duplicate challenge found")
+            return null
+        }
+
+        /**
+         * Checks if two lists of problems are identical.
+         * Problems match if they have the same operands, operation, and answer in the same order.
+         */
+        private fun problemsMatch(
+            existing: List<MathProblem>,
+            new: List<MathProblem>,
+        ): Boolean {
+            if (existing.size != new.size) {
+                return false
+            }
+
+            return existing.zip(new).all { (existingProblem, newProblem) ->
+                existingProblem.num1 == newProblem.num1 &&
+                    existingProblem.num2 == newProblem.num2 &&
+                    existingProblem.operation == newProblem.operation &&
+                    existingProblem.correctAnswer == newProblem.correctAnswer
+            }
+        }
+
         /**
          * Generates problems from a generated specification using the ProblemGenerator.
          *
