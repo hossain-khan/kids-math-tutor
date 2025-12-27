@@ -115,7 +115,7 @@ The webapp is deployed to Cloudflare Workers with static assets.
 npx wrangler login
 
 # Build and deploy to production
-pnpm build && wrangler deploy --env production
+pnpm build && npx wrangler deploy --env production
 ```
 
 #### Environment Configuration
