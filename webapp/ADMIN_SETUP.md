@@ -92,6 +92,22 @@ Deploy with:
 wrangler deploy --env production
 ```
 
+**⚠️ Critical Configuration**: When deploying to production, your `wrangler.json` production environment MUST include the worker name to prevent creating a separate unrouted worker:
+
+```json
+{
+  "env": {
+    "production": {
+      "name": "pup-tutor-worksheet-generator",  // ← REQUIRED
+      "vars": {},
+      "workers_dev": false
+    }
+  }
+}
+```
+
+Without this `name` field, Cloudflare creates a separate `pup-tutor-worksheet-generator-production` worker without routes, causing the site to be unreachable. See the main [README.md](./README.md#environment-configuration) for details.
+
 ### 3. Access the Admin Portal
 
 1. Navigate to: `https://math-worksheet.gohk.xyz/manage-worksheets`

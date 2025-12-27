@@ -27,7 +27,7 @@ interface AdminWorksheet {
 
 export default function AdminManage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(true);
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState<string | null>(null);
   const [worksheets, setWorksheets] = useState<AdminWorksheet[]>([]);
@@ -38,11 +38,12 @@ export default function AdminManage() {
 
   // Check authentication on mount
   useEffect(() => {
-    if (isAdminAuthenticated()) {
+    const isAuth = isAdminAuthenticated();
+
+    if (isAuth) {
       setIsAuthenticated(true);
+      setShowAuthModal(false);
       fetchWorksheets();
-    } else {
-      setShowAuthModal(true);
     }
   }, []);
 
@@ -73,7 +74,6 @@ export default function AdminManage() {
       fetchWorksheets();
     } catch (err) {
       setAuthError("Connection error. Please try again.");
-      console.error("Auth error:", err);
     }
   };
 
@@ -83,6 +83,12 @@ export default function AdminManage() {
 
     try {
       const token = getAdminAuthToken();
+
+      if (!token) {
+        setError("Session expired, please login again");
+        return;
+      }
+
       const response = await fetch("/api/v1/admin/worksheets", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -91,6 +97,7 @@ export default function AdminManage() {
 
       if (!response.ok) {
         if (response.status === 401) {
+          console.error("❌ Unauthorized - token invalid");
           setIsAuthenticated(false);
           setShowAuthModal(true);
           return;
@@ -99,8 +106,14 @@ export default function AdminManage() {
       }
 
       const data = await response.json();
+      console.log(
+        "✅ Worksheets loaded:",
+        data.worksheets?.length || 0,
+        "items",
+      );
       setWorksheets(data.worksheets || []);
     } catch (err) {
+      console.error("❌ Fetch worksheets error:", err);
       setError(
         err instanceof Error ? err.message : "Failed to load worksheets",
       );
@@ -141,6 +154,11 @@ export default function AdminManage() {
     setIsAuthenticated(false);
     setShowAuthModal(true);
   };
+
+  // Render logic
+  if (!showAuthModal && !isAuthenticated) {
+    setShowAuthModal(true);
+  }
 
   if (showAuthModal && !isAuthenticated) {
     return (

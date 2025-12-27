@@ -19,6 +19,7 @@
   ],
   "env": {
     "production": {
+      "name": "pup-tutor-worksheet-generator",
       "kv_namespaces": [
         {
           "binding": "KV",
@@ -34,6 +35,7 @@
       "kv_namespaces": [
         {
           "binding": "KV",
+          "id": "dev-namespace",
           "preview_id": "b94eac3c955f44df8eb8722850956947"
         }
       ],
