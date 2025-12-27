@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface StarRatingProps {
   rating: number;
   count: number;
   onRate: (stars: number) => Promise<void>;
   disabled?: boolean;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
 export default function StarRating({
@@ -13,22 +13,22 @@ export default function StarRating({
   count,
   onRate,
   disabled = false,
-  size = 'md',
+  size = "md",
 }: StarRatingProps) {
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
 
   const sizeClass = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-lg',
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg",
   }[size];
 
   const starSizeClass = {
-    sm: 'w-4 h-4',
-    md: 'w-5 h-5',
-    lg: 'w-6 h-6',
+    sm: "w-4 h-4",
+    md: "w-5 h-5",
+    lg: "w-6 h-6",
   }[size];
 
   const handleStarClick = async (star: number) => {
@@ -41,7 +41,7 @@ export default function StarRating({
       // Reset submission state after 2 seconds
       setTimeout(() => setRatingSubmitted(false), 2000);
     } catch (error) {
-      console.error('Failed to submit rating:', error);
+      console.error("Failed to submit rating:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -56,18 +56,18 @@ export default function StarRating({
           <button
             key={star}
             onClick={() => handleStarClick(star)}
-            onMouseEnter={() => !disabled && !isSubmitting && setHoverRating(star)}
+            onMouseEnter={() =>
+              !disabled && !isSubmitting && setHoverRating(star)
+            }
             onMouseLeave={() => setHoverRating(0)}
             disabled={disabled || isSubmitting}
             className="transition-transform hover:scale-110 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 rounded"
-            title={`Rate ${star} star${star > 1 ? 's' : ''}`}
-            aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
+            title={`Rate ${star} star${star > 1 ? "s" : ""}`}
+            aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
           >
             <span
               className={`${starSizeClass} inline-block transition-colors ${
-                star <= displayRating
-                  ? 'text-yellow-400'
-                  : 'text-gray-300'
+                star <= displayRating ? "text-yellow-400" : "text-gray-300"
               }`}
             >
               ★
@@ -79,8 +79,9 @@ export default function StarRating({
       <span className="text-gray-600 whitespace-nowrap">
         {rating > 0 ? (
           <>
-            <span className="font-semibold text-gray-900">{rating.toFixed(1)}★</span>
-            {' '}
+            <span className="font-semibold text-gray-900">
+              {rating.toFixed(1)}★
+            </span>{" "}
             <span className="text-gray-500">({count})</span>
           </>
         ) : (

@@ -37,14 +37,42 @@ Web-based worksheet creator for the Kids Math Pup Tutor Android app. Create cust
 ```bash
 # Install dependencies
 pnpm install
+```
 
-# Start development server
+### Development
+
+#### Local Development Server (Frontend + Backend)
+
+To run the full development environment with both the frontend and API:
+
+```bash
+# Terminal 1: Start the Wrangler dev server (API on port 8787)
+wrangler dev --env development
+
+# Terminal 2: Start the Vite dev server (Frontend on port 5173)
 pnpm dev
 
 # Open http://localhost:5173
 ```
 
-### Development
+The Vite dev server is configured with a proxy that forwards `/api` requests to the Wrangler dev server on port 8787. This allows the frontend to communicate with the backend API locally.
+
+**Important**: Both servers must be running simultaneously for full functionality.
+
+#### Frontend-Only Development
+
+If you only need to develop the frontend UI without API changes:
+
+```bash
+# Start Vite dev server
+pnpm dev
+
+# Open http://localhost:5173
+```
+
+**Note**: Pages requiring API calls (like the admin portal at `/manage-worksheets`) will not work without the Wrangler dev server running.
+
+#### Linting and Testing
 
 ```bash
 # Run linter
@@ -80,12 +108,43 @@ The webapp is deployed to Cloudflare Workers with static assets.
 
 **Live URL**: https://math-worksheet.gohk.xyz/
 
+#### Deployment Steps
+
 ```bash
 # Login to Cloudflare (first time only)
 npx wrangler login
 
-# Build and deploy
-pnpm build && npx wrangler deploy
+# Build and deploy to production
+pnpm build && wrangler deploy --env production
+```
+
+#### Environment Configuration
+
+The deployment uses environment-specific configurations in `wrangler.json`:
+- **Production**: Uses Cloudflare secrets for the admin password, but deploys to the **same worker instance** as the main deployment (not a separate `-production` worker)
+- **Development**: Uses local password from `wrangler.json` for local testing
+
+**⚠️ Important Configuration Detail**:
+When using `wrangler deploy --env production`, Cloudflare automatically creates a new worker with a `-production` suffix if the `name` field is not explicitly set in the environment config. This can create a separate, unreachable worker instance without routes.
+
+To prevent this, the `wrangler.json` must include `"name": "pup-tutor-worksheet-generator"` in the production environment section:
+
+```json
+"env": {
+  "production": {
+    "name": "pup-tutor-worksheet-generator",  // ← CRITICAL: Prevents -production suffix
+    "kv_namespaces": [...],
+    "vars": {"ADMIN_PASSWORD": "..."},
+    "workers_dev": false
+  }
+}
+```
+
+Without this, the production deployment creates `pup-tutor-worksheet-generator-production` (a separate, unrouted worker) instead of updating the main `pup-tutor-worksheet-generator` worker that has the routes configured.
+
+For production, set the admin password as a Cloudflare secret:
+```bash
+wrangler secret put ADMIN_PASSWORD --env production
 ```
 
 ## Project Structure
@@ -116,8 +175,8 @@ The webapp is deployed as a static SPA to Cloudflare Workers.
 # Build for production
 pnpm build
 
-# Deploy to Cloudflare Workers
-npx wrangler deploy
+# Deploy to Cloudflare Workers (production environment)
+wrangler deploy --env production
 ```
 
 ### First-Time Setup
@@ -128,18 +187,76 @@ If you haven't deployed before:
 # 1. Login to Cloudflare
 npx wrangler login
 
-# 2. Build and deploy
-pnpm build && npx wrangler deploy
+# 2. Set the admin password as a Cloudflare secret
+wrangler secret put ADMIN_PASSWORD
+# Enter your secure admin password when prompted
+
+# 3. Build and deploy
+pnpm build && wrangler deploy --env production
 ```
 
 The configuration is in `wrangler.json`:
 - Worker name: `pup-tutor-worksheet-generator`
 - Static assets directory: `./dist`
 - SPA mode enabled (all routes serve `index.html`)
+- KV Namespace binding for storing shared worksheets
+- Admin password from environment variables
+
+### Admin Portal
+
+Once deployed, access the admin portal at:
+**https://math-worksheet.gohk.xyz/manage-worksheets**
+
+Features:
+- View all community-shared worksheets
+- See worksheet statistics (views, downloads, ratings)
+- Delete inappropriate or duplicate worksheets
+- Password-protected access with 24-hour session tokens
+
+See [ADMIN_SETUP.md](./ADMIN_SETUP.md) for complete admin portal documentation.
 
 ### View Deployment
 
 After deployment, visit: https://math-worksheet.gohk.xyz/
+
+### Troubleshooting Deployment Issues
+
+#### Blank Page in Production
+
+If you deploy successfully but see a blank page:
+
+1. **Check Cloudflare Workers Dashboard**:
+   - Ensure only ONE worker instance exists: `pup-tutor-worksheet-generator`
+   - If a `-production` variant exists, **delete it** - it means the `name` field was missing from `wrangler.json`
+   - Verify the worker has active routes (should show `math-worksheet.gohk.xyz`)
+
+2. **Verify wrangler.json Configuration**:
+   - The production environment MUST include: `"name": "pup-tutor-worksheet-generator"`
+   - Without it, Cloudflare creates a separate, unrouted worker instance
+
+3. **Hard Refresh Browser**:
+   - Clear cache: DevTools → Application → Clear site data
+   - Hard refresh: Cmd+Shift+R (macOS) or Ctrl+Shift+R (Windows/Linux)
+
+4. **Check Browser Console**:
+   - Open DevTools (F12) → Console tab
+   - You should see initialization logs starting with 🚀
+   - If blank, the JavaScript bundle isn't loading - check Network tab for failed asset requests
+
+#### API Requests Return 404
+
+If the admin portal loads but API calls fail:
+
+1. **Local Development**: Ensure both servers are running:
+   ```bash
+   # Terminal 1
+   wrangler dev --env development
+   # Terminal 2
+   pnpm dev
+   ```
+   - Vite proxies `/api` calls to port 8787 where Wrangler dev server runs
+
+2. **Production**: The API routes should be handled by the Worker itself - no proxy needed
 
 ## JSON Schema
 

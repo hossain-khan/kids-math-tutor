@@ -3,7 +3,7 @@
  * Used for rating deduplication without storing PII
  */
 
-const SESSION_ID_KEY = 'worksheetRatingSessionId';
+const SESSION_ID_KEY = "worksheetRatingSessionId";
 
 /**
  * Get or create a unique session ID
@@ -22,7 +22,7 @@ export function getOrCreateSessionId(): string {
     return sessionId;
   } catch (error) {
     // Fallback if localStorage is not available
-    console.warn('Unable to use localStorage for session ID:', error);
+    console.warn("Unable to use localStorage for session ID:", error);
     return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 }
@@ -34,6 +34,6 @@ export function clearSessionId(): void {
   try {
     localStorage.removeItem(SESSION_ID_KEY);
   } catch (error) {
-    console.warn('Unable to clear session ID:', error);
+    console.warn("Unable to clear session ID:", error);
   }
 }

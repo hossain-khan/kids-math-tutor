@@ -25,16 +25,14 @@ function getRateLimitKey(ip: string, date: string): string {
  */
 function getTodayDate(): string {
   const now = new Date();
-  return now.toISOString().split('T')[0];
+  return now.toISOString().split("T")[0];
 }
 
 /**
  * Check if client has exceeded daily share limit
  * @returns { allowed: boolean, remaining: number, resetTime: number (ms) }
  */
-export async function checkRateLimit(
-  context: RateLimitContext,
-): Promise<{
+export async function checkRateLimit(context: RateLimitContext): Promise<{
   allowed: boolean;
   remaining: number;
   resetTime: number;
@@ -62,7 +60,7 @@ export async function checkRateLimit(
       resetTime,
     };
   } catch (error) {
-    console.error('Rate limit check failed:', error);
+    console.error("Rate limit check failed:", error);
     // On error, allow the request (fail open)
     return {
       allowed: true,
@@ -91,6 +89,6 @@ export async function incrementShareCount(
       expirationTtl: 86400,
     });
   } catch (error) {
-    console.error('Failed to increment share count:', error);
+    console.error("Failed to increment share count:", error);
   }
 }

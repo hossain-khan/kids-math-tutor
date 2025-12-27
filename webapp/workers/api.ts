@@ -30,6 +30,7 @@ import {
 interface Env {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   KV: any; // KVNamespace from Cloudflare Workers
+  ADMIN_PASSWORD?: string; // Admin password from environment variables
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -43,6 +44,56 @@ function getClientIp(c: Context<{ Bindings: Env }>): string {
     c.req.header('X-Forwarded-For') ||
     'unknown'
   );
+}
+
+/**
+ * Helper to verify admin token
+ * Tokens are valid for 24 hours
+ */
+function verifyAdminToken(
+  c: Context<{ Bindings: Env }>,
+  password: string,
+): string {
+  const adminPassword = c.env.ADMIN_PASSWORD;
+  if (!adminPassword || password !== adminPassword) {
+    throw new Error('Invalid password');
+  }
+
+  // Create a simple token that includes timestamp
+  // In production, use JWT or similar
+  const expiryTime = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+  const tokenStr = `${password}:${expiryTime}`;
+  const token = btoa(tokenStr); // Use btoa instead of Buffer.from
+  return token;
+}
+
+/**
+ * Helper to validate admin token from request
+ */
+function validateAdminToken(
+  c: Context<{ Bindings: Env }>,
+): boolean {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return false;
+  }
+
+  const token = authHeader.slice(7);
+  try {
+    const decoded = atob(token); // Use atob instead of Buffer.from
+    const [password, expiryStr] = decoded.split(':');
+    const expiry = parseInt(expiryStr, 10);
+
+    // Check if token has expired
+    if (Date.now() > expiry) {
+      return false;
+    }
+
+    // Verify password matches
+    return password === c.env.ADMIN_PASSWORD;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -435,6 +486,144 @@ app.post('/api/v1/worksheets/:id/rate', async (c) => {
  */
 app.get('/api/health', (c) => {
   return c.json({ status: 'ok' });
+});
+
+/**
+ * ADMIN ENDPOINTS
+ * Protected endpoints for managing worksheets
+ */
+
+/**
+ * POST /api/v1/admin/auth
+ * Authenticate and get a token for admin access
+ */
+app.post('/api/v1/admin/auth', async (c) => {
+  try {
+    const body = await c.req.json();
+    const { password } = body;
+
+    if (!password) {
+      return c.json(
+        {
+          error: 'Password is required',
+        },
+        400,
+      );
+    }
+
+    const token = verifyAdminToken(c, password);
+    const expiry = Date.now() + 24 * 60 * 60 * 1000;
+
+    return c.json(
+      {
+        token,
+        expiry,
+        message: 'Authentication successful',
+      },
+      200,
+    );
+  } catch (error) {
+    return c.json(
+      {
+        error: error instanceof Error ? error.message : 'Authentication failed',
+      },
+      401,
+    );
+  }
+});
+
+/**
+ * GET /api/v1/admin/worksheets
+ * List all shared worksheets (admin only)
+ */
+app.get('/api/v1/admin/worksheets', async (c) => {
+  try {
+    if (!validateAdminToken(c)) {
+      return c.json(
+        {
+          error: 'Unauthorized',
+        },
+        401,
+      );
+    }
+
+    const result = await listWorksheets(
+      { env: { KV: c.env.KV } },
+      {
+        sortBy: 'newest',
+        limit: 1000,
+        offset: 0,
+      },
+    );
+
+    return c.json({
+      worksheets: result.items,
+      total: result.total,
+    });
+  } catch (error) {
+    console.error('Admin list worksheets error:', error);
+    return c.json(
+      {
+        error: 'Failed to list worksheets',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500,
+    );
+  }
+});
+
+/**
+ * DELETE /api/v1/admin/worksheets/:id
+ * Delete a worksheet (admin only)
+ */
+app.delete('/api/v1/admin/worksheets/:id', async (c) => {
+  try {
+    if (!validateAdminToken(c)) {
+      return c.json(
+        {
+          error: 'Unauthorized',
+        },
+        401,
+      );
+    }
+
+    const id = c.req.param('id');
+
+    // Check if worksheet exists
+    const worksheet = await getWorksheet(
+      { env: { KV: c.env.KV } },
+      id,
+    );
+
+    if (!worksheet) {
+      return c.json(
+        {
+          error: 'Worksheet not found',
+        },
+        404,
+      );
+    }
+
+    // Delete the worksheet
+    await c.env.KV.delete(`worksheet:${id}`);
+
+    // Also delete associated ratings
+    await c.env.KV.delete(`ratings:${id}`);
+
+    return c.json({
+      success: true,
+      message: 'Worksheet deleted successfully',
+    });
+  } catch (error) {
+    console.error('Admin delete worksheet error:', error);
+    return c.json(
+      {
+        error: 'Failed to delete worksheet',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500,
+    );
+  }
 });
 
 export default app;
