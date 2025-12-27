@@ -3,8 +3,8 @@
  * Handles token storage and validation for admin portal access
  */
 
-const ADMIN_TOKEN_KEY = 'admin_token';
-const ADMIN_TOKEN_EXPIRY_KEY = 'admin_token_expiry';
+const ADMIN_TOKEN_KEY = "admin_token";
+const ADMIN_TOKEN_EXPIRY_KEY = "admin_token_expiry";
 
 export function getAdminAuthToken(): string | null {
   const token = localStorage.getItem(ADMIN_TOKEN_KEY);

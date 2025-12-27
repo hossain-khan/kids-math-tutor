@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import Button from '@/components/Button';
-import Card from '@/components/Card';
-import { getAdminAuthToken, clearAdminAuthToken, isAdminAuthenticated } from '@/lib/adminAuth';
-import type { ProblemSpec } from '@/lib/schemas/challenge-schema';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Button from "@/components/Button";
+import Card from "@/components/Card";
+import {
+  getAdminAuthToken,
+  clearAdminAuthToken,
+  isAdminAuthenticated,
+} from "@/lib/adminAuth";
+import type { ProblemSpec } from "@/lib/schemas/challenge-schema";
 
 interface AdminWorksheet {
   id: string;
-  type: 'explicit' | 'generated';
+  type: "explicit" | "generated";
   title: string;
   subtitle?: string;
   description?: string;
@@ -24,7 +28,7 @@ interface AdminWorksheet {
 export default function AdminManage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState<string | null>(null);
   const [worksheets, setWorksheets] = useState<AdminWorksheet[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,29 +51,29 @@ export default function AdminManage() {
     setAuthError(null);
 
     try {
-      const response = await fetch('/api/v1/admin/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/v1/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setAuthError(data.error || 'Authentication failed');
+        setAuthError(data.error || "Authentication failed");
         return;
       }
 
       // Store token
-      localStorage.setItem('admin_token', data.token);
-      localStorage.setItem('admin_token_expiry', data.expiry.toString());
+      localStorage.setItem("admin_token", data.token);
+      localStorage.setItem("admin_token_expiry", data.expiry.toString());
       setIsAuthenticated(true);
       setShowAuthModal(false);
-      setPassword('');
+      setPassword("");
       fetchWorksheets();
     } catch (err) {
-      setAuthError('Connection error. Please try again.');
-      console.error('Auth error:', err);
+      setAuthError("Connection error. Please try again.");
+      console.error("Auth error:", err);
     }
   };
 
@@ -79,9 +83,9 @@ export default function AdminManage() {
 
     try {
       const token = getAdminAuthToken();
-      const response = await fetch('/api/v1/admin/worksheets', {
+      const response = await fetch("/api/v1/admin/worksheets", {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -91,13 +95,15 @@ export default function AdminManage() {
           setShowAuthModal(true);
           return;
         }
-        throw new Error('Failed to fetch worksheets');
+        throw new Error("Failed to fetch worksheets");
       }
 
       const data = await response.json();
       setWorksheets(data.worksheets || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load worksheets');
+      setError(
+        err instanceof Error ? err.message : "Failed to load worksheets",
+      );
     } finally {
       setLoading(false);
     }
@@ -109,20 +115,22 @@ export default function AdminManage() {
     try {
       const token = getAdminAuthToken();
       const response = await fetch(`/api/v1/admin/worksheets/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete worksheet');
+        throw new Error("Failed to delete worksheet");
       }
 
       setWorksheets(worksheets.filter((w) => w.id !== id));
       setDeleteConfirm(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete worksheet');
+      setError(
+        err instanceof Error ? err.message : "Failed to delete worksheet",
+      );
     } finally {
       setDeleting(null);
     }
@@ -160,7 +168,10 @@ export default function AdminManage() {
 
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Password
                 </label>
                 <input
@@ -251,7 +262,8 @@ export default function AdminManage() {
         ) : (
           <div className="space-y-4">
             <div className="text-sm text-gray-600 mb-4">
-              Total worksheets: <span className="font-bold">{worksheets.length}</span>
+              Total worksheets:{" "}
+              <span className="font-bold">{worksheets.length}</span>
             </div>
 
             {worksheets.map((worksheet) => (
@@ -270,8 +282,12 @@ export default function AdminManage() {
                       <span>📊 {worksheet.problems?.length || 0} problems</span>
                       <span>👁️ {worksheet.stats.views} views</span>
                       <span>💾 {worksheet.stats.downloads} downloads</span>
-                      <span>⭐ {worksheet.stats.averageRating.toFixed(1)} rating</span>
-                      <span>📅 {new Date(worksheet.createdAt).toLocaleDateString()}</span>
+                      <span>
+                        ⭐ {worksheet.stats.averageRating.toFixed(1)} rating
+                      </span>
+                      <span>
+                        📅 {new Date(worksheet.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
                     {worksheet.description && (
                       <p className="text-sm text-gray-700 break-words">
@@ -297,7 +313,9 @@ export default function AdminManage() {
                           disabled={deleting === worksheet.id}
                           className="px-3 py-1 text-xs font-medium bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
                         >
-                          {deleting === worksheet.id ? 'Deleting...' : 'Confirm'}
+                          {deleting === worksheet.id
+                            ? "Deleting..."
+                            : "Confirm"}
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(null)}

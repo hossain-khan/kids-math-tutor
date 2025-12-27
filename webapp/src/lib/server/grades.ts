@@ -8,7 +8,7 @@
  * - Grade 2: operands 1-100
  */
 
-import type { ProblemSpec, GradeLevel } from '@/lib/schemas/challenge-schema';
+import type { ProblemSpec, GradeLevel } from "@/lib/schemas/challenge-schema";
 
 /**
  * Detect grade levels based on operand values in problems
@@ -16,7 +16,7 @@ import type { ProblemSpec, GradeLevel } from '@/lib/schemas/challenge-schema';
  * @returns Array of detected grade levels
  */
 export function detectGrades(problems: ProblemSpec[]): GradeLevel[] {
-  if (!problems || problems.length === 0) return ['kindergarten'];
+  if (!problems || problems.length === 0) return ["kindergarten"];
 
   let maxOperand = 0;
 
@@ -31,17 +31,17 @@ export function detectGrades(problems: ProblemSpec[]): GradeLevel[] {
 
   // Assign grades based on max operand value
   if (maxOperand <= 10) {
-    grades.push('kindergarten');
+    grades.push("kindergarten");
   }
   if (maxOperand <= 20) {
-    grades.push('grade1');
+    grades.push("grade1");
   }
   if (maxOperand <= 100) {
-    grades.push('grade2');
+    grades.push("grade2");
   }
 
   // If no grades detected, default to kindergarten
-  return grades.length > 0 ? grades : ['kindergarten'];
+  return grades.length > 0 ? grades : ["kindergarten"];
 }
 
 /**

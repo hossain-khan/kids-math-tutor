@@ -2,11 +2,11 @@
  * Shared worksheet storage and retrieval from Cloudflare KV.
  */
 
-import type { ProblemSpec, GradeLevel } from '@/lib/schemas/challenge-schema';
+import type { ProblemSpec, GradeLevel } from "@/lib/schemas/challenge-schema";
 
 export interface SharedWorksheet {
   id: string;
-  type: 'explicit'; // Only custom worksheets
+  type: "explicit"; // Only custom worksheets
   title: string;
   subtitle?: string;
   description?: string;
@@ -71,10 +71,10 @@ export async function getWorksheet(
 ): Promise<SharedWorksheet | null> {
   try {
     const key = `worksheet:${id}`;
-    const data = await context.env.KV.get(key, 'json');
+    const data = await context.env.KV.get(key, "json");
     return data as SharedWorksheet | null;
   } catch (error) {
-    console.error('Failed to get worksheet:', error);
+    console.error("Failed to get worksheet:", error);
     return null;
   }
 }
@@ -89,7 +89,7 @@ export async function listWorksheets(
   context: KVContext,
   filters?: {
     grades?: GradeLevel[];
-    sortBy?: 'newest' | 'views' | 'downloads' | 'ratings';
+    sortBy?: "newest" | "views" | "downloads" | "ratings";
     limit?: number;
     offset?: number;
   },
@@ -101,12 +101,12 @@ export async function listWorksheets(
 
     // List all worksheet keys
     const listResult = await context.env.KV.list({
-      prefix: 'worksheet:',
+      prefix: "worksheet:",
     });
 
     // Fetch each worksheet
     for (const key of listResult.keys) {
-      const data = await context.env.KV.get(key.name, 'json');
+      const data = await context.env.KV.get(key.name, "json");
       if (data) {
         const worksheet = data as SharedWorksheet;
 
@@ -131,20 +131,19 @@ export async function listWorksheets(
     }
 
     // Sort results
-    const sortBy = filters?.sortBy || 'newest';
+    const sortBy = filters?.sortBy || "newest";
     worksheets.sort((a, b) => {
       switch (sortBy) {
-        case 'views':
+        case "views":
           return b.stats.views - a.stats.views;
-        case 'downloads':
+        case "downloads":
           return b.stats.downloads - a.stats.downloads;
-        case 'ratings':
+        case "ratings":
           return b.stats.averageRating - a.stats.averageRating;
-        case 'newest':
+        case "newest":
         default:
           return (
-            new Date(b.createdAt).getTime() -
-            new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
       }
     });
@@ -162,7 +161,7 @@ export async function listWorksheets(
       hasMore,
     };
   } catch (error) {
-    console.error('Failed to list worksheets:', error);
+    console.error("Failed to list worksheets:", error);
     return {
       items: [],
       total: 0,
@@ -187,7 +186,7 @@ export async function incrementViews(
       await saveWorksheet(context, worksheet);
     }
   } catch (error) {
-    console.error('Failed to increment views:', error);
+    console.error("Failed to increment views:", error);
   }
 }
 
@@ -205,7 +204,7 @@ export async function incrementDownloads(
       await saveWorksheet(context, worksheet);
     }
   } catch (error) {
-    console.error('Failed to increment downloads:', error);
+    console.error("Failed to increment downloads:", error);
   }
 }
 
@@ -217,7 +216,7 @@ export async function searchWorksheets(
   searchQuery: string,
   filters?: {
     grades?: GradeLevel[];
-    sortBy?: 'newest' | 'views' | 'downloads' | 'ratings';
+    sortBy?: "newest" | "views" | "downloads" | "ratings";
     limit?: number;
     offset?: number;
   },
@@ -232,12 +231,12 @@ export async function searchWorksheets(
 
     // List all worksheet keys
     const listResult = await context.env.KV.list({
-      prefix: 'worksheet:',
+      prefix: "worksheet:",
     });
 
     // Fetch and search each worksheet
     for (const key of listResult.keys) {
-      const data = await context.env.KV.get(key.name, 'json');
+      const data = await context.env.KV.get(key.name, "json");
       if (data) {
         const worksheet = data as SharedWorksheet;
 
@@ -270,20 +269,19 @@ export async function searchWorksheets(
     }
 
     // Sort results
-    const sortBy = filters?.sortBy || 'newest';
+    const sortBy = filters?.sortBy || "newest";
     worksheets.sort((a, b) => {
       switch (sortBy) {
-        case 'views':
+        case "views":
           return b.stats.views - a.stats.views;
-        case 'downloads':
+        case "downloads":
           return b.stats.downloads - a.stats.downloads;
-        case 'ratings':
+        case "ratings":
           return b.stats.averageRating - a.stats.averageRating;
-        case 'newest':
+        case "newest":
         default:
           return (
-            new Date(b.createdAt).getTime() -
-            new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
       }
     });
@@ -303,7 +301,7 @@ export async function searchWorksheets(
       hasMore,
     };
   } catch (error) {
-    console.error('Failed to search worksheets:', error);
+    console.error("Failed to search worksheets:", error);
     return {
       items: [],
       total: 0,
@@ -326,7 +324,7 @@ export async function rateWorksheet(
 ): Promise<boolean> {
   try {
     if (rating < 1 || rating > 5) {
-      throw new Error('Rating must be between 1 and 5');
+      throw new Error("Rating must be between 1 and 5");
     }
 
     const ratingKey = `rating:${worksheetId}:${sessionId}`;
@@ -349,7 +347,7 @@ export async function rateWorksheet(
 
     return true;
   } catch (error) {
-    console.error('Failed to rate worksheet:', error);
+    console.error("Failed to rate worksheet:", error);
     return false;
   }
 }
@@ -370,8 +368,8 @@ export async function calculateWorksheetRatingStats(
     });
 
     for (const key of listResult.keys) {
-      const data = await context.env.KV.get(key.name, 'json');
-      if (data && typeof data === 'object' && 'rating' in data) {
+      const data = await context.env.KV.get(key.name, "json");
+      if (data && typeof data === "object" && "rating" in data) {
         ratings.push((data as { rating: number }).rating);
       }
     }
@@ -388,7 +386,7 @@ export async function calculateWorksheetRatingStats(
       ratingCount: ratings.length,
     };
   } catch (error) {
-    console.error('Failed to calculate rating stats:', error);
+    console.error("Failed to calculate rating stats:", error);
     return { averageRating: 0, ratingCount: 0 };
   }
 }

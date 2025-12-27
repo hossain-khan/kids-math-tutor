@@ -3,7 +3,7 @@
  * Uses bad-words library for basic profanity detection.
  */
 
-import { Filter } from 'bad-words';
+import { Filter } from "bad-words";
 
 // Initialize profanity filter with default word list
 const filter = new Filter();
@@ -39,10 +39,10 @@ export function validateWorksheetContent(worksheet: {
 }): boolean {
   const textToCheck = [
     worksheet.title,
-    worksheet.subtitle || '',
-    worksheet.description || '',
+    worksheet.subtitle || "",
+    worksheet.description || "",
   ]
-    .join(' ')
+    .join(" ")
     .toLowerCase();
 
   return containsProfanity(textToCheck);

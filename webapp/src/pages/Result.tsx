@@ -365,8 +365,10 @@ export default function Result() {
                   Your worksheet has been shared to the community library.
                 </p>
                 <div className="flex gap-2 items-center">
-                  <div className="flex-1 bg-white rounded p-3 text-xs font-mono text-gray-700 break-all cursor-pointer hover:bg-gray-50 transition-colors" 
-                       onClick={() => copyToClipboard(shareLink)}>
+                  <div
+                    className="flex-1 bg-white rounded p-3 text-xs font-mono text-gray-700 break-all cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => copyToClipboard(shareLink)}
+                  >
                     {shareLink}
                   </div>
                   <button
