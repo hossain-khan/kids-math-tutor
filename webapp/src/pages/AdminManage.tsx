@@ -1,0 +1,327 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Button from '@/components/Button';
+import Card from '@/components/Card';
+import { getAdminAuthToken, clearAdminAuthToken, isAdminAuthenticated } from '@/lib/adminAuth';
+import type { ProblemSpec } from '@/lib/schemas/challenge-schema';
+
+interface AdminWorksheet {
+  id: string;
+  type: 'explicit' | 'generated';
+  title: string;
+  subtitle?: string;
+  description?: string;
+  problems?: ProblemSpec[];
+  createdAt: string;
+  stats: {
+    views: number;
+    downloads: number;
+    averageRating: number;
+    ratingCount: number;
+  };
+}
+
+export default function AdminManage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [worksheets, setWorksheets] = useState<AdminWorksheet[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    if (isAdminAuthenticated()) {
+      setIsAuthenticated(true);
+      fetchWorksheets();
+    } else {
+      setShowAuthModal(true);
+    }
+  }, []);
+
+  const handleAuthSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+
+    try {
+      const response = await fetch('/api/v1/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setAuthError(data.error || 'Authentication failed');
+        return;
+      }
+
+      // Store token
+      localStorage.setItem('admin_token', data.token);
+      localStorage.setItem('admin_token_expiry', data.expiry.toString());
+      setIsAuthenticated(true);
+      setShowAuthModal(false);
+      setPassword('');
+      fetchWorksheets();
+    } catch (err) {
+      setAuthError('Connection error. Please try again.');
+      console.error('Auth error:', err);
+    }
+  };
+
+  const fetchWorksheets = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = getAdminAuthToken();
+      const response = await fetch('/api/v1/admin/worksheets', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+          setShowAuthModal(true);
+          return;
+        }
+        throw new Error('Failed to fetch worksheets');
+      }
+
+      const data = await response.json();
+      setWorksheets(data.worksheets || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load worksheets');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeleting(id);
+
+    try {
+      const token = getAdminAuthToken();
+      const response = await fetch(`/api/v1/admin/worksheets/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete worksheet');
+      }
+
+      setWorksheets(worksheets.filter((w) => w.id !== id));
+      setDeleteConfirm(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete worksheet');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const handleLogout = () => {
+    clearAdminAuthToken();
+    setIsAuthenticated(false);
+    setShowAuthModal(true);
+  };
+
+  if (showAuthModal && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="container mx-auto px-4 py-4">
+            <Link to="/" className="hover:scale-110 transition-transform">
+              <img
+                src="/images/logo.webp"
+                alt="Math Pup Logo"
+                className="w-10 h-10 object-contain"
+              />
+            </Link>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-16 max-w-md">
+          <Card className="p-8">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">
+                Admin Portal
+              </h1>
+              <p className="text-gray-600">Enter password to access</p>
+            </div>
+
+            <form onSubmit={handleAuthSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Enter admin password"
+                  autoFocus
+                />
+              </div>
+
+              {authError && (
+                <div className="bg-red-50 border border-red-300 text-red-800 px-4 py-3 rounded text-sm">
+                  {authError}
+                </div>
+              )}
+
+              <Button type="submit" variant="primary" className="w-full">
+                Access Admin Panel
+              </Button>
+            </form>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="hover:scale-110 transition-transform">
+              <img
+                src="/images/logo.webp"
+                alt="Math Pup Logo"
+                className="w-10 h-10 object-contain"
+              />
+            </Link>
+            <h1 className="text-2xl font-display font-bold text-gray-900">
+              Admin Panel
+            </h1>
+          </div>
+          <Button variant="secondary" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Title */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-display font-bold text-gray-900 mb-2">
+            Manage Shared Worksheets
+          </h2>
+          <p className="text-gray-600">
+            View and manage all community-shared worksheets
+          </p>
+        </div>
+
+        {/* Error */}
+        {error && (
+          <Card className="mb-6 bg-red-50 border-red-300 p-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl flex-shrink-0">⚠️</span>
+              <div className="flex-1">
+                <h3 className="font-bold text-red-900 mb-1">Error</h3>
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Loading State */}
+        {loading ? (
+          <Card className="p-8 text-center">
+            <div className="text-6xl mb-4 animate-spin">⏳</div>
+            <p className="text-gray-600">Loading worksheets...</p>
+          </Card>
+        ) : worksheets.length === 0 ? (
+          <Card className="p-8 text-center">
+            <div className="text-6xl mb-4">📋</div>
+            <p className="text-gray-600">No worksheets found</p>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            <div className="text-sm text-gray-600 mb-4">
+              Total worksheets: <span className="font-bold">{worksheets.length}</span>
+            </div>
+
+            {worksheets.map((worksheet) => (
+              <Card key={worksheet.id} className="p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl font-bold text-gray-900 mb-1 break-words">
+                      {worksheet.title}
+                    </h3>
+                    {worksheet.subtitle && (
+                      <p className="text-gray-600 mb-2 break-words">
+                        {worksheet.subtitle}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+                      <span>📊 {worksheet.problems?.length || 0} problems</span>
+                      <span>👁️ {worksheet.stats.views} views</span>
+                      <span>💾 {worksheet.stats.downloads} downloads</span>
+                      <span>⭐ {worksheet.stats.averageRating.toFixed(1)} rating</span>
+                      <span>📅 {new Date(worksheet.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    {worksheet.description && (
+                      <p className="text-sm text-gray-700 break-words">
+                        {worksheet.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2 flex-shrink-0">
+                    <a
+                      href={`/worksheets/${worksheet.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                    >
+                      View →
+                    </a>
+
+                    {deleteConfirm === worksheet.id ? (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleDelete(worksheet.id)}
+                          disabled={deleting === worksheet.id}
+                          className="px-3 py-1 text-xs font-medium bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                        >
+                          {deleting === worksheet.id ? 'Deleting...' : 'Confirm'}
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(null)}
+                          disabled={deleting === worksheet.id}
+                          className="px-3 py-1 text-xs font-medium bg-gray-300 text-gray-900 rounded hover:bg-gray-400 disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setDeleteConfirm(worksheet.id)}
+                        className="px-3 py-1 text-xs font-medium bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}

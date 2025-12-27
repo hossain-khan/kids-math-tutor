@@ -16,5 +16,17 @@
       "id": "1a434626c9c143ec874e6c2e1ec2348a",
       "preview_id": "b94eac3c955f44df8eb8722850956947"
     }
-  ]
+  ],
+  "env": {
+    "production": {
+      "vars": {
+        "ADMIN_PASSWORD": "CHANGE_THIS_TO_YOUR_SECRET_PASSWORD"
+      }
+    },
+    "development": {
+      "vars": {
+        "ADMIN_PASSWORD": "admin123"
+      }
+    }
+  }
 }
