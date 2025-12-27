@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.0] - 2025-12-27
+
 ### Added
 - **Duplicate Challenge Detection** - Import Challenge screen now checks for duplicate challenges before saving
   - Validates if an imported challenge already exists based on challenge type and problem content
   - Displays clear error message with the existing challenge's title to help parents identify duplicates
   - Prevents accidental imports of the same challenge multiple times
+- **Schema Compliance Tests** - Added comprehensive tests to validate 100% compliance with webapp JSON schema
+  - Tests both official schema examples (generated and explicit challenges)
+  - Validates all field constraints, enums, and boundary values
+  - Ensures seamless integration between webapp and Android app
 
 ### Changed
 - **Improved Import Challenge Validation Messages** - Enhanced parent experience when importing challenges
@@ -43,6 +49,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - More descriptive success/error icons and messaging
   - Loading state now shows "Saving..." text for better feedback
   - Preview section header clearly labeled as "Challenge Preview"
+- **Developer Experience** - Added Compose previews for Import Challenge UI
+  - 7 preview composables covering all major UI states (empty, with input, validation, errors, loading, share detection)
+  - Enables faster UI development and validation without running the app
 
 ## [1.16.1] - 2025-12-26
 
@@ -1875,7 +1884,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.1...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.17.0...HEAD
+[1.17.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.1...1.17.0
 [1.16.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.0...1.16.1
 [1.16.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.15.0...1.16.0
 [1.15.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.1...1.15.0
