@@ -905,3 +905,64 @@ private fun ImportChallengeUiLoadingPreview() {
         )
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiWithShareDetectionPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "Addition Practice",
+                          "subtitle": "From shared link",
+                          "operation": "addition",
+                          "problemCount": 10,
+                          "numberRange": {"min": 1, "max": 20}
+                        }
+                        """.trimIndent(),
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ImportChallengeUiWithShareDetectionAndErrorsPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "",
+                          "operation": "addition",
+                          "problemCount": 0
+                        }
+                        """.trimIndent(),
+                    validationState =
+                        ValidationState.Invalid(
+                            mapOf(
+                                "title" to "Title is required",
+                                "problemCount" to "Problem count must be between 1 and 50",
+                                "numberRange" to "Number range is required",
+                            ),
+                        ),
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
