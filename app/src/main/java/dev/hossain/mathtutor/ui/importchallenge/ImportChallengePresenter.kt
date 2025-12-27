@@ -107,6 +107,21 @@ class ImportChallengePresenter
 
                                 parseResult
                                     .onSuccess { spec ->
+                                        // Check for duplicate challenge
+                                        val duplicateTitle = challengeService.findDuplicateChallenge(spec)
+                                        if (duplicateTitle != null) {
+                                            validationState =
+                                                ValidationState.Invalid(
+                                                    mapOf(
+                                                        "duplicate" to
+                                                            "This challenge already exists in your library: \"$duplicateTitle\"",
+                                                    ),
+                                                )
+                                            previewData = null
+                                            Timber.d("Duplicate challenge detected: $duplicateTitle")
+                                            return@launch
+                                        }
+
                                         // Generate preview
                                         try {
                                             val preview = challengeService.generatePreview(spec)

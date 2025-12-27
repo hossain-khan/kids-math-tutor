@@ -143,6 +143,84 @@ class ImportChallengePresenterTest {
         assertThat(state.fieldErrors).containsEntry("title", "Title is required")
     }
 
+    @Test
+    fun service_duplicateChallenge_returnsExistingTitle() {
+        // Given
+        val service = FakeCustomChallengeService()
+        val repository = FakeCustomChallengeRepository()
+
+        // Create and save a challenge
+        val existingChallenge =
+            CustomChallenge(
+                id = "existing-id",
+                title = "Existing Challenge",
+                subtitle = null,
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED,
+                problems =
+                    listOf(
+                        MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3),
+                        MathProblem(num1 = 3, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 7),
+                        MathProblem(num1 = 5, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 11),
+                        MathProblem(num1 = 7, num2 = 8, operation = MathOperation.ADDITION, correctAnswer = 15),
+                        MathProblem(num1 = 9, num2 = 10, operation = MathOperation.ADDITION, correctAnswer = 19),
+                    ),
+            )
+        repository.saveChallengeSync(existingChallenge)
+
+        // Create a spec that would generate the same problems
+        val spec =
+            ChallengeImportSpec.Generated(
+                title = "New Challenge",
+                subtitle = null,
+                operation = MathOperation.ADDITION,
+                problemCount = 5,
+                numberRange = NumberRange(min = 1, max = 10),
+            )
+
+        // When - findDuplicateChallenge is called (sync for testing)
+        val duplicateTitle = service.findDuplicateChallengeSync(spec, repository.getChallenges())
+
+        // Then
+        assertThat(duplicateTitle).isEqualTo("Existing Challenge")
+    }
+
+    @Test
+    fun service_noDuplicate_returnsNull() {
+        // Given
+        val service = FakeCustomChallengeService()
+        val repository = FakeCustomChallengeRepository()
+
+        // Create and save a challenge with different problems
+        val existingChallenge =
+            CustomChallenge(
+                id = "existing-id",
+                title = "Existing Challenge",
+                subtitle = null,
+                type = dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED,
+                problems =
+                    listOf(
+                        MathProblem(num1 = 10, num2 = 20, operation = MathOperation.ADDITION, correctAnswer = 30),
+                    ),
+            )
+        repository.saveChallengeSync(existingChallenge)
+
+        // Create a spec that would generate different problems
+        val spec =
+            ChallengeImportSpec.Generated(
+                title = "New Challenge",
+                subtitle = null,
+                operation = MathOperation.ADDITION,
+                problemCount = 5,
+                numberRange = NumberRange(min = 1, max = 10),
+            )
+
+        // When
+        val duplicateTitle = service.findDuplicateChallengeSync(spec, repository.getChallenges())
+
+        // Then
+        assertThat(duplicateTitle).isNull()
+    }
+
     /**
      * Fake implementation of [ChallengeJsonParser] for testing.
      */
@@ -242,6 +320,58 @@ class ImportChallengePresenterTest {
                 estimatedDuration = 5.minutes,
             )
 
+        fun findDuplicateChallengeSync(
+            spec: ChallengeImportSpec,
+            existingChallenges: List<CustomChallenge>,
+        ): String? {
+            // Generate problems from spec to compare
+            val newProblems =
+                when (spec) {
+                    is ChallengeImportSpec.Generated -> {
+                        listOf(
+                            MathProblem(num1 = 1, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 3),
+                            MathProblem(num1 = 3, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 7),
+                            MathProblem(num1 = 5, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 11),
+                            MathProblem(num1 = 7, num2 = 8, operation = MathOperation.ADDITION, correctAnswer = 15),
+                            MathProblem(num1 = 9, num2 = 10, operation = MathOperation.ADDITION, correctAnswer = 19),
+                        )
+                    }
+
+                    is ChallengeImportSpec.Explicit -> {
+                        spec.problems.map { ps ->
+                            MathProblem(
+                                num1 = ps.operand1,
+                                num2 = ps.operand2,
+                                operation = ps.operation,
+                                correctAnswer = ps.operation.calculate(ps.operand1, ps.operand2),
+                            )
+                        }
+                    }
+                }
+
+            val newType =
+                when (spec) {
+                    is ChallengeImportSpec.Generated -> dev.hossain.mathtutor.domain.model.ChallengeType.GENERATED
+                    is ChallengeImportSpec.Explicit -> dev.hossain.mathtutor.domain.model.ChallengeType.EXPLICIT
+                }
+
+            // Check if any existing challenge matches
+            return existingChallenges
+                .firstOrNull { challenge ->
+                    challenge.type == newType && problemsMatch(challenge.problems, newProblems)
+                }?.title
+        }
+
+        private fun problemsMatch(
+            existing: List<MathProblem>,
+            new: List<MathProblem>,
+        ): Boolean {
+            if (existing.size != new.size) return false
+            return existing.zip(new).all { (e, n) ->
+                e.num1 == n.num1 && e.num2 == n.num2 && e.operation == n.operation && e.correctAnswer == n.correctAnswer
+            }
+        }
+
         override suspend fun getAllChallenges(): List<CustomChallenge> = emptyList()
 
         override suspend fun getChallengeById(id: String): CustomChallenge? = null
@@ -262,6 +392,11 @@ class ImportChallengePresenterTest {
         override fun observeAllChallenges(): Flow<List<CustomChallenge>> = flowOf(emptyList())
 
         override suspend fun clearChallengeSessions(challengeId: String) {}
+
+        override suspend fun findDuplicateChallenge(spec: ChallengeImportSpec): String? {
+            // For testing, always return null (no duplicate)
+            return null
+        }
     }
 
     /**

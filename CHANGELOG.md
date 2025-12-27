@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Duplicate Challenge Detection** - Import Challenge screen now checks for duplicate challenges before saving
+  - Validates if an imported challenge already exists based on challenge type and problem content
+  - Displays clear error message with the existing challenge's title to help parents identify duplicates
+  - Prevents accidental imports of the same challenge multiple times
+
+### Changed
+- **Improved Import Challenge Validation Messages** - Enhanced parent experience when importing challenges
+  - Validation messages (success/error) now display prominently above the JSON input field for better visibility
+  - Success message provides clear next steps: review preview and save challenge
+  - Error messages are more noticeable and easier to read
+  - Preview section remains below input field for easy reference while editing
+
+### Improved
+- **Enhanced Import Challenge UI** - Applied Material 3 design improvements
+  - Better visual hierarchy with updated card elevations and colors
+  - Improved spacing and section separation for clearer layout
+  - More descriptive success/error icons and messaging
+  - Loading state now shows "Saving..." text for better feedback
+  - Preview section header clearly labeled as "Challenge Preview"
+
 ## [1.16.1] - 2025-12-26
 
 ### Fixed

@@ -250,4 +250,9 @@ class FakeCustomChallengeService : CustomChallengeService {
     override suspend fun clearChallengeSessions(challengeId: String) {
         // Not needed for tests
     }
+
+    override suspend fun findDuplicateChallenge(spec: dev.hossain.mathtutor.domain.model.ChallengeImportSpec): String? {
+        // Not needed for tests
+        return null
+    }
 }
