@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Admin Bulk Safety Check Portal** - Added administrative interface to verify all shared worksheets in batches
+  - "Check All Content" button in admin panel for manual bulk safety verification
+  - Real-time progress indicator showing current/total worksheets being checked
+  - Color-coded safety badges on worksheet cards (✅ Safe in green, ⚠️ Flagged in orange)
+  - Expandable details panel for flagged worksheets showing violation categories, explanations, method, confidence score, and timestamp
+  - Batch processing with rate limiting (5 worksheets per batch, 100ms delays between batches)
+  - Error resilience: defaults to safe=true if individual checks fail to avoid blocking admin workflow
+  - Manual trigger only - no automatic checks on page load
+  - No auto-delete - all flagged content requires explicit admin review and confirmation
+  - Backend: New `POST /api/v1/admin/check-safety` endpoint with comprehensive response structure
 - **AI-Powered Content Safety** - Integrated Cloudflare Workers AI (Llama Guard 3) for intelligent worksheet content moderation
   - Primary safety layer uses Llama Guard 3 (8B) model for context-aware classification
   - Detects profanity, violence, sexual content, hate speech, substance abuse, and scary content
@@ -31,6 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - API now returns detailed safety information including method used (AI vs pattern-based)
   - Error responses include detected categories and improvement suggestions
   - Improved user experience with clearer guidance on why content was rejected
+- **Admin Panel Enhancement** - Extended AdminManage component with safety checking capabilities
+  - New SafetyStatus interface and types for tracking worksheet safety metadata
+  - Enhanced worksheet cards with safety status display and violation details
+  - Added state management for tracking bulk check progress and expanded details panels
 
 ## [1.17.0] - 2025-12-27
 

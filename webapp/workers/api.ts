@@ -9,6 +9,7 @@ import type { Context } from 'hono';
 import type { GradeLevel, ProblemSpec } from '@/lib/schemas/challenge-schema';
 import { ExplicitChallengeSpecSchema } from '@/lib/schemas/challenge-schema';
 import { checkContentSafetyWithAI } from '@/lib/server/aiSafety';
+import { bulkCheckSafety } from '@/lib/server/adminSafetyCheck';
 import { detectGrades } from '@/lib/server/grades';
 import {
   saveWorksheet,
@@ -635,6 +636,40 @@ app.delete('/api/v1/admin/worksheets/:id', async (c) => {
     return c.json(
       {
         error: 'Failed to delete worksheet',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500,
+    );
+  }
+});
+
+/**
+ * POST /api/v1/admin/check-safety
+ * Perform bulk AI safety check on shared worksheets (admin only)
+ */
+app.post('/api/v1/admin/check-safety', async (c) => {
+  try {
+    if (!validateAdminToken(c)) {
+      return c.json(
+        {
+          error: 'Unauthorized',
+        },
+        401,
+      );
+    }
+
+    const body = await c.req.json();
+    const worksheetIds = body.worksheetIds as string[] | undefined;
+
+    // Perform bulk safety check
+    const result = await bulkCheckSafety(c.env, worksheetIds);
+
+    return c.json(result);
+  } catch (error) {
+    console.error('Admin safety check error:', error);
+    return c.json(
+      {
+        error: 'Failed to perform safety check',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       500,

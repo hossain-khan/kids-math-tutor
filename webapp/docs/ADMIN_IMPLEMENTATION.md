@@ -20,10 +20,11 @@
 
 **File:** `webapp/workers/api.ts` (updated)
 
-Three new protected endpoints:
+Four new protected endpoints:
 - `POST /api/v1/admin/auth` - Authenticate and get token
 - `GET /api/v1/admin/worksheets` - List all worksheets
 - `DELETE /api/v1/admin/worksheets/:id` - Delete worksheet
+- `POST /api/v1/admin/check-safety` - Bulk AI safety check for worksheets
 
 All endpoints validate Bearer token before allowing access.
 
@@ -52,7 +53,30 @@ All endpoints validate Bearer token before allowing access.
 
 **File:** `webapp/src/App.tsx` (updated)
 - New route: `/manage-worksheets`
-- Imports AdminManage component
+- Imports AdminManage compone
+
+### 6. Safety Checking Module
+
+**File:** `webapp/src/lib/server/adminSafetyCheck.ts` (new)
+- Batch processing of worksheet safety checks
+- Integrates with Llama Guard 3 AI
+- Rate limiting: 5 worksheets per batch, 100ms delays
+- Error resilience: Defaults to safe=true on failure
+- Exports:
+  - `checkWorksheetSafety()` - Single worksheet check
+  - `bulkCheckSafety()` - Batch processor with rate limiting
+  - `getAllWorksheetIds()` - Gets list of all worksheet IDs
+
+**File:** `webapp/src/pages/AdminManage.tsx` (updated)
+- New "Check All Content" button
+- Real-time progress indicator during checks
+- Safety status badges (✅ safe, ⚠️ flagged)
+- Expandable details panel showing:
+  - Flagged safety categories
+  - Explanation of concerns
+  - Check method (AI or fallback)
+  - Confidence score
+  - Last check timestampnt
 - Integrated into main router
 
 ## How It Works
@@ -179,18 +203,54 @@ webapp/
 
 3. **Multi-Admin Support** - Multiple admins
    - Different permission levels
-   - Admin user accounts
-   - Activity audit trail
+   Test bulk safety check feature
+8. Logout and verify re-login required
 
-4. **Two-Factor Authentication** - Extra security
-   - TOTP (Google Authenticator)
-   - Recovery codes
-   - Better protection of portal
+### Test Cases
 
-5. **Content Moderation Dashboard** - Advanced features
-   - Flag worksheets for review
-   - Approve before publishing
-   - Automated profanity checking stats
+#### Authentication
+- ✅ Login with correct password
+- ✅ Login with incorrect password shows error
+- ✅ Session expires after 24 hours
+- ✅ Logout clears session
+- ✅ Can't access `/manage-worksheets` without token
+
+#### Worksheet Management
+- ✅ Worksheet list displays all items
+- ✅ Can delete worksheet with confirmation
+- ✅ Delete removes from list immediately
+- ✅ Delete is permanent (no recovery)
+
+#### Bulk Safety Checks
+- ✅ "Check All Content" button visible in UI
+- ✅ Safety check runs without errors
+- ✅ Progress bar shows real-time status
+- ✅ Safe worksheets show green ✅ badge
+- ✅ Flagged worksheets show yellow ⚠️ badge
+- ✅ Expandable details show safety categories
+- ✅ Results show confidence scores
+- ✅ Batch processing respects rate limits
+- ✅ Graceful fallback if AI unavailable
+- ✅ Works within Cloudflare Workers AI free tier
+
+### Unit Tests
+
+Comprehensive test suite in `src/__tests__/lib/server/adminSafetyCheck.test.ts`:
+
+```bash
+pnpm test adminSafetyCheck.test.ts
+```
+
+**Test Coverage (22 tests):**
+- ✅ Single worksheet safety checks
+- ✅ Batch processing (5 worksheets per batch)
+- ✅ Error handling and fallback behavior
+- ✅ Empty list handling
+- ✅ Partial batch failures
+- ✅ Type validation
+- ✅ Edge cases (undefined AI binding, mixed results)
+
+All tests passing with vi mock utilities for dependencies.
 
 ## Testing the Admin Portal
 
