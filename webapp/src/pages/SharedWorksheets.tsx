@@ -35,6 +35,7 @@ interface WorksheetListItem {
   subtitle?: string;
   grades: GradeLevel[];
   problemCount: number;
+  singleOperation?: string;
   createdAt: string;
   stats: {
     views: number;
@@ -300,7 +301,7 @@ export default function SharedWorksheets() {
 
     if (error || !worksheet) {
       return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
           <header className="bg-white shadow-sm border-b border-gray-200">
             <div className="container mx-auto px-4 py-4">
               <Link
@@ -334,9 +335,13 @@ export default function SharedWorksheets() {
     // Single worksheet detail view
     const problemCount = worksheet.problems.length;
     const previewProblems = worksheet.problems.slice(0, 3);
+    const singleOperation = getSingleOperationType(worksheet.problems);
+    const operationColor = singleOperation
+      ? getOperationColor(singleOperation)
+      : null;
 
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen">
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="container mx-auto px-4 py-4">
             <Link
@@ -354,8 +359,23 @@ export default function SharedWorksheets() {
 
         <main className="container mx-auto px-4 py-8 max-w-2xl">
           {/* Worksheet Header */}
-          <Card className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 p-6">
-            <div>
+          <Card
+            className={`mb-6 border-2 p-6 relative overflow-hidden ${
+              operationColor
+                ? `bg-gradient-to-br ${operationColor.bg} border-blue-200`
+                : "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300"
+            }`}
+          >
+            {/* Operation Background Pattern */}
+            {operationColor && (
+              <div className="absolute -top-6 -right-0 opacity-15 pointer-events-none">
+                <div className="text-[140px] font-bold text-gray-400 leading-none">
+                  {operationColor.symbol}
+                </div>
+              </div>
+            )}
+
+            <div className="relative z-10">
               <h2 className="text-3xl font-display font-bold text-gray-900 mb-2">
                 {worksheet.title}
               </h2>
@@ -644,7 +664,7 @@ export default function SharedWorksheets() {
 
   // Worksheets list view
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3 mb-4">
@@ -781,110 +801,132 @@ export default function SharedWorksheets() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {worksheets.map((ws) => (
-                <div key={ws.id}>
-                  <Link to={`/worksheets/${ws.id}`}>
-                    <Card className="p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer">
-                      <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
-                        {ws.title}
-                      </h3>
+              {worksheets.map((ws) => {
+                const operationColor = ws.singleOperation
+                  ? getOperationColor(ws.singleOperation)
+                  : null;
+                return (
+                  <div key={ws.id}>
+                    <Link to={`/worksheets/${ws.id}`}>
+                      <Card
+                        className={`group p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer relative overflow-hidden ${
+                          operationColor
+                            ? `border-2 ${operationColor.border}`
+                            : ""
+                        }`}
+                      >
+                        {operationColor && (
+                          <div className="absolute -top-8 -right-0 opacity-10 group-hover:opacity-15 transition-opacity pointer-events-none">
+                            <div className="text-[270px] font-bold text-gray-400 leading-none">
+                              {operationColor.symbol}
+                            </div>
+                          </div>
+                        )}
+                        <div className="relative z-10">
+                          <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                            {ws.title}
+                          </h3>
 
-                      {ws.subtitle && (
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                          {ws.subtitle}
-                        </p>
-                      )}
+                          {ws.subtitle && (
+                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                              {ws.subtitle}
+                            </p>
+                          )}
 
-                      <div className="space-y-2 mb-4 text-sm text-gray-700">
-                        <div className="flex items-center gap-2">
-                          <span>📝</span>
-                          <span>{ws.problemCount} problems</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span>🎓</span>
-                          <span>
-                            {ws.grades.map((g) => gradeLabels[g]).join(", ")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-500">
-                          <span>👁️</span>
-                          <span>{ws.stats.views} views</span>
-                        </div>
-                        <div className="mt-2">
-                          <StarRating
-                            rating={ws.stats.averageRating}
-                            count={ws.stats.ratingCount}
-                            onRate={async (stars) => {
-                              // Submit rating and update local state
-                              try {
-                                const res = await fetch(
-                                  `/api/v1/worksheets/${ws.id}/rate`,
-                                  {
-                                    method: "POST",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                      rating: stars,
-                                      sessionId,
-                                    }),
-                                  },
-                                );
-                                if (res.ok) {
-                                  const data = await res.json();
-                                  setWorksheets((prev) =>
-                                    prev.map((p) =>
-                                      p.id === ws.id
-                                        ? {
-                                            ...p,
-                                            stats: {
-                                              ...p.stats,
-                                              averageRating:
-                                                data.stats.averageRating,
-                                              ratingCount:
-                                                data.stats.ratingCount,
-                                            },
-                                          }
-                                        : p,
-                                    ),
-                                  );
-                                  // If viewing detail, update worksheet state too
-                                  if (worksheet && worksheet.id === ws.id) {
-                                    setWorksheet((prev) =>
-                                      prev
-                                        ? {
-                                            ...prev,
-                                            stats: {
-                                              ...prev.stats,
-                                              averageRating:
-                                                data.stats.averageRating,
-                                              ratingCount:
-                                                data.stats.ratingCount,
-                                            },
-                                          }
-                                        : prev,
+                          <div className="space-y-2 mb-4 text-sm text-gray-700">
+                            <div className="flex items-center gap-2">
+                              <span>📝</span>
+                              <span>{ws.problemCount} problems</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span>🎓</span>
+                              <span>
+                                {ws.grades
+                                  .map((g) => gradeLabels[g])
+                                  .join(", ")}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-500">
+                              <span>👁️</span>
+                              <span>{ws.stats.views} views</span>
+                            </div>
+                            <div className="mt-2">
+                              <StarRating
+                                rating={ws.stats.averageRating}
+                                count={ws.stats.ratingCount}
+                                onRate={async (stars) => {
+                                  // Submit rating and update local state
+                                  try {
+                                    const res = await fetch(
+                                      `/api/v1/worksheets/${ws.id}/rate`,
+                                      {
+                                        method: "POST",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                          rating: stars,
+                                          sessionId,
+                                        }),
+                                      },
+                                    );
+                                    if (res.ok) {
+                                      const data = await res.json();
+                                      setWorksheets((prev) =>
+                                        prev.map((p) =>
+                                          p.id === ws.id
+                                            ? {
+                                                ...p,
+                                                stats: {
+                                                  ...p.stats,
+                                                  averageRating:
+                                                    data.stats.averageRating,
+                                                  ratingCount:
+                                                    data.stats.ratingCount,
+                                                },
+                                              }
+                                            : p,
+                                        ),
+                                      );
+                                      // If viewing detail, update worksheet state too
+                                      if (worksheet && worksheet.id === ws.id) {
+                                        setWorksheet((prev) =>
+                                          prev
+                                            ? {
+                                                ...prev,
+                                                stats: {
+                                                  ...prev.stats,
+                                                  averageRating:
+                                                    data.stats.averageRating,
+                                                  ratingCount:
+                                                    data.stats.ratingCount,
+                                                },
+                                              }
+                                            : prev,
+                                        );
+                                      }
+                                    }
+                                  } catch (error) {
+                                    console.error(
+                                      "Failed to submit rating:",
+                                      error,
                                     );
                                   }
-                                }
-                              } catch (error) {
-                                console.error(
-                                  "Failed to submit rating:",
-                                  error,
-                                );
-                              }
-                            }}
-                            size="sm"
-                          />
-                        </div>
-                      </div>
+                                }}
+                                size="sm"
+                              />
+                            </div>
+                          </div>
 
-                      <div className="text-xs text-gray-500">
-                        {new Date(ws.createdAt).toLocaleDateString()}
-                      </div>
-                    </Card>
-                  </Link>
-                </div>
-              ))}
+                          <div className="text-xs text-gray-500">
+                            {new Date(ws.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </Card>
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Load More */}
@@ -904,6 +946,62 @@ export default function SharedWorksheets() {
       </main>
     </div>
   );
+}
+
+function getOperationColor(operation: string): {
+  bg: string;
+  symbol: string;
+  text: string;
+  border: string;
+} {
+  switch (operation) {
+    case "addition":
+      return {
+        bg: "from-blue-50 to-blue-100",
+        symbol: "+",
+        text: "text-blue-400",
+        border: "border-blue-300",
+      };
+    case "subtraction":
+      return {
+        bg: "from-pink-50 to-pink-100",
+        symbol: "-",
+        text: "text-pink-400",
+        border: "border-pink-300",
+      };
+    case "multiplication":
+      return {
+        bg: "from-green-50 to-green-100",
+        symbol: "×",
+        text: "text-green-400",
+        border: "border-green-300",
+      };
+    case "division":
+      return {
+        bg: "from-amber-50 to-amber-100",
+        symbol: "÷",
+        text: "text-amber-400",
+        border: "border-amber-300",
+      };
+    default:
+      return {
+        bg: "from-gray-50 to-gray-100",
+        symbol: "?",
+        text: "text-gray-400",
+        border: "border-gray-300",
+      };
+  }
+}
+
+function getSingleOperationType(
+  problems: Array<{ operation: string }>,
+): string | null {
+  if (problems.length === 0) return null;
+
+  const firstOperation = problems[0].operation;
+  const allSame = problems.every((p) => p.operation === firstOperation);
+
+  return allSame ? firstOperation : null;
 }
 
 function getOperationSymbol(operation: string): string {
