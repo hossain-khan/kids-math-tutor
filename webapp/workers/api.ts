@@ -815,9 +815,13 @@ app.get('/worksheets/:id', async (c) => {
 
     // Build the worksheet description for social preview
     const problemCount = worksheet.problems?.length || 0;
+    const titleAndSubtitle =
+      worksheet.subtitle
+        ? `${worksheet.title} - ${worksheet.subtitle}`
+        : worksheet.title;
     const description =
       worksheet.description ||
-      `${problemCount} math problems - ${worksheet.subtitle || 'Practice worksheet'}`;
+      `${titleAndSubtitle} (${problemCount} ${problemCount === 1 ? 'problem' : 'problems'})`;
 
     // Inject dynamic Open Graph tags
     const baseUrl = new URL(c.req.url).origin;
