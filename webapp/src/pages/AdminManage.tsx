@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import SearchBar from "@/components/SearchBar";
+import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
 import WorksheetCard from "@/components/WorksheetCard";
 import { clearAdminAuthToken } from "@/lib/adminAuth";
 import {
@@ -371,6 +372,27 @@ export default function AdminManage() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Delete Confirmation Dialog */}
+        {state.ui.deleteConfirm && (
+          <DeleteConfirmationDialog
+            title={
+              state.worksheets.items.find(
+                (w) => w.id === state.ui.deleteConfirm,
+              )?.title || "Worksheet"
+            }
+            subtitle={
+              state.worksheets.items.find(
+                (w) => w.id === state.ui.deleteConfirm,
+              )?.subtitle
+            }
+            isDeleting={Boolean(state.ui.deleting)}
+            onConfirm={() => handleDelete(state.ui.deleteConfirm || "")}
+            onCancel={() =>
+              dispatch({ type: "SET_DELETE_CONFIRM", payload: null })
+            }
+          />
         )}
       </main>
     </div>
