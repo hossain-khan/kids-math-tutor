@@ -20,11 +20,11 @@ https://math-worksheet.gohk.xyz/manage-worksheets
 
 **Production (Cloudflare Secrets - REQUIRED):**
 ```bash
-wrangler secret put ADMIN_PASSWORD --env production
+npx wrangler secret put ADMIN_PASSWORD --env production
 # Enter your secure password when prompted
 
 # Verify it was set:
-wrangler secret list --env production
+npx wrangler secret list --env production
 ```
 
 ⚠️ **Important:** Production passwords MUST use Cloudflare Secrets, not `wrangler.json`

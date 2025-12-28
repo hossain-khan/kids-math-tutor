@@ -130,13 +130,13 @@ All endpoints validate Bearer token before allowing access.
 ### 2. Production
 ```bash
 # Set password as Cloudflare secret (REQUIRED for production)
-wrangler secret put ADMIN_PASSWORD --env production
+npx wrangler secret put ADMIN_PASSWORD --env production
 
 # Verify secret is set
-wrangler secret list --env production
+npx wrangler secret list --env production
 
 # Deploy
-wrangler deploy --env production
+npx wrangler deploy --env production
 
 # Access:
 # https://math-worksheet.gohk.xyz/manage-worksheets

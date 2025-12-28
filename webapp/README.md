@@ -39,6 +39,23 @@ Web-based worksheet creator for the Kids Math Pup Tutor Android app. Create cust
 pnpm install
 ```
 
+### Prerequisites for Development
+
+Before running the development server, ensure you have the Cloudflare Workers CLI installed:
+
+```bash
+# Install wrangler (Cloudflare Workers CLI) globally
+npm install -g wrangler
+
+# Or use npx to run wrangler commands without global installation
+# All wrangler commands in this project are run with: npx wrangler <command>
+```
+
+You can verify wrangler is installed:
+```bash
+wrangler --version
+```
+
 ### Development
 
 #### Local Development Server (Frontend + Backend)
@@ -47,7 +64,7 @@ To run the full development environment with both the frontend and API:
 
 ```bash
 # Terminal 1: Start the Wrangler dev server (API on port 8787)
-wrangler dev --env development
+npx wrangler dev --env development
 
 # Terminal 2: Start the Vite dev server (Frontend on port 5173)
 pnpm dev
@@ -125,7 +142,7 @@ The deployment uses environment-specific configurations in `wrangler.json`:
 - **Development**: Uses local password from `wrangler.json` for local testing
 
 **⚠️ Important Configuration Detail**:
-When using `wrangler deploy --env production`, Cloudflare automatically creates a new worker with a `-production` suffix if the `name` field is not explicitly set in the environment config. This can create a separate, unreachable worker instance without routes.
+When using `npx wrangler deploy --env production`, Cloudflare automatically creates a new worker with a `-production` suffix if the `name` field is not explicitly set in the environment config. This can create a separate, unreachable worker instance without routes.
 
 To prevent this, the `wrangler.json` must include `"name": "pup-tutor-worksheet-generator"` in the production environment section:
 
@@ -144,7 +161,7 @@ Without this, the production deployment creates `pup-tutor-worksheet-generator-p
 
 For production, set the admin password as a Cloudflare secret:
 ```bash
-wrangler secret put ADMIN_PASSWORD --env production
+npx wrangler secret put ADMIN_PASSWORD --env production
 ```
 
 ## Project Structure
@@ -176,7 +193,7 @@ The webapp is deployed as a static SPA to Cloudflare Workers.
 pnpm build
 
 # Deploy to Cloudflare Workers (production environment)
-wrangler deploy --env production
+npx wrangler deploy --env production
 ```
 
 ### First-Time Setup
@@ -188,11 +205,11 @@ If you haven't deployed before:
 npx wrangler login
 
 # 2. Set the admin password as a Cloudflare secret
-wrangler secret put ADMIN_PASSWORD
+npx wrangler secret put ADMIN_PASSWORD --env production
 # Enter your secure admin password when prompted
 
 # 3. Build and deploy
-pnpm build && wrangler deploy --env production
+pnpm build && npx wrangler deploy --env production
 ```
 
 The configuration is in `wrangler.json`:
