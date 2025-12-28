@@ -58,13 +58,21 @@ export async function checkContentSafetyWithAI(
   try {
     const prompt = `You are a strict content safety classifier for children's educational materials (K-2 grade level, ages 5-8).
 
-STRICT RULES:
-1. ANY profanity, slurs, or curse words = UNSAFE (even mild ones like "damn", "hell", "ass", "sucks", etc.)
-2. ANY crude or sexual language = UNSAFE  
-3. ANY violence or weapons = UNSAFE
-4. ANY drug/alcohol references = UNSAFE
-5. Adult themes, romance, dating = UNSAFE
-6. Scary or disturbing content = UNSAFE
+STRICT RULES - ALL trigger UNSAFE classification:
+1. PROFANITY & CURSE WORDS: "damn", "hell", "ass", "crap", "piss", "sucks", "butt", etc.
+2. NEGATIVE SENTIMENT: "hate", "stupid", "dumb", "loser", "idiot", "worthless", "suck", "fail"
+3. BULLYING & NAME-CALLING: "wimp", "nerd", "fat", "ugly", "mean", insults, mockery, teasing
+4. SELF-HARM & MENTAL HEALTH: "kill myself", "cut myself", "depressed", "suicidal", "die"
+5. BODY-SHAMING: Comments about appearance, weight, looks, physical attributes
+6. DEATH & MORBID: "death", "dead", "kill", "murder", "die", "coffin", etc.
+7. EXCLUSIONARY LANGUAGE: "everyone except", "people like you", "you don't belong", discrimination
+8. CRUDE/SEXUAL LANGUAGE: Any sexual references, reproductive terms used inappropriately
+9. VIOLENCE & WEAPONS: "hit", "punch", "gun", "knife", "shoot", weapons, fighting
+10. DRUGS & ALCOHOL: References to drugs, alcohol, smoking, vaping
+11. GAMBLING: "bet", "gamble", "money bet", betting language
+12. ADULT THEMES: Romance, dating, flirting, mature relationships
+13. SCARY CONTENT: Horror, nightmares, monsters, ghosts, scary stories
+14. DISMISSIVE LANGUAGE: Comments that discourage learning ("too hard", "you can't do this", "give up")
 
 Analyze this worksheet content:
 TITLE: "${content.title}"
@@ -72,6 +80,8 @@ ${content.subtitle ? `SUBTITLE: "${content.subtitle}"` : ""}
 ${content.description ? `DESCRIPTION: "${content.description}"` : ""}
 
 Classification for K-2 children (ages 5-8):
+- If ANY rule above is violated → classification = "unsafe"
+- If content is clean and educational → classification = "safe"
 
 Respond ONLY with valid JSON (no markdown, no code blocks):
 {
@@ -94,7 +104,10 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
     });
 
     // Log raw response for debugging safety issues
-    console.log('[AI] Raw response:', JSON.stringify(response).substring(0, 500));
+    console.log(
+      "[AI] Raw response:",
+      JSON.stringify(response).substring(0, 500),
+    );
 
     // Parse response - handle various formats
     let result;

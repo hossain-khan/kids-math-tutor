@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Backend: New `POST /api/v1/admin/check-safety` endpoint with comprehensive response structure
 - **AI-Powered Content Safety** - Integrated Cloudflare Workers AI (Llama Guard 3) for intelligent worksheet content moderation
   - Primary safety layer uses Llama Guard 3 (8B) model for context-aware classification
-  - Detects profanity, violence, sexual content, hate speech, substance abuse, and scary content
+  - Detects profanity, violence, sexual content, hate speech, substance abuse, scary content, and negative sentiment
   - Automatic fallback to bad-words library when AI is unavailable or free tier quota exhausted
   - Free tier only: 10,000 neurons/day supports ~850-1,000 worksheet safety checks/day
   - Zero cost for typical usage - all checks fall back to fast pattern-based filtering after quota
@@ -28,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Detailed safety feedback to users including detected categories and suggestions
 - **Unit Tests for Content Safety** - Added comprehensive test suite for aiSafety module
   - Tests AI success/failure paths, fallback mechanisms, and edge cases
+
+### Fixed
+- **Improved Llama Guard 3 prompt for better negative sentiment detection** - Enhanced AI prompt to explicitly catch negative words like "hate", "stupid", "dumb" that are inappropriate for K-2 children
+  - Added explicit rules for negative sentiment words ("hate", "stupid", "dumb", "loser", "worthless")
+  - Added rules for exclusionary language that divides children
+  - Improved from generic detection to specific pattern matching
   - Validates profanity detection with bad-words library
   - Tests error handling for rate limits (429), timeouts, and missing AI bindings
 - **AI Safety Documentation** - Added AI_SAFETY.md with complete implementation guide
