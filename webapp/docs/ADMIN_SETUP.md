@@ -6,6 +6,8 @@ The admin portal at `/manage-worksheets` allows you to:
 - View all shared community worksheets
 - Delete inappropriate or duplicate worksheets
 - See worksheet statistics (views, downloads, ratings)
+- Run bulk AI safety checks on all worksheets
+- Identify and flag content with safety concerns
 
 The portal is protected with password authentication that works seamlessly with Cloudflare Workers.
 
@@ -168,7 +170,73 @@ Authorization: Bearer <token>
 ```json
 {
   "success": true,
-  "message": "Worksheet deleted successfully"
+  "
+
+### POST `/api/v1/admin/check-safety`
+**Purpose:** Bulk AI safety check for all worksheets
+
+**Headers:**
+```
+Authorization: Bearer <token>
+```
+
+**Request Body (optional):**
+```json
+{
+  "worksheetIds": ["id1", "id2", "id3"]
+}
+```
+
+**Response:**
+```json
+{
+  "results": [
+    {
+      "worksheetId": "abc123",
+      "title": "Addition Basics",
+      "safe": true,
+      "categories": [],
+      "explanation": null,
+      "method": "AI-based safety check",
+      "confidence": 0.95,
+      "lastChecked": 1703779200000
+    },
+    {
+      "worksheetId": "def456",
+      "title": "Problematic Content",
+      "safe": false,
+      "categories": ["profanity"],
+      "explanation": "Contains inappropriate language",
+      "method": "AI-based safety check",
+      "confidence": 0.92,
+   Recent Enhancements
+
+Recently implemented:
+- ✅ **Bulk AI Safety Checks** - Scan all worksheets for inappropriate content using Llama Guard 3
+  - Real-time progress tracking
+  - Color-coded safety badges (safe/flagged)
+  - Expandable details showing flagged categories
+  - See [AI_SAFETY.md](./AI_SAFETY.md) for technical details
+
+## Future Enhancements
+
+Possible improvements:
+- Two-factor authentication (2FA)
+- Role-based access control (RBAC)
+- Audit logging for delete actions
+- JWT tokens instead of simple Base64
+- Email notifications on worksheet deletions
+- Automatic scheduled safety checks
+- Safety check result history and trends
+}
+```
+
+**Features:**
+- Batch processing with rate limiting (5 worksheets per batch, 100ms delays)
+- Uses Llama Guard 3 AI for content safety classification
+- Graceful fallback to pattern-based filtering if AI unavailable
+- Returns confidence scores for each check
+- Works within Cloudflare Workers AI free tier (10,000 neurons/day)message": "Worksheet deleted successfully"
 }
 ```
 
