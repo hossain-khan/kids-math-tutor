@@ -45,6 +45,7 @@ interface UIState {
   deleteConfirm: string | null;
   deleting: string | null;
   expandedSafety: string | null;
+  searchQuery: string;
 }
 
 interface SafetyCheckState {
@@ -97,6 +98,7 @@ export type AdminAction =
   | { type: "STOP_SAFETY_CHECK" }
   // UI actions
   | { type: "TOGGLE_EXPANDED_SAFETY"; payload: string | null }
+  | { type: "SET_SEARCH_QUERY"; payload: string }
   | { type: "RESET" };
 
 export const initialAdminState: AdminState = {
@@ -119,6 +121,7 @@ export const initialAdminState: AdminState = {
     deleteConfirm: null,
     deleting: null,
     expandedSafety: null,
+    searchQuery: "",
   },
   safetyCheck: {
     checking: false,
@@ -318,6 +321,18 @@ export function adminReducer(
         ui: {
           ...state.ui,
           expandedSafety: action.payload,
+        },
+      };
+    case "SET_SEARCH_QUERY":
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          searchQuery: action.payload,
+        },
+        worksheets: {
+          ...state.worksheets,
+          offset: 0,
         },
       };
 

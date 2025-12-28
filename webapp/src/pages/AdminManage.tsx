@@ -2,24 +2,30 @@ import { useEffect, useReducer } from "react";
 import { Link } from "react-router-dom";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
+import SearchBar from "@/components/SearchBar";
+import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
 import WorksheetCard from "@/components/WorksheetCard";
-import {
-  getAdminAuthToken,
-  clearAdminAuthToken,
-  isAdminAuthenticated,
-} from "@/lib/adminAuth";
+import { clearAdminAuthToken } from "@/lib/adminAuth";
 import {
   adminReducer,
   initialAdminState,
   AdminWorksheet,
 } from "@/lib/reducers/adminReducer";
+import { useAdminAPI } from "@/lib/hooks/useAdminAPI";
 
 export default function AdminManage() {
   const [state, dispatch] = useReducer(adminReducer, initialAdminState);
+  const {
+    authenticate,
+    fetchWorksheets: fetchWorksheetsAPI,
+    deleteWorksheet: deleteWorksheetAPI,
+    checkContentSafety,
+    isAuthenticated,
+  } = useAdminAPI();
 
   // Check authentication on mount
   useEffect(() => {
-    const isAuth = isAdminAuthenticated();
+    const isAuth = isAuthenticated();
 
     if (isAuth) {
       dispatch({
@@ -28,28 +34,14 @@ export default function AdminManage() {
       });
       fetchWorksheets();
     }
-  }, []);
+  }, [isAuthenticated]);
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch({ type: "CLEAR_AUTH_ERROR" });
 
     try {
-      const response = await fetch("/api/v1/admin/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: state.auth.password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        dispatch({
-          type: "SET_AUTH_ERROR",
-          payload: data.error || "Authentication failed",
-        });
-        return;
-      }
+      const data = await authenticate(state.auth.password);
 
       // Store token
       localStorage.setItem("admin_token", data.token);
@@ -59,10 +51,10 @@ export default function AdminManage() {
         payload: { isAuthenticated: true, showAuthModal: false },
       });
       await fetchWorksheets();
-    } catch {
+    } catch (err) {
       dispatch({
         type: "SET_AUTH_ERROR",
-        payload: "Connection error. Please try again.",
+        payload: err instanceof Error ? err.message : "Authentication failed",
       });
     }
   };
@@ -71,40 +63,12 @@ export default function AdminManage() {
     dispatch({ type: "FETCH_WORKSHEETS_START" });
 
     try {
-      const token = getAdminAuthToken();
+      const data = await fetchWorksheetsAPI({
+        limit: state.worksheets.limit,
+        offset: state.worksheets.offset,
+        search: state.ui.searchQuery || undefined,
+      });
 
-      if (!token) {
-        dispatch({
-          type: "FETCH_WORKSHEETS_ERROR",
-          payload: "Session expired, please login again",
-        });
-        return;
-      }
-
-      const limit = state.worksheets.limit;
-      const offset = state.worksheets.offset;
-      const response = await fetch(
-        `/api/v1/admin/worksheets?limit=${limit}&offset=${offset}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          console.error("❌ Unauthorized - token invalid");
-          dispatch({
-            type: "SET_AUTH",
-            payload: { isAuthenticated: false, showAuthModal: true },
-          });
-          return;
-        }
-        throw new Error("Failed to fetch worksheets");
-      }
-
-      const data = await response.json();
       console.log(
         "✅ Worksheets loaded:",
         data.worksheets?.length || 0,
@@ -118,12 +82,19 @@ export default function AdminManage() {
         },
       });
     } catch (err) {
-      console.error("❌ Fetch worksheets error:", err);
-      dispatch({
-        type: "FETCH_WORKSHEETS_ERROR",
-        payload:
-          err instanceof Error ? err.message : "Failed to load worksheets",
-      });
+      if (err instanceof Error && err.message === "Unauthorized") {
+        dispatch({
+          type: "SET_AUTH",
+          payload: { isAuthenticated: false, showAuthModal: true },
+        });
+      } else {
+        console.error("❌ Fetch worksheets error:", err);
+        dispatch({
+          type: "FETCH_WORKSHEETS_ERROR",
+          payload:
+            err instanceof Error ? err.message : "Failed to load worksheets",
+        });
+      }
     }
   };
 
@@ -132,18 +103,7 @@ export default function AdminManage() {
     dispatch({ type: "SET_DELETING", payload: id });
 
     try {
-      const token = getAdminAuthToken();
-      const response = await fetch(`/api/v1/admin/worksheets/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete worksheet");
-      }
-
+      await deleteWorksheetAPI(id);
       dispatch({ type: "DELETE_WORKSHEET_SUCCESS", payload: id });
     } catch (err) {
       dispatch({
@@ -161,39 +121,15 @@ export default function AdminManage() {
     });
 
     try {
-      const token = getAdminAuthToken();
-
-      if (!token) {
-        dispatch({
-          type: "SAFETY_CHECK_ERROR",
-          payload: "Session expired, please login again",
-        });
-        return;
-      }
-
-      const response = await fetch("/api/v1/admin/check-safety", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          worksheetIds: state.worksheets.items.map((w) => w.id),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to check content safety");
-      }
-
-      const data = await response.json();
+      const data = await checkContentSafety(
+        state.worksheets.items.map((w) => w.id),
+      );
 
       // Update worksheets with safety results
       const updatedWorksheets: AdminWorksheet[] = state.worksheets.items.map(
         (worksheet) => {
           const result = data.results.find(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (r: any) => r.worksheetId === worksheet.id,
+            (r) => r.worksheetId === worksheet.id,
           );
 
           if (result) {
@@ -341,9 +277,17 @@ export default function AdminManage() {
           <h2 className="text-3xl font-display font-bold text-gray-900 mb-2">
             Manage Shared Worksheets
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-6">
             View and manage all community-shared worksheets
           </p>
+          <SearchBar
+            value={state.ui.searchQuery}
+            onChange={(value) =>
+              dispatch({ type: "SET_SEARCH_QUERY", payload: value })
+            }
+            onSearch={fetchWorksheets}
+            disabled={state.worksheets.loading}
+          />
         </div>
 
         {/* Error */}
@@ -428,6 +372,27 @@ export default function AdminManage() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Delete Confirmation Dialog */}
+        {state.ui.deleteConfirm && (
+          <DeleteConfirmationDialog
+            title={
+              state.worksheets.items.find(
+                (w) => w.id === state.ui.deleteConfirm,
+              )?.title || "Worksheet"
+            }
+            subtitle={
+              state.worksheets.items.find(
+                (w) => w.id === state.ui.deleteConfirm,
+              )?.subtitle
+            }
+            isDeleting={Boolean(state.ui.deleting)}
+            onConfirm={() => handleDelete(state.ui.deleteConfirm || "")}
+            onCancel={() =>
+              dispatch({ type: "SET_DELETE_CONFIRM", payload: null })
+            }
+          />
         )}
       </main>
     </div>
