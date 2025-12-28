@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **ChallengeListItem Preview Variants** - Comprehensive preview functions for challenge list item testing and design validation
+  - Individual operation previews: Addition (+), Subtraction (−), Multiplication (×), Division (÷)
+  - Mixed operations preview (±) showing combined math operations
+  - Dark theme preview for theme compatibility validation
+  - Demonstrates watermark styling for all operation types
+  - Enables easy testing in Android Studio preview pane
 - **Math Operation Watermarks for Challenge List** - Added visual watermarks to parent challenges list items
   - Right-aligned, semi-transparent math operation symbols (+, −, ×, ÷) or ± for mixed operations
   - Dynamically determined based on challenge problems: shows operation if all problems are same type, otherwise shows ±

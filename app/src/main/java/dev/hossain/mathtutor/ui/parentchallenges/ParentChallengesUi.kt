@@ -892,3 +892,166 @@ private fun getMathOperationWatermarkChar(challenge: CustomChallenge): String {
 }
 
 private fun getChallengeWatermarkCount(challenge: CustomChallenge): String = challenge.problems.size.toString()
+
+// Preview functions for ChallengeListItem
+
+@Preview(showBackground = true, name = "Addition Challenge")
+@Composable
+private fun ChallengeListItemAdditionPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Addition Basics",
+                    subtitle = "Master single-digit addition",
+                    type = ChallengeType.GENERATED,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 3, num2 = 5, operation = MathOperation.ADDITION, correctAnswer = 8),
+                            MathProblem(num1 = 7, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 9),
+                            MathProblem(num1 = 4, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 10),
+                            MathProblem(num1 = 2, num2 = 1, operation = MathOperation.ADDITION, correctAnswer = 3),
+                            MathProblem(num1 = 8, num2 = 9, operation = MathOperation.ADDITION, correctAnswer = 17),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Subtraction Challenge")
+@Composable
+private fun ChallengeListItemSubtractionPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Subtraction Practice",
+                    subtitle = "Learn to subtract",
+                    type = ChallengeType.EXPLICIT,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 10, num2 = 3, operation = MathOperation.SUBTRACTION, correctAnswer = 7),
+                            MathProblem(num1 = 8, num2 = 5, operation = MathOperation.SUBTRACTION, correctAnswer = 3),
+                            MathProblem(num1 = 15, num2 = 7, operation = MathOperation.SUBTRACTION, correctAnswer = 8),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Multiplication Challenge")
+@Composable
+private fun ChallengeListItemMultiplicationPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Times Tables",
+                    subtitle = "Multiplication mastery",
+                    type = ChallengeType.GENERATED,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 3, num2 = 4, operation = MathOperation.MULTIPLICATION, correctAnswer = 12),
+                            MathProblem(num1 = 5, num2 = 6, operation = MathOperation.MULTIPLICATION, correctAnswer = 30),
+                            MathProblem(num1 = 7, num2 = 8, operation = MathOperation.MULTIPLICATION, correctAnswer = 56),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Division Challenge")
+@Composable
+private fun ChallengeListItemDivisionPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Division Drills",
+                    subtitle = "Divide with confidence",
+                    type = ChallengeType.EXPLICIT,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 12, num2 = 3, operation = MathOperation.DIVISION, correctAnswer = 4),
+                            MathProblem(num1 = 20, num2 = 4, operation = MathOperation.DIVISION, correctAnswer = 5),
+                            MathProblem(num1 = 18, num2 = 2, operation = MathOperation.DIVISION, correctAnswer = 9),
+                            MathProblem(num1 = 24, num2 = 6, operation = MathOperation.DIVISION, correctAnswer = 4),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Mixed Operations Challenge")
+@Composable
+private fun ChallengeListItemMixedPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Math Challenge",
+                    subtitle = "All operations combined",
+                    type = ChallengeType.EXPLICIT,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8),
+                            MathProblem(num1 = 10, num2 = 4, operation = MathOperation.SUBTRACTION, correctAnswer = 6),
+                            MathProblem(num1 = 3, num2 = 7, operation = MathOperation.MULTIPLICATION, correctAnswer = 21),
+                            MathProblem(num1 = 16, num2 = 4, operation = MathOperation.DIVISION, correctAnswer = 4),
+                            MathProblem(num1 = 9, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 11),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - Addition")
+@Composable
+private fun ChallengeListItemDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Addition Basics",
+                    subtitle = "Master single-digit addition",
+                    type = ChallengeType.GENERATED,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 3, num2 = 5, operation = MathOperation.ADDITION, correctAnswer = 8),
+                            MathProblem(num1 = 7, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 9),
+                            MathProblem(num1 = 4, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 10),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
