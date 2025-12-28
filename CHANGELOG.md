@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Red badges for sessions needing improvement (<60%)
   - Improved visual hierarchy with separated timestamp/duration header and main content sections
   - Subtle elevation changes on interaction for better touch feedback
+  - Day-of-week watermark (MON, TUE, WED, FRI, SAT, SUN, etc.) displayed as large, centered, semi-transparent background text
+    - Automatically adapts to theme: black text 15% opacity (light mode), white text 15% opacity (dark mode)
+    - Uses displayLarge typography for prominent visual impact
+    - Helps kids understand practice patterns and when they practice
+    - Creates engaging, personality-filled cards that encourage regular practice review
 - **OperationStatsCard Preview Variants** - Comprehensive preview functions for component testing and design validation
   - Individual operation previews: Addition (90%), Subtraction (60%), Multiplication (100%), Division (40%)
   - Tablet preview showing multiple cards side-by-side for adaptive layout testing

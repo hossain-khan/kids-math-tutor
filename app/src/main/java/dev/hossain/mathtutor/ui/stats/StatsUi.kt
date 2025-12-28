@@ -406,6 +406,7 @@ private fun OperationStatsCard(
  * - Optional grade level badge
  * - Subtle elevation changes on interaction
  * - Better spacing and visual hierarchy
+ * - Day-of-week watermark in the background (FRI, SAT, SUN, etc.)
  */
 @Composable
 private fun RecentSessionItem(
@@ -414,6 +415,7 @@ private fun RecentSessionItem(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val dayOfWeek = remember { getDayOfWeek(session.timestamp) }
 
     Card(
         modifier =
@@ -430,71 +432,100 @@ private fun RecentSessionItem(
                 pressedElevation = if (isHovered) 4.dp else 2.dp,
             ),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            // Header: Timestamp and Duration
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+        Box(modifier = Modifier.fillMaxWidth()) {
+            // Day watermark background
+            Text(
+                text = dayOfWeek,
+                style = MaterialTheme.typography.displayLarge,
+                color =
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                textAlign = TextAlign.Center,
+            )
+
+            // Main content
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text(
-                    text = TimeFormatter.formatRelativeTime(session.timestamp),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-
-                // Duration badge
-                Text(
-                    text = "${formatDuration(session.durationSeconds)}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-
-            // Main content row: Operation/Score and Accuracy
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                // Operation and Score details
-                Column(modifier = Modifier.weight(1f)) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = session.operation.displayName,
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-
-                        // Grade level badge if available
-                        if (session.gradeLevel != null) {
-                            GradeLevelBadge(gradeLevel = session.gradeLevel)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
+                // Header: Timestamp and Duration
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
-                        text = "${session.correctAnswers}/${session.totalProblems} correct",
-                        style = MaterialTheme.typography.bodySmall,
+                        text = TimeFormatter.formatRelativeTime(session.timestamp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+
+                    // Duration badge
+                    Text(
+                        text = "${formatDuration(session.durationSeconds)}",
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
 
-                // Accuracy badge with semantic coloring
-                AccuracyBadge(accuracy = session.accuracy)
+                // Main content row: Operation/Score and Accuracy
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Operation and Score details
+                    Column(modifier = Modifier.weight(1f)) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = session.operation.displayName,
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+
+                            // Grade level badge if available
+                            if (session.gradeLevel != null) {
+                                GradeLevelBadge(gradeLevel = session.gradeLevel)
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = "${session.correctAnswers}/${session.totalProblems} correct",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    // Accuracy badge with semantic coloring
+                    AccuracyBadge(accuracy = session.accuracy)
+                }
             }
         }
     }
+}
+
+/**
+ * Extracts the day of week from a timestamp.
+ * Returns: MON, TUE, WED, THU, FRI, SAT, SUN
+ */
+private fun getDayOfWeek(instant: Instant): String {
+    val dayOfWeek =
+        java.time.LocalDateTime
+            .ofInstant(instant, java.time.ZoneId.systemDefault())
+            .dayOfWeek
+    return dayOfWeek.toString().take(3)
 }
 
 /**
