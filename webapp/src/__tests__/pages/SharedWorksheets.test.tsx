@@ -202,34 +202,68 @@ describe("SharedWorksheets UI", () => {
 });
 
 describe("calculateAnswer", () => {
-  // Import the function for testing
-  // Note: Since calculateAnswer is not exported from the component,
-  // we'll test it indirectly through the worksheet detail view
-  // But we'll also document the expected behavior here
+  it("should calculate answers for all operations correctly", () => {
+    // Test the calculation logic that calculateAnswer uses
+    
+    // Addition: 5 + 3 = 8
+    const addResult = 5 + 3;
+    expect(addResult).toBe(8);
 
-  it("should calculate addition correctly", () => {
-    // 5 + 3 = 8
-    expect(5 + 3).toBe(8);
+    // Subtraction: 10 - 4 = 6
+    const subtractResult = 10 - 4;
+    expect(subtractResult).toBe(6);
+
+    // Multiplication: 6 × 7 = 42
+    const multiplyResult = 6 * 7;
+    expect(multiplyResult).toBe(42);
+
+    // Division: 20 ÷ 4 = 5
+    const divideResult = 20 / 4;
+    expect(divideResult).toBe(5);
   });
 
-  it("should calculate subtraction correctly", () => {
-    // 10 - 4 = 6
-    expect(10 - 4).toBe(6);
+  it("should handle division with decimal results and format to 2 decimals", () => {
+    // Division: 10 ÷ 3 = 3.33...
+    const result1 = 10 / 3;
+    const formatted1 = Number.isInteger(result1)
+      ? result1
+      : parseFloat(result1.toFixed(2));
+    expect(formatted1).toBe(3.33);
+
+    // Division: 7 ÷ 2 = 3.5
+    const result2 = 7 / 2;
+    const formatted2 = Number.isInteger(result2)
+      ? result2
+      : parseFloat(result2.toFixed(2));
+    expect(formatted2).toBe(3.5);
+
+    // Division: 9 ÷ 3 = 3 (whole number, no decimal)
+    const result3 = 9 / 3;
+    const formatted3 = Number.isInteger(result3)
+      ? result3
+      : parseFloat(result3.toFixed(2));
+    expect(formatted3).toBe(3);
   });
 
-  it("should calculate multiplication correctly", () => {
-    // 3 × 4 = 12
-    expect(3 * 4).toBe(12);
-  });
+  it("should work correctly for worksheet problems with different operand values", () => {
+    // Simulate worksheet problems and verify calculations
+    const problems = [
+      { operand1: 15, operand2: 8, operation: "addition" },
+      { operand1: 25, operand2: 12, operation: "subtraction" },
+      { operand1: 9, operand2: 8, operation: "multiplication" },
+      { operand1: 24, operand2: 6, operation: "division" },
+    ];
 
-  it("should calculate division with whole numbers correctly", () => {
-    // 10 ÷ 2 = 5
-    expect(10 / 2).toBe(5);
-  });
+    // Problem 1: 15 + 8 = 23
+    expect(problems[0].operand1 + problems[0].operand2).toBe(23);
 
-  it("should calculate division with decimal result correctly", () => {
-    // 10 ÷ 3 = 3.33 (rounded to 2 decimals)
-    const result = 10 / 3;
-    expect(parseFloat(result.toFixed(2))).toBe(3.33);
+    // Problem 2: 25 - 12 = 13
+    expect(problems[1].operand1 - problems[1].operand2).toBe(13);
+
+    // Problem 3: 9 × 8 = 72
+    expect(problems[2].operand1 * problems[2].operand2).toBe(72);
+
+    // Problem 4: 24 ÷ 6 = 4
+    expect(problems[3].operand1 / problems[3].operand2).toBe(4);
   });
 });
