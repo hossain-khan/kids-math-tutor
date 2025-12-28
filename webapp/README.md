@@ -98,17 +98,17 @@ pnpm lint
 # Format code
 pnpm format
 
-# Run tests
-pnpm test
+# Run tests (exit after completion, no watch mode)
+pnpm test --run
 
 # Build app
 pnpm build
 
-# Run tests with UI
+# Run tests with UI (interactive watch mode)
 pnpm test:ui
 
-# Generate coverage report
-pnpm test:coverage
+# Generate coverage report (exit after completion)
+pnpm test:coverage --run
 ```
 
 ### Test Coverage
