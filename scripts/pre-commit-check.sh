@@ -2,10 +2,12 @@
 
 # Pre-commit check script for Kids Math Tutor project
 # Runs formatters, linters, and builds for both Android and webapp
-# Usage: ./scripts/pre-commit-check.sh [--android-only|--web-only]
+# Usage: ./scripts/pre-commit-check.sh [--android-only|--web-only] [-a|-w]
 #   ./scripts/pre-commit-check.sh          # Run all checks
-#   ./scripts/pre-commit-check.sh --android-only  # Run Android checks only
-#   ./scripts/pre-commit-check.sh --web-only      # Run web checks only
+#   ./scripts/pre-commit-check.sh -a       # Run Android checks only
+#   ./scripts/pre-commit-check.sh -w       # Run Web checks only
+#   ./scripts/pre-commit-check.sh --android-only  # Run Android checks only (long form)
+#   ./scripts/pre-commit-check.sh --web-only      # Run Web checks only (long form)
 
 set -e
 
@@ -21,10 +23,10 @@ RUN_ANDROID=true
 RUN_WEB=true
 
 case "${1:-}" in
-  --android-only)
+  --android-only|-a)
     RUN_WEB=false
     ;;
-  --web-only)
+  --web-only|-w)
     RUN_ANDROID=false
     ;;
   --help|-h)
@@ -33,10 +35,10 @@ case "${1:-}" in
     echo "Usage: ./scripts/pre-commit-check.sh [--android-only|--web-only]"
     echo ""
     echo "Options:"
-    echo "  (no args)      Run all checks (Android + Web)"
-    echo "  --android-only Run Android checks only"
-    echo "  --web-only     Run Web checks only"
-    echo "  --help, -h     Show this help message"
+    echo "  (no args)           Run all checks (Android + Web)"
+    echo "  --android-only, -a  Run Android checks only"
+    echo "  --web-only, -w      Run Web checks only"
+    echo "  --help, -h          Show this help message"
     exit 0
     ;;
   *)
