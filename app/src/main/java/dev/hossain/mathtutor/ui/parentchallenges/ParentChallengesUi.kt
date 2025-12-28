@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -57,6 +60,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -431,16 +435,23 @@ private fun ChallengeListItem(
             ),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            // Math operation watermark - right aligned
+            // Math problems count watermark - right aligned
             Text(
-                text = getMathOperationWatermarkChar(challenge),
-                style = MaterialTheme.typography.displayLarge.copy(fontFamily = watermarkFontFamily),
+                // Not using the `getMathOperationWatermarkChar` because
+                // we already have operation icon on the left
+                text = getChallengeWatermarkCount(challenge),
+                style =
+                    MaterialTheme.typography.displayLarge.copy(
+                        fontFamily = watermarkFontFamily,
+                        fontSize = MaterialTheme.typography.displayLarge.fontSize * 1.2f,
+                    ),
                 color =
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                 modifier =
                     Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 8.dp),
+                        .height(IntrinsicSize.Max)
+                        .padding(end = 64.dp)
+                        .align(Alignment.CenterEnd),
             )
 
             // Main content
@@ -879,3 +890,5 @@ private fun getMathOperationWatermarkChar(challenge: CustomChallenge): String {
         }
     }
 }
+
+private fun getChallengeWatermarkCount(challenge: CustomChallenge): String = challenge.problems.size.toString()
