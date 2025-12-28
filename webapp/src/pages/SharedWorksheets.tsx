@@ -952,6 +952,7 @@ function getOperationColor(operation: string): {
   bg: string;
   symbol: string;
   text: string;
+  border: string;
 } {
   switch (operation) {
     case "addition":
@@ -959,30 +960,35 @@ function getOperationColor(operation: string): {
         bg: "from-blue-50 to-blue-100",
         symbol: "+",
         text: "text-blue-400",
+        border: "border-blue-300",
       };
     case "subtraction":
       return {
         bg: "from-pink-50 to-pink-100",
         symbol: "-",
         text: "text-pink-400",
+        border: "border-pink-300",
       };
     case "multiplication":
       return {
         bg: "from-green-50 to-green-100",
         symbol: "×",
         text: "text-green-400",
+        border: "border-green-300",
       };
     case "division":
       return {
         bg: "from-amber-50 to-amber-100",
         symbol: "÷",
         text: "text-amber-400",
+        border: "border-amber-300",
       };
     default:
       return {
         bg: "from-gray-50 to-gray-100",
         symbol: "?",
         text: "text-gray-400",
+        border: "border-gray-300",
       };
   }
 }
