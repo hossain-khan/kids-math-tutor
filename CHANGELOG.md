@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Automatically adapts to theme: black text 15% opacity (light mode), white text 15% opacity (dark mode)
     - Uses displayLarge typography for prominent visual impact
     - Styled with Google Font "Barrio" - a playful, bold, comic-style font perfect for kids
+    - **Adaptive day names**: Shows abbreviated names (MON, TUE, WED) on phone screens, full names (MONDAY, TUESDAY, WEDNESDAY) on tablet/landscape for better space utilization
     - Helps kids understand practice patterns and when they practice
     - Creates engaging, personality-filled cards that encourage regular practice review
 - **OperationStatsCard Preview Variants** - Comprehensive preview functions for component testing and design validation

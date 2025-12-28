@@ -407,7 +407,8 @@ private fun OperationStatsCard(
  * - Optional grade level badge
  * - Subtle elevation changes on interaction
  * - Better spacing and visual hierarchy
- * - Day-of-week watermark in the background (FRI, SAT, SUN, etc.)
+ * - Day-of-week watermark in the background (FRI, SAT, SUN, etc. or FRIDAY, SATURDAY, SUNDAY on larger screens)
+ * - Adaptive day name: abbreviated on phone, full name on tablet/landscape
  */
 @Composable
 private fun RecentSessionItem(
@@ -416,7 +417,6 @@ private fun RecentSessionItem(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val dayOfWeek = remember { getDayOfWeek(session.timestamp) }
 
     Card(
         modifier =
@@ -433,7 +433,17 @@ private fun RecentSessionItem(
                 pressedElevation = if (isHovered) 4.dp else 2.dp,
             ),
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            // Detect available width and choose between abbreviated and full day name
+            val dayOfWeek =
+                remember {
+                    if (maxWidth >= 600.dp) {
+                        getDayOfWeekFull(session.timestamp) // MONDAY, TUESDAY, etc.
+                    } else {
+                        getDayOfWeek(session.timestamp) // MON, TUE, etc.
+                    }
+                }
+
             // Day watermark background - using playful Barrio font
             Text(
                 text = dayOfWeek,
@@ -527,6 +537,18 @@ private fun getDayOfWeek(instant: Instant): String {
             .ofInstant(instant, java.time.ZoneId.systemDefault())
             .dayOfWeek
     return dayOfWeek.toString().take(3)
+}
+
+/**
+ * Extracts the full day of week name from a timestamp.
+ * Returns: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+ */
+private fun getDayOfWeekFull(instant: Instant): String {
+    val dayOfWeek =
+        java.time.LocalDateTime
+            .ofInstant(instant, java.time.ZoneId.systemDefault())
+            .dayOfWeek
+    return dayOfWeek.toString()
 }
 
 /**
