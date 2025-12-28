@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **AI-Powered Content Safety** - Integrated Cloudflare Workers AI (Llama Guard 3) for intelligent worksheet content moderation
+  - Primary safety layer uses Llama Guard 3 (8B) model for context-aware classification
+  - Detects profanity, violence, sexual content, hate speech, substance abuse, and scary content
+  - Automatic fallback to bad-words library when AI is unavailable or free tier quota exhausted
+  - Free tier only: 10,000 neurons/day supports ~850-1,000 worksheet safety checks/day
+  - Zero cost for typical usage - all checks fall back to fast pattern-based filtering after quota
+  - Comprehensive error handling for rate limits, timeouts, and network issues
+  - Detailed safety feedback to users including detected categories and suggestions
+- **Unit Tests for Content Safety** - Added comprehensive test suite for aiSafety module
+  - Tests AI success/failure paths, fallback mechanisms, and edge cases
+  - Validates profanity detection with bad-words library
+  - Tests error handling for rate limits (429), timeouts, and missing AI bindings
+- **AI Safety Documentation** - Added AI_SAFETY.md with complete implementation guide
+  - Explains free tier constraints and cost analysis
+  - Provides troubleshooting guide and monitoring recommendations
+  - Documents prompt engineering for K-2 age appropriateness
+  - Includes security considerations and COPPA compliance notes
+
+### Changed
+- **Enhanced Worksheet Validation** - Replaced basic profanity filtering with AI-powered content safety check
+  - API now returns detailed safety information including method used (AI vs pattern-based)
+  - Error responses include detected categories and improvement suggestions
+  - Improved user experience with clearer guidance on why content was rejected
+
 ## [1.17.0] - 2025-12-27
 
 ### Added

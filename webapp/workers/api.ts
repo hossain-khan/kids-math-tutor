@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid';
 import type { Context } from 'hono';
 import type { GradeLevel, ProblemSpec } from '@/lib/schemas/challenge-schema';
 import { ExplicitChallengeSpecSchema } from '@/lib/schemas/challenge-schema';
-import { validateWorksheetContent } from '@/lib/server/profanity';
+import { checkContentSafetyWithAI } from '@/lib/server/aiSafety';
 import { detectGrades } from '@/lib/server/grades';
 import {
   saveWorksheet,
@@ -30,6 +30,8 @@ import {
 interface Env {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   KV: any; // KVNamespace from Cloudflare Workers
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  AI?: any; // Cloudflare Workers AI binding (optional)
   ADMIN_PASSWORD?: string; // Admin password from environment variables
 }
 
@@ -149,18 +151,24 @@ app.post('/api/v1/worksheets/share', async (c) => {
       );
     }
 
-    // Check for profanity
-    if (
-      validateWorksheetContent({
-        title: worksheetData.title,
-        subtitle: worksheetData.subtitle,
-        description: worksheetData.description,
-      })
-    ) {
+    // Check for inappropriate content using AI with fallback to bad-words
+    const safetyResult = await checkContentSafetyWithAI(c.env, {
+      title: worksheetData.title,
+      subtitle: worksheetData.subtitle,
+      description: worksheetData.description,
+    });
+
+    if (!safetyResult.safe) {
       return c.json(
         {
           error:
-            'Worksheet contains inappropriate content. Please review and try again.',
+            'Worksheet contains inappropriate content for children. Please review and try again.',
+          categories: safetyResult.categories || [],
+          explanation: safetyResult.explanation,
+          suggestion:
+            'Please ensure all content is age-appropriate for K-2 children.',
+          method: safetyResult.usingAI ? 'AI-based safety check' : 'Pattern-based filter',
+          fallback: safetyResult.fallback || false,
         },
         400,
       );

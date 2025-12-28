@@ -101,6 +101,9 @@ pnpm format
 # Run tests
 pnpm test
 
+# Build app
+pnpm build
+
 # Run tests with UI
 pnpm test:ui
 
