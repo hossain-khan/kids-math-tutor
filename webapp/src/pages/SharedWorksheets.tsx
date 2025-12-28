@@ -78,6 +78,7 @@ export default function SharedWorksheets() {
   const [isAndroid, setIsAndroid] = useState(false);
   const [usingWorksheet, setUsingWorksheet] = useState(false);
   const [sessionId, setSessionId] = useState("");
+  const [showAllProblems, setShowAllProblems] = useState(false);
   // Initialize session ID and Android check
   useEffect(() => {
     setIsAndroid(isLikelyAndroidDevice());
@@ -375,7 +376,12 @@ export default function SharedWorksheets() {
 
           {/* Preview Problems */}
           <Card className="mb-6 p-6">
-            <h3 className="font-display font-bold text-lg mb-4">Preview</h3>
+            <h3 className="font-display font-bold text-lg mb-4">
+              Preview{" "}
+              <span className="font-display font-normal text-base text-gray-600">
+                (showing first 3 out of {problemCount} problems)
+              </span>
+            </h3>
             <div className="space-y-3">
               {previewProblems.map((problem, idx) => (
                 <div
@@ -389,9 +395,12 @@ export default function SharedWorksheets() {
                 </div>
               ))}
               {problemCount > 3 && (
-                <p className="text-sm text-gray-600 italic pt-2">
-                  ... and {problemCount - 3} more problems
-                </p>
+                <button
+                  onClick={() => setShowAllProblems(true)}
+                  className="w-full mt-4 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-300 rounded-lg text-blue-700 font-medium transition-colors text-center"
+                >
+                  View All {problemCount} Problems
+                </button>
               )}
             </div>
           </Card>
@@ -450,6 +459,61 @@ export default function SharedWorksheets() {
                 </div>
               </div>
             </Card>
+          )}
+
+          {/* All Problems Modal */}
+          {showAllProblems && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
+                <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+                  <h2 className="font-display font-bold text-xl md:text-2xl">
+                    All Problems ({problemCount})
+                  </h2>
+                  <button
+                    onClick={() => setShowAllProblems(false)}
+                    className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="p-6 space-y-3">
+                  {worksheet.problems.map((problem, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-gray-50 p-4 rounded border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500 font-medium">
+                          Problem {idx + 1}
+                        </span>
+                      </div>
+                      <div className="text-lg md:text-xl font-mono font-bold text-gray-900 mt-2">
+                        {problem.operand1}{" "}
+                        {getOperationSymbol(problem.operation)}{" "}
+                        {problem.operand2} ={" "}
+                        <span className="text-green-600">
+                          {calculateAnswer(
+                            problem.operand1,
+                            problem.operand2,
+                            problem.operation,
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
+                  <button
+                    onClick={() => setShowAllProblems(false)}
+                    className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </Card>
+            </div>
           )}
         </main>
       </div>
@@ -730,6 +794,28 @@ function getOperationSymbol(operation: string): string {
       return "×";
     case "division":
       return "÷";
+    default:
+      return "?";
+  }
+}
+
+function calculateAnswer(
+  operand1: number,
+  operand2: number,
+  operation: string,
+): number | string {
+  switch (operation) {
+    case "addition":
+      return operand1 + operand2;
+    case "subtraction":
+      return operand1 - operand2;
+    case "multiplication":
+      return operand1 * operand2;
+    case "division": {
+      // Return with 2 decimal places if not a whole number, otherwise whole number
+      const result = operand1 / operand2;
+      return Number.isInteger(result) ? result : result.toFixed(2);
+    }
     default:
       return "?";
   }
