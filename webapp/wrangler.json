@@ -23,6 +23,10 @@
   "env": {
     "production": {
       "name": "pup-tutor-worksheet-generator",
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application"
+      },
       "kv_namespaces": [
         {
           "binding": "KV",
@@ -35,6 +39,10 @@
       "workers_dev": false
     },
     "development": {
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application"
+      },
       "kv_namespaces": [
         {
           "binding": "KV",
