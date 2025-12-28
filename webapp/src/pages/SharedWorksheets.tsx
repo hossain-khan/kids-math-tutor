@@ -807,14 +807,14 @@ export default function SharedWorksheets() {
                   <div key={ws.id}>
                     <Link to={`/worksheets/${ws.id}`}>
                       <Card
-                        className={`p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer relative overflow-hidden ${
+                        className={`group p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer relative overflow-hidden ${
                           operationColor
                             ? `border-2 ${operationColor.border}`
                             : ""
                         }`}
                       >
                         {operationColor && (
-                          <div className="absolute -top-8 -right-0 opacity-10 pointer-events-none">
+                          <div className="absolute -top-8 -right-0 opacity-10 group-hover:opacity-15 transition-opacity pointer-events-none">
                             <div className="text-[270px] font-bold text-gray-400 leading-none">
                               {operationColor.symbol}
                             </div>
