@@ -62,7 +62,29 @@ Simplify custom challenge creation for parents while building a community librar
 - **Community Rating System**: Star ratings (1-5 stars) with count
 - **View Tracking**: Track number of worksheet views and downloads
 
-### 3. Worksheet Details & Preview
+### 3. Safety Content Validator (Testing Tool)
+
+#### Purpose
+Dedicated page for testing and refining content safety rules without creating full worksheets. Enables quick iteration on AI safety models and rule tuning.
+
+#### Features
+- **Multi-Model Testing**: Dropdown to test different Cloudflare AI models
+  - Llama 3.1 8B (default, recommended)
+  - Llama Guard 3 8B (specialized safety)
+  - Llama 3.3 70B and Llama 4 Scout (alternatives)
+- **Real-time Validation**: Instant feedback on content safety
+- **Detailed Results**: Shows classification, detected categories, confidence score, and explanation
+- **No Worksheet Creation**: Pure validation tool - no need to create full worksheets for testing
+- **Location**: `/test/validate-content`
+
+#### Example Usage
+1. Navigate to Safety Content Validator
+2. Enter test content in title/subtitle fields
+3. Select AI model to test
+4. Click "Validate Content"
+5. View detailed safety results with categories and confidence score
+
+### 4. Worksheet Details & Preview
 
 #### Detail View
 - **Worksheet Header Card**:
