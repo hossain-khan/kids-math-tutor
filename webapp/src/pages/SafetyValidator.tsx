@@ -101,7 +101,8 @@ export function SafetyValidator() {
             {/* Subtitle Input */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Subtitle <span className="text-gray-400 text-xs">(optional)</span>
+                Subtitle{" "}
+                <span className="text-gray-400 text-xs">(optional)</span>
               </label>
               <input
                 type="text"
@@ -170,15 +171,16 @@ export function SafetyValidator() {
             <div className="space-y-4">
               {/* Status Badge */}
               <div className="flex items-center gap-3">
-                <div className="text-3xl">
-                  {result.safe ? "✅" : "⚠️"}
-                </div>
+                <div className="text-3xl">{result.safe ? "✅" : "⚠️"}</div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">
                     {result.safe ? "Content Approved" : "Content Flagged"}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Classification: <span className="font-semibold">{result.classification}</span>
+                    Classification:{" "}
+                    <span className="font-semibold">
+                      {result.classification}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -256,8 +258,8 @@ export function SafetyValidator() {
         {!result && !loading && (
           <div className="bg-white rounded-lg shadow-lg p-12 text-center">
             <p className="text-gray-500 text-lg">
-              Enter content above and click &quot;Validate Content&quot; to test the
-              safety classifier
+              Enter content above and click &quot;Validate Content&quot; to test
+              the safety classifier
             </p>
           </div>
         )}
