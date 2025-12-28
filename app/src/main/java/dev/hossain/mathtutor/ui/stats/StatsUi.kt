@@ -896,3 +896,119 @@ private fun StatsUiTabletLandscapePreview() {
         )
     }
 }
+
+// Preview functions for OperationStatsCard
+
+@Preview(showBackground = true, name = "Addition - High Accuracy")
+@Composable
+private fun OperationStatsCardAdditionHighPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.ADDITION,
+            stats =
+                SessionStats(
+                    totalProblems = 50,
+                    correctCount = 45,
+                    accuracy = 90f,
+                    sessionCount = 5,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Subtraction - Medium Accuracy")
+@Composable
+private fun OperationStatsCardSubtractionMediumPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.SUBTRACTION,
+            stats =
+                SessionStats(
+                    totalProblems = 35,
+                    correctCount = 21,
+                    accuracy = 60f,
+                    sessionCount = 3,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Multiplication - Perfect")
+@Composable
+private fun OperationStatsCardMultiplicationPerfectPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.MULTIPLICATION,
+            stats =
+                SessionStats(
+                    totalProblems = 20,
+                    correctCount = 20,
+                    accuracy = 100f,
+                    sessionCount = 2,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Division - Low Accuracy")
+@Composable
+private fun OperationStatsCardDivisionLowPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.DIVISION,
+            stats =
+                SessionStats(
+                    totalProblems = 25,
+                    correctCount = 10,
+                    accuracy = 40f,
+                    sessionCount = 1,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700, name = "Tablet - Multiple Cards")
+@Composable
+private fun OperationStatsCardTabletPreview() {
+    KidsMathTutorAppTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            OperationStatsCard(
+                operation = MathOperation.ADDITION,
+                stats =
+                    SessionStats(
+                        totalProblems = 50,
+                        correctCount = 45,
+                        accuracy = 90f,
+                        sessionCount = 5,
+                    ),
+            )
+            OperationStatsCard(
+                operation = MathOperation.SUBTRACTION,
+                stats =
+                    SessionStats(
+                        totalProblems = 35,
+                        correctCount = 28,
+                        accuracy = 80f,
+                        sessionCount = 3,
+                    ),
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - High Accuracy")
+@Composable
+private fun OperationStatsCardDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        OperationStatsCard(
+            operation = MathOperation.ADDITION,
+            stats =
+                SessionStats(
+                    totalProblems = 50,
+                    correctCount = 45,
+                    accuracy = 90f,
+                    sessionCount = 5,
+                ),
+        )
+    }
+}

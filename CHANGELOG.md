@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Red badges for sessions needing improvement (<60%)
   - Improved visual hierarchy with separated timestamp/duration header and main content sections
   - Subtle elevation changes on interaction for better touch feedback
+- **OperationStatsCard Preview Variants** - Comprehensive preview functions for component testing and design validation
+  - Individual operation previews: Addition (90%), Subtraction (60%), Multiplication (100%), Division (40%)
+  - Tablet preview showing multiple cards side-by-side for adaptive layout testing
+  - Dark theme preview for theme compatibility validation
+  - Demonstrates all math operations with varying accuracy levels
 - **Operation-Specific Worksheet Backgrounds** - Visual indicators on worksheet cards showing practice focus areas
   - Large semi-transparent operation symbols (+, −, ×, ÷) as card backgrounds when all problems share the same operation type
   - Color-coded backgrounds: Blue for addition, Pink for subtraction, Green for multiplication, Amber for division
