@@ -228,7 +228,7 @@ export function SafetyValidator() {
                 <div className="bg-white rounded p-3">
                   <p className="text-xs text-gray-600 mb-2">Explanation</p>
                   <p className="text-sm text-gray-700 italic">
-                    "{result.explanation}"
+                    &quot;{result.explanation}&quot;
                   </p>
                 </div>
               )}
@@ -256,7 +256,7 @@ export function SafetyValidator() {
         {!result && !loading && (
           <div className="bg-white rounded-lg shadow-lg p-12 text-center">
             <p className="text-gray-500 text-lg">
-              Enter content above and click "Validate Content" to test the
+              Enter content above and click &quot;Validate Content&quot; to test the
               safety classifier
             </p>
           </div>
