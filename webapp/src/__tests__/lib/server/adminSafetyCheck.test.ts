@@ -486,12 +486,11 @@ describe("adminSafetyCheck module", () => {
     it("should have correct BulkSafetyCheckResponse structure", async () => {
       vi.mocked(worksheetStorage.getWorksheet).mockResolvedValue(null);
 
-      const result: BulkSafetyCheckResponse = await import(
-        "@/lib/server/adminSafetyCheck"
-      ).then((m) =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        m.bulkCheckSafety({} as any, []),
-      );
+      const result: BulkSafetyCheckResponse =
+        await import("@/lib/server/adminSafetyCheck").then((m) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          m.bulkCheckSafety({} as any, []),
+        );
 
       expect(result.results).toBeDefined();
       expect(result.summary).toBeDefined();

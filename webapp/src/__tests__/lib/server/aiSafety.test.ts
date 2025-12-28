@@ -259,7 +259,11 @@ describe("aiSafety module", () => {
         AI: {
           run: vi.fn().mockResolvedValue({
             response: "\n\nsafe",
-            usage: { prompt_tokens: 100, completion_tokens: 5, total_tokens: 105 },
+            usage: {
+              prompt_tokens: 100,
+              completion_tokens: 5,
+              total_tokens: 105,
+            },
           }), // Response object with plain text
         },
       };
@@ -282,7 +286,7 @@ describe("aiSafety module", () => {
               classification: "safe",
               categories: [],
               explanation: "Content appears to be educational",
-            })
+            }),
           ),
         },
       };
