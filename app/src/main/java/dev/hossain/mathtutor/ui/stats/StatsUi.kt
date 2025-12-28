@@ -60,6 +60,7 @@ import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
 import dev.hossain.mathtutor.util.TimeFormatter
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
@@ -433,10 +434,10 @@ private fun RecentSessionItem(
             ),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            // Day watermark background
+            // Day watermark background - using playful Barrio font
             Text(
                 text = dayOfWeek,
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayLarge.copy(fontFamily = watermarkFontFamily),
                 color =
                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
                 modifier =
