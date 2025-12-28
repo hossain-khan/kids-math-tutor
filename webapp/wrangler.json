@@ -17,6 +17,9 @@
       "preview_id": "b94eac3c955f44df8eb8722850956947"
     }
   ],
+  "ai": {
+    "binding": "AI"
+  },
   "env": {
     "production": {
       "name": "pup-tutor-worksheet-generator",
@@ -26,12 +29,9 @@
           "id": "1a434626c9c143ec874e6c2e1ec2348a"
         }
       ],
-      "bindings": [
-        {
-          "binding": "AI",
-          "type": "ai"
-        }
-      ],
+      "ai": {
+        "binding": "AI"
+      },
       "workers_dev": false
     },
     "development": {
@@ -40,12 +40,6 @@
           "binding": "KV",
           "id": "dev-namespace",
           "preview_id": "b94eac3c955f44df8eb8722850956947"
-        }
-      ],
-      "bindings": [
-        {
-          "binding": "AI",
-          "type": "ai"
         }
       ],
       "vars": {
