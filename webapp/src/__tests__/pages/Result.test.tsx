@@ -260,4 +260,302 @@ describe("Result Component", () => {
       });
     });
   });
+
+  describe("Share error feedback", () => {
+    it("should display error message when share fails", async () => {
+      const user = userEvent.setup();
+      const explicitChallengeData = {
+        type: "explicit" as const,
+        title: "Test Challenge",
+        subtitle: "Test",
+        problems: [
+          { operand1: 5, operand2: 3, operation: "addition" as const },
+        ],
+      };
+
+      sessionStorage.setItem(
+        "challengeData",
+        JSON.stringify(explicitChallengeData),
+      );
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error:
+            "Worksheet contains inappropriate content for children. Please review and try again.",
+          categories: ["negative sentiment"],
+          explanation: "Content contains discouraging language",
+          suggestion: "Please use positive and encouraging language.",
+          method: "AI-based safety check",
+        }),
+      });
+
+      render(
+        <BrowserRouter>
+          <Result />
+        </BrowserRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/Worksheet Ready!/i)).toBeInTheDocument();
+      });
+
+      const shareButton = screen.getByRole("button", {
+        name: /share to community/i,
+      });
+      await user.click(shareButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            /Worksheet contains inappropriate content for children/i,
+          ),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("should display violation categories", async () => {
+      const user = userEvent.setup();
+      const explicitChallengeData = {
+        type: "explicit" as const,
+        title: "Test Challenge",
+        subtitle: "Test",
+        problems: [
+          { operand1: 5, operand2: 3, operation: "addition" as const },
+        ],
+      };
+
+      sessionStorage.setItem(
+        "challengeData",
+        JSON.stringify(explicitChallengeData),
+      );
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error: "Worksheet contains inappropriate content",
+          categories: ["negative sentiment", "bullying", "dismissive language"],
+          explanation: "Content contains discouraging language",
+          suggestion: "Please use positive and encouraging language.",
+          method: "AI-based safety check",
+        }),
+      });
+
+      render(
+        <BrowserRouter>
+          <Result />
+        </BrowserRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/Worksheet Ready!/i)).toBeInTheDocument();
+      });
+
+      const shareButton = screen.getByRole("button", {
+        name: /share to community/i,
+      });
+      await user.click(shareButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/negative sentiment/i)).toBeInTheDocument();
+        expect(screen.getByText(/bullying/i)).toBeInTheDocument();
+        expect(screen.getByText(/dismissive language/i)).toBeInTheDocument();
+      });
+    });
+
+    it("should display explanation text", async () => {
+      const user = userEvent.setup();
+      const explicitChallengeData = {
+        type: "explicit" as const,
+        title: "Test Challenge",
+        subtitle: "Test",
+        problems: [
+          { operand1: 5, operand2: 3, operation: "addition" as const },
+        ],
+      };
+
+      sessionStorage.setItem(
+        "challengeData",
+        JSON.stringify(explicitChallengeData),
+      );
+
+      const explanation =
+        "The subtitle contains a discouraging phrase 'just give up' which is dismissive and negative";
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error: "Worksheet contains inappropriate content",
+          categories: ["dismissive language"],
+          explanation,
+          suggestion: "Please use positive and encouraging language.",
+          method: "AI-based safety check",
+        }),
+      });
+
+      render(
+        <BrowserRouter>
+          <Result />
+        </BrowserRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/Worksheet Ready!/i)).toBeInTheDocument();
+      });
+
+      const shareButton = screen.getByRole("button", {
+        name: /share to community/i,
+      });
+      await user.click(shareButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Why this happened/i)).toBeInTheDocument();
+        expect(screen.getByText(explanation)).toBeInTheDocument();
+      });
+    });
+
+    it("should display suggestion text", async () => {
+      const user = userEvent.setup();
+      const explicitChallengeData = {
+        type: "explicit" as const,
+        title: "Test Challenge",
+        subtitle: "Test",
+        problems: [
+          { operand1: 5, operand2: 3, operation: "addition" as const },
+        ],
+      };
+
+      sessionStorage.setItem(
+        "challengeData",
+        JSON.stringify(explicitChallengeData),
+      );
+
+      const suggestion =
+        "Please ensure all content is age-appropriate for K-2 children.";
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error: "Worksheet contains inappropriate content",
+          categories: ["dismissive language"],
+          explanation: "Content contains discouraging language",
+          suggestion,
+          method: "AI-based safety check",
+        }),
+      });
+
+      render(
+        <BrowserRouter>
+          <Result />
+        </BrowserRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/Worksheet Ready!/i)).toBeInTheDocument();
+      });
+
+      const shareButton = screen.getByRole("button", {
+        name: /share to community/i,
+      });
+      await user.click(shareButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/How to fix/i)).toBeInTheDocument();
+        expect(screen.getByText(suggestion)).toBeInTheDocument();
+      });
+    });
+
+    it("should display validation method", async () => {
+      const user = userEvent.setup();
+      const explicitChallengeData = {
+        type: "explicit" as const,
+        title: "Test Challenge",
+        subtitle: "Test",
+        problems: [
+          { operand1: 5, operand2: 3, operation: "addition" as const },
+        ],
+      };
+
+      sessionStorage.setItem(
+        "challengeData",
+        JSON.stringify(explicitChallengeData),
+      );
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error: "Worksheet contains inappropriate content",
+          categories: ["dismissive language"],
+          explanation: "Content contains discouraging language",
+          suggestion: "Please use positive language.",
+          method: "AI-based safety check",
+        }),
+      });
+
+      render(
+        <BrowserRouter>
+          <Result />
+        </BrowserRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/Worksheet Ready!/i)).toBeInTheDocument();
+      });
+
+      const shareButton = screen.getByRole("button", {
+        name: /share to community/i,
+      });
+      await user.click(shareButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Validation method/i)).toBeInTheDocument();
+        expect(screen.getByText(/AI-based safety check/i)).toBeInTheDocument();
+      });
+    });
+
+    it("should handle error response without optional fields", async () => {
+      const user = userEvent.setup();
+      const explicitChallengeData = {
+        type: "explicit" as const,
+        title: "Test Challenge",
+        subtitle: "Test",
+        problems: [
+          { operand1: 5, operand2: 3, operation: "addition" as const },
+        ],
+      };
+
+      sessionStorage.setItem(
+        "challengeData",
+        JSON.stringify(explicitChallengeData),
+      );
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          error: "Worksheet contains inappropriate content",
+        }),
+      });
+
+      render(
+        <BrowserRouter>
+          <Result />
+        </BrowserRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/Worksheet Ready!/i)).toBeInTheDocument();
+      });
+
+      const shareButton = screen.getByRole("button", {
+        name: /share to community/i,
+      });
+      await user.click(shareButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Worksheet contains inappropriate content/i),
+        ).toBeInTheDocument();
+      });
+    });
+  });
 });

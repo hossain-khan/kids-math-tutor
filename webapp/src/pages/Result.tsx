@@ -12,6 +12,14 @@ import { generateDeeplink, isLikelyAndroidDevice } from "@/lib/deeplink";
 // Register JSON language
 SyntaxHighlighter.registerLanguage("json", json);
 
+interface ShareErrorData {
+  error: string;
+  categories?: string[];
+  explanation?: string;
+  suggestion?: string;
+  method?: string;
+}
+
 export default function Result() {
   const navigate = useNavigate();
   const [challengeData, setChallengeData] =
@@ -21,7 +29,7 @@ export default function Result() {
   const [isAndroid, setIsAndroid] = useState(false);
   const [deeplinkOpened, setDeeplinkOpened] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
-  const [shareError, setShareError] = useState<string | null>(null);
+  const [shareError, setShareError] = useState<ShareErrorData | null>(null);
   const [shareSuccess, setShareSuccess] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
 
@@ -119,9 +127,7 @@ export default function Result() {
       const data = await response.json();
 
       if (!response.ok) {
-        setShareError(
-          data.error || "Failed to share worksheet. Please try again.",
-        );
+        setShareError(data as ShareErrorData);
         return;
       }
 
@@ -129,9 +135,9 @@ export default function Result() {
       setShareLink(data.shareLink);
     } catch (error) {
       console.error("Share error:", error);
-      setShareError(
-        "Network error. Please check your connection and try again.",
-      );
+      setShareError({
+        error: "Network error. Please check your connection and try again.",
+      });
     } finally {
       setShareLoading(false);
     }
@@ -389,10 +395,60 @@ export default function Result() {
             <div className="flex items-start gap-3">
               <span className="text-2xl flex-shrink-0">⚠️</span>
               <div className="flex-1">
-                <h3 className="font-bold text-red-900 mb-1">
-                  Could not share worksheet
+                <h3 className="font-bold text-red-900 mb-2">
+                  {shareError.error}
                 </h3>
-                <p className="text-sm text-red-800">{shareError}</p>
+
+                {/* Show categories if available */}
+                {shareError.categories && shareError.categories.length > 0 && (
+                  <div className="mb-3">
+                    <p className="text-xs font-semibold text-red-800 mb-1.5">
+                      Issues found:
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {shareError.categories.map((category, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-block bg-red-200 text-red-900 px-2 py-1 rounded text-xs font-medium capitalize"
+                        >
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Show explanation if available */}
+                {shareError.explanation && (
+                  <div className="mb-3 p-2 bg-red-100 rounded border border-red-200">
+                    <p className="text-xs font-semibold text-red-800 mb-1">
+                      Why this happened:
+                    </p>
+                    <p className="text-sm text-red-800">
+                      {shareError.explanation}
+                    </p>
+                  </div>
+                )}
+
+                {/* Show suggestion if available */}
+                {shareError.suggestion && (
+                  <div className="mb-2 p-2 bg-blue-50 rounded border border-blue-200">
+                    <p className="text-xs font-semibold text-blue-900 mb-1">
+                      How to fix:
+                    </p>
+                    <p className="text-sm text-blue-900">
+                      {shareError.suggestion}
+                    </p>
+                  </div>
+                )}
+
+                {/* Show validation method if available */}
+                {shareError.method && (
+                  <p className="text-xs text-red-700 mt-2">
+                    <span className="font-semibold">Validation method:</span>{" "}
+                    {shareError.method}
+                  </p>
+                )}
               </div>
             </div>
           </Card>
