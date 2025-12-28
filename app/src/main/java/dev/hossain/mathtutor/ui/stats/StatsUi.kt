@@ -3,6 +3,8 @@ package dev.hossain.mathtutor.ui.stats
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -36,11 +38,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -391,18 +398,36 @@ private fun OperationStatsCard(
 }
 
 /**
- * Displays a single recent session item.
+ * Displays a single recent session item with enhanced visual hierarchy and interactivity.
+ *
+ * Features:
+ * - Duration display with formatted time
+ * - Semantic accuracy coloring (green/amber/red based on performance)
+ * - Optional grade level badge
+ * - Subtle elevation changes on interaction
+ * - Better spacing and visual hierarchy
  */
 @Composable
 private fun RecentSessionItem(
     session: PracticeSessionEntity,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(interactionSource = interactionSource, indication = null) { },
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 2.dp,
+                pressedElevation = if (isHovered) 4.dp else 2.dp,
             ),
     ) {
         Column(
@@ -410,27 +435,54 @@ private fun RecentSessionItem(
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // Timestamp
-            Text(
-                text = TimeFormatter.formatRelativeTime(session.timestamp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-
+            // Header: Timestamp and Duration
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Operation and Score
-                Column {
-                    Text(
-                        text = session.operation.displayName,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                Text(
+                    text = TimeFormatter.formatRelativeTime(session.timestamp),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                // Duration badge
+                Text(
+                    text = "${formatDuration(session.durationSeconds)}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            // Main content row: Operation/Score and Accuracy
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Operation and Score details
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = session.operation.displayName,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+
+                        // Grade level badge if available
+                        if (session.gradeLevel != null) {
+                            GradeLevelBadge(gradeLevel = session.gradeLevel)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     Text(
                         text = "${session.correctAnswers}/${session.totalProblems} correct",
                         style = MaterialTheme.typography.bodySmall,
@@ -438,14 +490,104 @@ private fun RecentSessionItem(
                     )
                 }
 
-                // Accuracy Badge
-                Text(
-                    text = "${session.accuracy.toInt()}%",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                // Accuracy badge with semantic coloring
+                AccuracyBadge(accuracy = session.accuracy)
             }
         }
+    }
+}
+
+/**
+ * Formats duration in seconds to a human-readable string.
+ * Examples: "2m 30s", "45s", "1h 5m"
+ */
+private fun formatDuration(seconds: Long): String =
+    when {
+        seconds < 60 -> {
+            "${seconds}s"
+        }
+
+        seconds < 3600 -> {
+            val minutes = seconds / 60
+            val remainingSeconds = seconds % 60
+            if (remainingSeconds > 0) "${minutes}m ${remainingSeconds}s" else "${minutes}m"
+        }
+
+        else -> {
+            val hours = seconds / 3600
+            val minutes = (seconds % 3600) / 60
+            if (minutes > 0) "${hours}h ${minutes}m" else "${hours}h"
+        }
+    }
+
+/**
+ * Displays accuracy with semantic color coding based on performance.
+ * - Green (80%+): Excellent
+ * - Amber (60-79%): Good
+ * - Red (<60%): Needs improvement
+ */
+@Composable
+private fun AccuracyBadge(accuracy: Float) {
+    val (backgroundColor, textColor) =
+        when {
+            accuracy >= 80f -> {
+                MaterialTheme.colorScheme.primaryContainer to
+                    MaterialTheme.colorScheme.onPrimaryContainer
+            }
+
+            accuracy >= 60f -> {
+                MaterialTheme.colorScheme.tertiaryContainer to
+                    MaterialTheme.colorScheme.onTertiaryContainer
+            }
+
+            else -> {
+                MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
+            }
+        }
+
+    Card(
+        modifier = Modifier.padding(0.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = backgroundColor,
+            ),
+    ) {
+        Text(
+            text = "${accuracy.toInt()}%",
+            style = MaterialTheme.typography.titleMedium,
+            color = textColor,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+        )
+    }
+}
+
+/**
+ * Displays grade level as a small badge.
+ * Maps: 0=K, 1=1st, 2=2nd
+ */
+@Composable
+private fun GradeLevelBadge(gradeLevel: Int) {
+    val gradeLabel =
+        when (gradeLevel) {
+            0 -> "K"
+            1 -> "1st"
+            2 -> "2nd"
+            else -> "$gradeLevel"
+        }
+
+    Card(
+        modifier = Modifier.padding(0.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+    ) {
+        Text(
+            text = gradeLabel,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+        )
     }
 }
 
@@ -592,6 +734,7 @@ private fun StatsUiPreview() {
                                 accuracy = 90f,
                                 durationSeconds = 120,
                                 timestamp = Instant.now(),
+                                gradeLevel = 0,
                             ),
                             PracticeSessionEntity(
                                 id = 2,
@@ -602,6 +745,7 @@ private fun StatsUiPreview() {
                                 accuracy = 80f,
                                 durationSeconds = 150,
                                 timestamp = Instant.now().minusSeconds(86400),
+                                gradeLevel = 1,
                             ),
                         ),
                     eventSink = {},
@@ -663,6 +807,18 @@ private fun StatsUiDarkPreview() {
                                 accuracy = 90f,
                                 durationSeconds = 120,
                                 timestamp = Instant.now(),
+                                gradeLevel = 1,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 5,
+                                incorrectAnswers = 5,
+                                accuracy = 50f,
+                                durationSeconds = 180,
+                                timestamp = Instant.now().minusSeconds(3600),
+                                gradeLevel = 0,
                             ),
                         ),
                     eventSink = {},
@@ -721,6 +877,18 @@ private fun StatsUiTabletLandscapePreview() {
                                 accuracy = 90f,
                                 durationSeconds = 120,
                                 timestamp = Instant.now(),
+                                gradeLevel = 2,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 7,
+                                incorrectAnswers = 3,
+                                accuracy = 70f,
+                                durationSeconds = 95,
+                                timestamp = Instant.now().minusSeconds(1800),
+                                gradeLevel = 1,
                             ),
                         ),
                     eventSink = {},
