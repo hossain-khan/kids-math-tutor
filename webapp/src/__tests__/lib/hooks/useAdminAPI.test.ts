@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { useAdminAPI } from "@/lib/hooks/useAdminAPI";
 import * as adminAuth from "@/lib/adminAuth";
 
 // Mock fetch globally
-global.fetch = vi.fn();
+const mockFetch = vi.fn();
+global.fetch = mockFetch as unknown as typeof fetch;
 
 // Mock adminAuth module
 vi.mock("@/lib/adminAuth", () => ({
@@ -16,12 +17,12 @@ vi.mock("@/lib/adminAuth", () => ({
 describe("useAdminAPI", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (global.fetch as any).mockClear();
+    mockFetch.mockClear();
   });
 
   describe("authenticate", () => {
     it("should authenticate with valid password", async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           token: "test-token-123",
@@ -46,7 +47,7 @@ describe("useAdminAPI", () => {
     });
 
     it("should throw error on failed authentication", async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
         json: async () => ({
           error: "Invalid password",
@@ -61,7 +62,7 @@ describe("useAdminAPI", () => {
     });
 
     it("should handle generic error messages", async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
         json: async () => ({}),
       });
@@ -78,7 +79,7 @@ describe("useAdminAPI", () => {
     it("should fetch worksheets with default parameters", async () => {
       vi.mocked(adminAuth.getAdminAuthToken).mockReturnValue("test-token");
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           worksheets: [
@@ -112,7 +113,7 @@ describe("useAdminAPI", () => {
     it("should fetch worksheets with custom parameters", async () => {
       vi.mocked(adminAuth.getAdminAuthToken).mockReturnValue("test-token");
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           worksheets: [],
@@ -151,7 +152,7 @@ describe("useAdminAPI", () => {
     it("should throw error on failed fetch", async () => {
       vi.mocked(adminAuth.getAdminAuthToken).mockReturnValue("test-token");
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
       });
 
@@ -167,7 +168,7 @@ describe("useAdminAPI", () => {
     it("should delete a worksheet", async () => {
       vi.mocked(adminAuth.getAdminAuthToken).mockReturnValue("test-token");
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
       });
 
@@ -199,7 +200,7 @@ describe("useAdminAPI", () => {
     it("should throw error on failed delete", async () => {
       vi.mocked(adminAuth.getAdminAuthToken).mockReturnValue("test-token");
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
       });
 
@@ -215,7 +216,7 @@ describe("useAdminAPI", () => {
     it("should check content safety for worksheets", async () => {
       vi.mocked(adminAuth.getAdminAuthToken).mockReturnValue("test-token");
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           results: [
@@ -267,7 +268,7 @@ describe("useAdminAPI", () => {
     it("should throw error on failed safety check", async () => {
       vi.mocked(adminAuth.getAdminAuthToken).mockReturnValue("test-token");
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
       });
 
