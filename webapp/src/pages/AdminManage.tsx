@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
@@ -23,43 +23,7 @@ export default function AdminManage() {
     isAuthenticated,
   } = useAdminAPI();
 
-  // Check authentication on mount
-  useEffect(() => {
-    const isAuth = isAuthenticated();
-
-    if (isAuth) {
-      dispatch({
-        type: "SET_AUTH",
-        payload: { isAuthenticated: true, showAuthModal: false },
-      });
-      fetchWorksheets();
-    }
-  }, [isAuthenticated]);
-
-  const handleAuthSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch({ type: "CLEAR_AUTH_ERROR" });
-
-    try {
-      const data = await authenticate(state.auth.password);
-
-      // Store token
-      localStorage.setItem("admin_token", data.token);
-      localStorage.setItem("admin_token_expiry", data.expiry.toString());
-      dispatch({
-        type: "SET_AUTH",
-        payload: { isAuthenticated: true, showAuthModal: false },
-      });
-      await fetchWorksheets();
-    } catch (err) {
-      dispatch({
-        type: "SET_AUTH_ERROR",
-        payload: err instanceof Error ? err.message : "Authentication failed",
-      });
-    }
-  };
-
-  const fetchWorksheets = async () => {
+  const fetchWorksheets = useCallback(async () => {
     dispatch({ type: "FETCH_WORKSHEETS_START" });
 
     try {
@@ -95,6 +59,47 @@ export default function AdminManage() {
             err instanceof Error ? err.message : "Failed to load worksheets",
         });
       }
+    }
+  }, [
+    fetchWorksheetsAPI,
+    state.ui.searchQuery,
+    state.worksheets.limit,
+    state.worksheets.offset,
+  ]);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const isAuth = isAuthenticated();
+
+    if (isAuth) {
+      dispatch({
+        type: "SET_AUTH",
+        payload: { isAuthenticated: true, showAuthModal: false },
+      });
+      fetchWorksheets();
+    }
+  }, [isAuthenticated, fetchWorksheets]);
+
+  const handleAuthSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch({ type: "CLEAR_AUTH_ERROR" });
+
+    try {
+      const data = await authenticate(state.auth.password);
+
+      // Store token
+      localStorage.setItem("admin_token", data.token);
+      localStorage.setItem("admin_token_expiry", data.expiry.toString());
+      dispatch({
+        type: "SET_AUTH",
+        payload: { isAuthenticated: true, showAuthModal: false },
+      });
+      await fetchWorksheets();
+    } catch (err) {
+      dispatch({
+        type: "SET_AUTH_ERROR",
+        payload: err instanceof Error ? err.message : "Authentication failed",
+      });
     }
   };
 
@@ -179,14 +184,7 @@ export default function AdminManage() {
     fetchWorksheets();
   };
 
-  // Render logic
-  if (!state.ui.expandedSafety && !state.auth.isAuthenticated) {
-    dispatch({
-      type: "SET_AUTH",
-      payload: { isAuthenticated: false, showAuthModal: true },
-    });
-  }
-
+  // Render logic - early return for auth modal
   if (state.auth.showAuthModal && !state.auth.isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50">
