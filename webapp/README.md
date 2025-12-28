@@ -141,11 +141,14 @@ pnpm build && npx wrangler deploy --env production
 #### Environment Configuration
 
 The deployment uses environment-specific configurations in `wrangler.json`:
-- **Production**: Uses Cloudflare secrets for the admin password, but deploys to the **same worker instance** as the main deployment (not a separate `-production` worker)
-- **Development**: Uses local password from `wrangler.json` for local testing
+- **Production**: Uses Cloudflare secrets for the admin password, AI binding, and static assets
+- **Development**: Uses local password from `wrangler.json` for local testing with AI binding
 
-**⚠️ Important Configuration Detail**:
-When using `npx wrangler deploy --env production`, Cloudflare automatically creates a new worker with a `-production` suffix if the `name` field is not explicitly set in the environment config. This can create a separate, unreachable worker instance without routes.
+**⚠️ Important Configuration Details**:
+
+1. **AI Binding**: The AI binding must be configured in the environment-specific section (e.g., `env.production.ai`), not just at the top level. Wrangler does not inherit top-level bindings to environments.
+
+2. **Worker Name**: When using `npx wrangler deploy --env production`, Cloudflare automatically creates a new worker with a `-production` suffix if the `name` field is not explicitly set in the environment config. This can create a separate, unreachable worker instance without routes.
 
 To prevent this, the `wrangler.json` must include `"name": "pup-tutor-worksheet-generator"` in the production environment section:
 
@@ -153,6 +156,9 @@ To prevent this, the `wrangler.json` must include `"name": "pup-tutor-worksheet-
 "env": {
   "production": {
     "name": "pup-tutor-worksheet-generator",  // ← CRITICAL: Prevents -production suffix
+    "ai": {
+      "binding": "AI"                          // ← AI binding for Workers AI access
+    },
     "kv_namespaces": [...],
     "vars": {"ADMIN_PASSWORD": "..."},
     "workers_dev": false
@@ -160,7 +166,9 @@ To prevent this, the `wrangler.json` must include `"name": "pup-tutor-worksheet-
 }
 ```
 
-Without this, the production deployment creates `pup-tutor-worksheet-generator-production` (a separate, unrouted worker) instead of updating the main `pup-tutor-worksheet-generator` worker that has the routes configured.
+Without these settings:
+- Missing `name`: Creates separate `pup-tutor-worksheet-generator-production` worker (unrouted, unreachable)
+- Missing `ai` in environment: AI binding won't be available in production (`env.AI` won't show in deployment output)
 
 For production, set the admin password as a Cloudflare secret:
 ```bash
