@@ -69,12 +69,20 @@ function verifyAdminToken(
 
 /**
  * Helper to validate admin token from request
+ * Supports both environment variable (prod secrets) and var fallback (dev)
  */
 function validateAdminToken(
   c: Context<{ Bindings: Env }>,
 ): boolean {
   const authHeader = c.req.header('Authorization');
   if (!authHeader?.startsWith('Bearer ')) {
+    return false;
+  }
+
+  // Get admin password from env (secrets) or fall back to vars
+  const adminPassword = c.env.ADMIN_PASSWORD;
+  if (!adminPassword) {
+    console.error('ADMIN_PASSWORD not configured in environment or secrets');
     return false;
   }
 
@@ -90,7 +98,7 @@ function validateAdminToken(
     }
 
     // Verify password matches
-    return password === c.env.ADMIN_PASSWORD;
+    return password === adminPassword;
   } catch {
     return false;
   }
