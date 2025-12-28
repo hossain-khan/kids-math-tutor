@@ -173,15 +173,24 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 
 ### Before Committing
 
-**ALWAYS run these commands before committing:**
+**ALWAYS run the pre-commit check before committing:**
 
 ```bash
-# 1. Format Kotlin code (auto-fixes style issues)
-./gradlew formatKotlin
-
-# 2. Build to ensure no compilation errors
-./gradlew assembleDebug
+# Run all quality checks (formatting, linting, tests, and builds for both Android and webapp)
+./scripts/pre-commit-check.sh
 ```
+
+This script will:
+1. Format Android code with `./gradlew formatKotlin`
+2. Lint Android code with `./gradlew lintKotlin`
+3. Run Android unit tests with `./gradlew testDebugUnitTest`
+4. Lint Android debug build with `./gradlew lintDebug`
+5. Build Android app with `./gradlew assembleDebug`
+6. Format webapp code with `pnpm format`
+7. Lint webapp code with `pnpm lint`
+8. Build webapp with `pnpm build`
+
+If all checks pass, you're ready to commit. The script will exit with code 0 on success or 1 if any check fails.
 
 ### macOS Development Notes
 
