@@ -33,6 +33,8 @@ interface Env {
   KV: any; // KVNamespace from Cloudflare Workers
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AI?: any; // Cloudflare Workers AI binding (optional)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ASSETS: any; // Static assets handler from Wrangler
   ADMIN_PASSWORD?: string; // Admin password from environment variables
 }
 
@@ -729,6 +731,120 @@ app.post('/api/v1/test/validate-content', async (c) => {
       },
       500,
     );
+  }
+});
+
+/**
+ * Helper to inject dynamic Open Graph meta tags into HTML
+ * Used for social media preview when sharing worksheet links
+ */
+function injectOpenGraphTags(
+  html: string,
+  title: string,
+  description: string,
+  url: string,
+): string {
+  // Escape special characters in title/description for safe HTML embedding
+  const escapeHtml = (text: string) => {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
+
+  const escapedTitle = escapeHtml(title);
+  const escapedDescription = escapeHtml(description);
+
+  // Create dynamic meta tags
+  const dynamicMetaTags = `
+    <meta property="og:url" content="${url}" />
+    <meta property="og:title" content="${escapedTitle}" />
+    <meta property="og:description" content="${escapedDescription}" />
+    <meta property="twitter:url" content="${url}" />
+    <meta property="twitter:title" content="${escapedTitle}" />
+    <meta property="twitter:description" content="${escapedDescription}" />
+    <link rel="canonical" href="${url}" />`;
+
+  // Replace the existing OG tags in the HTML
+  // Remove old og:url, og:title, og:description tags
+  let modified = html
+    .replace(/<meta property="og:url"[^>]*>/g, '')
+    .replace(/<meta property="og:title"[^>]*>/g, '')
+    .replace(/<meta property="og:description"[^>]*>/g, '')
+    .replace(/<meta property="twitter:url"[^>]*>/g, '')
+    .replace(/<meta property="twitter:title"[^>]*>/g, '')
+    .replace(/<meta property="twitter:description"[^>]*>/g, '')
+    .replace(/<link rel="canonical"[^>]*>/g, '');
+
+  // Insert new meta tags after the author meta tag
+  modified = modified.replace(
+    /<meta name="author"[^>]*>/,
+    `$&${dynamicMetaTags}`,
+  );
+
+  return modified;
+}
+
+/**
+ * GET /worksheets/:id
+ * Serve HTML with dynamically injected Open Graph meta tags for the worksheet
+ * This handler intercepts worksheet detail page requests and injects social media preview data
+ */
+app.get('/worksheets/:id', async (c) => {
+  try {
+    const worksheetId = c.req.param('id');
+
+    // Fetch the worksheet from KV
+    const worksheet = await getWorksheet(c.env.KV, worksheetId);
+
+    if (!worksheet) {
+      // If worksheet not found, return 404 by serving the SPA (will show not found UI)
+      const response = await c.env.ASSETS.fetch(
+        new Request('https://example.com/index.html'),
+      );
+      return response;
+    }
+
+    // Get the index.html from assets
+    const response = await c.env.ASSETS.fetch(
+      new Request('https://example.com/index.html'),
+    );
+    let html = await response.text();
+
+    // Build the worksheet description for social preview
+    const problemCount = worksheet.problems?.length || 0;
+    const description =
+      worksheet.description ||
+      `${problemCount} math problems - ${worksheet.subtitle || 'Practice worksheet'}`;
+
+    // Inject dynamic Open Graph tags
+    const baseUrl = new URL(c.req.url).origin;
+    const worksheetUrl = `${baseUrl}/worksheets/${worksheetId}`;
+
+    html = injectOpenGraphTags(
+      html,
+      worksheet.title,
+      description,
+      worksheetUrl,
+    );
+
+    // Return modified HTML with proper headers for caching
+    return new Response(html, {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+        'CDN-Cache-Control': 'max-age=3600',
+      },
+    });
+  } catch (error) {
+    console.error('Error serving worksheet page:', error);
+    // Fall back to regular static serving
+    const response = await c.env.ASSETS.fetch(
+      new Request('https://example.com/index.html'),
+    );
+    return response;
   }
 });
 
