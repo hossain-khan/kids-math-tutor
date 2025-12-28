@@ -100,4 +100,83 @@ class GradeLevelTest {
         assertThat(GradeLevel.GRADE_1.displayName).isEqualTo("Grade 1")
         assertThat(GradeLevel.GRADE_2.displayName).isEqualTo("Grade 2")
     }
+
+    @Test
+    fun `kindergarten available operations are correct`() {
+        val operations = GradeLevel.KINDERGARTEN.getAvailableOperations()
+        assertThat(operations).containsExactly(
+            MathOperation.ADDITION,
+            MathOperation.SUBTRACTION,
+            MathOperation.MIXED,
+        )
+    }
+
+    @Test
+    fun `kindergarten does not have multiplication`() {
+        val operations = GradeLevel.KINDERGARTEN.getAvailableOperations()
+        assertThat(operations).doesNotContain(MathOperation.MULTIPLICATION)
+    }
+
+    @Test
+    fun `kindergarten does not have division`() {
+        val operations = GradeLevel.KINDERGARTEN.getAvailableOperations()
+        assertThat(operations).doesNotContain(MathOperation.DIVISION)
+    }
+
+    @Test
+    fun `grade 1 available operations are correct`() {
+        val operations = GradeLevel.GRADE_1.getAvailableOperations()
+        assertThat(operations).containsExactly(
+            MathOperation.ADDITION,
+            MathOperation.SUBTRACTION,
+            MathOperation.MULTIPLICATION,
+            MathOperation.MIXED,
+        )
+    }
+
+    @Test
+    fun `grade 1 has multiplication but not division`() {
+        val operations = GradeLevel.GRADE_1.getAvailableOperations()
+        assertThat(operations).contains(MathOperation.MULTIPLICATION)
+        assertThat(operations).doesNotContain(MathOperation.DIVISION)
+    }
+
+    @Test
+    fun `grade 2 available operations are correct`() {
+        val operations = GradeLevel.GRADE_2.getAvailableOperations()
+        assertThat(operations).containsExactly(
+            MathOperation.ADDITION,
+            MathOperation.SUBTRACTION,
+            MathOperation.MULTIPLICATION,
+            MathOperation.DIVISION,
+            MathOperation.MIXED,
+        )
+    }
+
+    @Test
+    fun `grade 2 has all operations`() {
+        val operations = GradeLevel.GRADE_2.getAvailableOperations()
+        assertThat(operations).contains(MathOperation.ADDITION)
+        assertThat(operations).contains(MathOperation.SUBTRACTION)
+        assertThat(operations).contains(MathOperation.MULTIPLICATION)
+        assertThat(operations).contains(MathOperation.DIVISION)
+        assertThat(operations).contains(MathOperation.MIXED)
+    }
+
+    @Test
+    fun `all grades have addition and subtraction`() {
+        for (grade in GradeLevel.values()) {
+            val operations = grade.getAvailableOperations()
+            assertThat(operations).contains(MathOperation.ADDITION)
+            assertThat(operations).contains(MathOperation.SUBTRACTION)
+        }
+    }
+
+    @Test
+    fun `all grades have mixed operation`() {
+        for (grade in GradeLevel.values()) {
+            val operations = grade.getAvailableOperations()
+            assertThat(operations).contains(MathOperation.MIXED)
+        }
+    }
 }
