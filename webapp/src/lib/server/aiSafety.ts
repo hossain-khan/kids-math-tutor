@@ -96,6 +96,15 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
       ],
     });
 
+    console.log(
+      `[DEBUG] Raw AI response type: ${typeof response}, keys: ${
+        typeof response === "object" && response !== null
+          ? Object.keys(response).join(", ")
+          : "N/A"
+      }`,
+    );
+    console.log(`[DEBUG] Raw AI response:`, response);
+
     // Parse response - handle various formats
     let result;
     if (typeof response === "string") {
@@ -129,6 +138,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
     };
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`[ERROR] AI safety check failed: ${errorMessage}`, error);
 
     // Check if it's a rate limit or free tier exceeded error
     if (
