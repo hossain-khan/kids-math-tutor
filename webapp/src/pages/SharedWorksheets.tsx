@@ -366,8 +366,8 @@ export default function SharedWorksheets() {
           >
             {/* Operation Background Pattern */}
             {operationColor && (
-              <div className="absolute -top-12 -right-32 opacity-15 pointer-events-none">
-                <div className="text-[240px] font-bold text-gray-400 leading-none">
+              <div className="absolute -top-6 -right-0 opacity-15 pointer-events-none">
+                <div className="text-[140px] font-bold text-gray-400 leading-none">
                   {operationColor.symbol}
                 </div>
               </div>
@@ -814,8 +814,8 @@ export default function SharedWorksheets() {
                         }`}
                       >
                         {operationColor && (
-                          <div className="absolute -top-8 -right-16 opacity-15 pointer-events-none">
-                            <div className="text-[170px] font-bold text-gray-400 leading-none">
+                          <div className="absolute -top-8 -right-0 opacity-10 pointer-events-none">
+                            <div className="text-[270px] font-bold text-gray-400 leading-none">
                               {operationColor.symbol}
                             </div>
                           </div>
