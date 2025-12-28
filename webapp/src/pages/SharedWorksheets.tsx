@@ -336,7 +336,9 @@ export default function SharedWorksheets() {
     const problemCount = worksheet.problems.length;
     const previewProblems = worksheet.problems.slice(0, 3);
     const singleOperation = getSingleOperationType(worksheet.problems);
-    const operationColor = singleOperation ? getOperationColor(singleOperation) : null;
+    const operationColor = singleOperation
+      ? getOperationColor(singleOperation)
+      : null;
 
     return (
       <div className="min-h-screen">
@@ -839,7 +841,9 @@ export default function SharedWorksheets() {
                             <div className="flex items-center gap-2">
                               <span>🎓</span>
                               <span>
-                                {ws.grades.map((g) => gradeLabels[g]).join(", ")}
+                                {ws.grades
+                                  .map((g) => gradeLabels[g])
+                                  .join(", ")}
                               </span>
                             </div>
                             <div className="flex items-center gap-2 text-gray-500">
@@ -889,40 +893,40 @@ export default function SharedWorksheets() {
                                         setWorksheet((prev) =>
                                           prev
                                             ? {
-                                            ...prev,
-                                            stats: {
-                                              ...prev.stats,
-                                              averageRating:
-                                                data.stats.averageRating,
-                                              ratingCount:
-                                                data.stats.ratingCount,
-                                            },
-                                          }
-                                        : prev,
+                                                ...prev,
+                                                stats: {
+                                                  ...prev.stats,
+                                                  averageRating:
+                                                    data.stats.averageRating,
+                                                  ratingCount:
+                                                    data.stats.ratingCount,
+                                                },
+                                              }
+                                            : prev,
+                                        );
+                                      }
+                                    }
+                                  } catch (error) {
+                                    console.error(
+                                      "Failed to submit rating:",
+                                      error,
                                     );
                                   }
-                                }
-                              } catch (error) {
-                                console.error(
-                                  "Failed to submit rating:",
-                                  error,
-                                );
-                              }
-                            }}
-                            size="sm"
-                          />
-                        </div>
-                      </div>
+                                }}
+                                size="sm"
+                              />
+                            </div>
+                          </div>
 
-                      <div className="text-xs text-gray-500">
-                        {new Date(ws.createdAt).toLocaleDateString()}
-                      </div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(ws.createdAt).toLocaleDateString()}
+                          </div>
                         </div>
                       </Card>
-                      </Link>
-                    </div>
-                  );
-                })}
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Load More */}
@@ -944,18 +948,42 @@ export default function SharedWorksheets() {
   );
 }
 
-function getOperationColor(operation: string): { bg: string; symbol: string; text: string } {
+function getOperationColor(operation: string): {
+  bg: string;
+  symbol: string;
+  text: string;
+} {
   switch (operation) {
     case "addition":
-      return { bg: "from-blue-50 to-blue-100", symbol: "+", text: "text-blue-400" };
+      return {
+        bg: "from-blue-50 to-blue-100",
+        symbol: "+",
+        text: "text-blue-400",
+      };
     case "subtraction":
-      return { bg: "from-pink-50 to-pink-100", symbol: "-", text: "text-pink-400" };
+      return {
+        bg: "from-pink-50 to-pink-100",
+        symbol: "-",
+        text: "text-pink-400",
+      };
     case "multiplication":
-      return { bg: "from-green-50 to-green-100", symbol: "×", text: "text-green-400" };
+      return {
+        bg: "from-green-50 to-green-100",
+        symbol: "×",
+        text: "text-green-400",
+      };
     case "division":
-      return { bg: "from-amber-50 to-amber-100", symbol: "÷", text: "text-amber-400" };
+      return {
+        bg: "from-amber-50 to-amber-100",
+        symbol: "÷",
+        text: "text-amber-400",
+      };
     default:
-      return { bg: "from-gray-50 to-gray-100", symbol: "?", text: "text-gray-400" };
+      return {
+        bg: "from-gray-50 to-gray-100",
+        symbol: "?",
+        text: "text-gray-400",
+      };
   }
 }
 
