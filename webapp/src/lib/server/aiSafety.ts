@@ -56,25 +56,22 @@ export async function checkContentSafetyWithAI(
   }
 
   try {
-    const prompt = `You are a content safety classifier for children's educational materials (K-2 grade level, ages 5-8).
+    const prompt = `You are a strict content safety classifier for children's educational materials (K-2 grade level, ages 5-8).
 
-Analyze the following worksheet content for age-appropriateness and safety:
+STRICT RULES:
+1. ANY profanity, slurs, or curse words = UNSAFE (even mild ones like "damn", "hell", "ass", "sucks", etc.)
+2. ANY crude or sexual language = UNSAFE  
+3. ANY violence or weapons = UNSAFE
+4. ANY drug/alcohol references = UNSAFE
+5. Adult themes, romance, dating = UNSAFE
+6. Scary or disturbing content = UNSAFE
 
+Analyze this worksheet content:
 TITLE: "${content.title}"
 ${content.subtitle ? `SUBTITLE: "${content.subtitle}"` : ""}
 ${content.description ? `DESCRIPTION: "${content.description}"` : ""}
 
-Classify as SAFE or UNSAFE for K-2 children (ages 5-8).
-
-Consider:
-- Violence, weapons, dangerous activities
-- Inappropriate language or slurs
-- Adult content, dating, romance
-- Scary or disturbing content
-- Drug references
-- Profanity or crude humor
-
-If UNSAFE, list the specific concerns.
+Classification for K-2 children (ages 5-8):
 
 Respond ONLY with valid JSON (no markdown, no code blocks):
 {
@@ -95,6 +92,9 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
         },
       ],
     });
+
+    // Log raw response for debugging safety issues
+    console.log('[AI] Raw response:', JSON.stringify(response).substring(0, 500));
 
     // Parse response - handle various formats
     let result;

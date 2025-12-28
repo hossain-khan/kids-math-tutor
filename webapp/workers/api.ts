@@ -159,6 +159,15 @@ app.post('/api/v1/worksheets/share', async (c) => {
       description: worksheetData.description,
     });
 
+    console.log('[SHARE] Safety check result:', {
+      safe: safetyResult.safe,
+      classification: safetyResult.classification,
+      usingAI: safetyResult.usingAI,
+      fallback: safetyResult.fallback,
+      confidence: safetyResult.confidence,
+      title: worksheetData.title,
+    });
+
     if (!safetyResult.safe) {
       return c.json(
         {
