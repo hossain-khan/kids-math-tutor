@@ -8,7 +8,8 @@
   },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS"
   },
   "kv_namespaces": [
     {
@@ -23,6 +24,11 @@
   "env": {
     "production": {
       "name": "pup-tutor-worksheet-generator",
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application",
+        "binding": "ASSETS"
+      },
       "kv_namespaces": [
         {
           "binding": "KV",
@@ -35,6 +41,11 @@
       "workers_dev": false
     },
     "development": {
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application",
+        "binding": "ASSETS"
+      },
       "kv_namespaces": [
         {
           "binding": "KV",
