@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -209,7 +210,7 @@ private fun BadgeCard(
                     Icon(
                         imageVector =
                             if (isUnlocked) {
-                                Icons.Filled.Check
+                                Icons.Filled.CheckCircleOutline
                             } else {
                                 Icons.Filled.Lock
                             },

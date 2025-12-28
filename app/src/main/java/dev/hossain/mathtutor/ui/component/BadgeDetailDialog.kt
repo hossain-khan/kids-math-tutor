@@ -4,11 +4,15 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +61,7 @@ fun BadgeDetailDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Animated badge icon with scale/bounce
+                // Animated badge icon with scale/bounce and locked overlay
                 val scale by animateFloatAsState(
                     targetValue = 1f,
                     animationSpec =
@@ -68,18 +72,42 @@ fun BadgeDetailDialog(
                     label = "badge_icon_scale",
                 )
 
-                BadgeIcon(
-                    badgeIcon = badge.icon,
-                    contentDescription = badge.name,
-                    size = 160.dp,
-                    colorFilter =
-                        if (!badge.isUnlocked()) {
-                            ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
-                        } else {
-                            null
-                        },
+                Box(
                     modifier = Modifier.scale(scale),
-                )
+                    contentAlignment = Alignment.Center,
+                ) {
+                    BadgeIcon(
+                        badgeIcon = badge.icon,
+                        contentDescription = badge.name,
+                        size = 160.dp,
+                        colorFilter =
+                            if (!badge.isUnlocked()) {
+                                ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                            } else {
+                                null
+                            },
+                    )
+
+                    // Locked icon overlay
+                    if (!badge.isUnlocked()) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = "Locked",
+                                modifier = Modifier.padding(8.dp),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                            Text(
+                                text = "Locked",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                }
 
                 // Badge unlock status header
                 if (badge.isUnlocked()) {
