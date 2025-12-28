@@ -44,7 +44,7 @@ In `/webapp/wrangler.json`, the KV namespace is configured:
 
 ### 4. KV Usage by Environment
 
-- **Local Development** (`wrangler dev` / `pnpm run worker:dev`):
+- **Local Development** (`npx wrangler dev` / `pnpm run worker:dev`):
   - Runs on `localhost:8787`
   - Uses **preview KV** namespace (`preview_id`)
   - Data is separate from production
@@ -145,7 +145,7 @@ ratelimit:192.168.1.1:2025-12-26 → "5"
 ### "KV Namespace not found" Error
 - Verify namespace IDs in `wrangler.json` are correct
 - Check that namespaces exist in Cloudflare Dashboard
-- For local dev, use `wrangler dev` (uses preview namespace)
+- For local dev, use `npx wrangler dev` (uses preview namespace)
 
 ### Data Not Persisting Across Requests
 - Local preview KV is ephemeral (resets on each dev server restart)

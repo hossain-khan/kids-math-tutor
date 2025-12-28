@@ -1274,11 +1274,11 @@ VITE_ANALYTICS_ENABLED=false
 npm install -g wrangler
 
 # Login to Cloudflare
-wrangler login
+npx wrangler login
 
 # Start local worker
 cd workers
-wrangler dev
+npx wrangler dev
 
 # Worker runs at http://localhost:8787
 ```
@@ -1292,11 +1292,11 @@ pnpm build
 pnpm preview
 
 # Deploy to Cloudflare Pages
-wrangler pages deploy dist
+npx wrangler pages deploy dist
 
 # Deploy Workers API
 cd workers
-wrangler deploy
+npx wrangler deploy
 ```
 
 ### wrangler.toml Configuration

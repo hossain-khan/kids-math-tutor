@@ -47,7 +47,7 @@ Edit `webapp/wrangler.json` and set the admin password for development:
 Then run:
 ```bash
 cd webapp
-pnpm dev
+npx wrangler dev --env development
 # Visit http://localhost:5173/manage-worksheets
 ```
 
@@ -59,14 +59,14 @@ For production, **you MUST use Cloudflare Secrets** to securely store the passwo
 
 ```bash
 # Set the admin password as a secret on Cloudflare
-wrangler secret put ADMIN_PASSWORD --env production
+npx wrangler secret put ADMIN_PASSWORD --env production
 
 # When prompted, enter your secure production password
 ```
 
 You can verify the secret was set:
 ```bash
-wrangler secret list --env production
+npx wrangler secret list --env production
 ```
 
 **Important Security Notes:**
@@ -77,7 +77,7 @@ wrangler secret list --env production
 
 Deploy with:
 ```bash
-wrangler deploy --env production
+npx wrangler deploy --env production
 ```
 
 **⚠️ Critical Configuration**: When deploying to production, your `wrangler.json` production environment MUST include the worker name to prevent creating a separate unrouted worker:
@@ -204,7 +204,7 @@ clearAdminAuthToken();
 
 ### Can't Remember Password
 - Check `wrangler.json` in development
-- For production, use `wrangler secret list` to verify it's set
+- For production, use `npx wrangler secret list` to verify it's set
 - Contact your infrastructure team if needed
 
 ## Future Enhancements
@@ -231,7 +231,7 @@ Possible improvements:
 
 3. **Use Secrets in Production**
    - Don't hardcode passwords in version control
-   - Use `wrangler secret put` for production
+   - Use `npx wrangler secret put` for production
 
 4. **Monitor Access**
    - Keep logs of who accessed the portal
