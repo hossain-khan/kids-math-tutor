@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Operation-Specific Worksheet Backgrounds** - Visual indicators on worksheet cards showing practice focus areas
+  - Large semi-transparent operation symbols (+, −, ×, ÷) as card backgrounds when all problems share the same operation type
+  - Color-coded backgrounds: Blue for addition, Pink for subtraction, Green for multiplication, Amber for division
+  - Applied to both Community Library list cards and worksheet detail views
+  - Helps parents and educators quickly identify practice materials focused on specific math operations
+  - Backend API now returns `singleOperation` field in worksheet list/search responses
+  - All content remains readable with proper z-index layering and opacity settings
+- **Consistent Math Operation Background Pattern** - Global background treatment now consistently applied
+  - Math operation symbols (+, −, ×, ÷) visible across Community Library and worksheet detail screens
+  - Pattern provides visual continuity throughout the worksheet browsing experience
 - **Admin Bulk Safety Check Portal** - Added administrative interface to verify all shared worksheets in batches
   - "Check All Content" button in admin panel for manual bulk safety verification
   - Real-time progress indicator showing current/total worksheets being checked
