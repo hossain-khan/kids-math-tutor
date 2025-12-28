@@ -204,6 +204,7 @@ describe("aiSafety module", () => {
         description: "Test Description",
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const callArgs = (env.AI.run as any).mock.calls[0];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const messages = (callArgs[1] as any).messages;
