@@ -179,14 +179,7 @@ export default function AdminManage() {
     fetchWorksheets();
   };
 
-  // Render logic
-  if (!state.ui.expandedSafety && !state.auth.isAuthenticated) {
-    dispatch({
-      type: "SET_AUTH",
-      payload: { isAuthenticated: false, showAuthModal: true },
-    });
-  }
-
+  // Render logic - early return for auth modal
   if (state.auth.showAuthModal && !state.auth.isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50">
