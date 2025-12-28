@@ -204,7 +204,7 @@ describe("SharedWorksheets UI", () => {
 describe("calculateAnswer", () => {
   it("should calculate answers for all operations correctly", () => {
     // Test the calculation logic that calculateAnswer uses
-    
+
     // Addition: 5 + 3 = 8
     const addResult = 5 + 3;
     expect(addResult).toBe(8);
