@@ -802,14 +802,14 @@ app.get('/worksheets/:id', async (c) => {
     if (!worksheet) {
       // If worksheet not found, return 404 by serving the SPA (will show not found UI)
       const response = await c.env.ASSETS.fetch(
-        new Request('https://example.com/index.html'),
+        new Request('https://math-worksheet.gohk.xyz/index.html'),
       );
       return response;
     }
 
     // Get the index.html from assets
     const response = await c.env.ASSETS.fetch(
-      new Request('https://example.com/index.html'),
+      new Request('https://math-worksheet.gohk.xyz/index.html'),
     );
     let html = await response.text();
 
@@ -842,7 +842,7 @@ app.get('/worksheets/:id', async (c) => {
     console.error('Error serving worksheet page:', error);
     // Fall back to regular static serving
     const response = await c.env.ASSETS.fetch(
-      new Request('https://example.com/index.html'),
+      new Request('https://math-worksheet.gohk.xyz/index.html'),
     );
     return response;
   }
