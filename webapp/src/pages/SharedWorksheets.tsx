@@ -336,9 +336,7 @@ export default function SharedWorksheets() {
     const problemCount = worksheet.problems.length;
     const previewProblems = worksheet.problems.slice(0, 3);
     const singleOperation = getSingleOperationType(worksheet.problems);
-    const operationColor = singleOperation
-      ? getOperationColor(singleOperation)
-      : null;
+    const operationColor = getOperationColor(singleOperation || "mixed");
 
     return (
       <div className="min-h-screen">
@@ -360,20 +358,14 @@ export default function SharedWorksheets() {
         <main className="container mx-auto px-4 py-8 max-w-2xl">
           {/* Worksheet Header */}
           <Card
-            className={`mb-6 border-2 p-6 relative overflow-hidden ${
-              operationColor
-                ? `bg-gradient-to-br ${operationColor.bg} border-blue-200`
-                : "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300"
-            }`}
+            className={`mb-6 border-2 p-6 relative overflow-hidden bg-gradient-to-br ${operationColor.bg} ${operationColor.border}`}
           >
             {/* Operation Background Pattern */}
-            {operationColor && (
-              <div className="absolute -top-6 -right-0 opacity-15 pointer-events-none">
-                <div className="text-[140px] font-bold text-gray-400 leading-none">
-                  {operationColor.symbol}
-                </div>
+            <div className="absolute -top-6 -right-0 opacity-15 pointer-events-none">
+              <div className="text-[140px] font-bold text-gray-400 leading-none">
+                {operationColor.symbol}
               </div>
-            )}
+            </div>
 
             <div className="relative z-10">
               <h2 className="text-3xl font-display font-bold text-gray-900 mb-2">
@@ -802,26 +794,20 @@ export default function SharedWorksheets() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {worksheets.map((ws) => {
-                const operationColor = ws.singleOperation
-                  ? getOperationColor(ws.singleOperation)
-                  : null;
+                const operationColor = getOperationColor(
+                  ws.singleOperation || "mixed",
+                );
                 return (
                   <div key={ws.id}>
                     <Link to={`/worksheets/${ws.id}`}>
                       <Card
-                        className={`group p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer relative overflow-hidden ${
-                          operationColor
-                            ? `border-2 ${operationColor.border}`
-                            : ""
-                        }`}
+                        className={`group p-4 h-full hover:shadow-lg transition-shadow cursor-pointer relative overflow-hidden border-2 ${operationColor.border}`}
                       >
-                        {operationColor && (
-                          <div className="absolute -top-8 -right-0 opacity-10 group-hover:opacity-15 transition-opacity pointer-events-none">
-                            <div className="text-[270px] font-bold text-gray-400 leading-none">
-                              {operationColor.symbol}
-                            </div>
+                        <div className="absolute -top-8 -right-0 opacity-10 group-hover:opacity-15 transition-opacity pointer-events-none">
+                          <div className="text-[270px] font-bold text-gray-400 leading-none">
+                            {operationColor.symbol}
                           </div>
-                        )}
+                        </div>
                         <div className="relative z-10">
                           <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
                             {ws.title}
@@ -959,8 +945,8 @@ function getOperationColor(operation: string): {
       return {
         bg: "from-blue-50 to-blue-100",
         symbol: "+",
-        text: "text-blue-400",
-        border: "border-blue-300",
+        text: "text-green-400",
+        border: "border-green-300",
       };
     case "subtraction":
       return {
@@ -973,8 +959,8 @@ function getOperationColor(operation: string): {
       return {
         bg: "from-green-50 to-green-100",
         symbol: "×",
-        text: "text-green-400",
-        border: "border-green-300",
+        text: "text-blue-400",
+        border: "border-blue-300",
       };
     case "division":
       return {
@@ -982,6 +968,13 @@ function getOperationColor(operation: string): {
         symbol: "÷",
         text: "text-amber-400",
         border: "border-amber-300",
+      };
+    case "mixed":
+      return {
+        bg: "from-purple-50 to-indigo-50",
+        symbol: "±",
+        text: "text-purple-400",
+        border: "border-purple-300",
       };
     default:
       return {
