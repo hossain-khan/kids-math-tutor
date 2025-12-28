@@ -1,5 +1,5 @@
 /**
- * Content safety using Cloudflare Workers AI (Llama Guard 3)
+ * Content safety using Cloudflare Workers AI (Llama 3.1 8B)
  * Provides intelligent content classification for educational worksheets
  *
  * FREE TIER ONLY: 10,000 Neurons per day (no cost)
@@ -10,12 +10,12 @@ import { Filter } from "bad-words";
 
 // AI Model configuration
 export const AI_SAFETY_CONFIG = {
-  // Llama Guard 3 is specifically designed for content safety
-  DEFAULT_MODEL: "@cf/meta/llama-guard-3-8b",
-  // Alternative models for testing (in order of preference for safety)
+  // Llama 3.1 8B provides excellent JSON responses and safety classification
+  DEFAULT_MODEL: "@cf/meta/llama-3.1-8b-instruct-fast",
+  // Alternative models for testing (Llama Guard 3 is safety-specialized but slower)
   ALTERNATIVE_MODELS: [
+    "@cf/meta/llama-guard-3-8b",
     "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-    "@cf/meta/llama-3.1-8b-instruct-fast",
     "@cf/meta/llama-4-scout-17b-16e-instruct",
   ],
 } as const;
@@ -173,7 +173,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
       classification: result.classification,
       categories: result.categories || [],
       explanation: result.explanation,
-      confidence: 0.95, // Llama Guard 3 is highly confident
+      confidence: 0.95, // Llama 3.1 8B provides consistent, reliable classifications
       usingAI: true,
       fallback: false,
     };
