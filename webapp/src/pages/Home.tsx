@@ -152,6 +152,24 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Community Library CTA */}
+        <section className="card bg-gradient-to-br from-secondary-50 to-primary-50 border-2 border-secondary-200 mt-8 mb-8">
+          <h2 className="text-2xl font-display font-bold text-gray-900 mb-4 text-center">
+            Browse Community Worksheets 📚
+          </h2>
+          <p className="text-gray-600 mb-6 text-center">
+            Discover worksheets created by parents and teachers in our community
+          </p>
+          <div className="text-center">
+            <Link 
+              to="/worksheets"
+              className="inline-block bg-secondary-600 hover:bg-secondary-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+            >
+              Explore Shared Worksheets
+            </Link>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
