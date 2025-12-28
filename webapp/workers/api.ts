@@ -658,6 +658,11 @@ app.post('/api/v1/admin/check-safety', async (c) => {
       );
     }
 
+    console.log(
+      `[DEBUG] check-safety endpoint. c.env keys: ${Object.keys(c.env).join(', ')}`,
+    );
+    console.log(`[DEBUG] AI binding in c.env: ${!!c.env.AI}`);
+
     const body = await c.req.json();
     const worksheetIds = body.worksheetIds as string[] | undefined;
 
@@ -666,7 +671,7 @@ app.post('/api/v1/admin/check-safety', async (c) => {
 
     return c.json(result);
   } catch (error) {
-    console.error('Admin safety check error:', error);
+    console.error('[ERROR] Admin safety check error:', error);
     return c.json(
       {
         error: 'Failed to perform safety check',

@@ -46,11 +46,25 @@ export async function checkWorksheetSafety(
   worksheet: SharedWorksheet,
 ): Promise<WorksheetSafetyCheckResult> {
   try {
+    console.log(
+      `[DEBUG] Checking worksheet ${worksheet.id}. AI binding available: ${!!env.AI}`,
+    );
+
     const safetyResult = await checkContentSafetyWithAI(env, {
       title: worksheet.title,
       subtitle: worksheet.subtitle,
       description: worksheet.description,
     });
+
+    console.log(
+      `[DEBUG] Safety check result for ${worksheet.id}:`,
+      {
+        safe: safetyResult.safe,
+        usingAI: safetyResult.usingAI,
+        fallback: safetyResult.fallback,
+        confidence: safetyResult.confidence,
+      },
+    );
 
     return {
       ...safetyResult,
@@ -59,8 +73,8 @@ export async function checkWorksheetSafety(
     };
   } catch (error) {
     console.error(
-      `Safety check failed for worksheet ${worksheet.id}:`,
-      error,
+      `[ERROR] Safety check failed for worksheet ${worksheet.id}:`,
+      error instanceof Error ? error.message : error,
     );
 
     // Return a safe result with error flag if check fails
@@ -92,6 +106,11 @@ export async function bulkCheckSafety(
   const startTime = Date.now();
   const kvContext = { env: { KV: env.KV } };
 
+  console.log(
+    `[DEBUG] bulkCheckSafety called. AI binding available: ${!!env.AI}`,
+  );
+  console.log(`[DEBUG] Env object keys: ${Object.keys(env).join(', ')}`);
+
   try {
     // Get list of worksheet IDs to check
     let idsToCheck: string[];
@@ -104,7 +123,7 @@ export async function bulkCheckSafety(
       idsToCheck = await getAllWorksheetIds(kvContext);
     }
 
-    console.log(`Starting safety check for ${idsToCheck.length} worksheets`);
+    console.log(`[DEBUG] Starting safety check for ${idsToCheck.length} worksheets`);
 
     // Check each worksheet with rate limiting
     const results: WorksheetSafetyCheckResult[] = [];
