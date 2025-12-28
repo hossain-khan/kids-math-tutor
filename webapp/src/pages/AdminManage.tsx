@@ -197,31 +197,33 @@ export default function AdminManage() {
       const data = await response.json();
 
       // Update worksheets with safety results
-      const updatedWorksheets: AdminWorksheet[] = worksheets.map((worksheet) => {
-        const result = data.results.find(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (r: any) => r.worksheetId === worksheet.id,
-        );
+      const updatedWorksheets: AdminWorksheet[] = worksheets.map(
+        (worksheet) => {
+          const result = data.results.find(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (r: any) => r.worksheetId === worksheet.id,
+          );
 
-        if (result) {
-          const method: "AI-based" | "pattern-based" = result.usingAI
-            ? "AI-based"
-            : "pattern-based";
-          return {
-            ...worksheet,
-            safety: {
-              isFlagged: !result.safe,
-              categories: result.categories,
-              explanation: result.explanation,
-              method,
-              confidence: result.confidence,
-              lastChecked: result.timestamp,
-            },
-          };
-        }
+          if (result) {
+            const method: "AI-based" | "pattern-based" = result.usingAI
+              ? "AI-based"
+              : "pattern-based";
+            return {
+              ...worksheet,
+              safety: {
+                isFlagged: !result.safe,
+                categories: result.categories,
+                explanation: result.explanation,
+                method,
+                confidence: result.confidence,
+                lastChecked: result.timestamp,
+              },
+            };
+          }
 
-        return worksheet;
-      });
+          return worksheet;
+        },
+      );
 
       setWorksheets(updatedWorksheets);
       console.log(
@@ -381,7 +383,9 @@ export default function AdminManage() {
                 {checking ? (
                   <>
                     <span className="animate-spin">⏳</span>
-                    Checking... {checkProgress && `${checkProgress.current}/${checkProgress.total}`}
+                    Checking...{" "}
+                    {checkProgress &&
+                      `${checkProgress.current}/${checkProgress.total}`}
                   </>
                 ) : (
                   <>🔍 Check All Content</>
@@ -406,7 +410,9 @@ export default function AdminManage() {
                                 : "bg-green-100 text-green-800"
                             }`}
                           >
-                            {worksheet.safety.isFlagged ? "⚠️ Flagged" : "✅ Safe"}
+                            {worksheet.safety.isFlagged
+                              ? "⚠️ Flagged"
+                              : "✅ Safe"}
                           </span>
                         )}
                       </div>
@@ -416,14 +422,17 @@ export default function AdminManage() {
                         </p>
                       )}
                       <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
-                        <span>📊 {worksheet.problems?.length || 0} problems</span>
+                        <span>
+                          📊 {worksheet.problems?.length || 0} problems
+                        </span>
                         <span>👁️ {worksheet.stats.views} views</span>
                         <span>💾 {worksheet.stats.downloads} downloads</span>
                         <span>
                           ⭐ {worksheet.stats.averageRating.toFixed(1)} rating
                         </span>
                         <span>
-                          📅 {new Date(worksheet.createdAt).toLocaleDateString()}
+                          📅{" "}
+                          {new Date(worksheet.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                       {worksheet.description && (
@@ -447,12 +456,16 @@ export default function AdminManage() {
                         <button
                           onClick={() =>
                             setExpandedSafety(
-                              expandedSafety === worksheet.id ? null : worksheet.id,
+                              expandedSafety === worksheet.id
+                                ? null
+                                : worksheet.id,
                             )
                           }
                           className="text-orange-600 hover:text-orange-700 text-sm font-medium"
                         >
-                          {expandedSafety === worksheet.id ? "Hide Details" : "Show Details"}
+                          {expandedSafety === worksheet.id
+                            ? "Hide Details"
+                            : "Show Details"}
                         </button>
                       )}
 
@@ -463,7 +476,9 @@ export default function AdminManage() {
                             disabled={deleting === worksheet.id}
                             className="px-3 py-1 text-xs font-medium bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
                           >
-                            {deleting === worksheet.id ? "Deleting..." : "Confirm"}
+                            {deleting === worksheet.id
+                              ? "Deleting..."
+                              : "Confirm"}
                           </button>
                           <button
                             onClick={() => setDeleteConfirm(null)}
@@ -485,50 +500,58 @@ export default function AdminManage() {
                   </div>
                 </Card>
 
-                {expandedSafety === worksheet.id && worksheet.safety?.isFlagged && (
-                  <Card className="mt-2 p-4 bg-orange-50 border-orange-300">
-                    <div className="space-y-2">
-                      <h4 className="font-bold text-orange-900">⚠️ Safety Issues Found</h4>
-                      {worksheet.safety.categories && worksheet.safety.categories.length > 0 && (
-                        <div>
-                          <span className="text-sm font-medium text-orange-900">
-                            Categories:
-                          </span>
-                          <div className="flex flex-wrap gap-2 mt-1">
-                            {worksheet.safety.categories.map((cat) => (
-                              <span
-                                key={cat}
-                                className="inline-block bg-orange-200 text-orange-900 px-2 py-1 rounded text-xs"
-                              >
-                                {cat}
+                {expandedSafety === worksheet.id &&
+                  worksheet.safety?.isFlagged && (
+                    <Card className="mt-2 p-4 bg-orange-50 border-orange-300">
+                      <div className="space-y-2">
+                        <h4 className="font-bold text-orange-900">
+                          ⚠️ Safety Issues Found
+                        </h4>
+                        {worksheet.safety.categories &&
+                          worksheet.safety.categories.length > 0 && (
+                            <div>
+                              <span className="text-sm font-medium text-orange-900">
+                                Categories:
                               </span>
-                            ))}
+                              <div className="flex flex-wrap gap-2 mt-1">
+                                {worksheet.safety.categories.map((cat) => (
+                                  <span
+                                    key={cat}
+                                    className="inline-block bg-orange-200 text-orange-900 px-2 py-1 rounded text-xs"
+                                  >
+                                    {cat}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        {worksheet.safety.explanation && (
+                          <div>
+                            <span className="text-sm font-medium text-orange-900">
+                              Reason:
+                            </span>
+                            <p className="text-sm text-orange-800 mt-1">
+                              {worksheet.safety.explanation}
+                            </p>
                           </div>
-                        </div>
-                      )}
-                      {worksheet.safety.explanation && (
-                        <div>
-                          <span className="text-sm font-medium text-orange-900">Reason:</span>
-                          <p className="text-sm text-orange-800 mt-1">
-                            {worksheet.safety.explanation}
-                          </p>
-                        </div>
-                      )}
-                      <div className="text-xs text-orange-700 pt-2 border-t border-orange-200">
-                        <p>
-                          Method: {worksheet.safety.method} | Confidence:{" "}
-                          {(worksheet.safety.confidence || 0).toFixed(0)}%
-                        </p>
-                        {worksheet.safety.lastChecked && (
-                          <p>
-                            Last checked:{" "}
-                            {new Date(worksheet.safety.lastChecked).toLocaleString()}
-                          </p>
                         )}
+                        <div className="text-xs text-orange-700 pt-2 border-t border-orange-200">
+                          <p>
+                            Method: {worksheet.safety.method} | Confidence:{" "}
+                            {(worksheet.safety.confidence || 0).toFixed(0)}%
+                          </p>
+                          {worksheet.safety.lastChecked && (
+                            <p>
+                              Last checked:{" "}
+                              {new Date(
+                                worksheet.safety.lastChecked,
+                              ).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </Card>
-                )}
+                    </Card>
+                  )}
               </div>
             ))}
           </div>

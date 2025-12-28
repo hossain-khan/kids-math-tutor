@@ -3,9 +3,12 @@
  * Allows admins to verify the safety of all shared worksheets using Llama Guard 3
  */
 
-import { checkContentSafetyWithAI, type SafetyCheckResult } from '@/lib/server/aiSafety';
-import { getWorksheet } from '@/lib/server/worksheetStorage';
-import type { SharedWorksheet } from '@/lib/server/worksheetStorage';
+import {
+  checkContentSafetyWithAI,
+  type SafetyCheckResult,
+} from "@/lib/server/aiSafety";
+import { getWorksheet } from "@/lib/server/worksheetStorage";
+import type { SharedWorksheet } from "@/lib/server/worksheetStorage";
 
 /**
  * Safety check result for a single worksheet
@@ -60,7 +63,7 @@ export async function checkWorksheetSafety(
   } catch (error) {
     console.error(
       `Safety check failed for worksheet ${worksheet.id}:`,
-      error,
+      error instanceof Error ? error.message : error,
     );
 
     // Return a safe result with error flag if check fails
@@ -68,7 +71,7 @@ export async function checkWorksheetSafety(
       safe: true,
       classification: "safe",
       categories: undefined,
-      explanation: 'Safety check failed, allowing by default',
+      explanation: "Safety check failed, allowing by default",
       confidence: 0,
       usingAI: false,
       fallback: false,
@@ -104,8 +107,6 @@ export async function bulkCheckSafety(
       idsToCheck = await getAllWorksheetIds(kvContext);
     }
 
-    console.log(`Starting safety check for ${idsToCheck.length} worksheets`);
-
     // Check each worksheet with rate limiting
     const results: WorksheetSafetyCheckResult[] = [];
     let safeCount = 0;
@@ -128,7 +129,7 @@ export async function bulkCheckSafety(
       );
 
       for (const result of batchResults) {
-        if (result.status === 'fulfilled') {
+        if (result.status === "fulfilled") {
           results.push(result.value);
           if (result.value.safe) {
             safeCount++;
@@ -137,7 +138,7 @@ export async function bulkCheckSafety(
           }
         } else {
           errorCount++;
-          console.error('Worksheet check error:', result.reason);
+          console.error("Worksheet check error:", result.reason);
         }
       }
 
@@ -165,7 +166,7 @@ export async function bulkCheckSafety(
     };
   } catch (error) {
     const duration = Date.now() - startTime;
-    console.error('Bulk safety check error:', error);
+    console.error("Bulk safety check error:", error);
 
     return {
       results: [],
@@ -195,11 +196,11 @@ async function getAllWorksheetIds(
     // For now, this is a placeholder that would need to be optimized
     // The actual implementation would use context.env.KV.list()
 
-    console.log('Fetching all worksheet IDs from KV');
+    console.log("Fetching all worksheet IDs from KV");
     // This is where you would implement KV list logic
     // For now returning empty array - to be implemented with KV API
   } catch (error) {
-    console.error('Failed to get worksheet IDs:', error);
+    console.error("Failed to get worksheet IDs:", error);
   }
 
   return ids;
