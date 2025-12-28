@@ -60,11 +60,13 @@ export async function checkContentSafetyWithAI(
 
 STRICT RULES:
 1. ANY profanity, slurs, or curse words = UNSAFE (even mild ones like "damn", "hell", "ass", "sucks", etc.)
-2. ANY crude or sexual language = UNSAFE  
-3. ANY violence or weapons = UNSAFE
-4. ANY drug/alcohol references = UNSAFE
-5. Adult themes, romance, dating = UNSAFE
-6. Scary or disturbing content = UNSAFE
+2. ANY negative sentiment words = UNSAFE ("hate", "stupid", "dumb", "loser", "worthless", etc.)
+3. ANY exclusionary or mean language = UNSAFE ("everyone", "people who...", mean comparisons)
+4. ANY crude or sexual language = UNSAFE  
+5. ANY violence or weapons = UNSAFE
+6. ANY drug/alcohol references = UNSAFE
+7. Adult themes, romance, dating = UNSAFE
+8. Scary or disturbing content = UNSAFE
 
 Analyze this worksheet content:
 TITLE: "${content.title}"
