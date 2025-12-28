@@ -300,7 +300,7 @@ export default function SharedWorksheets() {
 
     if (error || !worksheet) {
       return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
           <header className="bg-white shadow-sm border-b border-gray-200">
             <div className="container mx-auto px-4 py-4">
               <Link
@@ -336,7 +336,7 @@ export default function SharedWorksheets() {
     const previewProblems = worksheet.problems.slice(0, 3);
 
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen">
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="container mx-auto px-4 py-4">
             <Link
@@ -644,7 +644,7 @@ export default function SharedWorksheets() {
 
   // Worksheets list view
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-3 mb-4">
