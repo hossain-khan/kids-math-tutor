@@ -972,7 +972,7 @@ function getOperationColor(operation: string): {
     case "mixed":
       return {
         bg: "from-purple-50 to-indigo-50",
-        symbol: "?",
+        symbol: "±",
         text: "text-purple-400",
         border: "border-purple-300",
       };
