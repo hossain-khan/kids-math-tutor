@@ -27,7 +27,7 @@ FAILED=0
 # ============================================================================
 # ANDROID CHECKS
 # ============================================================================
-echo -e "${YELLOW}[1/6] Formatting Android code...${NC}"
+echo -e "${YELLOW}[1/8] Formatting Android code...${NC}"
 if ./gradlew formatKotlin > /dev/null 2>&1; then
     echo -e "${GREEN}✓ Android formatting complete${NC}\n"
 else
@@ -35,7 +35,7 @@ else
     FAILED=1
 fi
 
-echo -e "${YELLOW}[2/6] Linting Android code...${NC}"
+echo -e "${YELLOW}[2/8] Linting Android code...${NC}"
 if ./gradlew lintKotlin > /dev/null 2>&1; then
     echo -e "${GREEN}✓ Android linting passed${NC}\n"
 else
@@ -43,7 +43,23 @@ else
     FAILED=1
 fi
 
-echo -e "${YELLOW}[3/6] Building Android app...${NC}"
+echo -e "${YELLOW}[3/8] Running Android unit tests...${NC}"
+if ./gradlew testDebugUnitTest > /dev/null 2>&1; then
+    echo -e "${GREEN}✓ Android unit tests passed${NC}\n"
+else
+    echo -e "${RED}✗ Android unit tests failed${NC}\n"
+    FAILED=1
+fi
+
+echo -e "${YELLOW}[4/8] Linting Android debug build...${NC}"
+if ./gradlew lintDebug > /dev/null 2>&1; then
+    echo -e "${GREEN}✓ Android debug lint passed${NC}\n"
+else
+    echo -e "${RED}✗ Android debug lint failed${NC}\n"
+    FAILED=1
+fi
+
+echo -e "${YELLOW}[5/8] Building Android app...${NC}"
 if ./gradlew assembleDebug > /dev/null 2>&1; then
     echo -e "${GREEN}✓ Android build successful${NC}\n"
 else
@@ -56,7 +72,7 @@ fi
 # ============================================================================
 cd "$ROOT_DIR/webapp"
 
-echo -e "${YELLOW}[4/6] Formatting webapp code...${NC}"
+echo -e "${YELLOW}[6/8] Formatting webapp code...${NC}"
 if pnpm format > /dev/null 2>&1; then
     echo -e "${GREEN}✓ Webapp formatting complete${NC}\n"
 else
@@ -64,7 +80,7 @@ else
     FAILED=1
 fi
 
-echo -e "${YELLOW}[5/6] Linting webapp code...${NC}"
+echo -e "${YELLOW}[7/8] Linting webapp code...${NC}"
 if pnpm lint > /dev/null 2>&1; then
     echo -e "${GREEN}✓ Webapp linting passed${NC}\n"
 else
@@ -72,7 +88,7 @@ else
     FAILED=1
 fi
 
-echo -e "${YELLOW}[6/6] Building webapp...${NC}"
+echo -e "${YELLOW}[8/8] Building webapp...${NC}"
 if pnpm build > /dev/null 2>&1; then
     echo -e "${GREEN}✓ Webapp build successful${NC}\n"
 else
