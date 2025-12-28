@@ -945,8 +945,8 @@ function getOperationColor(operation: string): {
       return {
         bg: "from-blue-50 to-blue-100",
         symbol: "+",
-        text: "text-blue-400",
-        border: "border-blue-300",
+        text: "text-green-400",
+        border: "border-green-300",
       };
     case "subtraction":
       return {
@@ -959,8 +959,8 @@ function getOperationColor(operation: string): {
       return {
         bg: "from-green-50 to-green-100",
         symbol: "×",
-        text: "text-green-400",
-        border: "border-green-300",
+        text: "text-blue-400",
+        border: "border-blue-300",
       };
     case "division":
       return {
