@@ -344,6 +344,45 @@ describe("adminReducer", () => {
 
       expect(result.ui.expandedSafety).toBeNull();
     });
+
+    it("should handle SET_SEARCH_QUERY action", () => {
+      const action: AdminAction = {
+        type: "SET_SEARCH_QUERY",
+        payload: "addition practice",
+      };
+      const result = adminReducer(initialAdminState, action);
+
+      expect(result.ui.searchQuery).toBe("addition practice");
+    });
+
+    it("should reset offset when setting search query", () => {
+      const stateWithOffset: AdminState = {
+        ...initialAdminState,
+        worksheets: { ...initialAdminState.worksheets, offset: 100 },
+      };
+      const action: AdminAction = {
+        type: "SET_SEARCH_QUERY",
+        payload: "new search",
+      };
+      const result = adminReducer(stateWithOffset, action);
+
+      expect(result.ui.searchQuery).toBe("new search");
+      expect(result.worksheets.offset).toBe(0);
+    });
+
+    it("should clear search query", () => {
+      const stateWithSearch: AdminState = {
+        ...initialAdminState,
+        ui: { ...initialAdminState.ui, searchQuery: "addition practice" },
+      };
+      const action: AdminAction = {
+        type: "SET_SEARCH_QUERY",
+        payload: "",
+      };
+      const result = adminReducer(stateWithSearch, action);
+
+      expect(result.ui.searchQuery).toBe("");
+    });
   });
 
   describe("Reset action", () => {
