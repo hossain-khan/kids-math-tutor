@@ -41,10 +41,9 @@ function makeWorksheet(
 }
 
 describe("AdminManage - Problem Count Display", () => {
-
   it("should use problemCount field from API response, not problems array", () => {
     const worksheet = makeWorksheet("ws1", "Addition Practice", 10);
-    
+
     // Verify that the returned object has problemCount, not problems
     expect(worksheet.problemCount).toBe(10);
     expect(worksheet).not.toHaveProperty("problems");
@@ -69,8 +68,8 @@ describe("AdminManage - Problem Count Display", () => {
     const worksheet10 = makeWorksheet("ws2", "Test", 10);
 
     // Simulate the display logic: singular for 1, plural for others
-    const format = (count: number) => 
-      `📊 ${count} ${count === 1 ? 'problem' : 'problems'}`;
+    const format = (count: number) =>
+      `📊 ${count} ${count === 1 ? "problem" : "problems"}`;
 
     expect(format(worksheet1.problemCount)).toBe("📊 1 problem");
     expect(format(worksheet10.problemCount)).toBe("📊 10 problems");
@@ -78,7 +77,7 @@ describe("AdminManage - Problem Count Display", () => {
 
   it("should not fall back to 0 when problemCount is present", () => {
     const worksheet = makeWorksheet("ws1", "Test", 42);
-    
+
     // The old code would do: worksheet.problems?.length || 0
     // Which would return 0 if problems is undefined
     // The new code should use: worksheet.problemCount
@@ -92,8 +91,8 @@ describe("AdminManage - Problem Count Display", () => {
       "ws1",
       "Comprehensive Test",
       25,
-      100,  // views
-      50,   // downloads
+      100, // views
+      50, // downloads
     );
 
     expect(worksheet.title).toBe("Comprehensive Test");
