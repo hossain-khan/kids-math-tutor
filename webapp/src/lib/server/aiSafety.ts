@@ -106,7 +106,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
         // If not JSON, treat as plain text response (e.g., just "safe" or "unsafe")
         const text = response.trim().toLowerCase();
         result = {
-          classification: text.includes("safe") ? "safe" : "unsafe",
+          classification: text.includes("unsafe") ? "unsafe" : "safe",
           categories: text.includes("unsafe") ? ["unknown"] : [],
           explanation: text,
         };
@@ -126,7 +126,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
         // If not JSON, treat as plain text response
         const cleanText = text.trim().toLowerCase();
         result = {
-          classification: cleanText.includes("safe") ? "safe" : "unsafe",
+          classification: cleanText.includes("unsafe") ? "unsafe" : "safe",
           categories: cleanText.includes("unsafe") ? ["unknown"] : [],
           explanation: cleanText,
         };

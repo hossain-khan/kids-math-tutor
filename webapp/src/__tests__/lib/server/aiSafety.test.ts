@@ -218,10 +218,10 @@ describe("aiSafety module", () => {
       expect((messages[0] as any).content).toContain("Test Description");
     });
 
-    it("should handle AI response parsing errors gracefully", async () => {
+    it("should handle plain text 'safe' response", async () => {
       const env = {
         AI: {
-          run: vi.fn().mockResolvedValue("invalid json"), // Invalid response
+          run: vi.fn().mockResolvedValue("\n\nsafe"), // Plain text safe response
         },
       };
 
@@ -229,8 +229,107 @@ describe("aiSafety module", () => {
         title: "Math Practice",
       });
 
-      // Should fall back to bad-words on parsing error
-      expect(result.fallback).toBe(true);
+      expect(result.safe).toBe(true);
+      expect(result.usingAI).toBe(true);
+      expect(result.fallback).toBe(false);
+      expect(result.classification).toBe("safe");
+      expect(result.confidence).toBe(0.95);
+    });
+
+    it("should handle plain text 'unsafe' response", async () => {
+      const env = {
+        AI: {
+          run: vi.fn().mockResolvedValue("\n\nunsafe"), // Plain text unsafe response
+        },
+      };
+
+      const result = await checkContentSafetyWithAI(env, {
+        title: "Inappropriate content",
+      });
+
+      expect(result.safe).toBe(false);
+      expect(result.usingAI).toBe(true);
+      expect(result.fallback).toBe(false);
+      expect(result.classification).toBe("unsafe");
+      expect(result.confidence).toBe(0.95);
+    });
+
+    it("should handle AI response object with plain text response field", async () => {
+      const env = {
+        AI: {
+          run: vi.fn().mockResolvedValue({
+            response: "\n\nsafe",
+            usage: { prompt_tokens: 100, completion_tokens: 5, total_tokens: 105 },
+          }), // Response object with plain text
+        },
+      };
+
+      const result = await checkContentSafetyWithAI(env, {
+        title: "Math Practice",
+      });
+
+      expect(result.safe).toBe(true);
+      expect(result.usingAI).toBe(true);
+      expect(result.fallback).toBe(false);
+      expect(result.classification).toBe("safe");
+    });
+
+    it("should handle JSON response from AI", async () => {
+      const env = {
+        AI: {
+          run: vi.fn().mockResolvedValue(
+            JSON.stringify({
+              classification: "safe",
+              categories: [],
+              explanation: "Content appears to be educational",
+            })
+          ),
+        },
+      };
+
+      const result = await checkContentSafetyWithAI(env, {
+        title: "Math Practice",
+      });
+
+      expect(result.safe).toBe(true);
+      expect(result.usingAI).toBe(true);
+      expect(result.classification).toBe("safe");
+      expect(result.explanation).toBe("Content appears to be educational");
+    });
+
+    it("should handle mixed case plain text responses", async () => {
+      const env = {
+        AI: {
+          run: vi.fn().mockResolvedValue("  SAFE  "), // Mixed case with whitespace
+        },
+      };
+
+      const result = await checkContentSafetyWithAI(env, {
+        title: "Math Practice",
+      });
+
+      expect(result.safe).toBe(true);
+      expect(result.classification).toBe("safe");
+      expect(result.usingAI).toBe(true);
+    });
+
+    it("should handle response with result field instead of response", async () => {
+      const env = {
+        AI: {
+          run: vi.fn().mockResolvedValue({
+            result: "\n\nunsafe",
+            tokens: { prompt: 100, completion: 5 },
+          }),
+        },
+      };
+
+      const result = await checkContentSafetyWithAI(env, {
+        title: "Inappropriate content",
+      });
+
+      expect(result.safe).toBe(false);
+      expect(result.usingAI).toBe(true);
+      expect(result.classification).toBe("unsafe");
     });
   });
 
