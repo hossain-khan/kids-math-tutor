@@ -3,6 +3,8 @@ package dev.hossain.mathtutor.ui.stats
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -36,11 +38,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -53,6 +60,7 @@ import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
 import dev.hossain.mathtutor.util.TimeFormatter
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
@@ -391,61 +399,249 @@ private fun OperationStatsCard(
 }
 
 /**
- * Displays a single recent session item.
+ * Displays a single recent session item with enhanced visual hierarchy and interactivity.
+ *
+ * Features:
+ * - Duration display with formatted time
+ * - Semantic accuracy coloring (green/amber/red based on performance)
+ * - Optional grade level badge
+ * - Subtle elevation changes on interaction
+ * - Better spacing and visual hierarchy
+ * - Day-of-week watermark in the background (FRI, SAT, SUN, etc. or FRIDAY, SATURDAY, SUNDAY on larger screens)
+ * - Adaptive day name: abbreviated on phone, full name on tablet/landscape
  */
 @Composable
 private fun RecentSessionItem(
     session: PracticeSessionEntity,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(interactionSource = interactionSource, indication = null) { },
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 2.dp,
+                pressedElevation = if (isHovered) 4.dp else 2.dp,
+            ),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-        ) {
-            // Timestamp
-            Text(
-                text = TimeFormatter.formatRelativeTime(session.timestamp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            // Detect available width and choose between abbreviated and full day name
+            val dayOfWeek =
+                remember {
+                    if (maxWidth >= 600.dp) {
+                        getDayOfWeekFull(session.timestamp) // MONDAY, TUESDAY, etc.
+                    } else {
+                        getDayOfWeek(session.timestamp) // MON, TUE, etc.
+                    }
+                }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+            // Day watermark background - using playful Barrio font
+            Text(
+                text = dayOfWeek,
+                style = MaterialTheme.typography.displayLarge.copy(fontFamily = watermarkFontFamily),
+                color =
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                textAlign = TextAlign.Center,
+            )
+
+            // Main content
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                // Operation and Score
-                Column {
+                // Header: Timestamp and Duration
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
-                        text = session.operation.displayName,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        text = TimeFormatter.formatRelativeTime(session.timestamp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
+
+                    // Duration badge
                     Text(
-                        text = "${session.correctAnswers}/${session.totalProblems} correct",
-                        style = MaterialTheme.typography.bodySmall,
+                        text = "${formatDuration(session.durationSeconds)}",
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
 
-                // Accuracy Badge
-                Text(
-                    text = "${session.accuracy.toInt()}%",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                // Main content row: Operation/Score and Accuracy
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Operation and Score details
+                    Column(modifier = Modifier.weight(1f)) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = session.operation.displayName,
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+
+                            // Grade level badge if available
+                            if (session.gradeLevel != null) {
+                                GradeLevelBadge(gradeLevel = session.gradeLevel)
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = "${session.correctAnswers}/${session.totalProblems} correct",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    // Accuracy badge with semantic coloring
+                    AccuracyBadge(accuracy = session.accuracy)
+                }
             }
         }
+    }
+}
+
+/**
+ * Extracts the day of week from a timestamp.
+ * Returns: MON, TUE, WED, THU, FRI, SAT, SUN
+ */
+private fun getDayOfWeek(instant: Instant): String {
+    val dayOfWeek =
+        java.time.LocalDateTime
+            .ofInstant(instant, java.time.ZoneId.systemDefault())
+            .dayOfWeek
+    return dayOfWeek.toString().take(3)
+}
+
+/**
+ * Extracts the full day of week name from a timestamp.
+ * Returns: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+ */
+private fun getDayOfWeekFull(instant: Instant): String {
+    val dayOfWeek =
+        java.time.LocalDateTime
+            .ofInstant(instant, java.time.ZoneId.systemDefault())
+            .dayOfWeek
+    return dayOfWeek.toString()
+}
+
+/**
+ * Formats duration in seconds to a human-readable string.
+ * Examples: "2m 30s", "45s", "1h 5m"
+ */
+private fun formatDuration(seconds: Long): String =
+    when {
+        seconds < 60 -> {
+            "${seconds}s"
+        }
+
+        seconds < 3600 -> {
+            val minutes = seconds / 60
+            val remainingSeconds = seconds % 60
+            if (remainingSeconds > 0) "${minutes}m ${remainingSeconds}s" else "${minutes}m"
+        }
+
+        else -> {
+            val hours = seconds / 3600
+            val minutes = (seconds % 3600) / 60
+            if (minutes > 0) "${hours}h ${minutes}m" else "${hours}h"
+        }
+    }
+
+/**
+ * Displays accuracy with semantic color coding based on performance.
+ * - Green (80%+): Excellent
+ * - Amber (60-79%): Good
+ * - Red (<60%): Needs improvement
+ */
+@Composable
+private fun AccuracyBadge(accuracy: Float) {
+    val (backgroundColor, textColor) =
+        when {
+            accuracy >= 80f -> {
+                MaterialTheme.colorScheme.primaryContainer to
+                    MaterialTheme.colorScheme.onPrimaryContainer
+            }
+
+            accuracy >= 60f -> {
+                MaterialTheme.colorScheme.tertiaryContainer to
+                    MaterialTheme.colorScheme.onTertiaryContainer
+            }
+
+            else -> {
+                MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
+            }
+        }
+
+    Card(
+        modifier = Modifier.padding(0.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = backgroundColor,
+            ),
+    ) {
+        Text(
+            text = "${accuracy.toInt()}%",
+            style = MaterialTheme.typography.titleMedium,
+            color = textColor,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+        )
+    }
+}
+
+/**
+ * Displays grade level as a small badge.
+ * Maps: 0=K, 1=1st, 2=2nd
+ */
+@Composable
+private fun GradeLevelBadge(gradeLevel: Int) {
+    val gradeLabel =
+        when (gradeLevel) {
+            0 -> "K"
+            1 -> "1st"
+            2 -> "2nd"
+            else -> "$gradeLevel"
+        }
+
+    Card(
+        modifier = Modifier.padding(0.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+    ) {
+        Text(
+            text = gradeLabel,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+        )
     }
 }
 
@@ -592,6 +788,7 @@ private fun StatsUiPreview() {
                                 accuracy = 90f,
                                 durationSeconds = 120,
                                 timestamp = Instant.now(),
+                                gradeLevel = 0,
                             ),
                             PracticeSessionEntity(
                                 id = 2,
@@ -602,6 +799,7 @@ private fun StatsUiPreview() {
                                 accuracy = 80f,
                                 durationSeconds = 150,
                                 timestamp = Instant.now().minusSeconds(86400),
+                                gradeLevel = 1,
                             ),
                         ),
                     eventSink = {},
@@ -663,6 +861,18 @@ private fun StatsUiDarkPreview() {
                                 accuracy = 90f,
                                 durationSeconds = 120,
                                 timestamp = Instant.now(),
+                                gradeLevel = 1,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 5,
+                                incorrectAnswers = 5,
+                                accuracy = 50f,
+                                durationSeconds = 180,
+                                timestamp = Instant.now().minusSeconds(3600),
+                                gradeLevel = 0,
                             ),
                         ),
                     eventSink = {},
@@ -721,9 +931,358 @@ private fun StatsUiTabletLandscapePreview() {
                                 accuracy = 90f,
                                 durationSeconds = 120,
                                 timestamp = Instant.now(),
+                                gradeLevel = 2,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 7,
+                                incorrectAnswers = 3,
+                                accuracy = 70f,
+                                durationSeconds = 95,
+                                timestamp = Instant.now().minusSeconds(1800),
+                                gradeLevel = 1,
                             ),
                         ),
                     eventSink = {},
+                ),
+        )
+    }
+}
+
+// Preview functions for OperationStatsCard
+
+@Preview(showBackground = true, name = "Addition - High Accuracy")
+@Composable
+private fun OperationStatsCardAdditionHighPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.ADDITION,
+            stats =
+                SessionStats(
+                    totalProblems = 50,
+                    correctCount = 45,
+                    accuracy = 90f,
+                    sessionCount = 5,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Subtraction - Medium Accuracy")
+@Composable
+private fun OperationStatsCardSubtractionMediumPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.SUBTRACTION,
+            stats =
+                SessionStats(
+                    totalProblems = 35,
+                    correctCount = 21,
+                    accuracy = 60f,
+                    sessionCount = 3,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Multiplication - Perfect")
+@Composable
+private fun OperationStatsCardMultiplicationPerfectPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.MULTIPLICATION,
+            stats =
+                SessionStats(
+                    totalProblems = 20,
+                    correctCount = 20,
+                    accuracy = 100f,
+                    sessionCount = 2,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Division - Low Accuracy")
+@Composable
+private fun OperationStatsCardDivisionLowPreview() {
+    KidsMathTutorAppTheme {
+        OperationStatsCard(
+            operation = MathOperation.DIVISION,
+            stats =
+                SessionStats(
+                    totalProblems = 25,
+                    correctCount = 10,
+                    accuracy = 40f,
+                    sessionCount = 1,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700, name = "Tablet - Multiple Cards")
+@Composable
+private fun OperationStatsCardTabletPreview() {
+    KidsMathTutorAppTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            OperationStatsCard(
+                operation = MathOperation.ADDITION,
+                stats =
+                    SessionStats(
+                        totalProblems = 50,
+                        correctCount = 45,
+                        accuracy = 90f,
+                        sessionCount = 5,
+                    ),
+            )
+            OperationStatsCard(
+                operation = MathOperation.SUBTRACTION,
+                stats =
+                    SessionStats(
+                        totalProblems = 35,
+                        correctCount = 28,
+                        accuracy = 80f,
+                        sessionCount = 3,
+                    ),
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - High Accuracy")
+@Composable
+private fun OperationStatsCardDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        OperationStatsCard(
+            operation = MathOperation.ADDITION,
+            stats =
+                SessionStats(
+                    totalProblems = 50,
+                    correctCount = 45,
+                    accuracy = 90f,
+                    sessionCount = 5,
+                ),
+        )
+    }
+}
+
+// Preview functions for RecentSessionItem
+
+@Preview(showBackground = true, name = "Excellent Performance (90%)")
+@Composable
+private fun RecentSessionItemExcellentPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 1,
+                    operation = MathOperation.ADDITION,
+                    totalProblems = 10,
+                    correctAnswers = 9,
+                    incorrectAnswers = 1,
+                    accuracy = 90f,
+                    durationSeconds = 120,
+                    timestamp = Instant.now(),
+                    gradeLevel = 1,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Good Performance (75%)")
+@Composable
+private fun RecentSessionItemGoodPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 2,
+                    operation = MathOperation.SUBTRACTION,
+                    totalProblems = 12,
+                    correctAnswers = 9,
+                    incorrectAnswers = 3,
+                    accuracy = 75f,
+                    durationSeconds = 145,
+                    timestamp = Instant.now().minusSeconds(3600),
+                    gradeLevel = 0,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Needs Improvement (50%)")
+@Composable
+private fun RecentSessionItemNeedsImprovementPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 3,
+                    operation = MathOperation.MULTIPLICATION,
+                    totalProblems = 10,
+                    correctAnswers = 5,
+                    incorrectAnswers = 5,
+                    accuracy = 50f,
+                    durationSeconds = 180,
+                    timestamp = Instant.now().minusSeconds(86400),
+                    gradeLevel = 2,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Very Short Duration (30s)")
+@Composable
+private fun RecentSessionItemShortDurationPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 4,
+                    operation = MathOperation.DIVISION,
+                    totalProblems = 5,
+                    correctAnswers = 4,
+                    incorrectAnswers = 1,
+                    accuracy = 80f,
+                    durationSeconds = 30,
+                    timestamp = Instant.now().minusSeconds(600),
+                    gradeLevel = null,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Long Duration (1h 30m)")
+@Composable
+private fun RecentSessionItemLongDurationPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 5,
+                    operation = MathOperation.ADDITION,
+                    totalProblems = 50,
+                    correctAnswers = 48,
+                    incorrectAnswers = 2,
+                    accuracy = 96f,
+                    durationSeconds = 5400,
+                    timestamp = Instant.now().minusSeconds(172800),
+                    gradeLevel = 2,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "No Grade Level")
+@Composable
+private fun RecentSessionItemNoGradeLevelPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 6,
+                    operation = MathOperation.SUBTRACTION,
+                    totalProblems = 15,
+                    correctAnswers = 12,
+                    incorrectAnswers = 3,
+                    accuracy = 80f,
+                    durationSeconds = 210,
+                    timestamp = Instant.now().minusSeconds(7200),
+                    gradeLevel = null,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700, name = "Tablet - Multiple Sessions")
+@Composable
+private fun RecentSessionItemTabletPreview() {
+    KidsMathTutorAppTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            RecentSessionItem(
+                session =
+                    PracticeSessionEntity(
+                        id = 1,
+                        operation = MathOperation.ADDITION,
+                        totalProblems = 10,
+                        correctAnswers = 9,
+                        incorrectAnswers = 1,
+                        accuracy = 90f,
+                        durationSeconds = 120,
+                        timestamp = Instant.now(),
+                        gradeLevel = 1,
+                    ),
+            )
+            RecentSessionItem(
+                session =
+                    PracticeSessionEntity(
+                        id = 2,
+                        operation = MathOperation.SUBTRACTION,
+                        totalProblems = 12,
+                        correctAnswers = 6,
+                        incorrectAnswers = 6,
+                        accuracy = 50f,
+                        durationSeconds = 165,
+                        timestamp = Instant.now().minusSeconds(3600),
+                        gradeLevel = 0,
+                    ),
+            )
+            RecentSessionItem(
+                session =
+                    PracticeSessionEntity(
+                        id = 3,
+                        operation = MathOperation.MULTIPLICATION,
+                        totalProblems = 8,
+                        correctAnswers = 6,
+                        incorrectAnswers = 2,
+                        accuracy = 75f,
+                        durationSeconds = 95,
+                        timestamp = Instant.now().minusSeconds(7200),
+                        gradeLevel = 2,
+                    ),
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - Excellent Performance")
+@Composable
+private fun RecentSessionItemDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 1,
+                    operation = MathOperation.ADDITION,
+                    totalProblems = 10,
+                    correctAnswers = 9,
+                    incorrectAnswers = 1,
+                    accuracy = 90f,
+                    durationSeconds = 120,
+                    timestamp = Instant.now(),
+                    gradeLevel = 1,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - Low Performance")
+@Composable
+private fun RecentSessionItemDarkLowPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 2,
+                    operation = MathOperation.DIVISION,
+                    totalProblems = 10,
+                    correctAnswers = 4,
+                    incorrectAnswers = 6,
+                    accuracy = 40f,
+                    durationSeconds = 200,
+                    timestamp = Instant.now().minusSeconds(86400),
+                    gradeLevel = 0,
                 ),
         )
     }

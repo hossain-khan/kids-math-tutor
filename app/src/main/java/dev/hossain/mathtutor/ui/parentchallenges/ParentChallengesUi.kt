@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -57,6 +60,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -72,6 +76,7 @@ import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
 
@@ -429,55 +434,77 @@ private fun ChallengeListItem(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                // Operation icon
-                val operationIcon = getMathOperationIcon(challenge)
-                Image(
-                    painter = painterResource(id = operationIcon),
-                    contentDescription = "Math operation type",
-                    modifier =
-                        Modifier
-                            .size(48.dp)
-                            .padding(end = 12.dp),
-                    contentScale = ContentScale.Fit,
-                )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            // Math problems count watermark - right aligned
+            Text(
+                // Not using the `getMathOperationWatermarkChar` because
+                // we already have operation icon on the left
+                text = getChallengeWatermarkCount(challenge),
+                style =
+                    MaterialTheme.typography.displayLarge.copy(
+                        fontFamily = watermarkFontFamily,
+                        fontSize = MaterialTheme.typography.displayLarge.fontSize * 1.2f,
+                    ),
+                color =
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                modifier =
+                    Modifier
+                        .height(IntrinsicSize.Max)
+                        .padding(end = 64.dp)
+                        .align(Alignment.CenterEnd),
+            )
 
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = challenge.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
+            // Main content
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Operation icon
+                    val operationIcon = getMathOperationIcon(challenge)
+                    Image(
+                        painter = painterResource(id = operationIcon),
+                        contentDescription = "Math operation type",
+                        modifier =
+                            Modifier
+                                .size(48.dp)
+                                .padding(end = 12.dp),
+                        contentScale = ContentScale.Fit,
                     )
 
-                    if (challenge.subtitle != null) {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = challenge.subtitle,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = challenge.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
+
+                        if (challenge.subtitle != null) {
+                            Text(
+                                text = challenge.subtitle,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
+
+                    DropdownMenuButton(
+                        challenge = challenge,
+                        onArchive = onArchiveClick,
+                        onClearSessions = onClearSessionsClick,
+                        onDelete = onDeleteClick,
+                    )
                 }
 
-                DropdownMenuButton(
-                    challenge = challenge,
-                    onArchive = onArchiveClick,
-                    onClearSessions = onClearSessionsClick,
-                    onDelete = onDeleteClick,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ChallengeStatsRow(challenge = challenge)
-
-            if (challenge.practiceHistory.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
-                PracticeHistorySection(challenge = challenge)
+
+                ChallengeStatsRow(challenge = challenge)
+
+                if (challenge.practiceHistory.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PracticeHistorySection(challenge = challenge)
+                }
             }
         }
     }
@@ -830,5 +857,201 @@ private fun getMathOperationIcon(challenge: CustomChallenge): Int {
         else -> {
             R.drawable.pup_tutor_sticker_operation_mixed
         }
+    }
+}
+
+/**
+ * Gets the math operation watermark character for a challenge.
+ * Returns the appropriate math operation symbol (+, −, ×, ÷) based on challenge problems.
+ * If challenge has mixed operations, returns ± symbol.
+ *
+ * @param challenge The CustomChallenge to determine the watermark character for
+ * @return The math operation character: +, −, ×, ÷, or ±
+ */
+private fun getMathOperationWatermarkChar(challenge: CustomChallenge): String {
+    if (challenge.problems.isEmpty()) return "±"
+
+    // Check if all problems have the same operation (single operation challenge)
+    val operations = challenge.problems.map { it.operation }.distinct()
+
+    return when {
+        operations.size == 1 -> {
+            when (operations.first()) {
+                MathOperation.ADDITION -> "+"
+                MathOperation.SUBTRACTION -> "−"
+                MathOperation.MULTIPLICATION -> "×"
+                MathOperation.DIVISION -> "÷"
+                MathOperation.MIXED -> "±"
+            }
+        }
+
+        else -> {
+            "±" // Mixed operations
+        }
+    }
+}
+
+private fun getChallengeWatermarkCount(challenge: CustomChallenge): String = challenge.problems.size.toString()
+
+// Preview functions for ChallengeListItem
+
+@Preview(showBackground = true, name = "Addition Challenge")
+@Composable
+private fun ChallengeListItemAdditionPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Addition Basics",
+                    subtitle = "Master single-digit addition",
+                    type = ChallengeType.GENERATED,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 3, num2 = 5, operation = MathOperation.ADDITION, correctAnswer = 8),
+                            MathProblem(num1 = 7, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 9),
+                            MathProblem(num1 = 4, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 10),
+                            MathProblem(num1 = 2, num2 = 1, operation = MathOperation.ADDITION, correctAnswer = 3),
+                            MathProblem(num1 = 8, num2 = 9, operation = MathOperation.ADDITION, correctAnswer = 17),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Subtraction Challenge")
+@Composable
+private fun ChallengeListItemSubtractionPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Subtraction Practice",
+                    subtitle = "Learn to subtract",
+                    type = ChallengeType.EXPLICIT,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 10, num2 = 3, operation = MathOperation.SUBTRACTION, correctAnswer = 7),
+                            MathProblem(num1 = 8, num2 = 5, operation = MathOperation.SUBTRACTION, correctAnswer = 3),
+                            MathProblem(num1 = 15, num2 = 7, operation = MathOperation.SUBTRACTION, correctAnswer = 8),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Multiplication Challenge")
+@Composable
+private fun ChallengeListItemMultiplicationPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Times Tables",
+                    subtitle = "Multiplication mastery",
+                    type = ChallengeType.GENERATED,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 3, num2 = 4, operation = MathOperation.MULTIPLICATION, correctAnswer = 12),
+                            MathProblem(num1 = 5, num2 = 6, operation = MathOperation.MULTIPLICATION, correctAnswer = 30),
+                            MathProblem(num1 = 7, num2 = 8, operation = MathOperation.MULTIPLICATION, correctAnswer = 56),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Division Challenge")
+@Composable
+private fun ChallengeListItemDivisionPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Division Drills",
+                    subtitle = "Divide with confidence",
+                    type = ChallengeType.EXPLICIT,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 12, num2 = 3, operation = MathOperation.DIVISION, correctAnswer = 4),
+                            MathProblem(num1 = 20, num2 = 4, operation = MathOperation.DIVISION, correctAnswer = 5),
+                            MathProblem(num1 = 18, num2 = 2, operation = MathOperation.DIVISION, correctAnswer = 9),
+                            MathProblem(num1 = 24, num2 = 6, operation = MathOperation.DIVISION, correctAnswer = 4),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Mixed Operations Challenge")
+@Composable
+private fun ChallengeListItemMixedPreview() {
+    KidsMathTutorAppTheme {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Math Challenge",
+                    subtitle = "All operations combined",
+                    type = ChallengeType.EXPLICIT,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8),
+                            MathProblem(num1 = 10, num2 = 4, operation = MathOperation.SUBTRACTION, correctAnswer = 6),
+                            MathProblem(num1 = 3, num2 = 7, operation = MathOperation.MULTIPLICATION, correctAnswer = 21),
+                            MathProblem(num1 = 16, num2 = 4, operation = MathOperation.DIVISION, correctAnswer = 4),
+                            MathProblem(num1 = 9, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 11),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - Addition")
+@Composable
+private fun ChallengeListItemDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        ChallengeListItem(
+            challenge =
+                CustomChallenge(
+                    title = "Addition Basics",
+                    subtitle = "Master single-digit addition",
+                    type = ChallengeType.GENERATED,
+                    problems =
+                        listOf(
+                            MathProblem(num1 = 3, num2 = 5, operation = MathOperation.ADDITION, correctAnswer = 8),
+                            MathProblem(num1 = 7, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 9),
+                            MathProblem(num1 = 4, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 10),
+                        ),
+                    practiceHistory = emptyList(),
+                ),
+            onClick = {},
+            onArchiveClick = {},
+            onClearSessionsClick = {},
+            onDeleteClick = {},
+        )
     }
 }

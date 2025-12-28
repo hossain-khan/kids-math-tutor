@@ -8,6 +8,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **ChallengeListItem Preview Variants** - Comprehensive preview functions for challenge list item testing and design validation
+  - Individual operation previews: Addition (+), Subtraction (−), Multiplication (×), Division (÷)
+  - Mixed operations preview (±) showing combined math operations
+  - Dark theme preview for theme compatibility validation
+  - Demonstrates watermark styling for all operation types
+  - Enables easy testing in Android Studio preview pane
+- **Math Operation Watermarks for Challenge List** - Added visual watermarks to parent challenges list items
+  - Right-aligned, semi-transparent math operation symbols (+, −, ×, ÷) or ± for mixed operations
+  - Dynamically determined based on challenge problems: shows operation if all problems are same type, otherwise shows ±
+  - Styled with Google Font "Barrio" for consistent playful aesthetic
+  - Automatically adapts to theme: black text 12% opacity (light mode), white text 12% opacity (dark mode)
+  - Uses displayLarge typography for prominent visual impact
+  - Helps parents quickly identify challenge types at a glance
+  - Reduces visual clutter by using subtle watermark instead of additional icons
+- **Enhanced Recent Sessions Display** - Improved stats screen list items with better visual hierarchy and information density
+  - Duration display showing how long each practice session took (e.g., "2m 30s", "45s", "1h 5m")
+  - Grade level badges displaying the difficulty level practiced (K, 1st, 2nd)
+  - Semantic accuracy color coding based on performance:
+    - Green badges for excellent accuracy (80%+)
+    - Amber badges for good accuracy (60-79%)
+    - Red badges for sessions needing improvement (<60%)
+  - Improved visual hierarchy with separated timestamp/duration header and main content sections
+  - Subtle elevation changes on interaction for better touch feedback
+  - Day-of-week watermark (MON, TUE, WED, FRI, SAT, SUN, etc.) displayed as large, centered, semi-transparent background text
+    - Automatically adapts to theme: black text 15% opacity (light mode), white text 15% opacity (dark mode)
+    - Uses displayLarge typography for prominent visual impact
+    - Styled with Google Font "Barrio" - a playful, bold, comic-style font perfect for kids
+    - **Adaptive day names**: Shows abbreviated names (MON, TUE, WED) on phone screens, full names (MONDAY, TUESDAY, WEDNESDAY) on tablet/landscape for better space utilization
+    - Helps kids understand practice patterns and when they practice
+    - Creates engaging, personality-filled cards that encourage regular practice review
+- **OperationStatsCard Preview Variants** - Comprehensive preview functions for component testing and design validation
+  - Individual operation previews: Addition (90%), Subtraction (60%), Multiplication (100%), Division (40%)
+  - Tablet preview showing multiple cards side-by-side for adaptive layout testing
+  - Dark theme preview for theme compatibility validation
+  - Demonstrates all math operations with varying accuracy levels
+- **RecentSessionItem Preview Variants** - Comprehensive preview functions showcasing all semantic color states and scenarios
+  - Performance-based previews: Excellent (90%), Good (75%), Needs Improvement (50%)
+  - Duration-based previews: Very short (30s), long (1h 30m), standard (2m)
+  - Grade level variants: With grade level badge, without grade level
+  - Tablet preview showing list of multiple sessions for adaptive layout testing
+  - Dark theme previews for both excellent and low performance scenarios
+  - Tests all accuracy color states: green (high), amber (medium), red (low)
 - **Operation-Specific Worksheet Backgrounds** - Visual indicators on worksheet cards showing practice focus areas
   - Large semi-transparent operation symbols (+, −, ×, ÷) as card backgrounds when all problems share the same operation type
   - Color-coded backgrounds: Blue for addition, Pink for subtraction, Green for multiplication, Amber for division

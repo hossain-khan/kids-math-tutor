@@ -29,6 +29,15 @@ val displayFontFamily =
         ),
     )
 
+// Barrio font for day watermark - playful, bold, comic-style font perfect for kids
+val watermarkFontFamily =
+    FontFamily(
+        Font(
+            googleFont = GoogleFont("Barrio"),
+            fontProvider = provider,
+        ),
+    )
+
 // Default Material 3 typography values
 val baseline = Typography()
 
