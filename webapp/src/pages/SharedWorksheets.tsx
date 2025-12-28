@@ -334,6 +334,8 @@ export default function SharedWorksheets() {
     // Single worksheet detail view
     const problemCount = worksheet.problems.length;
     const previewProblems = worksheet.problems.slice(0, 3);
+    const singleOperation = getSingleOperationType(worksheet.problems);
+    const operationColor = singleOperation ? getOperationColor(singleOperation) : null;
 
     return (
       <div className="min-h-screen">
@@ -354,8 +356,25 @@ export default function SharedWorksheets() {
 
         <main className="container mx-auto px-4 py-8 max-w-2xl">
           {/* Worksheet Header */}
-          <Card className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 p-6">
-            <div>
+          <Card
+            className={`mb-6 border-2 p-6 relative overflow-hidden ${
+              operationColor
+                ? `bg-gradient-to-br ${operationColor.bg} border-blue-200`
+                : "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300"
+            }`}
+          >
+            {/* Operation Background Pattern */}
+            {operationColor && (
+              <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center text-center">
+                  <div className={`text-9xl font-bold ${operationColor.text}`}>
+                    {operationColor.symbol}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="relative z-10">
               <h2 className="text-3xl font-display font-bold text-gray-900 mb-2">
                 {worksheet.title}
               </h2>
@@ -904,6 +923,32 @@ export default function SharedWorksheets() {
       </main>
     </div>
   );
+}
+
+function getOperationColor(operation: string): { bg: string; symbol: string; text: string } {
+  switch (operation) {
+    case "addition":
+      return { bg: "from-blue-50 to-blue-100", symbol: "+", text: "text-blue-400" };
+    case "subtraction":
+      return { bg: "from-pink-50 to-pink-100", symbol: "-", text: "text-pink-400" };
+    case "multiplication":
+      return { bg: "from-green-50 to-green-100", symbol: "×", text: "text-green-400" };
+    case "division":
+      return { bg: "from-amber-50 to-amber-100", symbol: "÷", text: "text-amber-400" };
+    default:
+      return { bg: "from-gray-50 to-gray-100", symbol: "?", text: "text-gray-400" };
+  }
+}
+
+function getSingleOperationType(
+  problems: Array<{ operation: string }>,
+): string | null {
+  if (problems.length === 0) return null;
+
+  const firstOperation = problems[0].operation;
+  const allSame = problems.every((p) => p.operation === firstOperation);
+
+  return allSame ? firstOperation : null;
 }
 
 function getOperationSymbol(operation: string): string {
