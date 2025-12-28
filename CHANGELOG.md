@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tablet preview showing multiple cards side-by-side for adaptive layout testing
   - Dark theme preview for theme compatibility validation
   - Demonstrates all math operations with varying accuracy levels
+- **RecentSessionItem Preview Variants** - Comprehensive preview functions showcasing all semantic color states and scenarios
+  - Performance-based previews: Excellent (90%), Good (75%), Needs Improvement (50%)
+  - Duration-based previews: Very short (30s), long (1h 30m), standard (2m)
+  - Grade level variants: With grade level badge, without grade level
+  - Tablet preview showing list of multiple sessions for adaptive layout testing
+  - Dark theme previews for both excellent and low performance scenarios
+  - Tests all accuracy color states: green (high), amber (medium), red (low)
 - **Operation-Specific Worksheet Backgrounds** - Visual indicators on worksheet cards showing practice focus areas
   - Large semi-transparent operation symbols (+, −, ×, ÷) as card backgrounds when all problems share the same operation type
   - Color-coded backgrounds: Blue for addition, Pink for subtraction, Green for multiplication, Amber for division

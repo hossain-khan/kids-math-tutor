@@ -1012,3 +1012,224 @@ private fun OperationStatsCardDarkPreview() {
         )
     }
 }
+
+// Preview functions for RecentSessionItem
+
+@Preview(showBackground = true, name = "Excellent Performance (90%)")
+@Composable
+private fun RecentSessionItemExcellentPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 1,
+                    operation = MathOperation.ADDITION,
+                    totalProblems = 10,
+                    correctAnswers = 9,
+                    incorrectAnswers = 1,
+                    accuracy = 90f,
+                    durationSeconds = 120,
+                    timestamp = Instant.now(),
+                    gradeLevel = 1,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Good Performance (75%)")
+@Composable
+private fun RecentSessionItemGoodPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 2,
+                    operation = MathOperation.SUBTRACTION,
+                    totalProblems = 12,
+                    correctAnswers = 9,
+                    incorrectAnswers = 3,
+                    accuracy = 75f,
+                    durationSeconds = 145,
+                    timestamp = Instant.now().minusSeconds(3600),
+                    gradeLevel = 0,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Needs Improvement (50%)")
+@Composable
+private fun RecentSessionItemNeedsImprovementPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 3,
+                    operation = MathOperation.MULTIPLICATION,
+                    totalProblems = 10,
+                    correctAnswers = 5,
+                    incorrectAnswers = 5,
+                    accuracy = 50f,
+                    durationSeconds = 180,
+                    timestamp = Instant.now().minusSeconds(86400),
+                    gradeLevel = 2,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Very Short Duration (30s)")
+@Composable
+private fun RecentSessionItemShortDurationPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 4,
+                    operation = MathOperation.DIVISION,
+                    totalProblems = 5,
+                    correctAnswers = 4,
+                    incorrectAnswers = 1,
+                    accuracy = 80f,
+                    durationSeconds = 30,
+                    timestamp = Instant.now().minusSeconds(600),
+                    gradeLevel = null,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Long Duration (1h 30m)")
+@Composable
+private fun RecentSessionItemLongDurationPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 5,
+                    operation = MathOperation.ADDITION,
+                    totalProblems = 50,
+                    correctAnswers = 48,
+                    incorrectAnswers = 2,
+                    accuracy = 96f,
+                    durationSeconds = 5400,
+                    timestamp = Instant.now().minusSeconds(172800),
+                    gradeLevel = 2,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "No Grade Level")
+@Composable
+private fun RecentSessionItemNoGradeLevelPreview() {
+    KidsMathTutorAppTheme {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 6,
+                    operation = MathOperation.SUBTRACTION,
+                    totalProblems = 15,
+                    correctAnswers = 12,
+                    incorrectAnswers = 3,
+                    accuracy = 80f,
+                    durationSeconds = 210,
+                    timestamp = Instant.now().minusSeconds(7200),
+                    gradeLevel = null,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700, name = "Tablet - Multiple Sessions")
+@Composable
+private fun RecentSessionItemTabletPreview() {
+    KidsMathTutorAppTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            RecentSessionItem(
+                session =
+                    PracticeSessionEntity(
+                        id = 1,
+                        operation = MathOperation.ADDITION,
+                        totalProblems = 10,
+                        correctAnswers = 9,
+                        incorrectAnswers = 1,
+                        accuracy = 90f,
+                        durationSeconds = 120,
+                        timestamp = Instant.now(),
+                        gradeLevel = 1,
+                    ),
+            )
+            RecentSessionItem(
+                session =
+                    PracticeSessionEntity(
+                        id = 2,
+                        operation = MathOperation.SUBTRACTION,
+                        totalProblems = 12,
+                        correctAnswers = 6,
+                        incorrectAnswers = 6,
+                        accuracy = 50f,
+                        durationSeconds = 165,
+                        timestamp = Instant.now().minusSeconds(3600),
+                        gradeLevel = 0,
+                    ),
+            )
+            RecentSessionItem(
+                session =
+                    PracticeSessionEntity(
+                        id = 3,
+                        operation = MathOperation.MULTIPLICATION,
+                        totalProblems = 8,
+                        correctAnswers = 6,
+                        incorrectAnswers = 2,
+                        accuracy = 75f,
+                        durationSeconds = 95,
+                        timestamp = Instant.now().minusSeconds(7200),
+                        gradeLevel = 2,
+                    ),
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - Excellent Performance")
+@Composable
+private fun RecentSessionItemDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 1,
+                    operation = MathOperation.ADDITION,
+                    totalProblems = 10,
+                    correctAnswers = 9,
+                    incorrectAnswers = 1,
+                    accuracy = 90f,
+                    durationSeconds = 120,
+                    timestamp = Instant.now(),
+                    gradeLevel = 1,
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme - Low Performance")
+@Composable
+private fun RecentSessionItemDarkLowPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        RecentSessionItem(
+            session =
+                PracticeSessionEntity(
+                    id = 2,
+                    operation = MathOperation.DIVISION,
+                    totalProblems = 10,
+                    correctAnswers = 4,
+                    incorrectAnswers = 6,
+                    accuracy = 40f,
+                    durationSeconds = 200,
+                    timestamp = Instant.now().minusSeconds(86400),
+                    gradeLevel = 0,
+                ),
+        )
+    }
+}
