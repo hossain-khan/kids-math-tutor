@@ -7,7 +7,6 @@ import {
   clearAdminAuthToken,
   isAdminAuthenticated,
 } from "@/lib/adminAuth";
-import type { ProblemSpec } from "@/lib/schemas/challenge-schema";
 
 interface SafetyStatus {
   isFlagged: boolean;
@@ -24,7 +23,7 @@ interface AdminWorksheet {
   title: string;
   subtitle?: string;
   description?: string;
-  problems?: ProblemSpec[];
+  problemCount: number;
   createdAt: string;
   stats: {
     views: number;
@@ -423,7 +422,7 @@ export default function AdminManage() {
                       )}
                       <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
                         <span>
-                          📊 {worksheet.problems?.length || 0} problems
+                          📊 {worksheet.problemCount} problems
                         </span>
                         <span>👁️ {worksheet.stats.views} views</span>
                         <span>💾 {worksheet.stats.downloads} downloads</span>
