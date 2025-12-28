@@ -63,6 +63,10 @@ describe("deeplink utilities", () => {
     });
 
     it("should return empty string on error", () => {
+      // Suppress console.error for this test
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       // Create circular reference to trigger JSON.stringify error
       const circular: Record<string, unknown> = { prop: "value" };
       circular.self = circular;
@@ -71,6 +75,7 @@ describe("deeplink utilities", () => {
 
       // Circular reference should cause JSON.stringify to throw, resulting in empty string
       expect(deeplink).toBe("");
+      consoleErrorSpy.mockRestore();
     });
 
     it("should encode JSON with all special characters", () => {
@@ -120,6 +125,10 @@ describe("deeplink utilities", () => {
     });
 
     it("should return empty string on error", () => {
+      // Suppress console.error for this test
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       // openInApp should return empty string when generateDeeplink fails
       const circular: Record<string, unknown> = { prop: "value" };
       circular.self = circular;
@@ -127,6 +136,7 @@ describe("deeplink utilities", () => {
       const result = openInApp(circular);
 
       expect(result).toBe("");
+      consoleErrorSpy.mockRestore();
     });
   });
 

@@ -35,3 +35,14 @@ const sessionStorageMock = (() => {
 Object.defineProperty(window, "sessionStorage", {
   value: sessionStorageMock,
 });
+
+// Mock window.location
+Object.defineProperty(window, "location", {
+  value: {
+    href: "",
+  },
+  writable: true,
+});
+
+// Mock alert
+window.alert = vi.fn();

@@ -177,10 +177,16 @@ describe("worksheetStorage - search, pagination, ratings", () => {
   });
 
   it("rateWorksheet rejects invalid ratings", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     const w = makeWorksheet("x1", "Test", "2025-12-01T00:00:00Z");
     await mock.kv.put(`worksheet:${w.id}`, JSON.stringify(w));
 
-    const ok = await rateWorksheet(ctx, w.id, 0, "s1");
-    expect(ok).toBe(false);
+    const res1 = await rateWorksheet(ctx, w.id, 0, "s1");
+    expect(res1).toBe(false);
+    const res2 = await rateWorksheet(ctx, w.id, 6, "s1");
+    expect(res2).toBe(false);
+    consoleErrorSpy.mockRestore();
   });
 });
