@@ -17,6 +17,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.Button
@@ -36,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.OperationCard
@@ -168,6 +171,45 @@ fun OperationSelectorUi(
                 },
             )
 
+            // Multiplication Card - Only shown for Grade 1 and Grade 2
+            if (state.gradeLevel in listOf(GradeLevel.GRADE_1, GradeLevel.GRADE_2)) {
+                OperationCard(
+                    title = "Multiplication",
+                    icon = Icons.Default.Close,
+                    examples =
+                        when (state.gradeLevel) {
+                            GradeLevel.GRADE_1 -> listOf("2 × 5 = ?", "5 × 10 = ?")
+                            GradeLevel.GRADE_2 -> listOf("3 × 7 = ?", "8 × 6 = ?")
+                            else -> listOf()
+                        },
+                    operation = MathOperation.MULTIPLICATION,
+                    onClick = {
+                        state.eventSink(
+                            OperationSelectorScreen.Event.OperationSelected(
+                                MathOperation.MULTIPLICATION,
+                            ),
+                        )
+                    },
+                )
+            }
+
+            // Division Card - Only shown for Grade 2
+            if (state.gradeLevel == GradeLevel.GRADE_2) {
+                OperationCard(
+                    title = "Division",
+                    icon = Icons.Default.Percent,
+                    examples = listOf("20 ÷ 5 = ?", "15 ÷ 3 = ?"),
+                    operation = MathOperation.DIVISION,
+                    onClick = {
+                        state.eventSink(
+                            OperationSelectorScreen.Event.OperationSelected(
+                                MathOperation.DIVISION,
+                            ),
+                        )
+                    },
+                )
+            }
+
             // Mix It Up Card
             // TODO: Implement MathOperation.MIXED type and mixed problem generation
             // For now, using ADDITION as placeholder until mixed operation mode is implemented
@@ -222,6 +264,37 @@ private fun OperationSelectorUiPreview() {
         OperationSelectorUi(
             state =
                 OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.KINDERGARTEN,
+                    hasSessionHistory = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OperationSelectorUiGrade1Preview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_1,
+                    hasSessionHistory = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OperationSelectorUiGrade2Preview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
                     hasSessionHistory = false,
                     eventSink = {},
                 ),
@@ -236,6 +309,7 @@ private fun OperationSelectorUiWithHistoryPreview() {
         OperationSelectorUi(
             state =
                 OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
                     hasSessionHistory = true,
                     eventSink = {},
                 ),
@@ -250,6 +324,7 @@ private fun OperationSelectorUiDarkPreview() {
         OperationSelectorUi(
             state =
                 OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
                     hasSessionHistory = true,
                     eventSink = {},
                 ),

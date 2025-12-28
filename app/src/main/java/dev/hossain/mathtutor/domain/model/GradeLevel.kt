@@ -53,4 +53,44 @@ enum class GradeLevel(
                 }
             }
         }
+
+    /**
+     * Returns the list of math operations available for this grade level.
+     * Used to determine which operation cards to show in the operation selector UI.
+     *
+     * - **Kindergarten**: Addition, Subtraction, Mixed (no multiplication or division)
+     * - **Grade 1**: Addition, Subtraction, Multiplication (limited: ×2, ×5, ×10), Mixed
+     * - **Grade 2**: All operations - Addition, Subtraction, Multiplication (full tables), Division, Mixed
+     *
+     * @return List of available operations for this grade level
+     */
+    fun getAvailableOperations(): List<MathOperation> =
+        when (this) {
+            KINDERGARTEN -> {
+                listOf(
+                    MathOperation.ADDITION,
+                    MathOperation.SUBTRACTION,
+                    MathOperation.MIXED,
+                )
+            }
+
+            GRADE_1 -> {
+                listOf(
+                    MathOperation.ADDITION,
+                    MathOperation.SUBTRACTION,
+                    MathOperation.MULTIPLICATION,
+                    MathOperation.MIXED,
+                )
+            }
+
+            GRADE_2 -> {
+                listOf(
+                    MathOperation.ADDITION,
+                    MathOperation.SUBTRACTION,
+                    MathOperation.MULTIPLICATION,
+                    MathOperation.DIVISION,
+                    MathOperation.MIXED,
+                )
+            }
+        }
 }

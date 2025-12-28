@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.operationselector
 
 import com.google.common.truth.Truth.assertThat
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import org.junit.Test
 
@@ -13,6 +14,7 @@ class OperationSelectorScreenTest {
     @Test
     fun state_hasCorrectProperties() {
         // Given
+        val gradeLevel = GradeLevel.GRADE_1
         val hasHistory = true
         var eventReceived: OperationSelectorScreen.Event? = null
         val eventSink: (OperationSelectorScreen.Event) -> Unit = { event ->
@@ -22,11 +24,13 @@ class OperationSelectorScreenTest {
         // When
         val state =
             OperationSelectorScreen.State(
+                gradeLevel = gradeLevel,
                 hasSessionHistory = hasHistory,
                 eventSink = eventSink,
             )
 
         // Then
+        assertThat(state.gradeLevel).isEqualTo(GradeLevel.GRADE_1)
         assertThat(state.hasSessionHistory).isTrue()
         assertThat(state.eventSink).isNotNull()
     }
@@ -34,18 +38,39 @@ class OperationSelectorScreenTest {
     @Test
     fun state_withNoHistory_hasCorrectProperties() {
         // Given
+        val gradeLevel = GradeLevel.KINDERGARTEN
         val hasHistory = false
         val eventSink: (OperationSelectorScreen.Event) -> Unit = { }
 
         // When
         val state =
             OperationSelectorScreen.State(
+                gradeLevel = gradeLevel,
                 hasSessionHistory = hasHistory,
                 eventSink = eventSink,
             )
 
         // Then
+        assertThat(state.gradeLevel).isEqualTo(GradeLevel.KINDERGARTEN)
         assertThat(state.hasSessionHistory).isFalse()
+    }
+
+    @Test
+    fun state_grade2_hasCorrectProperties() {
+        // Given
+        val gradeLevel = GradeLevel.GRADE_2
+        val eventSink: (OperationSelectorScreen.Event) -> Unit = { }
+
+        // When
+        val state =
+            OperationSelectorScreen.State(
+                gradeLevel = gradeLevel,
+                hasSessionHistory = true,
+                eventSink = eventSink,
+            )
+
+        // Then
+        assertThat(state.gradeLevel).isEqualTo(GradeLevel.GRADE_2)
     }
 
     @Test
@@ -75,6 +100,7 @@ class OperationSelectorScreenTest {
         var receivedEvent: OperationSelectorScreen.Event? = null
         val state =
             OperationSelectorScreen.State(
+                gradeLevel = GradeLevel.GRADE_1,
                 hasSessionHistory = false,
                 eventSink = { event -> receivedEvent = event },
             )
@@ -89,7 +115,9 @@ class OperationSelectorScreenTest {
         // Then
         assertThat(receivedEvent).isNotNull()
         assertThat(receivedEvent is OperationSelectorScreen.Event.OperationSelected).isTrue()
-        assertThat((receivedEvent as OperationSelectorScreen.Event.OperationSelected).operation).isEqualTo(MathOperation.SUBTRACTION)
+        assertThat(
+            (receivedEvent as OperationSelectorScreen.Event.OperationSelected).operation,
+        ).isEqualTo(MathOperation.SUBTRACTION)
     }
 
     @Test
@@ -98,6 +126,7 @@ class OperationSelectorScreenTest {
         var receivedEvent: OperationSelectorScreen.Event? = null
         val state =
             OperationSelectorScreen.State(
+                gradeLevel = GradeLevel.GRADE_2,
                 hasSessionHistory = true,
                 eventSink = { event -> receivedEvent = event },
             )

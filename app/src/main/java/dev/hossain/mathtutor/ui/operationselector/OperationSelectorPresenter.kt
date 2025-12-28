@@ -11,8 +11,10 @@ import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsParam
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.repository.SessionRepository
+import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
 import dev.hossain.mathtutor.ui.stats.StatsScreen
 import dev.zacsweers.metro.AppScope
@@ -25,13 +27,15 @@ import timber.log.Timber
  * Presenter for [OperationSelectorScreen].
  *
  * Manages the state and business logic for operation selection.
- * Checks for session history to enable/disable stats button.
+ * - Fetches the user's current grade level to determine available operations
+ * - Checks for session history to enable/disable stats button
  */
 @AssistedInject
 class OperationSelectorPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val sessionRepository: SessionRepository,
+        private val userProfileRepository: UserProfileRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<OperationSelectorScreen.State> {
         @CircuitInject(OperationSelectorScreen::class, AppScope::class)
@@ -50,18 +54,31 @@ class OperationSelectorPresenter
                 )
             }
 
+            // Fetch user profile to get grade level
+            val userProfile by userProfileRepository.getProfile().collectAsState(initial = null)
+            val gradeLevel = userProfile?.gradeLevel ?: GradeLevel.GRADE_1
+
             // Check if session history exists
             val overallStats by sessionRepository.getOverallStats().collectAsState(
                 initial = dev.hossain.mathtutor.domain.model.SessionStats.EMPTY,
             )
             val hasSessionHistory = overallStats.sessionCount > 0
 
-            // Log only when stats change (not on every recomposition)
-            LaunchedEffect(overallStats.sessionCount) {
-                Timber.d("OperationSelector: Session history exists = $hasSessionHistory (sessionCount=${overallStats.sessionCount})")
+            // Log only when grade or stats change (not on every recomposition)
+            LaunchedEffect(gradeLevel, overallStats.sessionCount) {
+                val availableOps = gradeLevel.getAvailableOperations().map { it.displayName }
+                Timber.d(
+                    "OperationSelector: Grade level = ${gradeLevel.displayName}, " +
+                        "available operations = $availableOps",
+                )
+                Timber.d(
+                    "OperationSelector: Session history exists = $hasSessionHistory " +
+                        "(sessionCount=${overallStats.sessionCount})",
+                )
             }
 
             return OperationSelectorScreen.State(
+                gradeLevel = gradeLevel,
                 hasSessionHistory = hasSessionHistory,
             ) { event ->
                 when (event) {

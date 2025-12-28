@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Grade-Level Aware Operation Selector** - Operation selector UI now dynamically displays operations based on user's grade level
+  - Kindergarten students see: Addition, Subtraction, Mix It Up
+  - Grade 1 students see: Addition, Subtraction, Multiplication (×2, ×5, ×10 limited), Mix It Up
+  - Grade 2 students see: Addition, Subtraction, Multiplication (full ×2-10 tables), Division, Mix It Up
+  - `OperationSelectorPresenter` now fetches user's grade level from `UserProfileRepository`
+  - `OperationSelectorScreen.State` includes `gradeLevel: GradeLevel` field
+  - `OperationSelectorUi` conditionally renders operation cards based on available operations for grade
+  - Added `GradeLevel.getAvailableOperations()` utility function to determine which operations are available for each grade
+  - Updated unit tests in `OperationSelectorScreenTest.kt` to include grade level in state
+  - Resolves issue where Grade 2 students couldn't access Multiplication and Division options from operation selector
+
 ### Added
 - **Locked Icon Overlay in Badge Detail Dialog** - Visual consistency for locked badges in detail view
   - Shows lock icon with "Locked" text overlay centered on badge icon for locked badges
