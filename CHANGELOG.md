@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Locked Icon Overlay in Badge Detail Dialog** - Visual consistency for locked badges in detail view
+  - Shows lock icon with "Locked" text overlay centered on badge icon for locked badges
+  - Lock icon uses primary color for visual prominence
+  - Text label "Locked" displayed below icon with proper spacing (4dp)
+  - Maintains badge icon dimming (40% alpha) for locked state
+  - Smooth integration with existing scale/bounce animation
+  - Consistent with lock indicator from BadgeGrid component
+  - Improves user clarity on badge lock status in detail view
 - **ChallengeListItem Preview Variants** - Comprehensive preview functions for challenge list item testing and design validation
   - Individual operation previews: Addition (+), Subtraction (−), Multiplication (×), Division (÷)
   - Mixed operations preview (±) showing combined math operations
