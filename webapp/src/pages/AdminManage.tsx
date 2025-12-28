@@ -60,7 +60,12 @@ export default function AdminManage() {
         });
       }
     }
-  }, [fetchWorksheetsAPI, state.ui.searchQuery, state.worksheets.limit, state.worksheets.offset]);
+  }, [
+    fetchWorksheetsAPI,
+    state.ui.searchQuery,
+    state.worksheets.limit,
+    state.worksheets.offset,
+  ]);
 
   // Check authentication on mount
   useEffect(() => {
