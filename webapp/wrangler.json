@@ -29,6 +29,9 @@
           "id": "1a434626c9c143ec874e6c2e1ec2348a"
         }
       ],
+      "ai": {
+        "binding": "AI"
+      },
       "workers_dev": false
     },
     "development": {
