@@ -104,7 +104,10 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
     });
 
     // Log raw response for debugging safety issues
-    console.log('[AI] Raw response:', JSON.stringify(response).substring(0, 500));
+    console.log(
+      "[AI] Raw response:",
+      JSON.stringify(response).substring(0, 500),
+    );
 
     // Parse response - handle various formats
     let result;
