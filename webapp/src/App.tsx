@@ -5,6 +5,7 @@ import Result from "./pages/Result";
 import Help from "./pages/Help";
 import SharedWorksheets from "./pages/SharedWorksheets";
 import AdminManage from "./pages/AdminManage";
+import { SafetyValidator } from "./pages/SafetyValidator";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/manage-worksheets" element={<AdminManage />} />
         <Route path="/worksheets" element={<SharedWorksheets />} />
         <Route path="/worksheets/:id" element={<SharedWorksheets />} />
+        <Route path="/test/validate-content" element={<SafetyValidator />} />
       </Routes>
     </Router>
   );

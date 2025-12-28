@@ -8,6 +8,18 @@
 
 import { Filter } from "bad-words";
 
+// AI Model configuration
+export const AI_SAFETY_CONFIG = {
+  // Llama Guard 3 is specifically designed for content safety
+  DEFAULT_MODEL: "@cf/meta/llama-guard-3-8b",
+  // Alternative models for testing (in order of preference for safety)
+  ALTERNATIVE_MODELS: [
+    "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "@cf/meta/llama-3.1-8b-instruct-fast",
+    "@cf/meta/llama-4-scout-17b-16e-instruct",
+  ],
+} as const;
+
 export interface SafetyCheckResult {
   safe: boolean;
   classification: "safe" | "unsafe";
@@ -31,6 +43,7 @@ interface AIResponse {
  *
  * @param env - Cloudflare environment with optional AI binding
  * @param content - Worksheet content to check (title, subtitle, description)
+ * @param model - Optional AI model to use (defaults to Llama Guard 3)
  * @returns SafetyCheckResult with classification and confidence
  */
 export async function checkContentSafetyWithAI(
@@ -40,6 +53,7 @@ export async function checkContentSafetyWithAI(
     subtitle?: string;
     description?: string;
   },
+  model: string = AI_SAFETY_CONFIG.DEFAULT_MODEL,
 ): Promise<SafetyCheckResult> {
   const textToCheck = [
     content.title,
@@ -94,7 +108,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
       run: (model: string, options: unknown) => Promise<AIResponse | string>;
     };
 
-    const response = await aiInstance.run("@cf/meta/llama-guard-3-8b", {
+    const response = await aiInstance.run(model, {
       messages: [
         {
           role: "user",
