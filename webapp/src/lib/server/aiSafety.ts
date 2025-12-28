@@ -6,11 +6,11 @@
  * Falls back to bad-words if limit exceeded or AI unavailable
  */
 
-import { Filter } from 'bad-words';
+import { Filter } from "bad-words";
 
 export interface SafetyCheckResult {
   safe: boolean;
-  classification: 'safe' | 'unsafe';
+  classification: "safe" | "unsafe";
   categories?: string[];
   explanation?: string;
   confidence?: number;
@@ -43,15 +43,15 @@ export async function checkContentSafetyWithAI(
 ): Promise<SafetyCheckResult> {
   const textToCheck = [
     content.title,
-    content.subtitle || '',
-    content.description || '',
+    content.subtitle || "",
+    content.description || "",
   ]
     .filter(Boolean)
-    .join('\n');
+    .join("\n");
 
   // Check if AI is available
   if (!env.AI) {
-    console.warn('⚠️ Workers AI not available, using bad-words fallback');
+    console.warn("⚠️ Workers AI not available, using bad-words fallback");
     return fallbackToBadWords(textToCheck);
   }
 
@@ -61,8 +61,8 @@ export async function checkContentSafetyWithAI(
 Analyze the following worksheet content for age-appropriateness and safety:
 
 TITLE: "${content.title}"
-${content.subtitle ? `SUBTITLE: "${content.subtitle}"` : ''}
-${content.description ? `DESCRIPTION: "${content.description}"` : ''}
+${content.subtitle ? `SUBTITLE: "${content.subtitle}"` : ""}
+${content.description ? `DESCRIPTION: "${content.description}"` : ""}
 
 Classify as SAFE or UNSAFE for K-2 children (ages 5-8).
 
@@ -87,10 +87,10 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
       run: (model: string, options: unknown) => Promise<AIResponse | string>;
     };
 
-    const response = await aiInstance.run('@cf/meta/llama-guard-3-8b', {
+    const response = await aiInstance.run("@cf/meta/llama-guard-3-8b", {
       messages: [
         {
-          role: 'user',
+          role: "user",
           content: prompt,
         },
       ],
@@ -98,11 +98,12 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
 
     // Parse response - handle various formats
     let result;
-    if (typeof response === 'string') {
+    if (typeof response === "string") {
       result = JSON.parse(response);
-    } else if (response && typeof response === 'object') {
+    } else if (response && typeof response === "object") {
       // Extract text from response object
-      const text = (response as AIResponse).response ||
+      const text =
+        (response as AIResponse).response ||
         (response as AIResponse).result ||
         (response as AIResponse).message ||
         JSON.stringify(response);
@@ -113,12 +114,12 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
 
     // Validate result structure
     if (!result.classification) {
-      console.warn('Invalid AI response structure, falling back to bad-words');
+      console.warn("Invalid AI response structure, falling back to bad-words");
       return fallbackToBadWords(textToCheck);
     }
 
     return {
-      safe: result.classification === 'safe',
+      safe: result.classification === "safe",
       classification: result.classification,
       categories: result.categories || [],
       explanation: result.explanation,
@@ -131,25 +132,27 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
 
     // Check if it's a rate limit or free tier exceeded error
     if (
-      errorMessage.includes('rate limit') ||
-      errorMessage.includes('429') ||
-      errorMessage.includes('quota') ||
-      errorMessage.includes('limit exceeded') ||
-      errorMessage.includes('exceeded') ||
-      errorMessage.includes('overloaded')
+      errorMessage.includes("rate limit") ||
+      errorMessage.includes("429") ||
+      errorMessage.includes("quota") ||
+      errorMessage.includes("limit exceeded") ||
+      errorMessage.includes("exceeded") ||
+      errorMessage.includes("overloaded")
     ) {
       console.warn(
-        '⚠️ Workers AI free tier quota exceeded, falling back to bad-words',
+        "⚠️ Workers AI free tier quota exceeded, falling back to bad-words",
       );
     } else if (
-      errorMessage.includes('unavailable') ||
-      errorMessage.includes('timeout')
+      errorMessage.includes("unavailable") ||
+      errorMessage.includes("timeout")
     ) {
       console.warn(
-        '⚠️ Workers AI unavailable/timeout, falling back to bad-words',
+        "⚠️ Workers AI unavailable/timeout, falling back to bad-words",
       );
     } else {
-      console.warn(`⚠️ AI safety check failed: ${errorMessage}, using bad-words fallback`);
+      console.warn(
+        `⚠️ AI safety check failed: ${errorMessage}, using bad-words fallback`,
+      );
     }
 
     // Fallback to bad-words
@@ -169,23 +172,23 @@ export function fallbackToBadWords(text: string): SafetyCheckResult {
 
     return {
       safe: !hasProfanity,
-      classification: hasProfanity ? 'unsafe' : 'safe',
-      categories: hasProfanity ? ['profanity'] : [],
+      classification: hasProfanity ? "unsafe" : "safe",
+      categories: hasProfanity ? ["profanity"] : [],
       explanation: hasProfanity
-        ? 'Content contains inappropriate language'
-        : 'Content is appropriate for children',
+        ? "Content contains inappropriate language"
+        : "Content is appropriate for children",
       confidence: 0.75, // Lower confidence than AI
       usingAI: false,
       fallback: true,
     };
   } catch (error) {
-    console.error('Bad-words fallback failed:', error);
+    console.error("Bad-words fallback failed:", error);
     // Last resort: assume safe if everything fails
     return {
       safe: true,
-      classification: 'safe',
+      classification: "safe",
       categories: [],
-      explanation: 'Safety check unavailable, content allowed by default',
+      explanation: "Safety check unavailable, content allowed by default",
       confidence: 0.0,
       usingAI: false,
       fallback: true,
@@ -204,7 +207,7 @@ export function containsProfanity(text: string): boolean {
     const filter = new Filter();
     return filter.isProfane(text.toLowerCase());
   } catch (error) {
-    console.warn('Profanity check failed:', error);
+    console.warn("Profanity check failed:", error);
     return false;
   }
 }

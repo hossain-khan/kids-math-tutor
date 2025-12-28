@@ -9,7 +9,6 @@ import type { Context } from 'hono';
 import type { GradeLevel, ProblemSpec } from '@/lib/schemas/challenge-schema';
 import { ExplicitChallengeSpecSchema } from '@/lib/schemas/challenge-schema';
 import { checkContentSafetyWithAI } from '@/lib/server/aiSafety';
-import { validateWorksheetContent } from '@/lib/server/profanity';
 import { detectGrades } from '@/lib/server/grades';
 import {
   saveWorksheet,
@@ -31,6 +30,7 @@ import {
 interface Env {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   KV: any; // KVNamespace from Cloudflare Workers
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AI?: any; // Cloudflare Workers AI binding (optional)
   ADMIN_PASSWORD?: string; // Admin password from environment variables
 }
