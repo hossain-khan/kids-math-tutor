@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.18.0] - 2025-12-28
+
 ### Fixed
 - **Grade-Level Aware Operation Selector** - Operation selector UI now dynamically displays operations based on user's grade level
   - Kindergarten students see: Addition, Subtraction, Mix It Up
@@ -2001,7 +2003,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.17.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.18.0...HEAD
+[1.18.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.17.0...1.18.0
 [1.17.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.1...1.17.0
 [1.16.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.0...1.16.1
 [1.16.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.15.0...1.16.0
