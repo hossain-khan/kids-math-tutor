@@ -686,4 +686,50 @@ app.post('/api/v1/admin/check-safety', async (c) => {
   }
 });
 
+/**
+ * Validation endpoint for testing content safety
+ * Allows quick testing of different AI models without creating worksheets
+ * For development/testing purposes
+ */
+app.post('/api/v1/test/validate-content', async (c) => {
+  try {
+    const body = await c.req.json();
+    const { title, subtitle, model } = body as {
+      title?: string;
+      subtitle?: string;
+      model?: string;
+    };
+
+    if (!title || typeof title !== 'string') {
+      return c.json(
+        {
+          error: 'Title is required',
+        },
+        400,
+      );
+    }
+
+    // Check content safety with optional model parameter
+    const result = await checkContentSafetyWithAI(
+      c.env,
+      {
+        title,
+        subtitle: subtitle || undefined,
+      },
+      model,
+    );
+
+    return c.json(result);
+  } catch (error) {
+    console.error('Content validation error:', error);
+    return c.json(
+      {
+        error: 'Failed to validate content',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500,
+    );
+  }
+});
+
 export default app;

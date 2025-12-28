@@ -1,14 +1,15 @@
 # Content Safety with Cloudflare Workers AI
 
-This document explains how content safety is implemented in the Worksheet Generator using Cloudflare Workers AI (Llama Guard 3) with automatic fallback to pattern-based filtering.
+This document explains how content safety is implemented in the Worksheet Generator using Cloudflare Workers AI (Llama 3.1 8B) with automatic fallback to pattern-based filtering and a dedicated testing tool.
 
 ## Overview
 
 The app uses a **layered safety approach** to protect K-2 children from inappropriate content:
 
-1. **Primary**: AI-based content classification using Llama Guard 3 (8B model)
+1. **Primary**: AI-based content classification using Llama 3.1 8B (fast, reliable JSON responses)
 2. **Fallback**: Fast pattern-based profanity filtering using bad-words library
-3. **Result**: Age-appropriate content guaranteed with zero cost (within free tier)
+3. **Testing**: Dedicated Safety Content Validator tool for testing and iterating on safety rules
+4. **Result**: Age-appropriate content guaranteed with zero cost (within free tier)
 
 ## Free Tier Constraints
 
@@ -41,17 +42,41 @@ Is AI binding available?
            └─ Clean? → ACCEPT
 ```
 
-### Llama Guard 3 Classification
+### AI Model Configuration
 
-The model classifies content into safety categories:
+The app uses a configurable AI model system with Llama 3.1 8B as default:
 
-- **Profanity**: Curse words, slang, mild forms (stupid, dumb)
-- **Violence**: Fighting, harm, dangerous activities, weapons
-- **Sexual Content**: Sexual references, inappropriate discussions
-- **Hate Speech**: Derogatory terms based on characteristics
-- **Substance Abuse**: References to drugs, alcohol, smoking
-- **Scary/Disturbing**: Content that frightens young children
-- **Other Safety Concerns**: Anything harmful to K-2 children emotionally or physically
+```typescript
+export const AI_SAFETY_CONFIG = {
+  // Primary model: Llama 3.1 8B (fast, reliable JSON responses)
+  DEFAULT_MODEL: "@cf/meta/llama-3.1-8b-instruct-fast",
+  // Alternative models for testing
+  ALTERNATIVE_MODELS: [
+    "@cf/meta/llama-guard-3-8b",
+    "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "@cf/meta/llama-4-scout-17b-16e-instruct",
+  ],
+} as const;
+```
+
+### Content Safety Rules (14 Categories)
+
+The AI model strictly evaluates content against 14 safety categories for K-2 children:
+
+1. **Profanity & Curse Words**: "damn", "hell", "ass", "crap", "piss", "sucks", "butt"
+2. **Negative Sentiment**: "hate", "stupid", "dumb", "loser", "idiot", "worthless", "fail"
+3. **Bullying & Name-Calling**: "wimp", "nerd", "fat", "ugly", "mean", insults, mockery
+4. **Self-Harm & Mental Health**: "kill myself", "cut myself", "depressed", "suicidal"
+5. **Body-Shaming**: Comments about appearance, weight, looks, physical attributes
+6. **Death & Morbid**: "death", "dead", "kill", "murder", "die", "coffin"
+7. **Exclusionary Language**: "everyone except", "you don't belong", discrimination
+8. **Crude/Sexual Language**: Sexual references, reproductive terms used inappropriately
+9. **Violence & Weapons**: "hit", "punch", "gun", "knife", "shoot", weapons, fighting
+10. **Drugs & Alcohol**: References to drugs, alcohol, smoking, vaping
+11. **Gambling**: "bet", "gamble", "money bet", betting language
+12. **Adult Themes**: Romance, dating, flirting, mature relationships
+13. **Scary Content**: Horror, nightmares, monsters, ghosts, scary stories
+14. **Dismissive Language**: "too hard", "you can't do this", "give up" (discourages learning)
 
 **Example Response:**
 ```json
@@ -96,7 +121,8 @@ The module exports:
 // Main function - handles AI + fallback logic
 export async function checkContentSafetyWithAI(
   env: { AI?: unknown },
-  content: { title: string; subtitle?: string; description?: string }
+  content: { title: string; subtitle?: string; description?: string },
+  model: string = AI_SAFETY_CONFIG.DEFAULT_MODEL
 ): Promise<SafetyCheckResult>
 
 // Fallback function - uses bad-words library
@@ -110,6 +136,12 @@ export interface SafetyCheckResult {
   confidence: number
   usingAI: boolean
   fallback: boolean
+}
+
+// Configuration constant
+export const AI_SAFETY_CONFIG = {
+  DEFAULT_MODEL: "@cf/meta/llama-3.1-8b-instruct-fast",
+  ALTERNATIVE_MODELS: [/* ... */]
 }
 ```
 
@@ -136,6 +168,87 @@ if (!safetyResult.safe) {
   }, 400);
 }
 ```
+
+## Safety Content Validator Tool
+
+### Purpose
+
+Dedicated web page for testing and iterating on content safety rules without creating full worksheets. Enables rapid testing of different AI models and safety rules.
+
+### Location & Access
+
+- **URL**: `/test/validate-content`
+- **Access**: Available in development and production environments
+- **Authentication**: None required (testing tool)
+
+### Features
+
+**Input Section:**
+- **Title Input**: Main content to validate
+- **Subtitle Input**: Optional secondary content
+- **Model Selector Dropdown**: Choose from AI_SAFETY_CONFIG models:
+  - Default: Llama 3.1 8B (recommended)
+  - Llama Guard 3 8B (specialized safety model)
+  - Llama 3.3 70B (larger model)
+  - Llama 4 Scout 17B (scout model)
+
+**Validation Results:**
+- **Classification**: SAFE or UNSAFE status with color coding
+- **Categories**: List of detected safety violations
+- **Confidence**: Confidence score (0.95 for AI, 0.75 for fallback)
+- **Explanation**: Human-readable reason for rejection
+- **Model Used**: Indicates which model was used (AI or fallback)
+
+### API Endpoint
+
+Behind the scenes, the Safety Validator uses the API endpoint:
+
+```http
+POST /api/v1/test/validate-content
+```
+
+**Request:**
+```json
+{
+  "title": "Fun Addition Practice",
+  "subtitle": "Add two numbers",
+  "model": "@cf/meta/llama-3.1-8b-instruct-fast"
+}
+```
+
+**Response (Safe Content):**
+```json
+{
+  "safe": true,
+  "confidence": 0.95,
+  "usingAI": true
+}
+```
+
+**Response (Unsafe Content):**
+```json
+{
+  "safe": false,
+  "categories": [
+    "NEGATIVE_SENTIMENT",
+    "BODY_SHAMING",
+    "DEATH_MORBID"
+  ],
+  "explanation": "Content contains negative sentiment and demeaning language",
+  "confidence": 0.95,
+  "usingAI": true
+}
+```
+
+### Usage Example
+
+1. Navigate to `/test/validate-content`
+2. Enter test content in Title field (e.g., "I hate everyone i hate math")
+3. Optionally add Subtitle
+4. Select AI model from dropdown (or use default Llama 3.1 8B)
+5. Click "Validate Content" button
+6. View instant results with categorization and confidence
+7. Iterate on safety rules based on results
 
 ## Configuration
 

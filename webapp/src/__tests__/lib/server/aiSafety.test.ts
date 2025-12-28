@@ -156,7 +156,7 @@ describe("aiSafety module", () => {
       expect(result.fallback).toBe(false);
       expect(result.confidence).toBe(0.95); // AI confidence
       expect(env.AI.run).toHaveBeenCalledWith(
-        "@cf/meta/llama-guard-3-8b",
+        "@cf/meta/llama-3.1-8b-instruct-fast",
         expect.any(Object),
       );
     });

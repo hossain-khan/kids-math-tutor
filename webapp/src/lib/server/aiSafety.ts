@@ -1,5 +1,5 @@
 /**
- * Content safety using Cloudflare Workers AI (Llama Guard 3)
+ * Content safety using Cloudflare Workers AI (Llama 3.1 8B)
  * Provides intelligent content classification for educational worksheets
  *
  * FREE TIER ONLY: 10,000 Neurons per day (no cost)
@@ -7,6 +7,18 @@
  */
 
 import { Filter } from "bad-words";
+
+// AI Model configuration
+export const AI_SAFETY_CONFIG = {
+  // Llama 3.1 8B provides excellent JSON responses and safety classification
+  DEFAULT_MODEL: "@cf/meta/llama-3.1-8b-instruct-fast",
+  // Alternative models for testing (Llama Guard 3 is safety-specialized but slower)
+  ALTERNATIVE_MODELS: [
+    "@cf/meta/llama-guard-3-8b",
+    "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "@cf/meta/llama-4-scout-17b-16e-instruct",
+  ],
+} as const;
 
 export interface SafetyCheckResult {
   safe: boolean;
@@ -31,6 +43,7 @@ interface AIResponse {
  *
  * @param env - Cloudflare environment with optional AI binding
  * @param content - Worksheet content to check (title, subtitle, description)
+ * @param model - Optional AI model to use (defaults to Llama Guard 3)
  * @returns SafetyCheckResult with classification and confidence
  */
 export async function checkContentSafetyWithAI(
@@ -40,6 +53,7 @@ export async function checkContentSafetyWithAI(
     subtitle?: string;
     description?: string;
   },
+  model: string = AI_SAFETY_CONFIG.DEFAULT_MODEL,
 ): Promise<SafetyCheckResult> {
   const textToCheck = [
     content.title,
@@ -94,7 +108,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
       run: (model: string, options: unknown) => Promise<AIResponse | string>;
     };
 
-    const response = await aiInstance.run("@cf/meta/llama-guard-3-8b", {
+    const response = await aiInstance.run(model, {
       messages: [
         {
           role: "user",
@@ -159,7 +173,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
       classification: result.classification,
       categories: result.categories || [],
       explanation: result.explanation,
-      confidence: 0.95, // Llama Guard 3 is highly confident
+      confidence: 0.95, // Llama 3.1 8B provides consistent, reliable classifications
       usingAI: true,
       fallback: false,
     };
