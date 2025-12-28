@@ -72,6 +72,7 @@ import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
 
@@ -429,55 +430,70 @@ private fun ChallengeListItem(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                // Operation icon
-                val operationIcon = getMathOperationIcon(challenge)
-                Image(
-                    painter = painterResource(id = operationIcon),
-                    contentDescription = "Math operation type",
-                    modifier =
-                        Modifier
-                            .size(48.dp)
-                            .padding(end = 12.dp),
-                    contentScale = ContentScale.Fit,
-                )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            // Math operation watermark - right aligned
+            Text(
+                text = getMathOperationWatermarkChar(challenge),
+                style = MaterialTheme.typography.displayLarge.copy(fontFamily = watermarkFontFamily),
+                color =
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 8.dp),
+            )
 
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = challenge.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
+            // Main content
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Operation icon
+                    val operationIcon = getMathOperationIcon(challenge)
+                    Image(
+                        painter = painterResource(id = operationIcon),
+                        contentDescription = "Math operation type",
+                        modifier =
+                            Modifier
+                                .size(48.dp)
+                                .padding(end = 12.dp),
+                        contentScale = ContentScale.Fit,
                     )
 
-                    if (challenge.subtitle != null) {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = challenge.subtitle,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = challenge.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
+
+                        if (challenge.subtitle != null) {
+                            Text(
+                                text = challenge.subtitle,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
+
+                    DropdownMenuButton(
+                        challenge = challenge,
+                        onArchive = onArchiveClick,
+                        onClearSessions = onClearSessionsClick,
+                        onDelete = onDeleteClick,
+                    )
                 }
 
-                DropdownMenuButton(
-                    challenge = challenge,
-                    onArchive = onArchiveClick,
-                    onClearSessions = onClearSessionsClick,
-                    onDelete = onDeleteClick,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ChallengeStatsRow(challenge = challenge)
-
-            if (challenge.practiceHistory.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
-                PracticeHistorySection(challenge = challenge)
+
+                ChallengeStatsRow(challenge = challenge)
+
+                if (challenge.practiceHistory.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PracticeHistorySection(challenge = challenge)
+                }
             }
         }
     }
@@ -829,6 +845,37 @@ private fun getMathOperationIcon(challenge: CustomChallenge): Int {
 
         else -> {
             R.drawable.pup_tutor_sticker_operation_mixed
+        }
+    }
+}
+
+/**
+ * Gets the math operation watermark character for a challenge.
+ * Returns the appropriate math operation symbol (+, −, ×, ÷) based on challenge problems.
+ * If challenge has mixed operations, returns ± symbol.
+ *
+ * @param challenge The CustomChallenge to determine the watermark character for
+ * @return The math operation character: +, −, ×, ÷, or ±
+ */
+private fun getMathOperationWatermarkChar(challenge: CustomChallenge): String {
+    if (challenge.problems.isEmpty()) return "±"
+
+    // Check if all problems have the same operation (single operation challenge)
+    val operations = challenge.problems.map { it.operation }.distinct()
+
+    return when {
+        operations.size == 1 -> {
+            when (operations.first()) {
+                MathOperation.ADDITION -> "+"
+                MathOperation.SUBTRACTION -> "−"
+                MathOperation.MULTIPLICATION -> "×"
+                MathOperation.DIVISION -> "÷"
+                MathOperation.MIXED -> "±"
+            }
+        }
+
+        else -> {
+            "±" // Mixed operations
         }
     }
 }

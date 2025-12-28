@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Math Operation Watermarks for Challenge List** - Added visual watermarks to parent challenges list items
+  - Right-aligned, semi-transparent math operation symbols (+, −, ×, ÷) or ± for mixed operations
+  - Dynamically determined based on challenge problems: shows operation if all problems are same type, otherwise shows ±
+  - Styled with Google Font "Barrio" for consistent playful aesthetic
+  - Automatically adapts to theme: black text 12% opacity (light mode), white text 12% opacity (dark mode)
+  - Uses displayLarge typography for prominent visual impact
+  - Helps parents quickly identify challenge types at a glance
+  - Reduces visual clutter by using subtle watermark instead of additional icons
 - **Enhanced Recent Sessions Display** - Improved stats screen list items with better visual hierarchy and information density
   - Duration display showing how long each practice session took (e.g., "2m 30s", "45s", "1h 5m")
   - Grade level badges displaying the difficulty level practiced (K, 1st, 2nd)
