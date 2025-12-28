@@ -5,6 +5,7 @@ import Card from "@/components/Card";
 import StarRating from "@/components/StarRating";
 import { generateDeeplink, isLikelyAndroidDevice } from "@/lib/deeplink";
 import { getOrCreateSessionId } from "@/lib/sessionId";
+import { copyToClipboard, downloadJson } from "@/lib/utils";
 import type { GradeLevel } from "@/lib/schemas/challenge-schema";
 
 interface SharedWorksheet {
@@ -79,6 +80,8 @@ export default function SharedWorksheets() {
   const [usingWorksheet, setUsingWorksheet] = useState(false);
   const [sessionId, setSessionId] = useState("");
   const [showAllProblems, setShowAllProblems] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedJson, setCopiedJson] = useState(false);
   // Initialize session ID and Android check
   useEffect(() => {
     setIsAndroid(isLikelyAndroidDevice());
@@ -217,6 +220,68 @@ export default function SharedWorksheets() {
       console.error("Failed to use worksheet:", err);
     } finally {
       setUsingWorksheet(false);
+    }
+  };
+
+  const handleCopyLink = async () => {
+    if (!id) return;
+    const shareUrl = `${window.location.origin}/worksheets/${id}`;
+    const success = await copyToClipboard(shareUrl);
+    if (success) {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
+
+  const handleCopyJson = async () => {
+    if (!worksheet) return;
+    const json = JSON.stringify(
+      {
+        type: worksheet.type,
+        title: worksheet.title,
+        subtitle: worksheet.subtitle,
+        description: worksheet.description,
+        problems: worksheet.problems,
+      },
+      null,
+      2,
+    );
+    const success = await copyToClipboard(json);
+    if (success) {
+      setCopiedJson(true);
+      setTimeout(() => setCopiedJson(false), 2000);
+    }
+  };
+
+  const handleDownloadJson = () => {
+    if (!worksheet) return;
+    const data = {
+      type: worksheet.type,
+      title: worksheet.title,
+      subtitle: worksheet.subtitle,
+      description: worksheet.description,
+      problems: worksheet.problems,
+    };
+    downloadJson(
+      data,
+      `${worksheet.title.toLowerCase().replace(/\s+/g, "-")}-worksheet.json`,
+    );
+  };
+
+  const handleShareToSocial = (platform: "twitter" | "facebook") => {
+    if (!id) return;
+    const shareUrl = `${window.location.origin}/worksheets/${id}`;
+    const text = `Check out this math worksheet: "${worksheet?.title}" - perfect for K-2 students!`;
+
+    let url = "";
+    if (platform === "twitter") {
+      url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+    } else if (platform === "facebook") {
+      url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    }
+
+    if (url) {
+      window.open(url, "_blank", "width=600,height=400");
     }
   };
 
@@ -379,7 +444,8 @@ export default function SharedWorksheets() {
             <h3 className="font-display font-bold text-lg mb-4">
               Preview{" "}
               <span className="font-display font-normal text-base text-gray-600">
-                (showing first 3 out of {problemCount} problems)
+                (showing {Math.min(3, problemCount)} out of {problemCount}{" "}
+                {problemCount === 1 ? "problem" : "problems"})
               </span>
             </h3>
             <div className="space-y-3">
@@ -402,6 +468,62 @@ export default function SharedWorksheets() {
                   View All {problemCount} Problems
                 </button>
               )}
+            </div>
+          </Card>
+
+          {/* Share & Copy Options */}
+          <Card className="mb-6 p-6 bg-gray-50 border-gray-200">
+            <h3 className="font-display font-bold text-lg mb-4">
+              Share & Copy
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+                title="Copy shareable link to clipboard"
+              >
+                <span>{copiedLink ? "✓" : "🔗"}</span>
+                {copiedLink ? "Copied!" : "Copy Link"}
+              </button>
+              <button
+                onClick={handleCopyJson}
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+                title="Copy worksheet JSON to clipboard"
+              >
+                <span>{copiedJson ? "✓" : "📋"}</span>
+                {copiedJson ? "Copied!" : "Copy JSON"}
+              </button>
+              <button
+                onClick={handleDownloadJson}
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+                title="Download worksheet as JSON file"
+              >
+                <span>⬇️</span>
+                Download
+              </button>
+              <div className="relative group">
+                <button
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+                  title="Share to social media"
+                >
+                  <span>📱</span>
+                  Share
+                </button>
+                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                  <button
+                    onClick={() => handleShareToSocial("twitter")}
+                    className="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm font-medium border-b border-gray-200"
+                  >
+                    Twitter/X
+                  </button>
+                  <button
+                    onClick={() => handleShareToSocial("facebook")}
+                    className="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm font-medium"
+                  >
+                    Facebook
+                  </button>
+                </div>
+              </div>
             </div>
           </Card>
 
