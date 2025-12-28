@@ -162,7 +162,7 @@ export default function Home() {
             Discover worksheets created by parents and teachers in our community
           </p>
           <div className="text-center">
-            <Link 
+            <Link
               to="/worksheets"
               className="inline-block bg-secondary-600 hover:bg-secondary-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
             >

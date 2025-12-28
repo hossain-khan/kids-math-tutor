@@ -377,7 +377,7 @@ export default function SharedWorksheets() {
           {/* Preview Problems */}
           <Card className="mb-6 p-6">
             <h3 className="font-display font-bold text-lg mb-4">
-              Preview{' '}
+              Preview{" "}
               <span className="font-display font-normal text-base text-gray-600">
                 (showing first 3 out of {problemCount} problems)
               </span>
@@ -489,10 +489,15 @@ export default function SharedWorksheets() {
                         </span>
                       </div>
                       <div className="text-lg md:text-xl font-mono font-bold text-gray-900 mt-2">
-                        {problem.operand1} {getOperationSymbol(problem.operation)}{" "}
+                        {problem.operand1}{" "}
+                        {getOperationSymbol(problem.operation)}{" "}
                         {problem.operand2} ={" "}
                         <span className="text-green-600">
-                          {calculateAnswer(problem.operand1, problem.operand2, problem.operation)}
+                          {calculateAnswer(
+                            problem.operand1,
+                            problem.operand2,
+                            problem.operation,
+                          )}
                         </span>
                       </div>
                     </div>
@@ -794,7 +799,11 @@ function getOperationSymbol(operation: string): string {
   }
 }
 
-function calculateAnswer(operand1: number, operand2: number, operation: string): number | string {
+function calculateAnswer(
+  operand1: number,
+  operand2: number,
+  operation: string,
+): number | string {
   switch (operation) {
     case "addition":
       return operand1 + operand2;
@@ -802,10 +811,11 @@ function calculateAnswer(operand1: number, operand2: number, operation: string):
       return operand1 - operand2;
     case "multiplication":
       return operand1 * operand2;
-    case "division":
+    case "division": {
       // Return with 2 decimal places if not a whole number, otherwise whole number
       const result = operand1 / operand2;
       return Number.isInteger(result) ? result : result.toFixed(2);
+    }
     default:
       return "?";
   }
