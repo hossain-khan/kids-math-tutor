@@ -7,22 +7,27 @@ https://math-worksheet.gohk.xyz/manage-worksheets
 
 ### Set Your Admin Password
 
-**Development (in `wrangler.json`):**
+**Development:**
 ```json
 "env": {
   "development": {
     "vars": {
-      "ADMIN_PASSWORD": "your_password"
+      "ADMIN_PASSWORD": "dev_password"
     }
   }
 }
 ```
 
-**Production (using Cloudflare secrets):**
+**Production (Cloudflare Secrets - REQUIRED):**
 ```bash
-wrangler secret put ADMIN_PASSWORD
-# Enter your password when prompted
+wrangler secret put ADMIN_PASSWORD --env production
+# Enter your secure password when prompted
+
+# Verify it was set:
+wrangler secret list --env production
 ```
+
+⚠️ **Important:** Production passwords MUST use Cloudflare Secrets, not `wrangler.json`
 
 ### What You Can Do
 

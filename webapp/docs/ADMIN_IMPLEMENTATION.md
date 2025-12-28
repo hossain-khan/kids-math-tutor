@@ -129,8 +129,11 @@ All endpoints validate Bearer token before allowing access.
 
 ### 2. Production
 ```bash
-# Set password as Cloudflare secret
-wrangler secret put ADMIN_PASSWORD
+# Set password as Cloudflare secret (REQUIRED for production)
+wrangler secret put ADMIN_PASSWORD --env production
+
+# Verify secret is set
+wrangler secret list --env production
 
 # Deploy
 wrangler deploy --env production
@@ -138,6 +141,8 @@ wrangler deploy --env production
 # Access:
 # https://math-worksheet.gohk.xyz/manage-worksheets
 ```
+
+**Security Note:** The production environment in `wrangler.json` does not contain password vars. Passwords are securely stored as Cloudflare Secrets and never exposed in configuration files.
 
 ## File Structure
 

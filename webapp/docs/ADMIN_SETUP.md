@@ -28,64 +28,52 @@ The portal is protected with password authentication that works seamlessly with 
 
 ## Setup Instructions
 
-### 1. Set the Admin Password
+### 1. Development Setup
 
-Edit `webapp/wrangler.json` and update the admin password:
+Edit `webapp/wrangler.json` and set the admin password for development:
 
-**For Development:**
 ```json
 {
   "env": {
     "development": {
       "vars": {
-        "ADMIN_PASSWORD": "your_secure_password_here"
+        "ADMIN_PASSWORD": "your_development_password"
       }
     }
   }
 }
 ```
 
-**For Production:**
-```json
-{
-  "env": {
-    "production": {
-      "vars": {
-        "ADMIN_PASSWORD": "your_very_secure_password_here"
-      }
-    }
-  }
-}
+Then run:
+```bash
+cd webapp
+pnpm dev
+# Visit http://localhost:5173/manage-worksheets
 ```
 
-**Important:**
-- Use a strong, unique password
-- Never commit the actual password to version control
-- In production, use a secrets manager instead (see below)
+**Note:** Keep development passwords simple for testing. Do not commit actual passwords to version control.
 
-### 2. Using Environment Variables in Cloudflare
+### 2. Production Setup
 
-For production deployments, use Cloudflare's environment variables instead of hardcoding:
+For production, **you MUST use Cloudflare Secrets** to securely store the password:
 
 ```bash
 # Set the admin password as a secret on Cloudflare
-wrangler secret put ADMIN_PASSWORD
+wrangler secret put ADMIN_PASSWORD --env production
 
-# When prompted, enter your secure password
+# When prompted, enter your secure production password
 ```
 
-Then update `wrangler.json` to reference it:
-
-```json
-{
-  "env": {
-    "production": {
-      "vars": {}
-      // ADMIN_PASSWORD will come from secrets
-    }
-  }
-}
+You can verify the secret was set:
+```bash
+wrangler secret list --env production
 ```
+
+**Important Security Notes:**
+- 🔐 **Never store the production password in `wrangler.json`**
+- ✅ Use Cloudflare Secrets for all sensitive credentials
+- 📝 The `production` environment in `wrangler.json` has NO `vars` for `ADMIN_PASSWORD`
+- 🔄 The application automatically uses secrets when available, with fallback to vars for development
 
 Deploy with:
 ```bash
