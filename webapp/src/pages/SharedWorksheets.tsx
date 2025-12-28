@@ -35,6 +35,7 @@ interface WorksheetListItem {
   subtitle?: string;
   grades: GradeLevel[];
   problemCount: number;
+  singleOperation?: string;
   createdAt: string;
   stats: {
     views: number;
@@ -800,78 +801,98 @@ export default function SharedWorksheets() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {worksheets.map((ws) => (
-                <div key={ws.id}>
-                  <Link to={`/worksheets/${ws.id}`}>
-                    <Card className="p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer">
-                      <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
-                        {ws.title}
-                      </h3>
+              {worksheets.map((ws) => {
+                const operationColor = ws.singleOperation
+                  ? getOperationColor(ws.singleOperation)
+                  : null;
+                return (
+                  <div key={ws.id}>
+                    <Link to={`/worksheets/${ws.id}`}>
+                      <Card
+                        className={`p-4 h-full hover:shadow-lg transition-shadow hover:border-blue-300 cursor-pointer relative overflow-hidden ${
+                          operationColor
+                            ? `border-2 ${operationColor.border}`
+                            : ""
+                        }`}
+                      >
+                        {operationColor && (
+                          <div className="absolute inset-0 opacity-10 pointer-events-none">
+                            <div
+                              className={`text-9xl font-bold ${operationColor.text} absolute -top-10 -right-10`}
+                            >
+                              {operationColor.symbol}
+                            </div>
+                          </div>
+                        )}
+                        <div className="relative z-10">
+                          <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                            {ws.title}
+                          </h3>
 
-                      {ws.subtitle && (
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                          {ws.subtitle}
-                        </p>
-                      )}
+                          {ws.subtitle && (
+                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                              {ws.subtitle}
+                            </p>
+                          )}
 
-                      <div className="space-y-2 mb-4 text-sm text-gray-700">
-                        <div className="flex items-center gap-2">
-                          <span>📝</span>
-                          <span>{ws.problemCount} problems</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span>🎓</span>
-                          <span>
-                            {ws.grades.map((g) => gradeLabels[g]).join(", ")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-500">
-                          <span>👁️</span>
-                          <span>{ws.stats.views} views</span>
-                        </div>
-                        <div className="mt-2">
-                          <StarRating
-                            rating={ws.stats.averageRating}
-                            count={ws.stats.ratingCount}
-                            onRate={async (stars) => {
-                              // Submit rating and update local state
-                              try {
-                                const res = await fetch(
-                                  `/api/v1/worksheets/${ws.id}/rate`,
-                                  {
-                                    method: "POST",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                      rating: stars,
-                                      sessionId,
-                                    }),
-                                  },
-                                );
-                                if (res.ok) {
-                                  const data = await res.json();
-                                  setWorksheets((prev) =>
-                                    prev.map((p) =>
-                                      p.id === ws.id
-                                        ? {
-                                            ...p,
-                                            stats: {
-                                              ...p.stats,
-                                              averageRating:
-                                                data.stats.averageRating,
-                                              ratingCount:
-                                                data.stats.ratingCount,
-                                            },
-                                          }
-                                        : p,
-                                    ),
-                                  );
-                                  // If viewing detail, update worksheet state too
-                                  if (worksheet && worksheet.id === ws.id) {
-                                    setWorksheet((prev) =>
-                                      prev
-                                        ? {
+                          <div className="space-y-2 mb-4 text-sm text-gray-700">
+                            <div className="flex items-center gap-2">
+                              <span>📝</span>
+                              <span>{ws.problemCount} problems</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span>🎓</span>
+                              <span>
+                                {ws.grades.map((g) => gradeLabels[g]).join(", ")}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-500">
+                              <span>👁️</span>
+                              <span>{ws.stats.views} views</span>
+                            </div>
+                            <div className="mt-2">
+                              <StarRating
+                                rating={ws.stats.averageRating}
+                                count={ws.stats.ratingCount}
+                                onRate={async (stars) => {
+                                  // Submit rating and update local state
+                                  try {
+                                    const res = await fetch(
+                                      `/api/v1/worksheets/${ws.id}/rate`,
+                                      {
+                                        method: "POST",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                          rating: stars,
+                                          sessionId,
+                                        }),
+                                      },
+                                    );
+                                    if (res.ok) {
+                                      const data = await res.json();
+                                      setWorksheets((prev) =>
+                                        prev.map((p) =>
+                                          p.id === ws.id
+                                            ? {
+                                                ...p,
+                                                stats: {
+                                                  ...p.stats,
+                                                  averageRating:
+                                                    data.stats.averageRating,
+                                                  ratingCount:
+                                                    data.stats.ratingCount,
+                                                },
+                                              }
+                                            : p,
+                                        ),
+                                      );
+                                      // If viewing detail, update worksheet state too
+                                      if (worksheet && worksheet.id === ws.id) {
+                                        setWorksheet((prev) =>
+                                          prev
+                                            ? {
                                             ...prev,
                                             stats: {
                                               ...prev.stats,
@@ -900,10 +921,12 @@ export default function SharedWorksheets() {
                       <div className="text-xs text-gray-500">
                         {new Date(ws.createdAt).toLocaleDateString()}
                       </div>
-                    </Card>
-                  </Link>
-                </div>
-              ))}
+                        </div>
+                      </Card>
+                      </Link>
+                    </div>
+                  );
+                })}
             </div>
 
             {/* Load More */}

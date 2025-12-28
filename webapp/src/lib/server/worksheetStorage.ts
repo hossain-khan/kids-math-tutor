@@ -27,6 +27,7 @@ export interface WorksheetListItem {
   subtitle?: string;
   grades: GradeLevel[];
   problemCount: number;
+  singleOperation?: string; // If all problems share the same operation
   createdAt: string;
   stats: {
     views: number;
@@ -49,6 +50,19 @@ export interface KVContext {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     KV: any; // KVNamespace from @cloudflare/workers-types
   };
+}
+
+/**
+ * Determine if all problems in a worksheet share the same operation
+ * Returns the operation type if all are the same, otherwise returns undefined
+ */
+function getSingleOperationType(problems: ProblemSpec[]): string | undefined {
+  if (problems.length === 0) return undefined;
+
+  const firstOperation = problems[0].operation;
+  const allSame = problems.every((p) => p.operation === firstOperation);
+
+  return allSame ? firstOperation : undefined;
 }
 
 /**
@@ -124,6 +138,7 @@ export async function listWorksheets(
           subtitle: worksheet.subtitle,
           grades: worksheet.grades,
           problemCount: worksheet.problems.length,
+          singleOperation: getSingleOperationType(worksheet.problems),
           createdAt: worksheet.createdAt,
           stats: worksheet.stats,
         });
@@ -262,6 +277,7 @@ export async function searchWorksheets(
           subtitle: worksheet.subtitle,
           grades: worksheet.grades,
           problemCount: worksheet.problems.length,
+          singleOperation: getSingleOperationType(worksheet.problems),
           createdAt: worksheet.createdAt,
           stats: worksheet.stats,
         });
