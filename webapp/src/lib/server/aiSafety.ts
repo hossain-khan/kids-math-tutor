@@ -108,7 +108,18 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
     // Parse response - handle various formats
     let result;
     if (typeof response === "string") {
-      result = JSON.parse(response);
+      // Try parsing as JSON first
+      try {
+        result = JSON.parse(response);
+      } catch {
+        // If not JSON, treat as plain text response (e.g., just "safe" or "unsafe")
+        const text = response.trim().toLowerCase();
+        result = {
+          classification: text.includes("safe") ? "safe" : "unsafe",
+          categories: text.includes("unsafe") ? ["unknown"] : [],
+          explanation: text,
+        };
+      }
     } else if (response && typeof response === "object") {
       // Extract text from response object
       const text =
@@ -116,7 +127,19 @@ Respond ONLY with valid JSON (no markdown, no code blocks):
         (response as AIResponse).result ||
         (response as AIResponse).message ||
         JSON.stringify(response);
-      result = JSON.parse(text);
+
+      // Try parsing as JSON first
+      try {
+        result = JSON.parse(text);
+      } catch {
+        // If not JSON, treat as plain text response
+        const cleanText = text.trim().toLowerCase();
+        result = {
+          classification: cleanText.includes("safe") ? "safe" : "unsafe",
+          categories: cleanText.includes("unsafe") ? ["unknown"] : [],
+          explanation: cleanText,
+        };
+      }
     } else {
       result = response;
     }
