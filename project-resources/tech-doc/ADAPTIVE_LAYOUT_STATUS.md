@@ -10,10 +10,21 @@ This document tracks the implementation status of adaptive layouts for all 21 sc
 
 **Current State**:
 - ✅ **Foundation Complete** (Phase 1): Window size utilities, device posture detection, and adaptive layout types implemented
-- ✅ **Navigation Infrastructure Complete** (Phases 2-3): `AdaptiveNavigationWrapper` handles bottom nav/rail/drawer switching, and utilities for responsive layouts are in place
-- ❌ **Screen Content Adaptation Pending** (Phases 4-13): Individual screens still need to adapt their content layouts for tablets and landscape
+- ✅ **Navigation Infrastructure Complete** (Phases 2-3): `AdaptiveNavigationWrapper` handles bottom nav/rail/drawer switching for all 21 screens
+- 🟨 **Partial Screen Adaptation In Progress**: 7 screens have started adaptive work (MAX_CONTENT_WIDTH centering, landscape support)
+- ❌ **Screen Content Adaptation Incomplete**: Remaining 14 screens + full completion of 7 in-progress screens needed
 
-The app currently displays **phone layouts on tablets** – the navigation properly adapts, but content doesn't use the extra space. Phases 4-13 involve making each screen's content responsive.
+**What's Working**:
+- Navigation properly adapts (bottom nav on phones, rail on tablets, drawer on large tablets)
+- 7 screens have basic MAX_CONTENT_WIDTH centering for tablets
+- MathPracticeScreen has landscape side-by-side layout
+- Tablet preview functions available for testing
+
+**What's Still Needed**:
+- Responsive grids on HomeScreen, StatsScreen, BadgesScreen, GameSelectionScreen (1 col → 2-3 cols)
+- Full dual-pane layouts (not yet implemented anywhere)
+- Landscape optimizations for games and onboarding
+- ParentSettingsScreen and other new screens need tablet layouts
 
 ### Status Legend
 
@@ -29,10 +40,10 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 ## Implementation Roadmap Summary
 
 **Total Screens**: 21  
-**Phones Only (Current)**: 21/21 (screens adapted, content not)  
-**Tablet-Ready Navigation**: 21/21 ✅  
-**Tablet-Ready Content**: 0/21 ❌  
-**Fully Adaptive**: 0/21
+**Navigation Fully Adaptive**: 21/21 ✅  
+**Content with Adaptive Work Started**: 7/21 🟨  
+**Content Fully Adaptive**: 0/21 ❌  
+**No Adaptive Work Yet**: 14/21 ⬜
 
 **Completed Work** (Phases 1-3): ~6-8 hours ✅
 - ✅ Material 3 Adaptive dependencies added
@@ -41,7 +52,16 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 - ✅ Device posture detection for foldables
 - ✅ Navigation type detection (compact/medium/expanded)
 
-**Remaining Work** (Phases 4-13): ~30-41 hours  
+**In Progress** (Partial Screen Work): ~8-10 hours of work started
+- 🟨 HomeScreen: MAX_CONTENT_WIDTH centering implemented
+- 🟨 MathPracticeScreen: Landscape side-by-side + MAX_CONTENT_WIDTH
+- 🟨 StatsScreen: MAX_CONTENT_WIDTH centering
+- 🟨 BadgesScreen: MAX_CONTENT_WIDTH centering  
+- 🟨 GameSelectionScreen: MAX_CONTENT_WIDTH centering
+- 🟨 SettingsScreen: MAX_CONTENT_WIDTH centering
+- 🟨 ResultsScreen: MAX_CONTENT_WIDTH centering
+
+**Remaining Work** (Phases 4-13 completion + new screens): ~20-33 hours  
 **Prerequisites**:
 - ✅ Add Material 3 Adaptive dependencies (Phase 1) - DONE
 - ✅ Create adaptive navigation wrapper (Phase 2) - DONE
@@ -67,10 +87,10 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
-| 4 | `HomeScreen` | ⬜ Not Started | **HIGH PRIORITY** - Should show stats/badges side-by-side on tablets | Phase 4 |
+| 4 | `HomeScreen` | 🟨 In Progress | MAX_CONTENT_WIDTH centering implemented, needs responsive grid for cards | Phase 4 |
 | 5 | `OperationSelectorScreen` | ⬜ Not Started | Simple grid, good candidate for early implementation | Phase 2-3 |
 
-**Gaps**: No multi-column layouts for action cards, no responsive grid
+**Gaps**: Needs responsive card grid (1 col → 2-3 cols)
 
 ---
 
@@ -78,10 +98,10 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
-| 6 | `MathPracticeScreen` | ⬜ Not Started | **HIGH PRIORITY** - Should enable dual-pane (problem + history) on tablets | Phase 5 |
-| 7 | `ResultsScreen` | ⬜ Not Started | Could show results + problem review side-by-side on tablets | Phase 11 |
+| 6 | `MathPracticeScreen` | 🟨 In Progress | Landscape side-by-side layout + MAX_CONTENT_WIDTH centering implemented | Phase 5 |
+| 7 | `ResultsScreen` | 🟨 In Progress | MAX_CONTENT_WIDTH centering implemented, needs dual-pane enhancement | Phase 11 |
 
-**Gaps**: No dual-pane layout, no landscape optimizations, NumberPad not tablet-sized
+**Gaps**: ResultsScreen needs full dual-pane (results + problem review side-by-side)
 
 ---
 
@@ -89,11 +109,11 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
-| 8 | `StatsScreen` | ⬜ Not Started | Needs responsive grid for stats cards (1 col → 2-3 cols) | Phase 6 |
+| 8 | `StatsScreen` | 🟨 In Progress | MAX_CONTENT_WIDTH centering implemented, needs responsive card grid | Phase 6 |
 | 9 | `AccuracyDetailsScreen` | ⬜ Not Started | Child of StatsScreen, inherits layout needs | Phase 6 |
-| 10 | `BadgesScreen` | ⬜ Not Started | Grid needs adaptive columns (3 → 4-5 → 6+ per row) | Phase 7 |
+| 10 | `BadgesScreen` | 🟨 In Progress | MAX_CONTENT_WIDTH centering implemented, needs responsive column grid | Phase 7 |
 
-**Gaps**: No responsive grids, no list+detail layouts for badge inspector
+**Gaps**: Responsive grids not fully implemented, no list+detail for badge inspector
 
 ---
 
@@ -101,11 +121,11 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
-| 11 | `SettingsScreen` | ⬜ Not Started | Simple list, but should have max-width on tablets | Phase 9 |
+| 11 | `SettingsScreen` | 🟨 In Progress | MAX_CONTENT_WIDTH centering implemented, done for Phase 9 | Phase 9 |
 | 12 | `AudioHapticSettingsScreen` | ⬜ Not Started | Child of SettingsScreen, could be dual-pane on expanded | Phase 9 |
 | 13 | `ParentSettingsScreen` | ⬜ Not Started | **NEW in v1.19.0** - Dialog-heavy, needs tablet optimization | Phase 9 |
 
-**Gaps**: No max-width content, no dual-pane settings layout
+**Gaps**: Dual-pane settings layout not implemented
 
 ---
 
@@ -113,12 +133,12 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
-| 14 | `GameSelectionScreen` | ⬜ Not Started | Game cards should display multiple per row on tablets | Phase 8 |
-| 15 | `MathRaceScreen` | ⬜ Not Started | Game content should center better on larger screens | Phase 8 |
-| 16 | `NumberSequenceScreen` | ⬜ Not Started | Game content should center better on larger screens | Phase 8 |
-| 17 | `MemoryMatchScreen` | ⬜ Not Started | Game grid could expand to fill more space on tablets | Phase 8 |
+| 14 | `GameSelectionScreen` | 🟨 In Progress | MAX_CONTENT_WIDTH centering implemented, needs responsive card grid | Phase 8 |
+| 15 | `MathRaceScreen` | ⬜ Not Started | Game content needs landscape optimization | Phase 8 |
+| 16 | `NumberSequenceScreen` | ⬜ Not Started | Game content needs landscape optimization | Phase 8 |
+| 17 | `MemoryMatchScreen` | ⬜ Not Started | Game grid needs to expand for tablets | Phase 8 |
 
-**Gaps**: No responsive game grids, no landscape optimizations for games
+**Gaps**: Responsive game card grids, landscape game optimizations not done
 
 ---
 
@@ -146,32 +166,30 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 
 ## Priority Implementation Order
 
-### Tier 1 - High Priority (Foundation + Most Impactful)
-1. **Phase 1**: Add dependencies and window size utilities
-2. **Phase 2-3**: Navigation wrapper + app shell (affects all screens)
-3. **Phase 4**: HomeScreen (main app hub)
-4. **Phase 5**: MathPracticeScreen (core learning experience)
+### Tier 1 - High Priority (Finish In-Progress Content)
+1. **HomeScreen** (Phase 4 continuation) - Complete responsive grids/cards (beyond MAX_CONTENT_WIDTH centering)
+2. **MathPracticeScreen** (Phase 5 continuation) - Expand tablet layout beyond current landscape split (e.g., richer tablet UX)
+3. **StatsScreen** (Phase 6 continuation) - Add responsive stat card grids (1 → 2-3 cols) beyond centering
+4. **BadgesScreen** (Phase 7 continuation) - Implement responsive badge grid columns (3 → 4-5 → 6+)
 
-**Expected Impact**: 70% of user experience improvement  
-**Estimated Effort**: ~12-14 hours
+**Why first**: These screens already have partial adaptive work and are heavily used.
 
-### Tier 2 - Medium Priority (Enhanced Experience)
-5. **Phase 6**: StatsScreen
-6. **Phase 7**: BadgesScreen
-7. **Phase 8**: GameSelectionScreen + Game screens
-8. **Phase 9**: SettingsScreen + ParentSettingsScreen
+### Tier 2 - Medium Priority (Complete Remaining Core Screens)
+5. **GameSelectionScreen** (Phase 8 continuation) - Responsive grid for game cards (beyond centering)
+6. **Settings + Audio/Haptic** (Phase 9) - Dual-pane settings on expanded + tablet spacing
+7. **ResultsScreen** (Phase 11 continuation) - Dual-pane results + review layout (beyond centering)
 
-**Expected Impact**: Better content discovery and settings management  
-**Estimated Effort**: ~10-15 hours
+### Tier 3 - Medium-Low Priority (Cover Remaining Screens)
+8. **OperationSelectorScreen** - Responsive grid layout
+9. **AccuracyDetailsScreen** - Responsive layout consistent with Stats
+10. **Games** (MathRaceScreen, NumberSequenceScreen, MemoryMatchScreen) - Landscape/tablet optimizations
+11. **Custom Challenges** (ImportChallengeScreen, ParentChallengesScreen) - Responsive lists / max-width / grids
+12. **ParentSettingsScreen** - Tablet-friendly layout for dialogs and content density
 
-### Tier 3 - Lower Priority (Nice to Have)
-9. **Phase 10**: OnboardingScreen
-10. **Phase 11**: ResultsScreen
-11. **Phase 12**: Foldable device support
-12. **Phase 13**: Testing & Polish + Documentation
-
-**Expected Impact**: Edge cases and accessibility  
-**Estimated Effort**: ~12-20 hours
+### Tier 4 - Lower Priority (Polish & Edge Cases)
+13. **Foldable posture support** (Phase 12) - Use `DevicePosture` (book/separating) to avoid hinge overlap
+14. **Debug screens** (DeveloperPortalScreen, ColorPaletteViewerScreen) - Optional tablet tuning
+15. **Testing & documentation** (Phase 13) - Tablet previews, emulator coverage, docs updates
 
 ---
 
@@ -207,7 +225,7 @@ The app currently displays **phone layouts on tablets** – the navigation prope
 
 ### Navigation Layer - DONE ✅
 
-The **navigation infrastructure is fully adaptive** and working:
+The **navigation infrastructure is fully adaptive** and working on all 21 screens:
 
 ```
 Compact (< 600dp)        Medium (600-840dp)      Expanded (> 840dp)
@@ -228,20 +246,42 @@ Compact (< 600dp)        Medium (600-840dp)      Expanded (> 840dp)
 - `WindowStateUtils.kt` - Device posture detection for foldables (BookPosture, Separating, NormalPosture)
 - `AdaptiveLayoutTypes.kt` - Enums for NavigationType, ContentType, NavigationContentPosition
 
-### Screen Content - PENDING ❌
+### Screen Content - PARTIAL ✅/❌
 
-Each screen still displays **phone layouts** even on tablets:
+**7 Screens with Partial Adaptive Work** (MAX_CONTENT_WIDTH centering):
+1. ✅ **HomeScreen** - MAX_CONTENT_WIDTH (840dp) with centered content
+2. ✅ **MathPracticeScreen** - MAX_CONTENT_WIDTH + landscape side-by-side layout
+3. ✅ **StatsScreen** - MAX_CONTENT_WIDTH with centered content
+4. ✅ **BadgesScreen** - MAX_CONTENT_WIDTH with centered content
+5. ✅ **GameSelectionScreen** - MAX_CONTENT_WIDTH with centered content
+6. ✅ **SettingsScreen** - MAX_CONTENT_WIDTH with centered content
+7. ✅ **ResultsScreen** - MAX_CONTENT_WIDTH with centered content
 
+**What These 7 Screens Still Need**:
+- Responsive grids (1 col → 2-3 cols on tablets)
+- Full dual-pane layouts for detail views
+- Landscape optimization for games
+- Tablet-specific component sizing
+
+**14 Screens with No Adaptive Work**:
+- OnboardingScreen, GradeSelectionScreen, NameEntryScreen
+- OperationSelectorScreen, AccuracyDetailsScreen
+- MathRaceScreen, NumberSequenceScreen, MemoryMatchScreen
+- ImportChallengeScreen, ParentChallengesScreen, AudioHapticSettingsScreen, ParentSettingsScreen
+- DeveloperPortalScreen, ColorPaletteViewerScreen
+
+**Current User Experience**:
 ```
-What we have (all screens):        What we need:
-Phone: ┌──────────┐               Tablet: ┌─────────────────────┐
-       │ Content  │                       │ Content │ Content   │
-       │ Content  │                       │ Content │ Content   │
-       │ Content  │                       │ Content │ Content   │
-       └──────────┘                       └─────────────────────┘
+Phone (current)           Tablet (current)          Tablet (desired)
+┌──────────────┐         ┌──────────────────┐      ┌──────────────────┐
+│ Content      │         │ Content          │      │ Content   │ More │
+│ Content      │         │ Content          │      │ Content   │Content
+│ Content      │         │ Content          │      │ Content   │      │
+│              │         │ (centered,       │      │ (responsive)     │
+│              │         │  max-width)      │      │ (dual-pane,      │
+└──────────────┘         └──────────────────┘      │  grids)          │
+                                                    └──────────────────┘
 ```
-
-Phases 4-13 involve updating each screen to use the extra space appropriately.
 
 ---
 
