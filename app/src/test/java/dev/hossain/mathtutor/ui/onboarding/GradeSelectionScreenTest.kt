@@ -129,4 +129,85 @@ class GradeSelectionScreenTest {
         assertThat(receivedEvent).isNotNull()
         assertThat(receivedEvent is GradeSelectionScreen.Event.ContinueClicked).isTrue()
     }
+
+    @Test
+    fun state_withBlockedMessage_hasCorrectMessage() {
+        // Given
+        val blockedMsg = "Your parent set a limit at Grade 1. You can't select Grade 2. 🐶"
+
+        // When
+        val state =
+            GradeSelectionScreen.State(
+                selectedGrade = null,
+                blockedMessage = blockedMsg,
+                eventSink = { },
+            )
+
+        // Then
+        assertThat(state.blockedMessage).isEqualTo(blockedMsg)
+    }
+
+    @Test
+    fun state_withAvailableGrades_hasCorrectGrades() {
+        // Given
+        val availableGrades = listOf(GradeLevel.KINDERGARTEN, GradeLevel.GRADE_1)
+
+        // When
+        val state =
+            GradeSelectionScreen.State(
+                selectedGrade = null,
+                availableGrades = availableGrades,
+                eventSink = { },
+            )
+
+        // Then
+        assertThat(state.availableGrades).isEqualTo(availableGrades)
+        assertThat(state.availableGrades).doesNotContain(GradeLevel.GRADE_2)
+    }
+
+    @Test
+    fun state_withAllGradesAvailable_hasAllThreeGrades() {
+        // Given
+        val allGrades = GradeLevel.entries
+
+        // When
+        val state =
+            GradeSelectionScreen.State(
+                selectedGrade = null,
+                availableGrades = allGrades,
+                eventSink = { },
+            )
+
+        // Then
+        assertThat(state.availableGrades).hasSize(3)
+        assertThat(state.availableGrades).contains(GradeLevel.KINDERGARTEN)
+        assertThat(state.availableGrades).contains(GradeLevel.GRADE_1)
+        assertThat(state.availableGrades).contains(GradeLevel.GRADE_2)
+    }
+
+    @Test
+    fun state_blockedMessage_defaultsToNull() {
+        // When
+        val state =
+            GradeSelectionScreen.State(
+                selectedGrade = null,
+                eventSink = { },
+            )
+
+        // Then
+        assertThat(state.blockedMessage).isNull()
+    }
+
+    @Test
+    fun state_availableGrades_defaultsToAllGrades() {
+        // When
+        val state =
+            GradeSelectionScreen.State(
+                selectedGrade = null,
+                eventSink = { },
+            )
+
+        // Then
+        assertThat(state.availableGrades).hasSize(3)
+    }
 }
