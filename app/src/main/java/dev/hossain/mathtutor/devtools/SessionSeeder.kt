@@ -13,6 +13,7 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlin.random.Random
 
 /**
@@ -48,8 +49,16 @@ class SessionSeederImpl
                 var seeded = 0
                 val rnd = Random(System.currentTimeMillis())
 
-                repeat(count.coerceAtLeast(0)) {
+                // Distribute sessions across 5 days: 2 per day
+                // Day 0 (today), Day 1 (yesterday), Day 2 (2 days ago), etc.
+                val daysToDistribute = 5
+                val sessionsPerDay = 2
+
+                repeat(count.coerceAtLeast(0)) { index ->
                     try {
+                        val dayOffset = (index / sessionsPerDay) % daysToDistribute
+                        val sessionTimestamp = Instant.now().minus(dayOffset.toLong(), ChronoUnit.DAYS)
+
                         val op =
                             if (operation == MathOperation.MIXED) {
                                 // pick a random non-mixed operation
@@ -95,7 +104,7 @@ class SessionSeederImpl
                                 answers = answers,
                                 operation = if (operation == MathOperation.MIXED) null else operation,
                                 durationSeconds = durationSec,
-                                completedAt = Instant.now(),
+                                completedAt = sessionTimestamp,
                             )
 
                         sessionRepository.saveSession(
