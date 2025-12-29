@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.0] - 2025-12-29
+
 ### Added
 - **Webapp: Parent Challenge Deletion** - Parents can now delete their own recently shared challenges from the community library
   - Session-based ownership tracking: Challenges store creator's session ID at share time
@@ -43,6 +45,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Shows parent lock message when limit is active
   - Prevents children from selecting grades beyond parent-approved level
   - Automatically downgrades child's profile grade if parent lowers the limit below current grade
+
+### Fixed
+- **Grade Profile Display in Settings** - Grade selection now correctly initializes from current profile when opened from Settings
+  - Profile grade properly reflects all changes made by parent or child
+  - LaunchedEffect ensures selectedGrade synchronizes with current profile state
+  - Immediate UI update when returning to Settings after grade change
+
+### Changed
+- **Settings Screen Navigation** - Replaced "Parent Challenges" link with "Parent Settings" link
+  - Direct access to parental controls from Settings screen
+  - Updated icon from default Settings to ManageAccounts for better semantic clarity
 
 ## [1.18.0] - 2025-12-28
 
@@ -2040,7 +2053,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.18.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...HEAD
+[1.19.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.18.0...1.19.0
 [1.18.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.17.0...1.18.0
 [1.17.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.1...1.17.0
 [1.16.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.0...1.16.1

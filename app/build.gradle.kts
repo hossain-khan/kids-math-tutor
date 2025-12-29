@@ -23,8 +23,8 @@ android {
         applicationId = "dev.hossain.mathtutor"
         minSdk = 28
         targetSdk = 36
-        versionCode = 21
-        versionName = "1.18.0"
+        versionCode = 22
+        versionName = "1.19.0"
 
         // Read key or other properties from local.properties
         val localProperties =
