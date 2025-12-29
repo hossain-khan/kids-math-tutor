@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.settings
 import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.haptic.HapticService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -258,6 +259,19 @@ class AudioHapticSettingsPresenterTest {
         }
 
         fun getCurrentLargeTextEnabled(): Boolean = largeTextEnabledFlow.value
+
+        // Parent control methods (minimal implementation for testing)
+        override val parentPinHash: Flow<String?> = MutableStateFlow(null)
+
+        override suspend fun setParentPin(pin: String) {}
+
+        override suspend fun verifyParentPin(pin: String): Boolean = false
+
+        override suspend fun clearParentPin() {}
+
+        override val maxGradeLevel: Flow<GradeLevel?> = MutableStateFlow(null)
+
+        override suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?) {}
     }
 
     /**
