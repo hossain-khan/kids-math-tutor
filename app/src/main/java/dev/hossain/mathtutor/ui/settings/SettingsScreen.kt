@@ -109,5 +109,10 @@ data object SettingsScreen : Screen {
          * User tapped the Parent Challenges button.
          */
         data object ParentChallengesClicked : Event
+
+        /**
+         * User tapped the Parent Settings button.
+         */
+        data object ParentSettingsClicked : Event
     }
 }

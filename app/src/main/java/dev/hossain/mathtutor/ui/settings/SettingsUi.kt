@@ -25,6 +25,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.ChildCare
 import androidx.compose.material.icons.outlined.Description
@@ -189,11 +190,11 @@ fun SettingsUi(
                         onClick = { state.eventSink(SettingsScreen.Event.AudioHapticsClicked) },
                     )
 
-                    // Parent Challenges link
+                    // Parent Settings link
                     SettingsLinkItem(
-                        icon = Icons.Outlined.Groups,
-                        text = "Parent Challenges",
-                        onClick = { state.eventSink(SettingsScreen.Event.ParentChallengesClicked) },
+                        icon = Icons.Filled.ManageAccounts,
+                        text = "Parent Settings",
+                        onClick = { state.eventSink(SettingsScreen.Event.ParentSettingsClicked) },
                     )
 
                     // Developer Portal (debug-only)

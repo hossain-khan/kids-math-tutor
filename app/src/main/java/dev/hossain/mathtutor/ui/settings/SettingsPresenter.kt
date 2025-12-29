@@ -229,6 +229,11 @@ class SettingsPresenter
                         Timber.d("SettingsScreen: Parent Challenges clicked - navigating to ParentChallengesScreen")
                         navigator.goTo(dev.hossain.mathtutor.ui.parentchallenges.ParentChallengesScreen)
                     }
+
+                    is SettingsScreen.Event.ParentSettingsClicked -> {
+                        Timber.d("SettingsScreen: Parent Settings clicked - navigating to ParentSettingsScreen")
+                        navigator.goTo(dev.hossain.mathtutor.ui.parentsettings.ParentSettingsScreen)
+                    }
                 }
             }
         }
