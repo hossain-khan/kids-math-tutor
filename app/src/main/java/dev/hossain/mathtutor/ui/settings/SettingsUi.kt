@@ -43,6 +43,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -100,6 +101,14 @@ fun SettingsUi(
      */
     BackHandler {
         state.eventSink(SettingsScreen.Event.BackClicked)
+    }
+
+    // Log profile changes for debugging grade limit enforcement
+    LaunchedEffect(state.profile?.gradeLevel) {
+        Timber.d(
+            "SettingsUi: Profile grade updated to ${state.profile?.gradeLevel?.displayName ?: "none"}, " +
+                "max limit=${state.maxGradeLevel?.displayName ?: "none"}",
+        )
     }
 
     Scaffold(
