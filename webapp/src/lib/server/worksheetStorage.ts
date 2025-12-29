@@ -13,6 +13,7 @@ export interface SharedWorksheet {
   grades: GradeLevel[];
   problems: ProblemSpec[];
   createdAt: string; // ISO timestamp
+  creatorSessionId?: string; // Session ID of the creator (for deletion permission)
   stats: {
     views: number;
     downloads: number;
@@ -29,6 +30,7 @@ export interface WorksheetListItem {
   problemCount: number;
   singleOperation?: string; // If all problems share the same operation
   createdAt: string;
+  creatorSessionId?: string; // Session ID of the creator (for deletion permission)
   stats: {
     views: number;
     downloads: number;
@@ -140,6 +142,7 @@ export async function listWorksheets(
           problemCount: worksheet.problems.length,
           singleOperation: getSingleOperationType(worksheet.problems),
           createdAt: worksheet.createdAt,
+          creatorSessionId: worksheet.creatorSessionId,
           stats: worksheet.stats,
         });
       }
@@ -279,6 +282,7 @@ export async function searchWorksheets(
           problemCount: worksheet.problems.length,
           singleOperation: getSingleOperationType(worksheet.problems),
           createdAt: worksheet.createdAt,
+          creatorSessionId: worksheet.creatorSessionId,
           stats: worksheet.stats,
         });
       }
@@ -404,5 +408,36 @@ export async function calculateWorksheetRatingStats(
   } catch (error) {
     console.error("Failed to calculate rating stats:", error);
     return { averageRating: 0, ratingCount: 0 };
+  }
+}
+
+/**
+ * Delete a worksheet by ID
+ * Also deletes associated ratings
+ */
+export async function deleteWorksheet(
+  context: KVContext,
+  id: string,
+): Promise<boolean> {
+  try {
+    const worksheetKey = `worksheet:${id}`;
+    
+    // Delete the worksheet
+    await context.env.KV.delete(worksheetKey);
+    
+    // Delete all associated ratings
+    const ratingsPrefix = `rating:${id}:`;
+    const ratingsListResult = await context.env.KV.list({
+      prefix: ratingsPrefix,
+    });
+    
+    for (const key of ratingsListResult.keys) {
+      await context.env.KV.delete(key.name);
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Failed to delete worksheet:", error);
+    return false;
   }
 }

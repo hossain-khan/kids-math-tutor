@@ -20,6 +20,7 @@ import {
   calculateWorksheetRatingStats,
   incrementViews,
   incrementDownloads,
+  deleteWorksheet,
   type SharedWorksheet,
 } from '@/lib/server/worksheetStorage';
 import {
@@ -208,6 +209,9 @@ app.post('/api/v1/worksheets/share', async (c) => {
     // Create shared worksheet
     const id = nanoid(12);
     const now = new Date().toISOString();
+    
+    // Get creator session ID from request body (sent by client)
+    const creatorSessionId = body.sessionId;
 
     const sharedWorksheet: SharedWorksheet = {
       id,
@@ -218,6 +222,7 @@ app.post('/api/v1/worksheets/share', async (c) => {
       grades: detectGrades(worksheetData.problems),
       problems: worksheetData.problems,
       createdAt: now,
+      creatorSessionId, // Store creator's session ID
       stats: {
         views: 0,
         downloads: 0,
@@ -514,6 +519,80 @@ app.post('/api/v1/worksheets/:id/rate', async (c) => {
  */
 app.get('/api/health', (c) => {
   return c.json({ status: 'ok' });
+});
+
+/**
+ * DELETE /api/v1/worksheets/:id
+ * Delete a worksheet by the creator (user-facing endpoint)
+ * Requires matching sessionId for authorization
+ */
+app.delete('/api/v1/worksheets/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const body = await c.req.json();
+    const { sessionId } = body;
+
+    if (!sessionId) {
+      return c.json(
+        {
+          error: 'Session ID is required for authorization',
+        },
+        400,
+      );
+    }
+
+    // Get the worksheet
+    const worksheet = await getWorksheet(
+      { env: { KV: c.env.KV } },
+      id,
+    );
+
+    if (!worksheet) {
+      return c.json(
+        {
+          error: 'Worksheet not found',
+        },
+        404,
+      );
+    }
+
+    // Check if the session ID matches the creator's session ID
+    if (worksheet.creatorSessionId !== sessionId) {
+      return c.json(
+        {
+          error: 'Unauthorized: You can only delete worksheets you created',
+        },
+        403,
+      );
+    }
+
+    // Delete the worksheet and associated ratings
+    await c.env.KV.delete(`worksheet:${id}`);
+    
+    // Delete all associated ratings
+    const ratingsPrefix = `rating:${id}:`;
+    const ratingsListResult = await c.env.KV.list({
+      prefix: ratingsPrefix,
+    });
+    
+    for (const key of ratingsListResult.keys) {
+      await c.env.KV.delete(key.name);
+    }
+
+    return c.json({
+      success: true,
+      message: 'Worksheet deleted successfully',
+    });
+  } catch (error) {
+    console.error('Delete worksheet error:', error);
+    return c.json(
+      {
+        error: 'Failed to delete worksheet',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      500,
+    );
+  }
 });
 
 /**
