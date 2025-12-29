@@ -1,7 +1,7 @@
 # Analytics Documentation
 
-**Version**: 1.0  
-**Last Updated**: December 21, 2025  
+**Version**: 1.1  
+**Last Updated**: December 29, 2025  
 **Status**: ✅ Implemented
 
 ---
@@ -74,7 +74,7 @@ Kids Math Pup Tutor uses Firebase Analytics to track user engagement and improve
 
 ## What We Track
 
-### Screen Views (13 Screens)
+### Screen Views (21 Screens)
 
 All Circuit screens automatically track screen views using `LaunchedImpressionEffect`:
 
@@ -91,15 +91,27 @@ All Circuit screens automatically track screen views using `LaunchedImpressionEf
 
 3. **Progress Screens**
    - `StatsScreen` - Statistics and history
+   - `AccuracyDetailsScreen` - Daily accuracy breakdown
    - `BadgesScreen` - Badge collection
 
 4. **Settings Screens**
    - `SettingsScreen` - Main settings
    - `AudioHapticSettingsScreen` - Audio/haptic preferences
+   - `ParentSettingsScreen` - Parental controls (PIN, grade limits) **[v1.19.0]**
 
 5. **Game Screens**
    - `GameSelectionScreen` - Game hub
    - `MathRaceScreen` - Math Race mini-game
+   - `NumberSequenceScreen` - Number Sequence mini-game
+   - `MemoryMatchScreen` - Memory Match mini-game
+
+6. **Custom Challenge Screens**
+   - `ImportChallengeScreen` - Import custom challenges
+   - `ParentChallengesScreen` - Manage custom challenges
+
+7. **Developer Screens**
+   - `DeveloperPortalScreen` - Developer tools
+   - `ColorPaletteViewerScreen` - Color palette viewer (debug)
 
 **Parameters Tracked**:
 - `screen_name` - Human-readable screen name
@@ -146,6 +158,11 @@ All Circuit screens automatically track screen views using `LaunchedImpressionEf
   - Params: `setting_name`, `setting_value`
 - `audio_toggled` - Audio enabled/disabled
 - `haptics_toggled` - Haptics enabled/disabled
+
+#### Parent Control Events **[v1.19.0]**
+- `parent_pin_setup_started` - Parent begins setting up PIN
+- `parent_pin_setup_completed` - Parent PIN successfully set
+  - Note: `setUserProperty()` called with PIN setup completion analytics
 
 #### Error Events
 - `error_occurred` - App error logged
@@ -461,6 +478,13 @@ See "Testing Analytics Locally" section above for DebugView setup.
 ---
 
 ## Changelog
+
+### Version 1.1 (December 29, 2025)
+- Added ParentSettingsScreen to tracked screens (screen #19)
+- Added parent control events: `parent_pin_setup_started`, `parent_pin_setup_completed`
+- Added custom challenge events: `custom_challenge_import_started`, `custom_challenge_started`, `custom_challenge_archived`, `custom_challenge_deleted`
+- Updated screen count from 13 to 21 screens
+- Added missing screens: AccuracyDetailsScreen, NumberSequenceScreen, MemoryMatchScreen, ImportChallengeScreen, ParentChallengesScreen, DeveloperPortalScreen, ColorPaletteViewerScreen
 
 ### Version 1.0 (December 21, 2025)
 - Initial analytics system documentation
