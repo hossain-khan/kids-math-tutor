@@ -4,7 +4,10 @@ This document describes the database architecture and usage patterns in the Kids
 
 ## Overview
 
-The app uses **Android Room** (v2.6.1) as the persistence layer for local data storage. Room provides an abstraction layer over SQLite, enabling type-safe database access with Kotlin coroutines and Flow support.
+The app uses a **two-tier persistence strategy**:
+
+### 1. Android Room (SQLite) - Structured Data
+Provides an abstraction layer over SQLite for type-safe, reactive database access with Kotlin coroutines and Flow support.
 
 | Property | Value |
 |----------|-------|
@@ -14,7 +17,53 @@ The app uses **Android Room** (v2.6.1) as the persistence layer for local data s
 | Query Pattern | Flow-based reactive streams |
 | Schema Export | Enabled (`exportSchema = true`) |
 
-## Architecture Diagram
+### 2. DataStore Preferences - Key-Value Configuration
+Lightweight, type-safe key-value storage for user preferences and app settings using Kotlin Serialization and Protocol Buffers.
+
+| Property | Value |
+|----------|-------|
+| Store Name | `user_preferences` |
+| Technology | DataStore Preferences API |
+| Security | Hashed sensitive data (e.g., PIN stored as SHA-256) |
+| Async Pattern | Flow-based reactive streams |
+
+## DataStore Preferences (Key-Value Configuration)
+
+User preferences and app configuration are stored using Android DataStore Preferences, providing a modern alternative to SharedPreferences with async/coroutines support and type safety.
+
+### Stored Preferences
+
+| Key | Type | Description | Version Added |
+|-----|------|-------------|-----------------|
+| `isOnboardingCompleted` | Boolean | Whether onboarding flow is complete | v1.0.0 |
+| `isHapticsEnabled` | Boolean | Vibration/haptics feedback enabled | v1.0.0 |
+| `isSoundEffectsEnabled` | Boolean | Sound effects enabled | v1.0.0 |
+| `isBackgroundMusicEnabled` | Boolean | Background music enabled | v1.0.0 |
+| `volume` | Float | Sound volume level (0.0-1.0) | v1.0.0 |
+| `isHighContrastEnabled` | Boolean | High contrast accessibility mode | v1.0.0 |
+| `isLargeTextEnabled` | Boolean | Large text accessibility mode | v1.0.0 |
+| `isAnalyticsEnabled` | Boolean | Analytics/telemetry enabled | v1.0.0 |
+| `gameTrialAttempts_[gameId]` | Integer | Trial attempts for each locked game (0-3) | v1.13.0 |
+| `parentPinHash` | String | SHA-256 hashed parent PIN for protected settings | **v1.19.0** |
+| `maxGradeLevel` | String | Parent-enforced maximum grade level (KINDERGARTEN, FIRST_GRADE, SECOND_GRADE) | **v1.19.0** |
+
+### Parent Controls (v1.19.0+)
+
+**PIN Security**:
+- Parent PIN stored as **SHA-256 hash** (not plaintext)
+- Used to protect grade limit changes and parental settings
+- Hash-based verification prevents brute-force attacks
+- Can be cleared/reset via forgot PIN recovery flow
+
+**Grade Limit Enforcement**:
+- `maxGradeLevel` restricts the maximum grade child can select
+- When parent lowers limit, child's profile grade is automatically downgraded if needed
+- Grade selection UI filters available grades based on this limit
+- Shows parent lock message when limit is active
+
+---
+
+## Room Database (Structured Data)
 
 ```mermaid
 graph TB
@@ -477,6 +526,7 @@ app/src/main/java/dev/hossain/mathtutor/
 │   ├── local/
 │   │   ├── MathDatabase.kt          # Room database definition
 │   │   ├── Converters.kt            # Type converters
+│   │   ├── UserPreferencesDataStore.kt  # DataStore singleton
 │   │   ├── dao/
 │   │   │   ├── SessionDao.kt
 │   │   │   ├── BadgeDao.kt
@@ -494,6 +544,7 @@ app/src/main/java/dev/hossain/mathtutor/
 │   │       ├── ChallengeProblemsEntity.kt
 │   │       ├── ChallengePracticeSessionEntity.kt
 │   │       └── CustomChallengeWithDetails.kt
+│   ├── UserPreferencesRepository.kt  # DataStore-based preferences
 │   ├── repository/
 │   │   ├── SessionRepositoryImpl.kt
 │   │   ├── BadgeRepositoryImpl.kt
