@@ -35,7 +35,7 @@ object SessionMapper {
             incorrectAnswers = incorrectAnswers,
             accuracy = accuracy,
             durationSeconds = durationSeconds,
-            timestamp = Instant.now(),
+            timestamp = session.completedAt ?: Instant.now(),
             gradeLevel = gradeLevel,
         )
     }
