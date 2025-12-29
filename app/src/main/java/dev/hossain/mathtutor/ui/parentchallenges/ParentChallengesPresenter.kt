@@ -20,6 +20,7 @@ import dev.hossain.mathtutor.domain.model.CustomChallenge
 import dev.hossain.mathtutor.domain.service.CustomChallengeService
 import dev.hossain.mathtutor.ui.importchallenge.ImportChallengeScreen
 import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
+import dev.hossain.mathtutor.ui.parentsettings.ParentSettingsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -222,6 +223,11 @@ class ParentChallengesPresenter
 
                     is ParentChallengesScreen.Event.DismissImportSuccess -> {
                         importSuccessMessage = null
+                    }
+
+                    is ParentChallengesScreen.Event.ParentSettingsClicked -> {
+                        Timber.d("ParentChallenges: Navigate to parent settings")
+                        navigator.goTo(ParentSettingsScreen)
                     }
                 }
             }

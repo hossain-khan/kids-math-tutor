@@ -1,4 +1,4 @@
-package dev.hossain.mathtutor.ui.settings
+package dev.hossain.mathtutor.ui.parentsettings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,38 +24,38 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 
 /**
- * Dialog for changing the user's grade level.
+ * Dialog for setting the maximum grade level children can select.
  *
- * @param currentGrade The current grade level
- * @param maxGradeLevel Optional maximum grade level set by parents (null = no limit)
- * @param onDismiss Called when the dialog is dismissed (Cancel button)
- * @param onSave Called when the user saves the new grade level
+ * Allows parents to restrict the difficulty of problems accessible to children.
+ * This prevents frustration from attempting problems that are too advanced.
+ *
+ * ## Rationale
+ * - Children may be tempted to try higher grade problems
+ * - Attempting problems that are too difficult can be frustrating and demotivating
+ * - Parents know their child's capability better than the app
+ * - Provides a "training wheels" approach to gradually increase difficulty
+ *
+ * @param currentMaxGrade The currently set maximum grade (null = no limit)
+ * @param onConfirm Called with the selected grade level (null = remove limit)
+ * @param onDismiss Called when user taps Cancel or dismisses the dialog
  */
 @Composable
-fun GradeChangeDialog(
-    currentGrade: GradeLevel,
-    maxGradeLevel: GradeLevel? = null,
+fun GradeLimitDialog(
+    currentMaxGrade: GradeLevel?,
+    onConfirm: (GradeLevel?) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (GradeLevel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var selectedGrade by remember { mutableStateOf(currentGrade) }
-
-    // Filter grades based on max grade level if set
-    val availableGrades =
-        if (maxGradeLevel != null) {
-            GradeLevel.entries.filter { it.ordinal <= maxGradeLevel.ordinal }
-        } else {
-            GradeLevel.entries
-        }
+    var selectedGrade by remember { mutableStateOf(currentMaxGrade) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Change Grade Level",
+                text = "Set Grade Limit",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
             )
@@ -63,17 +63,51 @@ fun GradeChangeDialog(
         text = {
             Column {
                 Text(
-                    text = "Select your grade level:",
+                    text =
+                        "Choose the maximum grade level your child can select. " +
+                            "This prevents them from accessing problems that are too difficult.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Maximum Grade:",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Radio button group for grade selection
                 Column(
                     modifier = Modifier.selectableGroup(),
                 ) {
-                    availableGrades.forEach { grade ->
+                    // Option for no limit
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = (selectedGrade == null),
+                                    onClick = { selectedGrade = null },
+                                    role = Role.RadioButton,
+                                ).padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = (selectedGrade == null),
+                            onClick = null, // Handled by Row's selectable
+                        )
+                        Text(
+                            text = "No Limit (All Grades)",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(start = 12.dp),
+                        )
+                    }
+
+                    // Options for each grade level
+                    GradeLevel.entries.forEach { grade ->
                         Row(
                             modifier =
                                 Modifier
@@ -103,26 +137,16 @@ fun GradeChangeDialog(
 
                 // Warning message
                 Text(
-                    text = "⚠️ Changing grade will affect problem difficulty",
+                    text = "⚠️ Your child won't be able to select grades above this limit",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
+                    color = MaterialTheme.colorScheme.tertiary,
                 )
-
-                // Show parent lock message if max grade is set
-                if (maxGradeLevel != null) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "🔒 Maximum grade limited to ${maxGradeLevel.displayName} by parent",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.tertiary,
-                    )
-                }
             }
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    onSave(selectedGrade)
+                    onConfirm(selectedGrade)
                 },
             ) {
                 Text(
@@ -146,41 +170,27 @@ fun GradeChangeDialog(
     )
 }
 
+// Preview composables
 @Preview(showBackground = true)
 @Composable
-private fun GradeChangeDialogPreview() {
-    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
-        GradeChangeDialog(
-            currentGrade = GradeLevel.GRADE_1,
-            maxGradeLevel = null,
+private fun GradeLimitDialogNoLimitPreview() {
+    KidsMathTutorAppTheme {
+        GradeLimitDialog(
+            currentMaxGrade = null,
+            onConfirm = {},
             onDismiss = {},
-            onSave = {},
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun GradeChangeDialogDarkPreview() {
-    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme(darkTheme = true) {
-        GradeChangeDialog(
-            currentGrade = GradeLevel.GRADE_2,
-            maxGradeLevel = null,
+private fun GradeLimitDialogWithLimitPreview() {
+    KidsMathTutorAppTheme {
+        GradeLimitDialog(
+            currentMaxGrade = GradeLevel.GRADE_1,
+            onConfirm = {},
             onDismiss = {},
-            onSave = {},
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun GradeChangeDialogWithLimitPreview() {
-    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
-        GradeChangeDialog(
-            currentGrade = GradeLevel.KINDERGARTEN,
-            maxGradeLevel = GradeLevel.GRADE_1,
-            onDismiss = {},
-            onSave = {},
         )
     }
 }
