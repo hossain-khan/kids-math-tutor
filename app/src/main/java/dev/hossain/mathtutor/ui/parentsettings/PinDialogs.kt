@@ -83,7 +83,7 @@ fun PinSetupDialog(
                         }
                     },
                     label = { Text("Enter PIN") },
-                    placeholder = { Text("1234") },
+                    placeholder = { Text("Use a PIN kids can't guess :-)") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions =
                         KeyboardOptions(
@@ -110,7 +110,7 @@ fun PinSetupDialog(
                         }
                     },
                     label = { Text("Confirm PIN") },
-                    placeholder = { Text("1234") },
+                    placeholder = { Text("Use the same secure PIN") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions =
                         KeyboardOptions(
@@ -223,7 +223,7 @@ fun PinVerificationDialog(
                         }
                     },
                     label = { Text("PIN") },
-                    placeholder = { Text("1234") },
+                    placeholder = { Text("Provide the save PIN") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions =
                         KeyboardOptions(
@@ -318,7 +318,7 @@ fun PinResetDialog(
                         }
                     },
                     label = { Text("New PIN") },
-                    placeholder = { Text("1234") },
+                    placeholder = { Text("Enter a new secure PIN") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions =
                         KeyboardOptions(
@@ -345,7 +345,7 @@ fun PinResetDialog(
                         }
                     },
                     label = { Text("Confirm New PIN") },
-                    placeholder = { Text("1234") },
+                    placeholder = { Text("Re-enter the new PIN") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions =
                         KeyboardOptions(
