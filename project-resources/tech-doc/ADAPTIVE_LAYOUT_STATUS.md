@@ -288,28 +288,30 @@ Phone (current)           Tablet (current)          Tablet (desired)
 ## Known Gaps & Missing Features
 
 ### Navigation
-- [ ] **No adaptive navigation wrapper** - Currently no bottom nav/rail/drawer switching
-- [ ] **No screen detection** - Adaptive nav can't highlight current screen from Circuit backstack
-- [ ] **No foldable support** - Device posture not detected
-- [ ] **No landscape handling** - No orientation-based layout changes
+- [x] **Adaptive navigation wrapper** - Bottom nav/rail/drawer switching via `AdaptiveNavigationWrapper`
+- [x] **Current screen highlighting** - Destination highlighting synced with Circuit backstack
+- [x] **Foldable posture detection utilities** - `WindowStateUtils` provides `DevicePosture` (not yet applied to layouts)
+- [ ] **Hinge-aware layouts** - No UI avoids hinge/separating fold features yet
+- [ ] **Consistent landscape content layouts** - Only MathPractice has a landscape-specific layout
 
 ### Layouts
-- [ ] **No dual-pane layouts** - Can't show list+detail on large screens
-- [ ] **No responsive grids** - All grids fixed column count
-- [ ] **No max-width content** - Content not constrained on large screens
-- [ ] **No game landscape modes** - Games don't adapt to landscape orientation
-- [ ] **No tablet-sized buttons** - NumberPad buttons not larger on tablets
+- [x] **Max-width content centering (partial)** - Implemented on 7 screens via `MAX_CONTENT_WIDTH` + `widthIn(max = ...)`
+- [ ] **Max-width/centering on remaining screens** - 14 screens still full-width on tablets
+- [ ] **Responsive grids** - Key screens still single-column (no 1 → 2/3 column behavior based on width)
+- [ ] **Dual-pane layouts** - No list+detail / side-by-side detail panes on expanded screens
+- [ ] **Tablet-sized components** - No tablet-specific sizing for key interactive components (e.g., NumberPad)
 
 ### Content
-- [ ] **No tablet-optimized images** - Onboarding images not scaled for tablets
-- [ ] **No landscape game layouts** - Games don't rearrange for landscape
-- [ ] **No list+detail for badges** - Badge inspector not on detail pane
-- [ ] **No settings dual-pane** - Audio/haptic settings can't show alongside main settings
+- [ ] **Tablet-optimized onboarding visuals** - Images/content sizing not adjusted for tablets
+- [ ] **Games tablet/landscape UX** - MathRace/NumberSequence/MemoryMatch are not optimized for large/landscape screens
+- [ ] **Settings dual-pane** - Settings + sub-screens not shown side-by-side on expanded screens
+- [ ] **Badges list+detail** - Badge detail remains modal-based; no detail pane on expanded screens
 
 ### Testing
-- [ ] **No tablet preview functions** - No Compose previews for tablet sizes
-- [ ] **No foldable testing** - No emulator profiles tested
-- [ ] **No landscape rotation tests** - Orientation changes not validated
+- [x] **Tablet previews (partial)** - Some screens include tablet-sized previews (e.g., Home/Stats)
+- [ ] **Tablet previews for all screens** - Add preview coverage for remaining screens
+- [ ] **Foldable testing** - No emulator/device testing of book/separating posture UX
+- [ ] **Landscape rotation testing** - Orientation transitions not validated across all screens
 
 ---
 
