@@ -8,7 +8,7 @@ The app uses [Circuit](https://slackhq.github.io/circuit/) for navigation with a
 
 ## Screen Inventory
 
-The app contains **20 Circuit screens** organized by feature:
+The app contains **21 Circuit screens** organized by feature:
 
 | # | Screen | Location | Type | Description |
 |---|--------|----------|------|-------------|
@@ -30,8 +30,9 @@ The app contains **20 Circuit screens** organized by feature:
 | 16 | `MemoryMatchScreen` | `ui/memorymatch/` | `data class` | Memory match mini-game |
 | 17 | `ImportChallengeScreen` | `ui/importchallenge/` | `data class` | Import custom challenges via QR/JSON |
 | 18 | `ParentChallengesScreen` | `ui/parentchallenges/` | `data object` | Manage custom parent challenges |
-| 19 | `DeveloperPortalScreen` | `ui/devportal/` | `data object` | Developer tools & testing |
-| 20 | `ColorPaletteViewerScreen` | `ui/devportal/` | `data object` | Color palette visualization (debug) |
+| 19 | `ParentSettingsScreen` | `ui/parentsettings/` | `data object` | Parental controls (PIN, grade limits) |
+| 20 | `DeveloperPortalScreen` | `ui/devportal/` | `data object` | Developer tools & testing |
+| 21 | `ColorPaletteViewerScreen` | `ui/devportal/` | `data object` | Color palette visualization (debug) |
 
 ## Navigation Graph
 
@@ -54,6 +55,7 @@ The app has **4 main feature areas** accessible from `HomeScreen`:
 Additionally:
 - **Games** (`GameSelectionScreen`) - Access mini-games (Math Race, Number Sequence, Memory Match)
 - **Custom Challenges** (`ParentChallengesScreen`) - Manage imported custom challenges
+- **Parental Controls** (`ParentSettingsScreen`) - PIN protection, grade limits, and parent settings (accessible from Settings or Parent Challenges screens)
 
 ### Visual Navigation Flow
 
@@ -86,7 +88,9 @@ graph TD
     
     SettingsScreen -->|goTo| GradeSelectionScreen
     SettingsScreen -->|goTo| AudioHapticSettingsScreen["🔊 AudioHapticSettingsScreen<br/>inversePrimary"]
+    SettingsScreen -->|goTo| ParentSettingsScreen["🔐 ParentSettingsScreen<br/>inversePrimary"]
     AudioHapticSettingsScreen -->|pop| SettingsScreen
+    ParentSettingsScreen -->|pop| SettingsScreen
     SettingsScreen -->|pop| HomeScreen
     
     GameSelectionScreen -->|goTo| MathRaceScreen["🏎️ MathRaceScreen<br/>primaryContainer"]
@@ -100,6 +104,7 @@ graph TD
     ShareIntent["↔️ Share Intent"] -->|Initial| ImportChallengeScreen["📥 ImportChallengeScreen"]
     DeeplinkURL["🔗 Deeplink URL<br/>mathpup://import?json=..."] -->|Initial| ImportChallengeScreen
     ImportChallengeScreen -->|goTo| ParentChallengesScreen
+    ParentChallengesScreen -->|goTo| ParentSettingsScreen["🔐 ParentSettingsScreen<br/>inversePrimary"]
     ParentChallengesScreen -->|pop| HomeScreen
 ```
 
@@ -279,6 +284,7 @@ Child screens navigate under their parent and should use the same color scheme:
 
 - **Settings Tree** → Use `inversePrimary`
   - `AudioHapticSettingsScreen` - Audio & haptic configuration
+  - `ParentSettingsScreen` - Parental controls (PIN, grade limits)
 
 - **Games Tree** → Use `primaryContainer`
   - `MathRaceScreen` - Speed-based game
@@ -321,8 +327,9 @@ fun ScreenUi(state: ScreenScreen.State, modifier: Modifier = Modifier) {
 | `StatsScreen` | HomeScreen | `goTo` | `AccuracyDetailsScreen` | secondaryContainer |
 | `AccuracyDetailsScreen` | StatsScreen | `goTo` | — | secondaryContainer |
 | `BadgesScreen` | HomeScreen | `goTo` | — | tertiaryContainer |
-| `SettingsScreen` | HomeScreen | `goTo` | `AudioHapticSettingsScreen`, `GradeSelectionScreen` | inversePrimary |
+| `SettingsScreen` | HomeScreen | `goTo` | `AudioHapticSettingsScreen`, `GradeSelectionScreen`, `ParentSettingsScreen` | inversePrimary |
 | `AudioHapticSettingsScreen` | SettingsScreen | `goTo` | — | inversePrimary |
+| `ParentSettingsScreen` | SettingsScreen, ParentChallengesScreen | `goTo` | — | inversePrimary |
 | `GameSelectionScreen` | HomeScreen | `goTo` | Game screens | primaryContainer |
 | `MathRaceScreen` | GameSelectionScreen | `goTo` | — | primaryContainer |
 | `NumberSequenceScreen` | GameSelectionScreen | `goTo` | — | primaryContainer |
