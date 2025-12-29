@@ -170,7 +170,7 @@ describe("worksheetStorage - deletion", () => {
     // Attempt to delete with undefined sessionId should fail
     // This is handled at the API level, not in deleteWorksheet function
     // The API checks for undefined before calling deleteWorksheet
-    
+
     // Verify worksheet still exists
     const retrieved = await getWorksheet(kvContext, "test-ws-5");
     expect(retrieved).toBeTruthy();
