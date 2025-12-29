@@ -474,3 +474,91 @@ private fun ParentSettingsUiWithOptionsExpandedPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun ParentSettingsUiWithPinSetupDialogPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = false,
+                    maxGradeLevel = null,
+                    showPinSetup = true,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = false,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ParentSettingsUiWithGradeLimitDialogPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = null,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = true,
+                    showResetForgotOptions = false,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ParentSettingsUiWithPinVerificationDialogPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = GradeLevel.GRADE_2,
+                    showPinSetup = false,
+                    showPinVerification = true,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = false,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.RESET_PIN,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ParentSettingsUiWithForgotPinDialogPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = GradeLevel.GRADE_1,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = true,
+                    showGradeLimit = false,
+                    showResetForgotOptions = true,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
