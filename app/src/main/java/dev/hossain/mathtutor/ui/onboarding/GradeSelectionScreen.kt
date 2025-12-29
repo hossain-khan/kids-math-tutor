@@ -63,6 +63,7 @@ import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsParam
 import dev.hossain.mathtutor.analytics.AnalyticsService
+import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
@@ -138,6 +139,7 @@ class GradeSelectionPresenter
         @Assisted private val screen: GradeSelectionScreen,
         @Assisted private val navigator: Navigator,
         private val userProfileRepository: UserProfileRepository,
+        private val userPreferencesRepository: UserPreferencesRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<GradeSelectionScreen.State> {
         @CircuitInject(GradeSelectionScreen::class, AppScope::class)
@@ -169,12 +171,33 @@ class GradeSelectionPresenter
             // Collect current profile to check if it exists (for settings mode)
             val currentProfile by userProfileRepository.getProfile().collectAsState(initial = null)
 
+            // Fetch parent-set grade limit to enforce restrictions
+            val maxGradeLevel by userPreferencesRepository.maxGradeLevel.collectAsState(initial = null)
+
+            // Available grades to display: all grades or only up to parent's limit
+            val availableGrades =
+                if (maxGradeLevel != null) {
+                    GradeLevel.entries.filter { it <= maxGradeLevel!! }
+                } else {
+                    GradeLevel.entries
+                }
+
             return GradeSelectionScreen.State(
                 selectedGrade = selectedGrade,
                 isFromSettings = screen.isFromSettings,
             ) { event ->
                 when (event) {
                     is GradeSelectionScreen.Event.GradeSelected -> {
+                        // Enforce parent's grade limit
+                        if (maxGradeLevel != null && event.grade > maxGradeLevel!!) {
+                            Timber.w(
+                                "GradeSelection: Grade ${event.grade.displayName} exceeds parent limit " +
+                                    "(${maxGradeLevel!!.displayName}). Selection blocked.",
+                            )
+                            // Don't update selectedGrade if it exceeds the limit
+                            return@State
+                        }
+
                         selectedGrade = event.grade
                         Timber.d("GradeSelection: Grade selected = ${event.grade}")
                         // Track grade selection
