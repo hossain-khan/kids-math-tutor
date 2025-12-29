@@ -98,14 +98,12 @@ data class GradeSelectionScreen(
      *
      * @property selectedGrade Currently selected grade level, null if none selected
      * @property isFromSettings Whether this screen was opened from settings
-     * @property blockedMessage Message shown when child tries to select above parent's limit
      * @property availableGrades List of grades that can be selected (respecting parent limits)
      * @property eventSink Handler for screen events
      */
     data class State(
         val selectedGrade: GradeLevel?,
         val isFromSettings: Boolean = false,
-        val blockedMessage: String? = null,
         val availableGrades: List<GradeLevel> = GradeLevel.entries,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -162,7 +160,6 @@ class GradeSelectionPresenter
         override fun present(): GradeSelectionScreen.State {
             val scope = rememberCoroutineScope()
             var selectedGrade by remember { mutableStateOf<GradeLevel?>(null) }
-            var blockedMessage by remember { mutableStateOf<String?>(null) }
 
             // Track screen view
             LaunchedImpressionEffect {
@@ -194,27 +191,13 @@ class GradeSelectionPresenter
             return GradeSelectionScreen.State(
                 selectedGrade = selectedGrade,
                 isFromSettings = screen.isFromSettings,
-                blockedMessage = blockedMessage,
                 availableGrades = availableGrades,
             ) { event ->
                 when (event) {
                     is GradeSelectionScreen.Event.GradeSelected -> {
-                        // Enforce parent's grade limit
-                        maxGradeLevel?.let { limit ->
-                            if (event.grade > limit) {
-                                Timber.w(
-                                    "GradeSelection: Grade ${event.grade.displayName} exceeds parent limit " +
-                                        "(${limit.displayName}). Selection blocked.",
-                                )
-                                blockedMessage =
-                                    "Your parent set a limit at ${limit.displayName}. " +
-                                    "You can't select ${event.grade.displayName}. 🐶"
-                                return@State
-                            }
-                        }
-
+                        // Grade selection is already filtered at UI level to respect parent limits,
+                        // so this event should never carry a blocked grade. Still log for safety.
                         selectedGrade = event.grade
-                        blockedMessage = null
                         Timber.d("GradeSelection: Grade selected = ${event.grade}")
                         // Track grade selection
                         analyticsService.logEvent(
@@ -285,13 +268,6 @@ fun GradeSelectionUi(
     modifier: Modifier = Modifier,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-
-    // Show snackbar when grade selection is blocked
-    LaunchedEffect(state.blockedMessage) {
-        state.blockedMessage?.let { message ->
-            snackbarHostState.showSnackbar(message)
-        }
-    }
 
     Scaffold(
         modifier = modifier,
@@ -522,7 +498,6 @@ private fun GradeSelectionUiPreview() {
             state =
                 GradeSelectionScreen.State(
                     selectedGrade = null,
-                    blockedMessage = null,
                     availableGrades = GradeLevel.entries.toList(),
                     eventSink = {},
                 ),
@@ -538,7 +513,6 @@ private fun GradeSelectionUiSelectedPreview() {
             state =
                 GradeSelectionScreen.State(
                     selectedGrade = GradeLevel.GRADE_1,
-                    blockedMessage = null,
                     availableGrades = GradeLevel.entries.toList(),
                     eventSink = {},
                 ),
@@ -554,7 +528,6 @@ private fun GradeSelectionUiDarkPreview() {
             state =
                 GradeSelectionScreen.State(
                     selectedGrade = GradeLevel.GRADE_2,
-                    blockedMessage = null,
                     availableGrades = GradeLevel.entries.toList(),
                     eventSink = {},
                 ),

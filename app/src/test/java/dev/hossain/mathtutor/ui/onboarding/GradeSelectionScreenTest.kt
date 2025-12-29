@@ -131,23 +131,6 @@ class GradeSelectionScreenTest {
     }
 
     @Test
-    fun state_withBlockedMessage_hasCorrectMessage() {
-        // Given
-        val blockedMsg = "Your parent set a limit at Grade 1. You can't select Grade 2. 🐶"
-
-        // When
-        val state =
-            GradeSelectionScreen.State(
-                selectedGrade = null,
-                blockedMessage = blockedMsg,
-                eventSink = { },
-            )
-
-        // Then
-        assertThat(state.blockedMessage).isEqualTo(blockedMsg)
-    }
-
-    @Test
     fun state_withAvailableGrades_hasCorrectGrades() {
         // Given
         val availableGrades = listOf(GradeLevel.KINDERGARTEN, GradeLevel.GRADE_1)
@@ -183,19 +166,6 @@ class GradeSelectionScreenTest {
         assertThat(state.availableGrades).contains(GradeLevel.KINDERGARTEN)
         assertThat(state.availableGrades).contains(GradeLevel.GRADE_1)
         assertThat(state.availableGrades).contains(GradeLevel.GRADE_2)
-    }
-
-    @Test
-    fun state_blockedMessage_defaultsToNull() {
-        // When
-        val state =
-            GradeSelectionScreen.State(
-                selectedGrade = null,
-                eventSink = { },
-            )
-
-        // Then
-        assertThat(state.blockedMessage).isNull()
     }
 
     @Test

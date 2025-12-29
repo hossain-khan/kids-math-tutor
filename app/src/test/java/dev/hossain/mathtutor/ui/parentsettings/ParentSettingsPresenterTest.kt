@@ -12,12 +12,16 @@ import org.junit.Test
 import java.time.Instant
 
 /**
- * Unit tests for [ParentSettingsPresenter].
+ * Unit tests for grade limit enforcement logic used by [ParentSettingsPresenter].
  *
- * Tests the presenter logic for parent settings including:
- * - Grade limit enforcement
- * - Auto-downgrade of child profile grade when parent lowers limit
- * - PIN management
+ * These tests verify the core auto-downgrade logic:
+ * When a parent sets a grade limit via GradeLimitChanged event, if the child's
+ * current profile grade exceeds the new limit, the profile is automatically downgraded.
+ *
+ * Tests verify:
+ * - Profile below limit: no downgrade needed
+ * - Profile above limit: automatic downgrade to new limit
+ * - Limit removal: profile unchanged
  */
 class ParentSettingsPresenterTest {
     @Test
@@ -269,8 +273,7 @@ class ParentSettingsPresenterTest {
             largeTextFlow.value = enabled
         }
 
-        override fun getGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Flow<Int> =
-            MutableStateFlow(0)
+        override fun getGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Flow<Int> = MutableStateFlow(0)
 
         override suspend fun incrementGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Int = 0
     }

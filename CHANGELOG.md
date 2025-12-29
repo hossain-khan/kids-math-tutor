@@ -44,8 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Prevents children from selecting grades beyond parent-approved level
   - Automatically downgrades child's profile grade if parent lowers the limit below current grade
 
-### Fixed
-
 ## [1.18.0] - 2025-12-28
 
 ### Fixed
