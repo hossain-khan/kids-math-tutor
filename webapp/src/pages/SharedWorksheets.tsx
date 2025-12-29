@@ -21,6 +21,7 @@ interface SharedWorksheet {
     operation: string;
   }>;
   createdAt: string;
+  creatorSessionId?: string; // Session ID of the creator
   stats: {
     views: number;
     downloads: number;
@@ -37,6 +38,7 @@ interface WorksheetListItem {
   problemCount: number;
   singleOperation?: string;
   createdAt: string;
+  creatorSessionId?: string; // Session ID of the creator
   stats: {
     views: number;
     downloads: number;
@@ -83,6 +85,10 @@ export default function SharedWorksheets() {
   const [showAllProblems, setShowAllProblems] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedJson, setCopiedJson] = useState(false);
+  const [deletingWorksheetId, setDeletingWorksheetId] = useState<string | null>(
+    null,
+  );
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   // Initialize session ID and Android check
   useEffect(() => {
     setIsAndroid(isLikelyAndroidDevice());
@@ -190,7 +196,7 @@ export default function SharedWorksheets() {
     };
 
     fetchWorksheets();
-  }, [id, searchQuery, selectedGrades, sortBy, offset]);
+  }, [id, searchQuery, selectedGrades, sortBy, offset, refreshTrigger]);
 
   const handleUseWorksheet = async () => {
     if (!worksheet) return;
@@ -283,6 +289,47 @@ export default function SharedWorksheets() {
 
     if (url) {
       window.open(url, "_blank", "width=600,height=400");
+    }
+  };
+
+  const handleDeleteWorksheet = async (worksheetId: string) => {
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this worksheet from the community library? Since you created this worksheet, you have the permission to remove it. This action cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    setDeletingWorksheetId(worksheetId);
+
+    try {
+      const response = await fetch(`/api/v1/worksheets/${worksheetId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        alert(`Failed to delete: ${data.error}`);
+        return;
+      }
+
+      alert("Worksheet successfully deleted from community library.");
+
+      // If viewing detail, navigate back to list
+      if (id) {
+        window.location.href = "/worksheets";
+      } else {
+        // Trigger a refresh by incrementing refreshTrigger
+        // This works even when offset is 0
+        setRefreshTrigger((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Network error. Please check your connection and try again.");
+    } finally {
+      setDeletingWorksheetId(null);
     }
   };
 
@@ -538,6 +585,42 @@ export default function SharedWorksheets() {
               </div>
             </div>
           </Card>
+
+          {/* Delete Button - Only shown if user is the creator */}
+          {worksheet.creatorSessionId &&
+            worksheet.creatorSessionId === sessionId && (
+              <Card className="mb-6 bg-red-50 border-red-300 p-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl flex-shrink-0">🗑️</span>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-red-900 mb-1">
+                      Delete Your Worksheet
+                    </h3>
+                    <p className="text-sm text-red-800 mb-3">
+                      Since you created this worksheet, you can remove it from
+                      the community library.
+                    </p>
+                    <button
+                      onClick={() => handleDeleteWorksheet(worksheet.id)}
+                      disabled={deletingWorksheetId === worksheet.id}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {deletingWorksheetId === worksheet.id ? (
+                        <>
+                          <span className="mr-2 animate-spin">⏳</span>
+                          Deleting...
+                        </>
+                      ) : (
+                        <>
+                          <span className="mr-2">🗑️</span>
+                          Delete This Worksheet
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            )}
 
           {/* Action Buttons */}
           <div className="flex gap-3 flex-col sm:flex-row">
@@ -797,12 +880,20 @@ export default function SharedWorksheets() {
                 const operationColor = getOperationColor(
                   ws.singleOperation || "mixed",
                 );
+                const isOwnWorksheet =
+                  ws.creatorSessionId && ws.creatorSessionId === sessionId;
                 return (
-                  <div key={ws.id}>
+                  <div key={ws.id} className="relative">
                     <Link to={`/worksheets/${ws.id}`}>
                       <Card
                         className={`group p-4 h-full hover:shadow-lg transition-shadow cursor-pointer relative overflow-hidden border-2 ${operationColor.border}`}
                       >
+                        {/* "Your Worksheet" Badge */}
+                        {isOwnWorksheet && (
+                          <div className="absolute top-2 right-2 z-20 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
+                            Your Worksheet
+                          </div>
+                        )}
                         <div className="absolute -top-8 -right-0 opacity-10 group-hover:opacity-15 transition-opacity pointer-events-none">
                           <div className="text-[270px] font-bold text-gray-400 leading-none">
                             {operationColor.symbol}
@@ -910,6 +1001,25 @@ export default function SharedWorksheets() {
                         </div>
                       </Card>
                     </Link>
+                    {/* Delete Button - Only for own worksheets */}
+                    {isOwnWorksheet && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteWorksheet(ws.id);
+                        }}
+                        disabled={deletingWorksheetId === ws.id}
+                        className="mt-2 w-full bg-red-50 hover:bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Delete your worksheet from the community library"
+                      >
+                        {deletingWorksheetId === ws.id ? (
+                          <>⏳ Deleting...</>
+                        ) : (
+                          <>🗑️ Delete Your Worksheet</>
+                        )}
+                      </button>
+                    )}
                   </div>
                 );
               })}

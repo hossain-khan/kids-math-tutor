@@ -8,6 +8,7 @@ import Card from "@/components/Card";
 import { type ChallengeImportSpec } from "@/lib/schemas/challenge-schema";
 import { copyToClipboard, downloadJson } from "@/lib/utils";
 import { generateDeeplink, isLikelyAndroidDevice } from "@/lib/deeplink";
+import { getOrCreateSessionId } from "@/lib/sessionId";
 
 // Register JSON language
 SyntaxHighlighter.registerLanguage("json", json);
@@ -32,6 +33,10 @@ export default function Result() {
   const [shareError, setShareError] = useState<ShareErrorData | null>(null);
   const [shareSuccess, setShareSuccess] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
+  const [sharedWorksheetId, setSharedWorksheetId] = useState<string | null>(
+    null,
+  );
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Cleanup copied state after 3 seconds
   useEffect(() => {
@@ -118,10 +123,15 @@ export default function Result() {
     setShareError(null);
 
     try {
+      const sessionId = getOrCreateSessionId();
+
       const response = await fetch("/api/v1/worksheets/share", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(challengeData),
+        body: JSON.stringify({
+          ...challengeData,
+          sessionId, // Include session ID for ownership tracking
+        }),
       });
 
       const data = await response.json();
@@ -133,6 +143,7 @@ export default function Result() {
 
       setShareSuccess(true);
       setShareLink(data.shareLink);
+      setSharedWorksheetId(data.id); // Store the worksheet ID for potential deletion
     } catch (error) {
       console.error("Share error:", error);
       setShareError({
@@ -140,6 +151,46 @@ export default function Result() {
       });
     } finally {
       setShareLoading(false);
+    }
+  };
+
+  const handleUndoShare = async () => {
+    if (!sharedWorksheetId) return;
+
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      "Are you sure you want to remove this worksheet from the community library? This action cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    setDeleteLoading(true);
+
+    try {
+      const sessionId = getOrCreateSessionId();
+
+      const response = await fetch(`/api/v1/worksheets/${sharedWorksheetId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        alert(`Failed to delete: ${data.error}`);
+        return;
+      }
+
+      // Reset share states
+      setShareSuccess(false);
+      setShareLink(null);
+      setSharedWorksheetId(null);
+      alert("Worksheet successfully removed from community library.");
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Network error. Please check your connection and try again.");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -370,7 +421,7 @@ export default function Result() {
                 <p className="text-sm text-green-800 mb-3">
                   Your worksheet has been shared to the community library.
                 </p>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center mb-3">
                   <div
                     className="flex-1 bg-white rounded p-3 text-xs font-mono text-gray-700 break-all cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => copyToClipboard(shareLink)}
@@ -384,6 +435,24 @@ export default function Result() {
                     {copied ? "✅ Copied" : "📋 Copy"}
                   </button>
                 </div>
+                {/* Undo Share Button */}
+                <button
+                  onClick={handleUndoShare}
+                  disabled={deleteLoading}
+                  className="w-full bg-red-50 hover:bg-red-100 border-2 border-red-300 text-red-800 px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {deleteLoading ? (
+                    <>
+                      <span className="mr-2 animate-spin">⏳</span>
+                      Removing...
+                    </>
+                  ) : (
+                    <>
+                      <span className="mr-2">🗑️</span>
+                      Undo Share - Remove from Community
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </Card>
