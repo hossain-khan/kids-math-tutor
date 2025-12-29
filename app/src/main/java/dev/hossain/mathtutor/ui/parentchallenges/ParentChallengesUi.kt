@@ -115,9 +115,8 @@ fun ParentChallengesUi(
                         onClick = { state.eventSink(ParentChallengesScreen.Event.ParentSettingsClicked) },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            painter = painterResource(id = R.drawable.admin_panel_settings_filled),
                             contentDescription = "Parent Settings",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     }
                 },
