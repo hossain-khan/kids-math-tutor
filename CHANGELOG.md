@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Parent Settings Screen** - New parental controls accessible from Parent Challenges screen
+  - Setup 4-digit PIN to lock sensitive parent settings
+  - PIN stored securely as SHA-256 hash in DataStore
+  - Reset PIN option requiring old PIN verification
+  - Forgot PIN recovery through Grade 10+ math challenge (multiplication, division, squares, percentages)
+  - Grade limit setting to restrict maximum selectable grade level
+  - PIN protection for grade limit changes
+  - Animated visibility for Reset/Forgot PIN options
+  - Settings icon in Parent Challenges top bar for easy access
+  - Comprehensive KDocs explaining rationale for each feature
+  - Timber logging for troubleshooting PIN operations
+- **PIN Management in UserPreferencesRepository** - Extended data layer with secure PIN storage
+  - `parentPinHash` Flow for observing PIN state
+  - `setParentPin(pin)` to set/update 4-digit PIN with SHA-256 hashing
+  - `verifyParentPin(pin)` for secure PIN verification
+  - `clearParentPin()` for forgot PIN recovery scenarios
+  - `maxGradeLevel` Flow for observing grade limit
+  - `setMaxGradeLevel(gradeLevel)` to restrict child's grade selection
+  - Analytics events for parent PIN setup completion
+- **Grade Limit Enforcement** - Updated GradeChangeDialog to respect parent-set grade limits
+  - Filters available grades based on maxGradeLevel
+  - Shows parent lock message when limit is active
+  - Prevents children from selecting grades beyond parent-approved level
+
 ## [1.18.0] - 2025-12-28
 
 ### Fixed

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.outlined.Delete
@@ -109,6 +110,17 @@ fun ParentChallengesUi(
             FeatureTopAppBar(
                 title = { Text("Challenges by Parents") },
                 feature = TopBarFeature.STATS,
+                actions = {
+                    IconButton(
+                        onClick = { state.eventSink(ParentChallengesScreen.Event.ParentSettingsClicked) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Parent Settings",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
+                },
             )
         },
         snackbarHost = {

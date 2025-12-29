@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.analytics.FakeAnalyticsService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.Game
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -492,6 +493,28 @@ class DeveloperPortalPresenterTest {
             val newCount = (flow.value + 1).coerceAtMost(3)
             flow.value = newCount
             return newCount
+        }
+
+        // Parent control methods (minimal implementation for testing)
+        private val parentPinHashFlow = MutableStateFlow<String?>(null)
+        private val maxGradeLevelFlow = MutableStateFlow<GradeLevel?>(null)
+
+        override val parentPinHash: Flow<String?> = parentPinHashFlow
+
+        override suspend fun setParentPin(pin: String) {
+            parentPinHashFlow.value = "hashed_$pin"
+        }
+
+        override suspend fun verifyParentPin(pin: String): Boolean = false
+
+        override suspend fun clearParentPin() {
+            parentPinHashFlow.value = null
+        }
+
+        override val maxGradeLevel: Flow<GradeLevel?> = maxGradeLevelFlow
+
+        override suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?) {
+            maxGradeLevelFlow.value = gradeLevel
         }
     }
 
