@@ -23,6 +23,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -167,8 +168,19 @@ class SettingsPresenter
 
                     is SettingsScreen.Event.SaveGrade -> {
                         Timber.d("SettingsScreen: Saving grade - ${event.gradeLevel}")
+                        // Fetch parent's grade limit to enforce restrictions
                         scope.launch {
                             try {
+                                val maxGrade = userPreferencesRepository.maxGradeLevel.firstOrNull()
+                                // Enforce parent's grade limit
+                                if (maxGrade != null && event.gradeLevel > maxGrade) {
+                                    Timber.w(
+                                        "SettingsScreen: Grade ${event.gradeLevel.displayName} exceeds parent limit " +
+                                            "(${maxGrade.displayName}). Update blocked.",
+                                    )
+                                    return@launch // Block the update
+                                }
+
                                 userProfileRepository.updateGradeLevel(event.gradeLevel)
                             } finally {
                                 // Close dialog only after save completes

@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Filters available grades based on maxGradeLevel
   - Shows parent lock message when limit is active
   - Prevents children from selecting grades beyond parent-approved level
+  - Automatically downgrades child's profile grade if parent lowers the limit below current grade
 
 ## [1.18.0] - 2025-12-28
 

@@ -14,10 +14,12 @@ import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
+import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -40,6 +42,7 @@ class ParentSettingsPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val preferencesRepository: UserPreferencesRepository,
+        private val userProfileRepository: UserProfileRepository,
         private val analyticsService: AnalyticsService,
     ) : Presenter<ParentSettingsScreen.State> {
         @CircuitInject(ParentSettingsScreen::class, AppScope::class)
@@ -226,6 +229,19 @@ class ParentSettingsPresenter
                         coroutineScope.launch {
                             try {
                                 preferencesRepository.setMaxGradeLevel(event.gradeLevel)
+
+                                // If new limit is set, check if current profile grade exceeds it
+                                if (event.gradeLevel != null) {
+                                    val currentProfile = userProfileRepository.getProfile().first()
+                                    if (currentProfile != null && currentProfile.gradeLevel > event.gradeLevel) {
+                                        Timber.w(
+                                            "ParentSettings: Current profile grade ${currentProfile.gradeLevel.displayName} " +
+                                                "exceeds new limit ${event.gradeLevel.displayName}. Downgrading.",
+                                        )
+                                        userProfileRepository.updateGradeLevel(event.gradeLevel)
+                                    }
+                                }
+
                                 analyticsService.logEvent(
                                     eventName = "parent_grade_limit_changed",
                                     parameters =
