@@ -253,6 +253,7 @@ fun SettingsUi(
     if (state.showGradeDialog && state.profile != null) {
         GradeChangeDialog(
             currentGrade = state.profile.gradeLevel,
+            maxGradeLevel = state.maxGradeLevel,
             onDismiss = { state.eventSink(SettingsScreen.Event.CancelGradeChange) },
             onSave = { grade -> state.eventSink(SettingsScreen.Event.SaveGrade(grade)) },
         )

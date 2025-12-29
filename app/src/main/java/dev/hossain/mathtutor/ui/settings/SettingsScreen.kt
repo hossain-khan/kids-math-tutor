@@ -25,6 +25,7 @@ data object SettingsScreen : Screen {
      * @property showNameDialog Whether the name edit dialog is visible
      * @property showGradeDialog Whether the grade change dialog is visible
      * @property analyticsEnabled Whether analytics collection is enabled
+     * @property maxGradeLevel The maximum grade level set by parents (null = no limit)
      * @property eventSink Handler for screen events
      */
     data class State(
@@ -32,6 +33,7 @@ data object SettingsScreen : Screen {
         val showNameDialog: Boolean,
         val showGradeDialog: Boolean,
         val analyticsEnabled: Boolean,
+        val maxGradeLevel: GradeLevel? = null,
         val showDeveloperPortal: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState

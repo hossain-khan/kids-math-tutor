@@ -72,6 +72,9 @@ class SettingsPresenter
             // Collect analytics preference
             val analyticsEnabled by userPreferencesRepository.isAnalyticsEnabled.collectAsState(initial = true)
 
+            // Collect max grade level from parent settings
+            val maxGradeLevel by userPreferencesRepository.maxGradeLevel.collectAsState(initial = null)
+
             // Log state changes in LaunchedEffect to avoid recomposition spam
             LaunchedEffect(profile?.name, profile?.gradeLevel, profile?.adaptiveDifficultyEnabled) {
                 Timber.d(
@@ -91,6 +94,7 @@ class SettingsPresenter
                 showNameDialog = showNameDialog,
                 showGradeDialog = showGradeDialog,
                 analyticsEnabled = analyticsEnabled,
+                maxGradeLevel = maxGradeLevel,
                 showDeveloperPortal = showDeveloperPortal,
             ) { event ->
                 when (event) {

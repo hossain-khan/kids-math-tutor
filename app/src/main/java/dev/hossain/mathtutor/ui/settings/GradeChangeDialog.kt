@@ -29,17 +29,27 @@ import dev.hossain.mathtutor.domain.model.GradeLevel
  * Dialog for changing the user's grade level.
  *
  * @param currentGrade The current grade level
+ * @param maxGradeLevel Optional maximum grade level set by parents (null = no limit)
  * @param onDismiss Called when the dialog is dismissed (Cancel button)
  * @param onSave Called when the user saves the new grade level
  */
 @Composable
 fun GradeChangeDialog(
     currentGrade: GradeLevel,
+    maxGradeLevel: GradeLevel? = null,
     onDismiss: () -> Unit,
     onSave: (GradeLevel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var selectedGrade by remember { mutableStateOf(currentGrade) }
+
+    // Filter grades based on max grade level if set
+    val availableGrades =
+        if (maxGradeLevel != null) {
+            GradeLevel.entries.filter { it.ordinal <= maxGradeLevel.ordinal }
+        } else {
+            GradeLevel.entries
+        }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -63,7 +73,7 @@ fun GradeChangeDialog(
                 Column(
                     modifier = Modifier.selectableGroup(),
                 ) {
-                    GradeLevel.entries.forEach { grade ->
+                    availableGrades.forEach { grade ->
                         Row(
                             modifier =
                                 Modifier
@@ -97,6 +107,16 @@ fun GradeChangeDialog(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                 )
+
+                // Show parent lock message if max grade is set
+                if (maxGradeLevel != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "🔒 Maximum grade limited to ${maxGradeLevel.displayName} by parent",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
             }
         },
         confirmButton = {
@@ -132,6 +152,7 @@ private fun GradeChangeDialogPreview() {
     dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
         GradeChangeDialog(
             currentGrade = GradeLevel.GRADE_1,
+            maxGradeLevel = null,
             onDismiss = {},
             onSave = {},
         )
@@ -144,6 +165,20 @@ private fun GradeChangeDialogDarkPreview() {
     dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme(darkTheme = true) {
         GradeChangeDialog(
             currentGrade = GradeLevel.GRADE_2,
+            maxGradeLevel = null,
+            onDismiss = {},
+            onSave = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GradeChangeDialogWithLimitPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GradeChangeDialog(
+            currentGrade = GradeLevel.KINDERGARTEN,
+            maxGradeLevel = GradeLevel.GRADE_1,
             onDismiss = {},
             onSave = {},
         )
