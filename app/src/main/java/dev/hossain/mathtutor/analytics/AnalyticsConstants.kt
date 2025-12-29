@@ -40,6 +40,10 @@ object AnalyticsEvent {
     const val CUSTOM_CHALLENGE_ARCHIVED = "custom_challenge_archived"
     const val CUSTOM_CHALLENGE_DELETED = "custom_challenge_deleted"
 
+    // Parent control events
+    const val PARENT_PIN_SETUP_STARTED = "parent_pin_setup_started"
+    const val PARENT_PIN_SETUP_COMPLETED = "parent_pin_setup_completed"
+
     // Settings events
     const val SETTINGS_CHANGED = "settings_changed"
     const val AUDIO_TOGGLED = "audio_toggled"

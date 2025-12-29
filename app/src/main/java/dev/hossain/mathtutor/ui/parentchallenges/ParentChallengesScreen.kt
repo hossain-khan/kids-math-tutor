@@ -125,5 +125,10 @@ data object ParentChallengesScreen : Screen {
          * User requested to navigate back.
          */
         data object NavigateBack : Event
+
+        /**
+         * User tapped the parent settings button.
+         */
+        data object ParentSettingsClicked : Event
     }
 }

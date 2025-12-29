@@ -5,10 +5,12 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.hossain.mathtutor.audio.AudioConstants
 import dev.hossain.mathtutor.data.local.userPreferencesDataStore
 import dev.hossain.mathtutor.di.ApplicationContext
 import dev.hossain.mathtutor.domain.model.Game
+import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -16,6 +18,7 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import java.security.MessageDigest
 
 interface UserPreferencesRepository {
     val isOnboardingCompleted: Flow<Boolean>
@@ -66,6 +69,51 @@ interface UserPreferencesRepository {
      * @return The new trial attempt count after incrementing
      */
     suspend fun incrementGameTrialAttempts(game: Game): Int
+
+    /**
+     * Gets the hashed parent PIN for verification.
+     * Returns null if no PIN has been set.
+     *
+     * @return Flow of hashed PIN string or null
+     */
+    val parentPinHash: Flow<String?>
+
+    /**
+     * Sets the parent PIN for accessing protected features.
+     * The PIN is stored as a SHA-256 hash for security.
+     *
+     * @param pin The 4-digit PIN to set
+     */
+    suspend fun setParentPin(pin: String)
+
+    /**
+     * Verifies if the provided PIN matches the stored PIN.
+     *
+     * @param pin The PIN to verify
+     * @return true if PIN matches, false otherwise
+     */
+    suspend fun verifyParentPin(pin: String): Boolean
+
+    /**
+     * Clears the parent PIN (used for testing or reset scenarios).
+     */
+    suspend fun clearParentPin()
+
+    /**
+     * Gets the maximum grade level that the child can select.
+     * Returns null if no limit has been set (unlimited).
+     *
+     * @return Flow of maximum GradeLevel or null
+     */
+    val maxGradeLevel: Flow<GradeLevel?>
+
+    /**
+     * Sets the maximum grade level that the child can select.
+     * This prevents children from accessing problems that are too difficult.
+     *
+     * @param gradeLevel The maximum grade level to set, or null to remove limit
+     */
+    suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?)
 }
 
 @SingleIn(AppScope::class)
@@ -87,6 +135,10 @@ class UserPreferencesRepositoryImpl
 
             // Game trial attempts keys (max 3 trials per game)
             fun gameTrialAttempts(game: Game) = intPreferencesKey("game_trial_${game.name}")
+
+            // Parent controls keys
+            val PARENT_PIN_HASH = stringPreferencesKey("parent_pin_hash")
+            val MAX_GRADE_LEVEL = stringPreferencesKey("max_grade_level")
         }
 
         override val isOnboardingCompleted: Flow<Boolean> =
@@ -199,5 +251,99 @@ class UserPreferencesRepositoryImpl
                 Timber.d("UserPreferencesRepository: Incremented trial attempts for ${game.name} to $newCount")
             }
             return newCount
+        }
+
+        override val parentPinHash: Flow<String?> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.PARENT_PIN_HASH]
+            }
+
+        override suspend fun setParentPin(pin: String) {
+            require(pin.length == 4 && pin.all { it.isDigit() }) {
+                "PIN must be exactly 4 digits"
+            }
+            val hashedPin = hashPin(pin)
+            Timber.d("UserPreferencesRepository: Setting parent PIN (hashed)")
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.PARENT_PIN_HASH] = hashedPin
+            }
+        }
+
+        override suspend fun verifyParentPin(pin: String): Boolean {
+            if (pin.length != 4 || !pin.all { it.isDigit() }) {
+                Timber.w("UserPreferencesRepository: Invalid PIN format")
+                return false
+            }
+
+            val storedHash =
+                context.userPreferencesDataStore.data
+                    .map { it[PreferencesKeys.PARENT_PIN_HASH] }
+                    .first()
+
+            if (storedHash == null) {
+                Timber.w("UserPreferencesRepository: No PIN set, verification failed")
+                return false
+            }
+
+            val inputHash = hashPin(pin)
+            val isValid = inputHash == storedHash
+            Timber.d("UserPreferencesRepository: PIN verification result = $isValid")
+            return isValid
+        }
+
+        override suspend fun clearParentPin() {
+            Timber.d("UserPreferencesRepository: Clearing parent PIN")
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences.remove(PreferencesKeys.PARENT_PIN_HASH)
+            }
+        }
+
+        override val maxGradeLevel: Flow<GradeLevel?> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.MAX_GRADE_LEVEL]?.let { levelName ->
+                    try {
+                        GradeLevel.valueOf(levelName)
+                    } catch (e: IllegalArgumentException) {
+                        Timber.e(e, "Invalid grade level stored: $levelName")
+                        null
+                    }
+                }
+            }
+
+        override suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?) {
+            Timber.d("UserPreferencesRepository: Setting max grade level = ${gradeLevel?.displayName}")
+            context.userPreferencesDataStore.edit { preferences ->
+                if (gradeLevel != null) {
+                    preferences[PreferencesKeys.MAX_GRADE_LEVEL] = gradeLevel.name
+                } else {
+                    preferences.remove(PreferencesKeys.MAX_GRADE_LEVEL)
+                }
+            }
+        }
+
+        /**
+         * Hashes a PIN using SHA-256 for secure storage.
+         * We use a simple hash here as PINs are short (4 digits).
+         * For production, consider using a stronger algorithm like PBKDF2 or bcrypt.
+         *
+         * @param pin The PIN to hash
+         * @return The hex-encoded hash string
+         */
+        private fun hashPin(pin: String): String {
+            val bytes = MessageDigest.getInstance("SHA-256").digest(pin.toByteArray())
+            return bytes.joinToString("") { "%02x".format(it) }
+        }
+
+        /**
+         * Helper to get the first value from a Flow synchronously.
+         * Used internally for PIN verification.
+         */
+        private suspend fun <T> Flow<T>.first(): T {
+            var result: T? = null
+            collect {
+                result = it
+                return result!!
+            }
+            throw NoSuchElementException("Flow was empty")
         }
     }
