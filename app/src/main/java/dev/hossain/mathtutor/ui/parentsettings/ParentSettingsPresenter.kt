@@ -187,24 +187,19 @@ class ParentSettingsPresenter
 
                     is ParentSettingsScreen.Event.ForgotPinChallengeCompleted -> {
                         Timber.d("ParentSettings: Forgot PIN challenge completed")
-                        val userAnswer = event.answer.toIntOrNull()
-                        if (userAnswer == event.correctAnswer) {
-                            Timber.i("ParentSettings: Forgot PIN challenge passed - clearing PIN")
-                            coroutineScope.launch {
-                                try {
-                                    preferencesRepository.clearParentPin()
-                                    analyticsService.logEvent(
-                                        eventName = "parent_pin_forgot_completed",
-                                        parameters = emptyMap(),
-                                    )
-                                    showForgotPin = false
-                                } catch (e: Exception) {
-                                    Timber.e(e, "ParentSettings: Failed to clear PIN")
-                                }
+                        // The dialog already verified the answer, just clear PIN
+                        Timber.i("ParentSettings: Forgot PIN challenge passed - clearing PIN")
+                        coroutineScope.launch {
+                            try {
+                                preferencesRepository.clearParentPin()
+                                analyticsService.logEvent(
+                                    eventName = "parent_pin_forgot_completed",
+                                    parameters = emptyMap(),
+                                )
+                                showForgotPin = false
+                            } catch (e: Exception) {
+                                Timber.e(e, "ParentSettings: Failed to clear PIN")
                             }
-                        } else {
-                            Timber.w("ParentSettings: Forgot PIN challenge failed - incorrect answer")
-                            // TODO: Show error message (implement in UI)
                         }
                     }
 

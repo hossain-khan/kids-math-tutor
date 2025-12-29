@@ -16,6 +16,7 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.security.MessageDigest
@@ -332,18 +333,5 @@ class UserPreferencesRepositoryImpl
         private fun hashPin(pin: String): String {
             val bytes = MessageDigest.getInstance("SHA-256").digest(pin.toByteArray())
             return bytes.joinToString("") { "%02x".format(it) }
-        }
-
-        /**
-         * Helper to get the first value from a Flow synchronously.
-         * Used internally for PIN verification.
-         */
-        private suspend fun <T> Flow<T>.first(): T {
-            var result: T? = null
-            collect {
-                result = it
-                return result!!
-            }
-            throw NoSuchElementException("Flow was empty")
         }
     }

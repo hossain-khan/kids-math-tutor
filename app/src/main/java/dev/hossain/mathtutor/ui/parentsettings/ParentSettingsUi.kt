@@ -127,6 +127,85 @@ fun ParentSettingsUi(
 
             // TODO: Add dialogs for PIN setup, verification, reset, forgot PIN, and grade limit
         }
+
+        // PIN Setup Dialog
+        if (state.showPinSetup) {
+            PinSetupDialog(
+                onConfirm = { pin, confirmPin ->
+                    state.eventSink(
+                        ParentSettingsScreen.Event.PinSetupCompleted(
+                            pin = pin,
+                            confirmPin = confirmPin,
+                        ),
+                    )
+                },
+                onDismiss = {
+                    state.eventSink(ParentSettingsScreen.Event.PinSetupCancelled)
+                },
+            )
+        }
+
+        // PIN Verification Dialog
+        if (state.showPinVerification) {
+            PinVerificationDialog(
+                onConfirm = { pin ->
+                    state.eventSink(ParentSettingsScreen.Event.PinSubmitted(pin))
+                },
+                onDismiss = {
+                    state.eventSink(ParentSettingsScreen.Event.PinVerificationCancelled)
+                },
+            )
+        }
+
+        // PIN Reset Dialog
+        if (state.showPinReset) {
+            PinResetDialog(
+                onConfirm = { newPin, confirmNewPin ->
+                    state.eventSink(
+                        ParentSettingsScreen.Event.PinResetCompleted(
+                            newPin = newPin,
+                            confirmNewPin = confirmNewPin,
+                        ),
+                    )
+                },
+                onDismiss = {
+                    state.eventSink(ParentSettingsScreen.Event.PinResetCancelled)
+                },
+            )
+        }
+
+        // Forgot PIN Dialog
+        if (state.showForgotPin) {
+            ForgotPinDialog(
+                onSuccess = {
+                    // When math challenge is solved correctly, presenter will clear PIN
+                    state.eventSink(
+                        ParentSettingsScreen.Event.ForgotPinChallengeCompleted(
+                            answer = "success",
+                            correctAnswer = 0,
+                        ),
+                    )
+                },
+                onDismiss = {
+                    state.eventSink(ParentSettingsScreen.Event.ForgotPinChallengeCancelled)
+                },
+            )
+        }
+
+        // Grade Limit Dialog
+        if (state.showGradeLimit) {
+            GradeLimitDialog(
+                currentMaxGrade = state.maxGradeLevel,
+                onConfirm = { gradeLevel ->
+                    state.eventSink(
+                        ParentSettingsScreen.Event.GradeLimitChanged(gradeLevel),
+                    )
+                },
+                onDismiss = {
+                    state.eventSink(ParentSettingsScreen.Event.GradeLimitCancelled)
+                },
+            )
+        }
     }
 }
 
