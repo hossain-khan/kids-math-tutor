@@ -31,10 +31,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -95,11 +98,15 @@ data class GradeSelectionScreen(
      *
      * @property selectedGrade Currently selected grade level, null if none selected
      * @property isFromSettings Whether this screen was opened from settings
+     * @property blockedMessage Message shown when child tries to select above parent's limit
+     * @property availableGrades List of grades that can be selected (respecting parent limits)
      * @property eventSink Handler for screen events
      */
     data class State(
         val selectedGrade: GradeLevel?,
         val isFromSettings: Boolean = false,
+        val blockedMessage: String? = null,
+        val availableGrades: List<GradeLevel> = GradeLevel.entries,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -155,6 +162,7 @@ class GradeSelectionPresenter
         override fun present(): GradeSelectionScreen.State {
             val scope = rememberCoroutineScope()
             var selectedGrade by remember { mutableStateOf<GradeLevel?>(null) }
+            var blockedMessage by remember { mutableStateOf<String?>(null) }
 
             // Track screen view
             LaunchedImpressionEffect {
@@ -172,12 +180,13 @@ class GradeSelectionPresenter
             val currentProfile by userProfileRepository.getProfile().collectAsState(initial = null)
 
             // Fetch parent-set grade limit to enforce restrictions
-            val maxGradeLevel by userPreferencesRepository.maxGradeLevel.collectAsState(initial = null)
+            val maxGradeLevelState by userPreferencesRepository.maxGradeLevel.collectAsState(initial = null)
+            val maxGradeLevel: GradeLevel? = maxGradeLevelState
 
             // Available grades to display: all grades or only up to parent's limit
             val availableGrades =
                 if (maxGradeLevel != null) {
-                    GradeLevel.entries.filter { it <= maxGradeLevel!! }
+                    GradeLevel.entries.filter { it <= maxGradeLevel }
                 } else {
                     GradeLevel.entries
                 }
@@ -185,20 +194,27 @@ class GradeSelectionPresenter
             return GradeSelectionScreen.State(
                 selectedGrade = selectedGrade,
                 isFromSettings = screen.isFromSettings,
+                blockedMessage = blockedMessage,
+                availableGrades = availableGrades,
             ) { event ->
                 when (event) {
                     is GradeSelectionScreen.Event.GradeSelected -> {
                         // Enforce parent's grade limit
-                        if (maxGradeLevel != null && event.grade > maxGradeLevel!!) {
-                            Timber.w(
-                                "GradeSelection: Grade ${event.grade.displayName} exceeds parent limit " +
-                                    "(${maxGradeLevel!!.displayName}). Selection blocked.",
-                            )
-                            // Don't update selectedGrade if it exceeds the limit
-                            return@State
+                        maxGradeLevel?.let { limit ->
+                            if (event.grade > limit) {
+                                Timber.w(
+                                    "GradeSelection: Grade ${event.grade.displayName} exceeds parent limit " +
+                                        "(${limit.displayName}). Selection blocked.",
+                                )
+                                blockedMessage =
+                                    "Your parent set a limit at ${limit.displayName}. " +
+                                    "You can't select ${event.grade.displayName}. 🐶"
+                                return@State
+                            }
                         }
 
                         selectedGrade = event.grade
+                        blockedMessage = null
                         Timber.d("GradeSelection: Grade selected = ${event.grade}")
                         // Track grade selection
                         analyticsService.logEvent(
@@ -268,8 +284,18 @@ fun GradeSelectionUi(
     state: GradeSelectionScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show snackbar when grade selection is blocked
+    LaunchedEffect(state.blockedMessage) {
+        state.blockedMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
+
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             if (state.isFromSettings) {
                 TopAppBar(
@@ -403,35 +429,24 @@ fun GradeSelectionUi(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Kindergarten Card
-                GradeCard(
-                    gradeLevel = GradeLevel.KINDERGARTEN,
-                    description = "Numbers 1-5, Simple addition",
-                    isSelected = state.selectedGrade == GradeLevel.KINDERGARTEN,
-                    onClick = {
-                        state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.KINDERGARTEN))
-                    },
-                )
+                // Display grade cards based on availability (respecting parent limits)
+                val gradeDescriptions =
+                    mapOf(
+                        GradeLevel.KINDERGARTEN to "Numbers 1-5, Simple addition",
+                        GradeLevel.GRADE_1 to "Numbers 1-10, Add, subtract",
+                        GradeLevel.GRADE_2 to "Numbers 1-20, All operations",
+                    )
 
-                // Grade 1 Card
-                GradeCard(
-                    gradeLevel = GradeLevel.GRADE_1,
-                    description = "Numbers 1-10, Add, subtract",
-                    isSelected = state.selectedGrade == GradeLevel.GRADE_1,
-                    onClick = {
-                        state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_1))
-                    },
-                )
-
-                // Grade 2 Card
-                GradeCard(
-                    gradeLevel = GradeLevel.GRADE_2,
-                    description = "Numbers 1-20, All operations",
-                    isSelected = state.selectedGrade == GradeLevel.GRADE_2,
-                    onClick = {
-                        state.eventSink(GradeSelectionScreen.Event.GradeSelected(GradeLevel.GRADE_2))
-                    },
-                )
+                state.availableGrades.forEach { gradeLevel ->
+                    GradeCard(
+                        gradeLevel = gradeLevel,
+                        description = gradeDescriptions[gradeLevel] ?: "",
+                        isSelected = state.selectedGrade == gradeLevel,
+                        onClick = {
+                            state.eventSink(GradeSelectionScreen.Event.GradeSelected(gradeLevel))
+                        },
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -507,6 +522,8 @@ private fun GradeSelectionUiPreview() {
             state =
                 GradeSelectionScreen.State(
                     selectedGrade = null,
+                    blockedMessage = null,
+                    availableGrades = GradeLevel.entries.toList(),
                     eventSink = {},
                 ),
         )
@@ -521,6 +538,8 @@ private fun GradeSelectionUiSelectedPreview() {
             state =
                 GradeSelectionScreen.State(
                     selectedGrade = GradeLevel.GRADE_1,
+                    blockedMessage = null,
+                    availableGrades = GradeLevel.entries.toList(),
                     eventSink = {},
                 ),
         )
@@ -535,6 +554,8 @@ private fun GradeSelectionUiDarkPreview() {
             state =
                 GradeSelectionScreen.State(
                     selectedGrade = GradeLevel.GRADE_2,
+                    blockedMessage = null,
+                    availableGrades = GradeLevel.entries.toList(),
                     eventSink = {},
                 ),
         )
