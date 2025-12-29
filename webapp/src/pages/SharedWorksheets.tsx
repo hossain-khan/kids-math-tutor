@@ -85,7 +85,10 @@ export default function SharedWorksheets() {
   const [showAllProblems, setShowAllProblems] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedJson, setCopiedJson] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deletingWorksheetId, setDeletingWorksheetId] = useState<string | null>(
+    null,
+  );
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   // Initialize session ID and Android check
   useEffect(() => {
     setIsAndroid(isLikelyAndroidDevice());
@@ -193,7 +196,7 @@ export default function SharedWorksheets() {
     };
 
     fetchWorksheets();
-  }, [id, searchQuery, selectedGrades, sortBy, offset]);
+  }, [id, searchQuery, selectedGrades, sortBy, offset, refreshTrigger]);
 
   const handleUseWorksheet = async () => {
     if (!worksheet) return;
@@ -297,7 +300,7 @@ export default function SharedWorksheets() {
 
     if (!confirmed) return;
 
-    setDeleteLoading(true);
+    setDeletingWorksheetId(worksheetId);
 
     try {
       const response = await fetch(`/api/v1/worksheets/${worksheetId}`, {
@@ -318,15 +321,15 @@ export default function SharedWorksheets() {
       if (id) {
         window.location.href = "/worksheets";
       } else {
-        // Refresh the list by resetting offset
-        setOffset(0);
-        // The useEffect will reload the data
+        // Trigger a refresh by incrementing refreshTrigger
+        // This works even when offset is 0
+        setRefreshTrigger((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Delete error:", error);
       alert("Network error. Please check your connection and try again.");
     } finally {
-      setDeleteLoading(false);
+      setDeletingWorksheetId(null);
     }
   };
 
@@ -599,10 +602,10 @@ export default function SharedWorksheets() {
                     </p>
                     <button
                       onClick={() => handleDeleteWorksheet(worksheet.id)}
-                      disabled={deleteLoading}
+                      disabled={deletingWorksheetId === worksheet.id}
                       className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {deleteLoading ? (
+                      {deletingWorksheetId === worksheet.id ? (
                         <>
                           <span className="mr-2 animate-spin">⏳</span>
                           Deleting...
@@ -1006,11 +1009,15 @@ export default function SharedWorksheets() {
                           e.stopPropagation();
                           handleDeleteWorksheet(ws.id);
                         }}
-                        disabled={deleteLoading}
+                        disabled={deletingWorksheetId === ws.id}
                         className="mt-2 w-full bg-red-50 hover:bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Delete your worksheet from the community library"
                       >
-                        🗑️ Delete Your Worksheet
+                        {deletingWorksheetId === ws.id ? (
+                          <>⏳ Deleting...</>
+                        ) : (
+                          <>🗑️ Delete Your Worksheet</>
+                        )}
                       </button>
                     )}
                   </div>

@@ -20,6 +20,7 @@ import {
   calculateWorksheetRatingStats,
   incrementViews,
   incrementDownloads,
+  deleteWorksheet,
   type SharedWorksheet,
 } from '@/lib/server/worksheetStorage';
 import {
@@ -556,7 +557,9 @@ app.delete('/api/v1/worksheets/:id', async (c) => {
     }
 
     // Check if the session ID matches the creator's session ID
-    if (worksheet.creatorSessionId !== sessionId) {
+    // Security: Ensure both sessionId and creatorSessionId are defined to prevent
+    // unauthorized deletion of legacy worksheets by sending undefined sessionId
+    if (!sessionId || !worksheet.creatorSessionId || worksheet.creatorSessionId !== sessionId) {
       return c.json(
         {
           error: 'Unauthorized: You can only delete worksheets you created',
@@ -565,17 +568,19 @@ app.delete('/api/v1/worksheets/:id', async (c) => {
       );
     }
 
-    // Delete the worksheet and associated ratings
-    await c.env.KV.delete(`worksheet:${id}`);
-    
-    // Delete all associated ratings
-    const ratingsPrefix = `rating:${id}:`;
-    const ratingsListResult = await c.env.KV.list({
-      prefix: ratingsPrefix,
-    });
-    
-    for (const key of ratingsListResult.keys) {
-      await c.env.KV.delete(key.name);
+    // Delete the worksheet and associated ratings using the storage function
+    const success = await deleteWorksheet(
+      { env: { KV: c.env.KV } },
+      id,
+    );
+
+    if (!success) {
+      return c.json(
+        {
+          error: 'Failed to delete worksheet',
+        },
+        500,
+      );
     }
 
     return c.json({

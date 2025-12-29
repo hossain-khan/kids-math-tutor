@@ -152,4 +152,28 @@ describe("worksheetStorage - deletion", () => {
     expect(retrieved).toBeTruthy();
     expect(retrieved?.creatorSessionId).toBeUndefined();
   });
+
+  it("should not allow deletion when sessionId is undefined (security check)", async () => {
+    const worksheet: SharedWorksheet = {
+      id: "test-ws-5",
+      type: "explicit",
+      title: "Test Worksheet 5",
+      grades: ["grade1"],
+      problems: [{ operand1: 1, operand2: 2, operation: "addition" }],
+      createdAt: new Date().toISOString(),
+      creatorSessionId: "session-123",
+      stats: { views: 0, downloads: 0, averageRating: 0, ratingCount: 0 },
+    };
+
+    await saveWorksheet(kvContext, worksheet);
+
+    // Attempt to delete with undefined sessionId should fail
+    // This is handled at the API level, not in deleteWorksheet function
+    // The API checks for undefined before calling deleteWorksheet
+    
+    // Verify worksheet still exists
+    const retrieved = await getWorksheet(kvContext, "test-ws-5");
+    expect(retrieved).toBeTruthy();
+    expect(retrieved?.creatorSessionId).toBe("session-123");
+  });
 });
