@@ -765,46 +765,50 @@ class DeveloperPortalPresenter
                 }
             }
 
-            // Add practice sessions for 2 of the challenges
-            // Quick Addition: 3 sessions at 90% accuracy
+            // Add practice sessions for 2 of the challenges, distributed across days
+            // Quick Addition: 3 sessions at 90% accuracy, spread across 3 days
             val quickAdditionChallenge = createdChallengeIds.find { it.first == "Quick Addition" }
             if (quickAdditionChallenge != null) {
                 repeat(3) { sessionIndex ->
-                    val now = Instant.now()
+                    val dayOffset = sessionIndex.toLong() // 0, 1, 2 days ago
+                    val baseTime = Instant.now().minus(dayOffset, java.time.temporal.ChronoUnit.DAYS)
                     val session =
                         ChallengePracticeSession(
-                            startTime = now.minusSeconds((3 - sessionIndex).toLong() * 300), // Stagger sessions
-                            endTime = now.minusSeconds((3 - sessionIndex).toLong() * 300).plusSeconds(120),
+                            startTime = baseTime.minusSeconds(120),
+                            endTime = baseTime.minusSeconds(120).plusSeconds(120),
                             problemsAttempted = 10,
                             correctAnswers = 9, // 90% accuracy
                             totalTimeMs = 120000,
                         )
                     try {
                         customChallengeService.recordPracticeSession(quickAdditionChallenge.second, session)
-                        Timber.d("[DevPortal] Recorded session $sessionIndex for Quick Addition (90% accuracy)")
+                        Timber.d("[DevPortal] Recorded session $sessionIndex for Quick Addition (90% accuracy, ${dayOffset}d ago)")
                     } catch (e: Exception) {
                         Timber.e(e, "[DevPortal] Failed to record session for Quick Addition")
                     }
                 }
             }
 
-            // Quick Subtraction: 1 session at 45% accuracy
+            // Quick Subtraction: 2 sessions at 50% accuracy, spread across 2 days
             val quickSubtractionChallenge = createdChallengeIds.find { it.first == "Quick Subtraction" }
             if (quickSubtractionChallenge != null) {
-                val now = Instant.now()
-                val session =
-                    ChallengePracticeSession(
-                        startTime = now.minusSeconds(600),
-                        endTime = now.minusSeconds(600).plusSeconds(90),
-                        problemsAttempted = 10,
-                        correctAnswers = 5, // 50% accuracy (close to 45%)
-                        totalTimeMs = 90000,
-                    )
-                try {
-                    customChallengeService.recordPracticeSession(quickSubtractionChallenge.second, session)
-                    Timber.d("[DevPortal] Recorded session for Quick Subtraction (50 percent accuracy)")
-                } catch (e: Exception) {
-                    Timber.e(e, "[DevPortal] Failed to record session for Quick Subtraction")
+                repeat(2) { sessionIndex ->
+                    val dayOffset = (sessionIndex + 3).toLong() // 3, 4 days ago
+                    val baseTime = Instant.now().minus(dayOffset, java.time.temporal.ChronoUnit.DAYS)
+                    val session =
+                        ChallengePracticeSession(
+                            startTime = baseTime.minusSeconds(90),
+                            endTime = baseTime.minusSeconds(90).plusSeconds(90),
+                            problemsAttempted = 10,
+                            correctAnswers = 5, // 50% accuracy
+                            totalTimeMs = 90000,
+                        )
+                    try {
+                        customChallengeService.recordPracticeSession(quickSubtractionChallenge.second, session)
+                        Timber.d("[DevPortal] Recorded session $sessionIndex for Quick Subtraction (50% accuracy, ${dayOffset}d ago)")
+                    } catch (e: Exception) {
+                        Timber.e(e, "[DevPortal] Failed to record session for Quick Subtraction")
+                    }
                 }
             }
 
