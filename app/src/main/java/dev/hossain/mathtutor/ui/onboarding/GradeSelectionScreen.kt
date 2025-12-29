@@ -176,6 +176,15 @@ class GradeSelectionPresenter
             // Collect current profile to check if it exists (for settings mode)
             val currentProfile by userProfileRepository.getProfile().collectAsState(initial = null)
 
+            // When opening from settings, initialize selectedGrade with current profile's grade
+            LaunchedEffect(screen.isFromSettings, currentProfile) {
+                val profile = currentProfile
+                if (screen.isFromSettings && profile != null && selectedGrade == null) {
+                    selectedGrade = profile.gradeLevel
+                    Timber.d("GradeSelection: Initialized selectedGrade from profile = ${profile.gradeLevel}")
+                }
+            }
+
             // Fetch parent-set grade limit to enforce restrictions
             val maxGradeLevelState by userPreferencesRepository.maxGradeLevel.collectAsState(initial = null)
             val maxGradeLevel: GradeLevel? = maxGradeLevelState
