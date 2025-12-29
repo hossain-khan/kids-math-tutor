@@ -192,8 +192,14 @@ fun HomeUi(
                                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                     ),
                             ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.controller_bold_outline),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "🎮 Play Games",
+                                    text = "Play Games",
                                     style = MaterialTheme.typography.titleLarge,
                                 )
                             }
