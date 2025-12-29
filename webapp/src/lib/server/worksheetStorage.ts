@@ -421,20 +421,20 @@ export async function deleteWorksheet(
 ): Promise<boolean> {
   try {
     const worksheetKey = `worksheet:${id}`;
-    
+
     // Delete the worksheet
     await context.env.KV.delete(worksheetKey);
-    
+
     // Delete all associated ratings
     const ratingsPrefix = `rating:${id}:`;
     const ratingsListResult = await context.env.KV.list({
       prefix: ratingsPrefix,
     });
-    
+
     for (const key of ratingsListResult.keys) {
       await context.env.KV.delete(key.name);
     }
-    
+
     return true;
   } catch (error) {
     console.error("Failed to delete worksheet:", error);

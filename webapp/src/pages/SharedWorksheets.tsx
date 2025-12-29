@@ -21,6 +21,7 @@ interface SharedWorksheet {
     operation: string;
   }>;
   createdAt: string;
+  creatorSessionId?: string; // Session ID of the creator
   stats: {
     views: number;
     downloads: number;

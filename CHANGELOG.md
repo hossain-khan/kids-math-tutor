@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Webapp: Parent Challenge Deletion** - Parents can now delete their own recently shared challenges from the community library
+  - Session-based ownership tracking: Challenges store creator's session ID at share time
+  - "Undo Share" button on Result page immediately after sharing a challenge
+  - Delete button shown on worksheet detail page for owned challenges
+  - Delete button shown on worksheet cards in Community Library list view for owned challenges
+  - "Your Worksheet" badge displayed on owned worksheets in list view
+  - Confirmation dialogs explain deletion action and requirement (creator must match)
+  - Session ID verification prevents unauthorized deletions
+  - Ratings are automatically deleted when worksheet is removed
+  - Backwards compatible: Old worksheets without creatorSessionId still work normally
+  - Unit tests added for deletion functionality
+
 ## [1.18.0] - 2025-12-28
 
 ### Fixed

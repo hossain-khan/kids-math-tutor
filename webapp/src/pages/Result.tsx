@@ -124,7 +124,7 @@ export default function Result() {
 
     try {
       const sessionId = getOrCreateSessionId();
-      
+
       const response = await fetch("/api/v1/worksheets/share", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

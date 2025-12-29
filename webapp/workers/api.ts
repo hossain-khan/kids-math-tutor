@@ -20,7 +20,6 @@ import {
   calculateWorksheetRatingStats,
   incrementViews,
   incrementDownloads,
-  deleteWorksheet,
   type SharedWorksheet,
 } from '@/lib/server/worksheetStorage';
 import {
