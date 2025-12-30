@@ -7,6 +7,7 @@ import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -29,6 +30,7 @@ data object HomeScreen : Screen {
      * @property streakData Current streak data, null if no practice history
      * @property overallStats Overall session statistics
      * @property recentBadges List of 3 most recently unlocked badges
+     * @property activeGoal Active goal if one is assigned, null otherwise
      * @property isMusicPlaying Whether background music is currently playing
      * @property eventSink Handler for screen events
      */
@@ -38,6 +40,7 @@ data object HomeScreen : Screen {
         val streakData: DailyStreak?,
         val overallStats: SessionStats,
         val recentBadges: List<Badge>,
+        val activeGoal: ActiveGoal? = null,
         val isMusicPlaying: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
@@ -75,5 +78,10 @@ data object HomeScreen : Screen {
          * User tapped the Games button.
          */
         data object ViewGamesClicked : Event
+
+        /**
+         * User tapped the active goal banner to view progress.
+         */
+        data object ViewGoalProgressClicked : Event
     }
 }
