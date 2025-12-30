@@ -314,3 +314,7 @@ class ParentSettingsPresenter
                         Timber.d("ParentSettings: Navigate to manage goals")
                         navigator.goTo(GoalCatalogScreen)
                     }
+                }
+            }
+        }
+    }
