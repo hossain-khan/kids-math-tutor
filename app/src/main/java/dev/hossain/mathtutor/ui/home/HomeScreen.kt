@@ -42,6 +42,7 @@ data object HomeScreen : Screen {
         val recentBadges: List<Badge>,
         val activeGoal: ActiveGoal? = null,
         val isMusicPlaying: Boolean = false,
+        val showSessionResumptionDialog: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -83,5 +84,15 @@ data object HomeScreen : Screen {
          * User tapped the active goal banner to view progress.
          */
         data object ViewGoalProgressClicked : Event
+
+        /**
+         * User dismissed the session resumption dialog.
+         */
+        data object SessionResumptionDismissed : Event
+
+        /**
+         * User tapped to continue with active goal from resumption dialog.
+         */
+        data object ContinueGoalClicked : Event
     }
 }
