@@ -10,11 +10,10 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.hossain.mathtutor.di.AppScope
 import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.usecase.goals.ActivateGoalUseCase
-import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen
+import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -28,7 +27,6 @@ class GoalCatalogPresenter(
     private val goalRepository: GoalRepository,
     private val activateGoalUseCase: ActivateGoalUseCase,
 ) : Presenter<GoalCatalogScreen.State> {
-    
     @CircuitInject(GoalCatalogScreen::class, AppScope::class)
     @AssistedFactory
     interface Factory {
@@ -37,6 +35,7 @@ class GoalCatalogPresenter(
             navigator: Navigator,
         ): GoalCatalogPresenter
     }
+
     @Composable
     override fun present(): GoalCatalogScreen.State {
         var isLoading by remember { mutableStateOf(false) }

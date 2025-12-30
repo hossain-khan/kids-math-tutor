@@ -20,7 +20,6 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @AssistedInject
 class GoalCreatorPresenter(
@@ -28,7 +27,6 @@ class GoalCreatorPresenter(
     @Assisted private val navigator: Navigator,
     private val createGoalUseCase: CreateGoalUseCase,
 ) : Presenter<State> {
-    
     @CircuitInject(GoalCreatorScreen::class, AppScope::class)
     @AssistedFactory
     interface Factory {
@@ -47,52 +45,76 @@ class GoalCreatorPresenter(
         var isLoading by remember { mutableStateOf(false) }
         var error by remember { mutableStateOf<String?>(null) }
 
-        val canAdvance = when (currentStep) {
-            Step.Title -> goalTitle.isNotBlank()
-            Step.SelectComponents -> components.isNotEmpty()
-            Step.Review -> true
-        }
+        val canAdvance =
+            when (currentStep) {
+                Step.Title -> goalTitle.isNotBlank()
+                Step.SelectComponents -> components.isNotEmpty()
+                Step.Review -> true
+            }
 
         fun handleEvent(event: Event) {
             when (event) {
-                is Event.SetTitle -> goalTitle = event.title
-                is Event.SetDescription -> goalDescription = event.description
-                is Event.AddComponent -> components = components + event.component
-                is Event.RemoveComponent -> components = components.filterIndexed { index, _ -> index != event.index }
+                is Event.SetTitle -> {
+                    goalTitle = event.title
+                }
+
+                is Event.SetDescription -> {
+                    goalDescription = event.description
+                }
+
+                is Event.AddComponent -> {
+                    components = components + event.component
+                }
+
+                is Event.RemoveComponent -> {
+                    components = components.filterIndexed { index, _ -> index != event.index }
+                }
+
                 Event.NextStep -> {
                     if (currentStep != Step.Review) {
-                        currentStep = when (currentStep) {
-                            Step.Title -> Step.SelectComponents
-                            Step.SelectComponents -> Step.Review
-                            Step.Review -> Step.Review
-                        }
+                        currentStep =
+                            when (currentStep) {
+                                Step.Title -> Step.SelectComponents
+                                Step.SelectComponents -> Step.Review
+                                Step.Review -> Step.Review
+                            }
                     }
                 }
+
                 Event.PreviousStep -> {
                     if (currentStep != Step.Title) {
-                        currentStep = when (currentStep) {
-                            Step.Title -> Step.Title
-                            Step.SelectComponents -> Step.Title
-                            Step.Review -> Step.SelectComponents
-                        }
+                        currentStep =
+                            when (currentStep) {
+                                Step.Title -> Step.Title
+                                Step.SelectComponents -> Step.Title
+                                Step.Review -> Step.SelectComponents
+                            }
                     }
                 }
+
                 Event.SaveGoal -> {
                     isLoading = true
                     error = null
                     // Create goal in coroutine context (should be wrapped in proper scope)
-                    val newGoal = Goal(
-                        title = goalTitle,
-                        description = goalDescription,
-                        components = components,
-                    )
+                    val newGoal =
+                        Goal(
+                            title = goalTitle,
+                            description = goalDescription,
+                            components = components,
+                        )
                     // In a real implementation, this would be properly handled with coroutines
                     // For now, we'll just navigate back
                     isLoading = false
                     navigator.pop()
                 }
-                Event.Cancel -> navigator.pop()
-                Event.DismissError -> error = null
+
+                Event.Cancel -> {
+                    navigator.pop()
+                }
+
+                Event.DismissError -> {
+                    error = null
+                }
             }
         }
 

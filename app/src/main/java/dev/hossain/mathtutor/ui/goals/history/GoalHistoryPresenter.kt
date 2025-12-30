@@ -23,7 +23,6 @@ class GoalHistoryPresenter(
     @Assisted private val navigator: Navigator,
     private val goalRepository: GoalRepository,
 ) : Presenter<State> {
-    
     @CircuitInject(GoalHistoryScreen::class, AppScope::class)
     @AssistedFactory
     interface Factory {
@@ -44,11 +43,11 @@ class GoalHistoryPresenter(
         // Calculate analytics
         val totalCompleted = histories.size
         val averageAccuracy = if (histories.isNotEmpty()) {
-            histories.mapNotNull { it.accuracy }.average().toFloat()
+            histories.map { it.overallAccuracy }.average().toFloat()
         } else {
             0f
         }
-        val totalTimeMins = histories.sumOf { it.timeTakenSeconds / 60 }
+        val totalTimeMins = histories.sumOf { it.totalTimeSeconds / 60 }
 
         // Update loading state once data is loaded
         if (goal != null && !isLoading) {

@@ -66,9 +66,10 @@ fun GoalCatalogUi(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             when {
                 state.isLoading -> {
@@ -117,9 +118,10 @@ fun GoalCatalogUi(
             // Error snackbar
             if (state.error != null) {
                 Snackbar(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(16.dp),
                     action = {
                         Text(
                             text = "Dismiss",
@@ -176,18 +178,21 @@ private fun GoalItem(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isActive) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            },
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    if (isActive) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+            ),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Text(
                 text = goal.title,
@@ -222,9 +227,10 @@ private fun GoalItem(
 
             // Action buttons
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
             ) {
                 androidx.compose.material3.Button(
                     onClick = onActivate,
@@ -235,9 +241,10 @@ private fun GoalItem(
 
                 androidx.compose.material3.OutlinedButton(
                     onClick = onViewHistory,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                 ) {
                     Icon(
                         Icons.Filled.History,
@@ -249,9 +256,10 @@ private fun GoalItem(
 
                 androidx.compose.material3.OutlinedButton(
                     onClick = onDelete,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                 ) {
                     Icon(
                         Icons.Filled.Delete,
@@ -271,9 +279,10 @@ private fun EmptyGoalsState(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(0.8f)
-            .padding(32.dp),
+        modifier =
+            modifier
+                .fillMaxWidth(0.8f)
+                .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {

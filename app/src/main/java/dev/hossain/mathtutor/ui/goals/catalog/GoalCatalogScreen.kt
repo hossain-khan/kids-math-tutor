@@ -19,10 +19,23 @@ data class GoalCatalogScreen : Screen {
 
     sealed interface Event : CircuitUiEvent {
         object CreateNewGoal : Event
-        data class ActivateGoal(val goalId: String) : Event
-        data class DeleteGoal(val goalId: String) : Event
-        data class ViewHistory(val goalId: String) : Event
-        data class ArchiveGoal(val goalId: String) : Event
+
+        data class ActivateGoal(
+            val goalId: String,
+        ) : Event
+
+        data class DeleteGoal(
+            val goalId: String,
+        ) : Event
+
+        data class ViewHistory(
+            val goalId: String,
+        ) : Event
+
+        data class ArchiveGoal(
+            val goalId: String,
+        ) : Event
+
         object DismissError : Event
     }
 }

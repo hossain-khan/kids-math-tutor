@@ -62,26 +62,29 @@ fun GoalCreatorUi(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState()),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Step indicator
@@ -94,25 +97,33 @@ fun GoalCreatorUi(
 
                 // Step content
                 when (state.currentStep) {
-                    Step.Title -> TitleStepContent(
-                        title = state.goalTitle,
-                        description = state.goalDescription,
-                        onTitleChange = { state.eventSink(Event.SetTitle(it)) },
-                        onDescriptionChange = { state.eventSink(Event.SetDescription(it)) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Step.SelectComponents -> SelectComponentsContent(
-                        components = state.components,
-                        onAddComponent = { state.eventSink(Event.AddComponent(it)) },
-                        onRemoveComponent = { state.eventSink(Event.RemoveComponent(it)) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Step.Review -> ReviewStepContent(
-                        goalTitle = state.goalTitle,
-                        goalDescription = state.goalDescription,
-                        components = state.components,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                    Step.Title -> {
+                        TitleStepContent(
+                            title = state.goalTitle,
+                            description = state.goalDescription,
+                            onTitleChange = { state.eventSink(Event.SetTitle(it)) },
+                            onDescriptionChange = { state.eventSink(Event.SetDescription(it)) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+
+                    Step.SelectComponents -> {
+                        SelectComponentsContent(
+                            components = state.components,
+                            onAddComponent = { state.eventSink(Event.AddComponent(it)) },
+                            onRemoveComponent = { state.eventSink(Event.RemoveComponent(it)) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+
+                    Step.Review -> {
+                        ReviewStepContent(
+                            goalTitle = state.goalTitle,
+                            goalDescription = state.goalDescription,
+                            components = state.components,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
                 }
             }
 
@@ -124,9 +135,10 @@ fun GoalCreatorUi(
                 onPrevious = { state.eventSink(Event.PreviousStep) },
                 onNext = { state.eventSink(Event.NextStep) },
                 onSave = { state.eventSink(Event.SaveGoal) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
             )
         }
     }
@@ -149,33 +161,38 @@ private fun StepIndicator(
                 val isCompleted = currentStep.ordinal > step.ordinal
 
                 Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = when {
-                            isActive -> MaterialTheme.colorScheme.primaryContainer
-                            isCompleted -> MaterialTheme.colorScheme.tertiaryContainer
-                            else -> MaterialTheme.colorScheme.surface
-                        },
-                    ),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor =
+                                when {
+                                    isActive -> MaterialTheme.colorScheme.primaryContainer
+                                    isCompleted -> MaterialTheme.colorScheme.tertiaryContainer
+                                    else -> MaterialTheme.colorScheme.surface
+                                },
+                        ),
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = when (step) {
-                                Step.Title -> "Title"
-                                Step.SelectComponents -> "Components"
-                                Step.Review -> "Review"
-                            },
+                            text =
+                                when (step) {
+                                    Step.Title -> "Title"
+                                    Step.SelectComponents -> "Components"
+                                    Step.Review -> "Review"
+                                },
                             style = MaterialTheme.typography.labelSmall,
-                            color = when {
-                                isActive -> MaterialTheme.colorScheme.onPrimaryContainer
-                                isCompleted -> MaterialTheme.colorScheme.onTertiaryContainer
-                                else -> MaterialTheme.colorScheme.onSurface
-                            },
+                            color =
+                                when {
+                                    isActive -> MaterialTheme.colorScheme.onPrimaryContainer
+                                    isCompleted -> MaterialTheme.colorScheme.onTertiaryContainer
+                                    else -> MaterialTheme.colorScheme.onSurface
+                                },
                         )
                     }
                 }
@@ -215,9 +232,10 @@ private fun TitleStepContent(
             placeholder = { Text("e.g., Master Addition") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-            ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                ),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -257,12 +275,13 @@ private fun SelectComponentsContent(
         )
 
         // Available operations
-        val operations = listOf(
-            MathOperation.Addition,
-            MathOperation.Subtraction,
-            MathOperation.Multiplication,
-            MathOperation.Division,
-        )
+        val operations =
+            listOf(
+                MathOperation.Addition,
+                MathOperation.Subtraction,
+                MathOperation.Multiplication,
+                MathOperation.Division,
+            )
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -277,12 +296,13 @@ private fun SelectComponentsContent(
                         if (isSelected) {
                             onRemoveComponent(components.indexOfFirst { it.operation == operation })
                         } else {
-                            val component = GoalComponent(
-                                operation = operation,
-                                minRange = 1,
-                                maxRange = 10,
-                                problemCount = 10,
-                            )
+                            val component =
+                                GoalComponent(
+                                    operation = operation,
+                                    minRange = 1,
+                                    maxRange = 10,
+                                    problemCount = 10,
+                                )
                             onAddComponent(component)
                         }
                     },
@@ -312,18 +332,21 @@ private fun OperationButton(
     Button(
         onClick = onClick,
         modifier = modifier.height(48.dp),
-        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            },
-            contentColor = if (isSelected) {
-                MaterialTheme.colorScheme.onPrimaryContainer
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            },
-        ),
+        colors =
+            androidx.compose.material3.ButtonDefaults.buttonColors(
+                containerColor =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+                contentColor =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+            ),
     ) {
         Text(
             text = "${operation.symbol} ${operation.displayName}",
@@ -349,9 +372,10 @@ private fun ReviewStepContent(
         )
 
         Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            ),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                ),
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -420,9 +444,10 @@ private fun NavigationButtons(
         if (currentStep != Step.Title) {
             OutlinedButton(
                 onClick = onPrevious,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(48.dp),
                 enabled = !isLoading,
             ) {
                 Text("Back")
@@ -433,20 +458,23 @@ private fun NavigationButtons(
             Step.Title, Step.SelectComponents -> {
                 Button(
                     onClick = onNext,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(48.dp),
                     enabled = canAdvance && !isLoading,
                 ) {
                     Text(if (currentStep == Step.Title) "Next" else "Review")
                 }
             }
+
             Step.Review -> {
                 Button(
                     onClick = onSave,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(48.dp),
                     enabled = !isLoading,
                 ) {
                     Text("Create Goal")

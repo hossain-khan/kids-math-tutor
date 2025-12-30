@@ -27,14 +27,30 @@ data class GoalCreatorScreen : Screen {
     ) : CircuitUiState
 
     sealed interface Event : CircuitUiEvent {
-        data class SetTitle(val title: String) : Event
-        data class SetDescription(val description: String) : Event
-        data class AddComponent(val component: GoalComponent) : Event
-        data class RemoveComponent(val index: Int) : Event
+        data class SetTitle(
+            val title: String,
+        ) : Event
+
+        data class SetDescription(
+            val description: String,
+        ) : Event
+
+        data class AddComponent(
+            val component: GoalComponent,
+        ) : Event
+
+        data class RemoveComponent(
+            val index: Int,
+        ) : Event
+
         object NextStep : Event
+
         object PreviousStep : Event
+
         object SaveGoal : Event
+
         object Cancel : Event
+
         object DismissError : Event
     }
 }

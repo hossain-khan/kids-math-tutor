@@ -25,9 +25,14 @@ data class GoalHistoryScreen(
     ) : CircuitUiState
 
     sealed interface Event : CircuitUiEvent {
-        data class SelectHistory(val history: GoalHistory) : Event
+        data class SelectHistory(
+            val history: GoalHistory,
+        ) : Event
+
         object ClearSelection : Event
+
         object Back : Event
+
         object DismissError : Event
     }
 }

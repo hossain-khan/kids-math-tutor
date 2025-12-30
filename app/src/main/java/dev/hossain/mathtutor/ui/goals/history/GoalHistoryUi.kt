@@ -60,29 +60,32 @@ fun GoalHistoryUi(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         if (state.isLoading) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                 contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
         } else if (state.goal == null) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -97,9 +100,10 @@ fun GoalHistoryUi(
                     goal = state.goal,
                     history = state.selectedHistory,
                     onBack = { state.eventSink(Event.ClearSelection) },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                 )
             } else {
                 HistoryListView(
@@ -109,9 +113,10 @@ fun GoalHistoryUi(
                     averageAccuracy = state.averageAccuracy,
                     totalTimeMins = state.totalTimeMins,
                     onSelectHistory = { state.eventSink(Event.SelectHistory(it)) },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                 )
             }
         }
@@ -130,7 +135,9 @@ private fun HistoryListView(
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
+        contentPadding =
+            androidx.compose.foundation.layout
+                .PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
@@ -213,8 +220,9 @@ private fun HistoryDetailView(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .padding(16.dp),
+        modifier =
+            modifier
+                .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Back button
@@ -246,19 +254,19 @@ private fun HistoryDetailView(
         ) {
             DetailRow(
                 label = "Duration",
-                value = "${history.timeTakenSeconds / 60} min ${history.timeTakenSeconds % 60} sec",
+                value = "${history.totalTimeSeconds / 60} min ${history.totalTimeSeconds % 60} sec",
             )
             DetailRow(
                 label = "Accuracy",
-                value = "${String.format("%.1f", history.accuracy ?: 0f * 100)}%",
+                value = "${String.format("%.1f", history.overallAccuracy)}%",
             )
             DetailRow(
-                label = "Questions Answered",
-                value = (history.totalProblems).toString(),
+                label = "Components",
+                value = history.getComponentCount().toString(),
             )
             DetailRow(
-                label = "Correct Answers",
-                value = (history.correctProblems).toString(),
+                label = "Sessions Completed",
+                value = history.getTotalSessionsCompleted().toString(),
             )
         }
 
@@ -273,25 +281,27 @@ private fun HistoryDetailView(
                     fontWeight = FontWeight.Bold,
                 )
 
-                history.componentResults.forEach { (operation, correct, total) ->
+                history.componentResults.forEach { result ->
                     Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        ),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            ),
                     ) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = operation,
+                                text = result.component.getDescription(),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                             Text(
-                                text = "$correct/$total",
+                                text = "${result.completedSessions}/${result.totalSessions}",
                                 style = MaterialTheme.typography.labelMedium,
                             )
                         }
@@ -310,9 +320,10 @@ private fun AnalyticsCard(
 ) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -341,14 +352,16 @@ private fun HistoryItem(
 ) {
     Card(
         modifier = modifier.clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -361,14 +374,14 @@ private fun HistoryItem(
                     fontWeight = FontWeight.Medium,
                 )
                 Text(
-                    text = "${history.correctProblems}/${history.totalProblems} correct",
+                    text = "${history.getTotalSessionsCompleted()} sessions completed",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
             Text(
-                text = "${String.format("%.0f", history.accuracy ?: 0f * 100)}%",
+                text = "${String.format("%.0f", history.overallAccuracy)}%",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -384,9 +397,10 @@ private fun DetailRow(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
@@ -403,7 +417,9 @@ private fun DetailRow(
 }
 
 private fun formatDate(instant: Instant): String {
-    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-        .withZone(ZoneId.systemDefault())
+    val formatter =
+        DateTimeFormatter
+            .ofPattern("MMM dd, yyyy")
+            .withZone(ZoneId.systemDefault())
     return formatter.format(instant)
 }
