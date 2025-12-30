@@ -4,8 +4,6 @@ import dev.hossain.mathtutor.analytics.GoalAnalyticsTracker
 import dev.hossain.mathtutor.domain.model.goals.GoalError
 import dev.hossain.mathtutor.domain.model.goals.GoalHistory
 import dev.hossain.mathtutor.domain.repository.GoalRepository
-import java.time.Duration
-import java.time.Instant
 import javax.inject.Inject
 
 /**
@@ -45,12 +43,9 @@ class CompleteGoalUseCase
             if (result.isSuccess) {
                 val goalHistory = result.getOrNull()
                 if (goalHistory != null) {
-                    // Calculate days active (approximate)
-                    val daysBetween = Duration.between(goalHistory.activatedAt, Instant.now()).toDays().toInt()
-
                     analyticsTracker.trackGoalCompleted(
                         goalHistory = goalHistory,
-                        totalDaysActive = daysBetween.coerceAtLeast(0),
+                        totalDaysActive = 1, // TODO: Track activation time to calculate actual days
                         achievedAccuracy = goalHistory.overallAccuracy,
                         gameLevelsUnlocked = 1, // TODO: Calculate from goal components
                     )

@@ -126,6 +126,7 @@ class GoalIntegrationTest {
                             dev.hossain.mathtutor.domain.model.goals.ComponentProgress(
                                 componentIndex = 0,
                                 completedSessions = 1,
+                                totalSessions = 2,
                                 accuracy = 85.5f,
                                 totalTimeSeconds = 300L,
                             ),
@@ -178,9 +179,7 @@ class GoalIntegrationTest {
             val goalHistory =
                 GoalHistory(
                     id = UUID.randomUUID().toString(),
-                    goalId = createdGoal.id,
                     goal = createdGoal,
-                    activatedAt = mockActiveGoal.activatedAt,
                     completedAt = Instant.now(),
                     totalTimeSeconds = 1200L,
                     overallAccuracy = 90.0f,

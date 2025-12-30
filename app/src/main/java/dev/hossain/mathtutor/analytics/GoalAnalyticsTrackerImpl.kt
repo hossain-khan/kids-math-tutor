@@ -121,15 +121,15 @@ class GoalAnalyticsTrackerImpl(
                 eventName = "goal_completed",
                 parameters =
                     mapOf(
-                        "goal_id" to goalHistory.goalId,
-                        "goal_title" to goalHistory.goalTitle,
+                        "goal_id" to goalHistory.goal.id,
+                        "goal_title" to goalHistory.goal.title,
                         "total_days_active" to totalDaysActive,
                         "achieved_accuracy" to "%.1f".format(achievedAccuracy),
                         "game_levels_unlocked" to gameLevelsUnlocked,
                         "total_time_seconds" to goalHistory.totalTimeSeconds,
                     ),
             )
-            Timber.d("Tracked goal completion: ${goalHistory.goalTitle} with $achievedAccuracy% accuracy")
+            Timber.d("Tracked goal completion: ${goalHistory.goal.title} with $achievedAccuracy% accuracy")
         } catch (e: Exception) {
             Timber.e(e, "Failed to track goal completion")
         }
