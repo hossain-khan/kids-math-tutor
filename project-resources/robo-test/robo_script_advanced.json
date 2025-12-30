@@ -1,0 +1,266 @@
+[
+  {
+    "eventType": "LAUNCH_ACTIVITY",
+    "optional": false,
+    "activityName": "dev.hossain.mathtutor.MainActivity",
+    "notes": "Launch the main activity - this tests returning user experience (onboarding completed)"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": true,
+    "text": "Math Pup Tutor",
+    "notes": "Verify home screen appears for returning user"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Start Practice",
+    "notes": "Navigate to operation selection"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Mix It Up!",
+    "notes": "Test mixed operations practice"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for practice screen to load"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "5",
+    "notes": "Enter digit 5"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Check Answer",
+    "notes": "Submit answer"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for feedback animation"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Next Problem",
+    "notes": "Continue to next problem"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "2",
+    "notes": "Enter digit 2"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Check Answer",
+    "notes": "Submit second answer"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for feedback"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Next Problem",
+    "notes": "Continue to third problem"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "1",
+    "notes": "Enter digit 1"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "0",
+    "notes": "Enter digit 0 to make 10"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Check Answer",
+    "notes": "Submit third answer"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for feedback"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Clear",
+    "notes": "Test clear button functionality"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "8",
+    "notes": "Enter new digit after clear"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Check Answer",
+    "notes": "Submit corrected answer"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for feedback"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": false,
+    "notes": "Exit practice session early to test exit flow"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Leave",
+    "notes": "Confirm exit in dialog if shown"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Play Games",
+    "notes": "Navigate to games"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Math Race",
+    "notes": "Select Math Race game"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for game to load"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Start",
+    "notes": "Start the game if available"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 5000,
+    "notes": "Let game run for 5 seconds"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "3",
+    "notes": "Answer a game question"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait between answers"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "7",
+    "notes": "Answer another game question"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 3000,
+    "notes": "Continue playing"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Exit game"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Return to home from games"
+  },
+  {
+    "eventType": "VIEW_CONTENT_DESCRIPTION_THEN_CLICK",
+    "optional": true,
+    "contentDescription": "Music toggle",
+    "notes": "Toggle background music"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1000,
+    "notes": "Wait for music toggle"
+  },
+  {
+    "eventType": "VIEW_CONTENT_DESCRIPTION_THEN_CLICK",
+    "optional": true,
+    "contentDescription": "Settings",
+    "notes": "Open settings"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Audio & Haptics",
+    "notes": "Open audio settings"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1500,
+    "notes": "View audio settings"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Return to settings"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Accessibility",
+    "notes": "Open accessibility settings"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1500,
+    "notes": "View accessibility settings"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Return to settings"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Return to home"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Final stabilization wait"
+  }
+]

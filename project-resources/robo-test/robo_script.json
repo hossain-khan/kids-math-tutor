@@ -1,0 +1,294 @@
+[
+  {
+    "eventType": "LAUNCH_ACTIVITY",
+    "optional": false,
+    "activityName": "dev.hossain.mathtutor.MainActivity",
+    "notes": "Launch the main activity to start the app"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": false,
+    "text": "Welcome to Math Pup Tutor!",
+    "notes": "Verify onboarding screen appears on first launch"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Next",
+    "notes": "Navigate through first onboarding page"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1000,
+    "notes": "Wait 1 second for page transition animation"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Next",
+    "notes": "Navigate through second onboarding page"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1000,
+    "notes": "Wait 1 second for page transition animation"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Next",
+    "notes": "Navigate through third onboarding page"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1000,
+    "notes": "Wait 1 second for page transition animation"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Get Started! 🎉",
+    "notes": "Complete onboarding and go to grade selection"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": false,
+    "text": "What grade are you in?",
+    "notes": "Verify grade selection screen appears"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Grade 1",
+    "notes": "Select Grade 1 for testing"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": false,
+    "text": "What's your name?",
+    "notes": "Verify name entry screen appears"
+  },
+  {
+    "eventType": "VIEW_ID_THEN_CLICK",
+    "optional": true,
+    "resourceId": "name_input_field",
+    "notes": "Click on name input field if it has an ID"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Continue",
+    "notes": "Continue without entering name or with default name"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": false,
+    "text": "Math Pup Tutor",
+    "notes": "Verify home screen appears after onboarding"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Start Practice",
+    "notes": "Navigate to operation selection screen"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": false,
+    "text": "Math Time",
+    "notes": "Verify operation selector screen title"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Addition",
+    "notes": "Select addition practice"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait 2 seconds for math practice screen to load"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "1",
+    "notes": "Click number 1 on number pad to enter answer"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 500,
+    "notes": "Short delay after number input"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Check Answer",
+    "notes": "Submit the answer for checking"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1500,
+    "notes": "Wait for feedback animation"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Next Problem",
+    "notes": "Move to next problem if available"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 500,
+    "notes": "Short delay before next interaction"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": false,
+    "notes": "Go back to operation selector"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Subtraction",
+    "notes": "Test subtraction operation"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for subtraction practice to load"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": false,
+    "notes": "Go back to operation selector"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": false,
+    "notes": "Return to home screen"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": false,
+    "text": "Play Games",
+    "notes": "Navigate to games screen"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": false,
+    "text": "Games",
+    "notes": "Verify games screen title"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": false,
+    "text": "Play fun math games!",
+    "notes": "Verify games header text"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "Play",
+    "notes": "Try to play a game if available"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Wait for game to potentially load"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": false,
+    "notes": "Go back from games or game screen"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Go back to home if still in games"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "View Full Stats",
+    "notes": "Navigate to stats screen if available"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": true,
+    "text": "Your Progress",
+    "notes": "Verify stats screen if it loaded"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1500,
+    "notes": "Wait to view stats"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Return to home from stats"
+  },
+  {
+    "eventType": "VIEW_TEXT_THEN_CLICK",
+    "optional": true,
+    "text": "View All",
+    "notes": "Navigate to badges screen if available"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": true,
+    "text": "Badges",
+    "notes": "Verify badges screen title"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1500,
+    "notes": "Wait to view badges"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Return to home from badges"
+  },
+  {
+    "eventType": "VIEW_CONTENT_DESCRIPTION_THEN_CLICK",
+    "optional": true,
+    "contentDescription": "Settings",
+    "notes": "Open settings menu"
+  },
+  {
+    "eventType": "VIEW_TEXT",
+    "optional": true,
+    "text": "Settings",
+    "notes": "Verify settings screen"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 1500,
+    "notes": "Wait to view settings"
+  },
+  {
+    "eventType": "PRESS_BACK",
+    "optional": true,
+    "notes": "Return to home from settings"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_CLICK",
+    "optional": false,
+    "delayTime": 2000,
+    "notes": "Final wait to ensure app stability"
+  }
+]

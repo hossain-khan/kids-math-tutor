@@ -95,6 +95,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - GoalHistoryPresenterTest (6 test cases): analytics tracking, history selection, state management
   - Test implementation follows project patterns with Google Truth assertions and Arrange-Act-Assert pattern
   - All tests passing with full integration validation
+### Added
+- **Firebase Test Lab Robo Script** - Added comprehensive Robo test scripts for automated UI testing in Firebase Test Lab
+  - **Primary Script (robo_script.json)**: Covers first-time user experience
+    - Complete onboarding flow (4 pages, grade selection, name entry)
+    - Tests math practice operations (Addition, Subtraction, Multiplication, Division)
+    - Tests games section navigation and interaction
+    - Includes stats and badges screen verification
+    - Tests settings menu access and navigation
+  - **Advanced Script (robo_script_advanced.json)**: Covers returning user experience
+    - Tests multiple problem-solving in sequence
+    - Tests "Mix It Up!" mixed operations feature
+    - Tests answer correction with Clear button
+    - Tests Math Race game with timed challenges
+    - Tests music toggle and deep settings navigation
+    - Tests multi-digit number entry
+  - Both scripts saved in `project-resources/robo-test/` directory
+  - Comprehensive documentation in `project-resources/robo-test/README.md`
+  - Includes usage instructions for Firebase Console and gcloud CLI
+  - Provides recommended device test matrix
+  - Documents all event types and troubleshooting tips
 
 ### Changed
 - Docs: Corrected adaptive layout status checklist to reflect implemented navigation and foldable posture utilities
