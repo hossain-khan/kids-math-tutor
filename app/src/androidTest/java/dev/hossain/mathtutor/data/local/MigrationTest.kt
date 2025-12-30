@@ -6,8 +6,10 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,9 +86,10 @@ class MigrationTest {
 
         assertEquals("All tables should be created", expectedTables.size, tables.size)
         expectedTables.forEach { expectedTable ->
-            assert(tables.contains(expectedTable)) {
-                "Table $expectedTable should exist in database. Found tables: $tables"
-            }
+            assertTrue(
+                "Table $expectedTable should exist in database. Found tables: $tables",
+                tables.contains(expectedTable),
+            )
         }
 
         db.close()
@@ -224,29 +227,30 @@ class MigrationTest {
      * Verifies DAOs can be accessed after database creation.
      */
     @Test
-    fun testDatabase_canBeOpenedAndUsed() {
-        // Create database using Room builder (not helper)
-        val database =
-            Room
-                .inMemoryDatabaseBuilder(
-                    ApplicationProvider.getApplicationContext(),
-                    MathDatabase::class.java,
-                ).build()
+    fun testDatabase_canBeOpenedAndUsed() =
+        runTest {
+            // Create database using Room builder (not helper)
+            val database =
+                Room
+                    .inMemoryDatabaseBuilder(
+                        ApplicationProvider.getApplicationContext(),
+                        MathDatabase::class.java,
+                    ).build()
 
-        // Verify all DAOs can be accessed
-        assertNotNull(database.sessionDao())
-        assertNotNull(database.badgeDao())
-        assertNotNull(database.streakDao())
-        assertNotNull(database.performanceDao())
-        assertNotNull(database.gameSessionDao())
-        assertNotNull(database.customChallengeDao())
-        assertNotNull(database.goalsDao())
-        assertNotNull(database.activeGoalDao())
-        assertNotNull(database.goalHistoryDao())
-        assertNotNull(database.practiceSessionToGoalDao())
+            // Verify all DAOs can be accessed
+            assertNotNull(database.sessionDao())
+            assertNotNull(database.badgeDao())
+            assertNotNull(database.streakDao())
+            assertNotNull(database.performanceDao())
+            assertNotNull(database.gameSessionDao())
+            assertNotNull(database.customChallengeDao())
+            assertNotNull(database.goalsDao())
+            assertNotNull(database.activeGoalDao())
+            assertNotNull(database.goalHistoryDao())
+            assertNotNull(database.practiceSessionToGoalDao())
 
-        database.close()
-    }
+            database.close()
+        }
 
     companion object {
         private const val TEST_DB = "migration-test"
