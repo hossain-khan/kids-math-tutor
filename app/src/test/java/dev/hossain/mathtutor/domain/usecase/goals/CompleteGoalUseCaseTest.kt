@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.domain.usecase.goals
 
+import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalError
 import dev.hossain.mathtutor.domain.model.goals.GoalHistory
 import dev.hossain.mathtutor.domain.repository.GoalRepository
@@ -32,9 +33,9 @@ class CompleteGoalUseCaseTest {
             val mockGoalHistory =
                 GoalHistory(
                     id = "history-1",
-                    goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     completedAt = Instant.now(),
-                    totalAccuracy = 87.5f,
+                    overallAccuracy = 87.5f,
                     totalTimeSeconds = 450L,
                 )
 
@@ -52,7 +53,7 @@ class CompleteGoalUseCaseTest {
     fun `invoke with no active goal returns NoActiveGoal error`() =
         runTest {
             whenever(goalRepository.completeActiveGoal())
-                .thenReturn(Result.failure(GoalError.NoActiveGoal()))
+                .thenReturn(Result.failure(GoalError.NoActiveGoal))
 
             val result = useCase()
 
@@ -66,11 +67,11 @@ class CompleteGoalUseCaseTest {
             val mockGoalHistory =
                 GoalHistory(
                     id = "history-1",
-                    goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     completedAt = Instant.now(),
-                    totalAccuracy = 92f,
+                    overallAccuracy = 92f,
                     totalTimeSeconds = 600L,
-                    completionCount = 2,
+                    componentResults = emptyList(),
                 )
 
             whenever(goalRepository.completeActiveGoal())
@@ -79,9 +80,9 @@ class CompleteGoalUseCaseTest {
             val result = useCase()
 
             val history = result.getOrNull()
-            assertTrue(history!!.totalAccuracy == 92f)
+            assertTrue(history!!.overallAccuracy == 92f)
             assertTrue(history.totalTimeSeconds == 600L)
-            assertTrue(history.completionCount == 2)
+            assertTrue(history.componentResults.isEmpty())
         }
 
     @Test
@@ -102,10 +103,11 @@ class CompleteGoalUseCaseTest {
             val mockGoalHistory =
                 GoalHistory(
                     id = "history-1",
-                    goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     completedAt = Instant.now(),
-                    totalAccuracy = 85f,
+                    overallAccuracy = 85f,
                     totalTimeSeconds = 300L,
+                    componentResults = emptyList(),
                 )
 
             whenever(goalRepository.completeActiveGoal())
@@ -122,10 +124,11 @@ class CompleteGoalUseCaseTest {
             val mockGoalHistory =
                 GoalHistory(
                     id = "history-1",
-                    goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     completedAt = Instant.now(),
-                    totalAccuracy = 88f,
-                    totalTimeSeconds = 480L,
+                    overallAccuracy = 88f,
+                    totalTimeSeconds = 400L,
+                    componentResults = emptyList(),
                 )
 
             whenever(goalRepository.completeActiveGoal())

@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.domain.usecase.goals
 
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
+import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalError
 import dev.hossain.mathtutor.domain.repository.GoalRepository
 import junit.framework.TestCase.assertEquals
@@ -35,6 +36,7 @@ class UpdateGoalProgressUseCaseTest {
                 ActiveGoal(
                     id = "active-goal-1",
                     goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     currentComponentIndex = 0,
                     componentProgress =
                         listOf(
@@ -46,7 +48,7 @@ class UpdateGoalProgressUseCaseTest {
                                 totalTimeSeconds = 120L,
                             ),
                         ),
-                    startedAt = Instant.now(),
+                    activatedAt = Instant.now(),
                 )
 
             whenever(
@@ -107,9 +109,10 @@ class UpdateGoalProgressUseCaseTest {
                 ActiveGoal(
                     id = "active-goal-1",
                     goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     currentComponentIndex = 0,
                     componentProgress = listOf(),
-                    startedAt = Instant.now(),
+                    activatedAt = Instant.now(),
                 )
 
             whenever(
@@ -133,9 +136,10 @@ class UpdateGoalProgressUseCaseTest {
                 ActiveGoal(
                     id = "active-goal-1",
                     goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     currentComponentIndex = 0,
                     componentProgress = listOf(),
-                    startedAt = Instant.now(),
+                    activatedAt = Instant.now(),
                 )
 
             whenever(
@@ -168,9 +172,10 @@ class UpdateGoalProgressUseCaseTest {
                 ActiveGoal(
                     id = "active-goal-1",
                     goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     currentComponentIndex = 0,
                     componentProgress = listOf(),
-                    startedAt = Instant.now(),
+                    activatedAt = Instant.now(),
                 )
 
             whenever(
@@ -194,9 +199,10 @@ class UpdateGoalProgressUseCaseTest {
                 ActiveGoal(
                     id = "active-goal-1",
                     goalId = "goal-123",
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     currentComponentIndex = 1,
                     componentProgress = listOf(),
-                    startedAt = Instant.now(),
+                    activatedAt = Instant.now(),
                 )
 
             whenever(

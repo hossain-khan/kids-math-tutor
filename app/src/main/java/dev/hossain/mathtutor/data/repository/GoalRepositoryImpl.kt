@@ -17,13 +17,14 @@ import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.repository.GoalStatistics
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import java.time.Instant
-import javax.inject.Inject
 
 /**
  * Implementation of GoalRepository interface.
@@ -144,6 +145,7 @@ class GoalRepositoryImpl(
                 ActiveGoal(
                     id = goalId,
                     goalId = goalId,
+                    goal = goal,
                     currentComponentIndex = 0,
                     componentProgress = initialProgress,
                 )
@@ -159,8 +161,12 @@ class GoalRepositoryImpl(
     }
 
     override fun getActiveGoal(): Flow<ActiveGoal?> =
-        activeGoalDao.getActiveGoal().map { entity ->
-            entity?.toDomain()
+        activeGoalDao.getActiveGoal().mapNotNull { entity ->
+            if (entity == null) return@mapNotNull null
+            val goal =
+                goalsDao.getGoalById(entity.goalId)?.toDomain()
+                    ?: return@mapNotNull null
+            entity.toDomain(goal)
         }
 
     override suspend fun updateComponentProgress(
@@ -188,7 +194,7 @@ class GoalRepositoryImpl(
             // Get active goal
             val activeGoalCount = activeGoalDao.getActiveGoalCount()
             if (activeGoalCount == 0) {
-                return Result.failure(GoalError.NoActiveGoal())
+                return Result.failure(GoalError.NoActiveGoal)
             }
 
             // For now, return error - proper Flow handling needed
@@ -207,13 +213,23 @@ class GoalRepositoryImpl(
         }
 
     override fun getGoalHistory(): Flow<List<GoalHistory>> =
-        goalHistoryDao.getAllHistory().map { entities ->
-            entities.map { it.toDomain() }
+        goalHistoryDao.getAllHistory().mapNotNull { entities ->
+            entities.mapNotNull { entity ->
+                val goal =
+                    goalsDao.getGoalById(entity.goalId)?.toDomain()
+                        ?: return@mapNotNull null
+                entity.toDomain(goal)
+            }
         }
 
     override fun getRecentGoalHistory(limit: Int): Flow<List<GoalHistory>> =
-        goalHistoryDao.getRecentHistory(limit).map { entities ->
-            entities.map { it.toDomain() }
+        goalHistoryDao.getRecentHistory(limit).mapNotNull { entities ->
+            entities.mapNotNull { entity ->
+                val goal =
+                    goalsDao.getGoalById(entity.goalId)?.toDomain()
+                        ?: return@mapNotNull null
+                entity.toDomain(goal)
+            }
         }
 
     override suspend fun linkSessionToActiveGoal(sessionId: String): Result<Unit> {
@@ -221,7 +237,7 @@ class GoalRepositoryImpl(
             // Get current active goal
             val activeGoalCount = activeGoalDao.getActiveGoalCount()
             if (activeGoalCount == 0) {
-                return Result.failure(GoalError.NoActiveGoal())
+                return Result.failure(GoalError.NoActiveGoal)
             }
 
             // Link session to active goal
@@ -308,10 +324,11 @@ class GoalRepositoryImpl(
             activatedAt = Instant.now(),
         )
 
-    private fun ActiveGoalEntity.toDomain(): ActiveGoal =
+    private fun ActiveGoalEntity.toDomain(goal: Goal): ActiveGoal =
         ActiveGoal(
             id = id,
             goalId = goalId,
+            goal = goal,
             currentComponentIndex = currentComponentIndex,
             componentProgress =
                 Json.decodeFromString(
@@ -320,12 +337,13 @@ class GoalRepositoryImpl(
                 ),
         )
 
-    private fun GoalHistoryEntity.toDomain(): GoalHistory =
+    private fun GoalHistoryEntity.toDomain(goal: Goal): GoalHistory =
         GoalHistory(
             id = id,
-            goalId = goalId,
+            goal = goal,
             completedAt = completedAt,
-            totalAccuracy = overallAccuracy,
             totalTimeSeconds = totalTimeSeconds,
+            overallAccuracy = overallAccuracy,
+            componentResults = emptyList(), // TODO: decode from componentResults JSON
         )
 }

@@ -1,9 +1,5 @@
 package dev.hossain.mathtutor.di.goals
 
-import com.squareup.anvil.annotations.ContributesTo
-import dagger.Module
-import dagger.Provides
-import dev.hossain.mathtutor.di.AppScope
 import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.usecase.goals.ActivateGoalUseCase
 import dev.hossain.mathtutor.domain.usecase.goals.CompleteGoalUseCase
@@ -11,8 +7,10 @@ import dev.hossain.mathtutor.domain.usecase.goals.CreateGoalUseCase
 import dev.hossain.mathtutor.domain.usecase.goals.GetGoalAnalyticsUseCase
 import dev.hossain.mathtutor.domain.usecase.goals.ResumeGoalUseCase
 import dev.hossain.mathtutor.domain.usecase.goals.UpdateGoalProgressUseCase
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
-import javax.inject.Inject
 
 /**
  * Metro DI module for Goals feature.
@@ -23,9 +21,8 @@ import javax.inject.Inject
  *
  * Note: GoalRepository binding is provided via @ContributesBinding on GoalRepositoryImpl
  */
-@Module
 @ContributesTo(AppScope::class)
-object GoalsModule {
+interface GoalsModule {
     /**
      * Provides the CreateGoalUseCase.
      *

@@ -183,6 +183,8 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.truth)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.core)
 }
 
 ksp {

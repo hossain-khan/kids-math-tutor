@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.domain.usecase.goals
 
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
+import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalError
 import dev.hossain.mathtutor.domain.repository.GoalRepository
 import junit.framework.TestCase.assertEquals
@@ -37,6 +38,7 @@ class ActivateGoalUseCaseTest {
                 ActiveGoal(
                     id = "active-goal-1",
                     goalId = goalId,
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     currentComponentIndex = 0,
                     componentProgress =
                         listOf(
@@ -48,7 +50,7 @@ class ActivateGoalUseCaseTest {
                                 totalTimeSeconds = 0L,
                             ),
                         ),
-                    startedAt = Instant.now(),
+                    activatedAt = Instant.now(),
                 )
 
             whenever(goalRepository.activateGoal(eq(goalId)))
@@ -115,6 +117,7 @@ class ActivateGoalUseCaseTest {
                 ActiveGoal(
                     id = "active-goal-1",
                     goalId = goalId,
+                    goal = Goal(title = "Test Goal", components = emptyList()),
                     currentComponentIndex = 0,
                     componentProgress =
                         listOf(
@@ -126,7 +129,7 @@ class ActivateGoalUseCaseTest {
                                 totalTimeSeconds = 0L,
                             ),
                         ),
-                    startedAt = Instant.now(),
+                    activatedAt = Instant.now(),
                 )
 
             whenever(goalRepository.activateGoal(eq(goalId)))
