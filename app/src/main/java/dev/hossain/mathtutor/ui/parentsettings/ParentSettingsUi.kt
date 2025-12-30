@@ -125,6 +125,37 @@ fun ParentSettingsUi(
                 },
             )
 
+            // Goals Management Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(
+                        text = "Goal Management",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = "Create and manage learning goals for your child",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Button(
+                        onClick = { state.eventSink(ParentSettingsScreen.Event.ManageGoalsClicked) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Manage Goals")
+                    }
+                }
+            }
+
             // TODO: Add dialogs for PIN setup, verification, reset, forgot PIN, and grade limit
         }
 
