@@ -18,11 +18,13 @@ import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.hossain.mathtutor.domain.repository.BadgeRepository
+import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.StreakRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.ui.badges.BadgesScreen
 import dev.hossain.mathtutor.ui.games.GameSelectionScreen
+import dev.hossain.mathtutor.ui.goals.progress.GoalProgressScreen
 import dev.hossain.mathtutor.ui.operationselector.OperationSelectorScreen
 import dev.hossain.mathtutor.ui.settings.SettingsScreen
 import dev.hossain.mathtutor.ui.stats.StatsScreen
@@ -49,6 +51,7 @@ class HomePresenter
         private val badgeRepository: BadgeRepository,
         private val userProfileRepository: UserProfileRepository,
         private val userPreferencesRepository: UserPreferencesRepository,
+        private val goalRepository: GoalRepository,
         private val audioService: AudioService,
         private val analyticsService: AnalyticsService,
     ) : Presenter<HomeScreen.State> {
@@ -120,6 +123,9 @@ class HomePresenter
                 initial = emptyList(),
             )
 
+            // Collect active goal if one exists
+            val activeGoal by goalRepository.getActiveGoal().collectAsState(initial = null)
+
             // Log state changes in LaunchedEffect to avoid recomposition spam
             LaunchedEffect(userProfile?.name, userProfile?.gradeLevel) {
                 Timber.d(
@@ -149,6 +155,7 @@ class HomePresenter
                 streakData = streakData,
                 overallStats = overallStats,
                 recentBadges = recentBadges,
+                activeGoal = activeGoal,
                 isMusicPlaying = isMusicPlaying,
             ) { event ->
                 when (event) {
@@ -199,6 +206,11 @@ class HomePresenter
                     is HomeScreen.Event.ViewGamesClicked -> {
                         Timber.d("HomeScreen: Navigating to GameSelectionScreen")
                         navigator.goTo(GameSelectionScreen)
+                    }
+
+                    is HomeScreen.Event.ViewGoalProgressClicked -> {
+                        Timber.d("HomeScreen: Navigating to GoalProgressScreen")
+                        navigator.goTo(GoalProgressScreen)
                     }
                 }
             }

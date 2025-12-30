@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -27,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,6 +51,7 @@ import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.StreakCard
 import dev.hossain.mathtutor.ui.component.TopBarFeature
@@ -148,6 +151,15 @@ fun HomeUi(
                         totalProblems = state.overallStats.totalProblems,
                         accuracy = state.overallStats.accuracy,
                     )
+
+                    // Active goal progress banner
+                    if (state.activeGoal != null) {
+                        GoalProgressBanner(
+                            activeGoal = state.activeGoal,
+                            onViewGoalClicked = { state.eventSink(HomeScreen.Event.ViewGoalProgressClicked) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
 
                     // Action buttons - side by side on wider screens
                     if (isWideScreen) {
@@ -383,6 +395,90 @@ private fun WelcomeSection(
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(4.dp))
+        }
+    }
+}
+
+/**
+ * Goal progress banner showing active goal progress.
+ * Tapping the banner navigates to the GoalProgressScreen.
+ */
+@Composable
+private fun GoalProgressBanner(
+    activeGoal: ActiveGoal,
+    onViewGoalClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val totalSessions = activeGoal.goal.components.sumOf { it.sessionCount }
+    val completedSessions = activeGoal.componentProgress.sumOf { it.completedSessions }
+    val progress =
+        if (totalSessions > 0) {
+            completedSessions.toFloat() / totalSessions.toFloat()
+        } else {
+            0f
+        }
+
+    Card(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { onViewGoalClicked() },
+        elevation =
+            CardDefaults.elevatedCardElevation(
+                defaultElevation = 4.dp,
+            ),
+        colors =
+            CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            // Goal title row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "🎯 ${activeGoal.goal.title}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+
+            // Progress bar
+            LinearProgressIndicator(
+                { progress },
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f),
+            )
+
+            // Progress text
+            Text(
+                text = "$completedSessions/$totalSessions Sessions Complete",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+
+            // View Progress button
+            Button(
+                onClick = onViewGoalClicked,
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+            ) {
+                Text("View Progress →")
+            }
         }
     }
 }
