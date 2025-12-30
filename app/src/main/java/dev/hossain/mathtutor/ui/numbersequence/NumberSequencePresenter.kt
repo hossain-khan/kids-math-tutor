@@ -27,6 +27,7 @@ import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.goals.dialog.GoalActiveDialogScreen
 import dev.hossain.mathtutor.ui.goals.progress.GoalProgressScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -426,7 +427,16 @@ class NumberSequencePresenter
                     }
 
                     NumberSequenceScreen.Event.ViewGoalProgressClicked -> {
-                        navigator.goTo(GoalProgressScreen)
+                        coroutineScope.launch {
+                            val activeGoal = goalRepository.getActiveGoal().firstOrNull()
+                            if (activeGoal != null) {
+                                Timber.d("NumberSequence: Navigating to GoalActiveDialog")
+                                navigator.goTo(GoalActiveDialogScreen(activeGoal))
+                            } else {
+                                Timber.w("NumberSequence: No active goal found, navigating to GoalProgressScreen")
+                                navigator.goTo(GoalProgressScreen)
+                            }
+                        }
                     }
 
                     NumberSequenceScreen.Event.NavigateHome -> {

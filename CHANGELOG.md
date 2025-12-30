@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Goals Feature - Complete Missing Features**
+  - Implemented GoalActiveDialog screen for game lock behavior - displays when user tries to play a locked game while active goal exists
+    - Shows goal title and component progress with visual indicator
+    - Allows user to continue goal progress or dismiss the dialog
+    - Properly navigates to GoalProgressScreen on continue
+  - Updated all game presenters (MathRace, MemoryMatch, NumberSequence) to navigate to GoalActiveDialog when a goal is active
 - **Goals Feature Bug Fixes**
   - Fixed archived/deleted goals not clearing active goal state - when a goal is archived, the active goal reference is now properly deleted, preventing orphaned references from appearing on home screen
   - Fixed goal progress screen launching wrong operation type - now correctly passes component operation (ADDITION, DIVISION, etc.) to MathPracticeScreen instead of defaulting to ADDITION

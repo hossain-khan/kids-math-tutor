@@ -271,7 +271,7 @@ private fun SelectComponentsContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = "Select math operations",
+            text = "Select components to practice",
             style = MaterialTheme.typography.headlineSmall,
         )
 
@@ -326,7 +326,7 @@ private fun SelectComponentsContent(
         if (components.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Selected: ${components.size} operation(s)",
+                text = "Selected: ${components.size} component(s)",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
