@@ -17,12 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Type converters for Room database integration (GoalsConverter)
   - Comprehensive unit tests (26 test cases) covering domain models and type conversion
   - Support for goal-to-practice-session linking for progress tracking
-- **Goals Feature - Phase 2: Repository Interface & Architecture**
-  - GoalRepository interface with comprehensive API for goal lifecycle management
-  - Support for goal creation, activation, progress tracking, and completion
-  - Integrated analytics and statistics tracking
-  - Session-to-goal linking for progress tracking
-  - Foundation for use cases and presentation layer
+- **Goals Feature - Phase 2: Repository & Use Cases**
+  - GoalRepository interface and implementation with comprehensive goal lifecycle API
+  - Repository methods: createGoal, activateGoal, updateComponentProgress, completeActiveGoal, clearActiveGoal, getGoalHistory, getRecentGoalHistory, linkSessionToActiveGoal, getGoalStatistics
+  - Six use case classes for business logic: CreateGoalUseCase, ActivateGoalUseCase, UpdateGoalProgressUseCase, CompleteGoalUseCase, ResumeGoalUseCase, GetGoalAnalyticsUseCase
+  - Input validation for all use cases (title length, session counts, accuracy ranges)
+  - GoalProgressCallback interface for integration with PracticeSessionRepository
+  - Metro DI module (GoalsModule) providing singleton-scoped bindings for repository and use cases
+  - Comprehensive unit tests (25+ test cases) for use cases covering success and error scenarios
+  - Entity-to-domain model conversions for type-safe data handling
+  - Support for goal statistics calculation (total goals, completion counts, average accuracy and time)
 
 ### Changed
 - Docs: Corrected adaptive layout status checklist to reflect implemented navigation and foldable posture utilities
