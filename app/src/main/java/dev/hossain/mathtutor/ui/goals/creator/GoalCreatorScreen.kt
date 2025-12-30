@@ -8,7 +8,7 @@ import dev.hossain.mathtutor.domain.model.goals.GoalComponent
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GoalCreatorScreen : Screen {
+data object GoalCreatorScreen : Screen {
     enum class Step {
         Title,
         SelectComponents,

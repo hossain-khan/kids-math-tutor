@@ -50,7 +50,7 @@ class GoalHistoryPresenter(
             } else {
                 0f
             }
-        val totalTimeMins = histories.sumOf { it.totalTimeSeconds / 60 }
+        val totalTimeMins = (histories.sumOf { it.totalTimeSeconds } / 60).toInt()
 
         // Update loading state once data is loaded
         if (goal != null && !isLoading) {

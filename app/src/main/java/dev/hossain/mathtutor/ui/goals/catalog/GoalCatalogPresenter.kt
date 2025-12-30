@@ -58,7 +58,7 @@ class GoalCatalogPresenter(
             eventSink = { event ->
                 when (event) {
                     GoalCatalogScreen.Event.CreateNewGoal -> {
-                        navigator.goTo(GoalCreatorScreen())
+                        navigator.goTo(GoalCreatorScreen)
                     }
 
                     is GoalCatalogScreen.Event.ActivateGoal -> {

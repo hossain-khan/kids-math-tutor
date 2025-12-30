@@ -277,10 +277,10 @@ private fun SelectComponentsContent(
         // Available operations
         val operations =
             listOf(
-                MathOperation.Addition,
-                MathOperation.Subtraction,
-                MathOperation.Multiplication,
-                MathOperation.Division,
+                MathOperation.ADDITION,
+                MathOperation.SUBTRACTION,
+                MathOperation.MULTIPLICATION,
+                MathOperation.DIVISION,
             )
 
         Column(

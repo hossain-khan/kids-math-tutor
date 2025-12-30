@@ -8,7 +8,7 @@ import dev.hossain.mathtutor.domain.model.goals.Goal
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GoalCatalogScreen : Screen {
+data object GoalCatalogScreen : Screen {
     data class State(
         val goals: List<Goal> = emptyList(),
         val activeGoalId: String? = null,
