@@ -1,5 +1,10 @@
 package dev.hossain.mathtutor.di.goals
 
+import dev.hossain.mathtutor.data.local.MathDatabase
+import dev.hossain.mathtutor.data.local.dao.goals.ActiveGoalDao
+import dev.hossain.mathtutor.data.local.dao.goals.GoalHistoryDao
+import dev.hossain.mathtutor.data.local.dao.goals.GoalsDao
+import dev.hossain.mathtutor.data.local.dao.goals.PracticeSessionToGoalDao
 import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.usecase.goals.ActivateGoalUseCase
 import dev.hossain.mathtutor.domain.usecase.goals.CompleteGoalUseCase
@@ -23,6 +28,46 @@ import dev.zacsweers.metro.SingleIn
  */
 @ContributesTo(AppScope::class)
 interface GoalsModule {
+    /**
+     * Provides the GoalsDao from the database.
+     *
+     * @param database The MathDatabase instance
+     * @return GoalsDao instance
+     */
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideGoalsDao(database: MathDatabase): GoalsDao = database.goalsDao()
+
+    /**
+     * Provides the ActiveGoalDao from the database.
+     *
+     * @param database The MathDatabase instance
+     * @return ActiveGoalDao instance
+     */
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideActiveGoalDao(database: MathDatabase): ActiveGoalDao = database.activeGoalDao()
+
+    /**
+     * Provides the GoalHistoryDao from the database.
+     *
+     * @param database The MathDatabase instance
+     * @return GoalHistoryDao instance
+     */
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideGoalHistoryDao(database: MathDatabase): GoalHistoryDao = database.goalHistoryDao()
+
+    /**
+     * Provides the PracticeSessionToGoalDao from the database.
+     *
+     * @param database The MathDatabase instance
+     * @return PracticeSessionToGoalDao instance
+     */
+    @Provides
+    @SingleIn(AppScope::class)
+    fun providePracticeSessionToGoalDao(database: MathDatabase): PracticeSessionToGoalDao = database.practiceSessionToGoalDao()
+
     /**
      * Provides the CreateGoalUseCase.
      *
