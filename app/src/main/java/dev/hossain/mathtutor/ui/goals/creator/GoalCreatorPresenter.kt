@@ -9,9 +9,9 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
-import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.usecase.goals.CreateGoalUseCase
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Event
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.State
