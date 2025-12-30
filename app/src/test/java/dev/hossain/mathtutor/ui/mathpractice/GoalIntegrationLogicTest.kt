@@ -3,9 +3,9 @@ package dev.hossain.mathtutor.ui.mathpractice
 import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
+import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
 import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
-import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
 import org.junit.Test
 import java.time.Instant
 
@@ -17,22 +17,26 @@ class GoalIntegrationLogicTest {
     @Test
     fun `goal is not complete when no components are completed`() {
         // Given
-        val goal = Goal(
-            id = "goal-1",
-            title = "Addition Master",
-            components = listOf(
-                GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 5),
-            ),
-        )
-        val progress = listOf(
-            ComponentProgress(componentIndex = 0, completedSessions = 0, totalSessions = 5),
-        )
-        val activeGoal = ActiveGoal(
-            id = "active-goal-1",
-            goalId = goal.id,
-            goal = goal,
-            componentProgress = progress,
-        )
+        val goal =
+            Goal(
+                id = "goal-1",
+                title = "Addition Master",
+                components =
+                    listOf(
+                        GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 5),
+                    ),
+            )
+        val progress =
+            listOf(
+                ComponentProgress(componentIndex = 0, completedSessions = 0, totalSessions = 5),
+            )
+        val activeGoal =
+            ActiveGoal(
+                id = "active-goal-1",
+                goalId = goal.id,
+                goal = goal,
+                componentProgress = progress,
+            )
 
         // When
         val totalComponents = activeGoal.goal.components.size
@@ -47,24 +51,28 @@ class GoalIntegrationLogicTest {
     @Test
     fun `goal is complete when all components are completed`() {
         // Given
-        val goal = Goal(
-            id = "goal-1",
-            title = "Addition Master",
-            components = listOf(
-                GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 5),
-                GoalComponent.OperationBased(MathOperation.SUBTRACTION, sessionCount = 5),
-            ),
-        )
-        val progress = listOf(
-            ComponentProgress(componentIndex = 0, completedSessions = 5, totalSessions = 5),
-            ComponentProgress(componentIndex = 1, completedSessions = 5, totalSessions = 5),
-        )
-        val activeGoal = ActiveGoal(
-            id = "active-goal-1",
-            goalId = goal.id,
-            goal = goal,
-            componentProgress = progress,
-        )
+        val goal =
+            Goal(
+                id = "goal-1",
+                title = "Addition Master",
+                components =
+                    listOf(
+                        GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 5),
+                        GoalComponent.OperationBased(MathOperation.SUBTRACTION, sessionCount = 5),
+                    ),
+            )
+        val progress =
+            listOf(
+                ComponentProgress(componentIndex = 0, completedSessions = 5, totalSessions = 5),
+                ComponentProgress(componentIndex = 1, completedSessions = 5, totalSessions = 5),
+            )
+        val activeGoal =
+            ActiveGoal(
+                id = "active-goal-1",
+                goalId = goal.id,
+                goal = goal,
+                componentProgress = progress,
+            )
 
         // When
         val totalComponents = activeGoal.goal.components.size
@@ -83,11 +91,12 @@ class GoalIntegrationLogicTest {
         val correctAnswers = 8
 
         // When
-        val accuracy = if (totalProblems > 0) {
-            (correctAnswers.toFloat() / totalProblems.toFloat()) * 100f
-        } else {
-            0f
-        }
+        val accuracy =
+            if (totalProblems > 0) {
+                (correctAnswers.toFloat() / totalProblems.toFloat()) * 100f
+            } else {
+                0f
+            }
 
         // Then
         assertThat(accuracy).isEqualTo(80f)
@@ -99,11 +108,12 @@ class GoalIntegrationLogicTest {
         val totalProblems = 0
 
         // When
-        val accuracy = if (totalProblems > 0) {
-            (0.toFloat() / totalProblems.toFloat()) * 100f
-        } else {
-            0f
-        }
+        val accuracy =
+            if (totalProblems > 0) {
+                (0.toFloat() / totalProblems.toFloat()) * 100f
+            } else {
+                0f
+            }
 
         // Then
         assertThat(accuracy).isEqualTo(0f)
@@ -116,11 +126,12 @@ class GoalIntegrationLogicTest {
         val correctAnswers = 10
 
         // When
-        val accuracy = if (totalProblems > 0) {
-            (correctAnswers.toFloat() / totalProblems.toFloat()) * 100f
-        } else {
-            0f
-        }
+        val accuracy =
+            if (totalProblems > 0) {
+                (correctAnswers.toFloat() / totalProblems.toFloat()) * 100f
+            } else {
+                0f
+            }
 
         // Then
         assertThat(accuracy).isEqualTo(100f)
@@ -129,14 +140,16 @@ class GoalIntegrationLogicTest {
     @Test
     fun `goal progress calculates total sessions correctly`() {
         // Given
-        val goal = Goal(
-            id = "goal-1",
-            title = "Math Master",
-            components = listOf(
-                GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 5),
-                GoalComponent.OperationBased(MathOperation.SUBTRACTION, sessionCount = 3),
-            ),
-        )
+        val goal =
+            Goal(
+                id = "goal-1",
+                title = "Math Master",
+                components =
+                    listOf(
+                        GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 5),
+                        GoalComponent.OperationBased(MathOperation.SUBTRACTION, sessionCount = 3),
+                    ),
+            )
 
         // When
         val totalSessions = goal.components.sumOf { it.sessionCount }
@@ -148,10 +161,11 @@ class GoalIntegrationLogicTest {
     @Test
     fun `completed sessions are counted correctly`() {
         // Given
-        val progress = listOf(
-            ComponentProgress(componentIndex = 0, completedSessions = 5, totalSessions = 5),
-            ComponentProgress(componentIndex = 1, completedSessions = 2, totalSessions = 3),
-        )
+        val progress =
+            listOf(
+                ComponentProgress(componentIndex = 0, completedSessions = 5, totalSessions = 5),
+                ComponentProgress(componentIndex = 1, completedSessions = 2, totalSessions = 3),
+            )
 
         // When
         val completedSessions = progress.sumOf { it.completedSessions }
@@ -165,25 +179,29 @@ class GoalIntegrationLogicTest {
     @Test
     fun `progress fraction is calculated correctly`() {
         // Given
-        val goal = Goal(
-            id = "goal-1",
-            title = "Addition Master",
-            components = listOf(
-                GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 10),
-            ),
-        )
-        val progress = listOf(
-            ComponentProgress(componentIndex = 0, completedSessions = 3, totalSessions = 10),
-        )
+        val goal =
+            Goal(
+                id = "goal-1",
+                title = "Addition Master",
+                components =
+                    listOf(
+                        GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 10),
+                    ),
+            )
+        val progress =
+            listOf(
+                ComponentProgress(componentIndex = 0, completedSessions = 3, totalSessions = 10),
+            )
 
         // When
         val totalSessions = goal.components.sumOf { it.sessionCount }
         val completedSessions = progress.sumOf { it.completedSessions }
-        val progressFraction = if (totalSessions > 0) {
-            completedSessions.toFloat() / totalSessions.toFloat()
-        } else {
-            0f
-        }
+        val progressFraction =
+            if (totalSessions > 0) {
+                completedSessions.toFloat() / totalSessions.toFloat()
+            } else {
+                0f
+            }
 
         // Then
         assertThat(progressFraction).isEqualTo(0.3f)

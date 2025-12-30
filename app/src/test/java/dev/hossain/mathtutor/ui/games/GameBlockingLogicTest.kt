@@ -3,9 +3,9 @@ package dev.hossain.mathtutor.ui.games
 import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
+import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
 import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
-import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
 import org.junit.Test
 import java.time.Instant
 
@@ -15,30 +15,33 @@ import java.time.Instant
  */
 class GameBlockingLogicTest {
     private fun createTestActiveGoal(): ActiveGoal {
-        val goal = Goal(
-            id = "test-goal-1",
-            title = "Addition Master",
-            description = "Master addition skills",
-            createdAt = Instant.now(),
-            components = listOf(
-                GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 10),
-            ),
-        )
+        val goal =
+            Goal(
+                id = "test-goal-1",
+                title = "Addition Master",
+                description = "Master addition skills",
+                createdAt = Instant.now(),
+                components =
+                    listOf(
+                        GoalComponent.OperationBased(MathOperation.ADDITION, sessionCount = 10),
+                    ),
+            )
         return ActiveGoal(
             id = "active-goal-1",
             goalId = goal.id,
             goal = goal,
             activatedAt = Instant.now(),
             currentComponentIndex = 0,
-            componentProgress = listOf(
-                ComponentProgress(
-                    componentIndex = 0,
-                    completedSessions = 3,
-                    totalSessions = 10,
-                    accuracy = 85f,
-                    totalTimeSeconds = 1800L,
+            componentProgress =
+                listOf(
+                    ComponentProgress(
+                        componentIndex = 0,
+                        completedSessions = 3,
+                        totalSessions = 10,
+                        accuracy = 85f,
+                        totalTimeSeconds = 1800L,
+                    ),
                 ),
-            ),
         )
     }
 
@@ -74,11 +77,12 @@ class GameBlockingLogicTest {
         // When
         val isGameBlocked = activeGoal != null
         val goalTitle = if (isGameBlocked) activeGoal?.goal?.title else null
-        val completedSessions = if (isGameBlocked) {
-            activeGoal?.componentProgress?.sumOf { it.completedSessions } ?: 0
-        } else {
-            0
-        }
+        val completedSessions =
+            if (isGameBlocked) {
+                activeGoal?.componentProgress?.sumOf { it.completedSessions } ?: 0
+            } else {
+                0
+            }
 
         // Then
         assertThat(isGameBlocked).isTrue()
@@ -99,7 +103,7 @@ class GameBlockingLogicTest {
         // Then
         assertThat(totalSessions).isEqualTo(10)
         assertThat(completedSessions).isEqualTo(3)
-        assertThat(progressPercentage).isEqualTo(30f)
+        assertThat(progressPercentage).isWithin(0.001f).of(30f)
     }
 
     @Test

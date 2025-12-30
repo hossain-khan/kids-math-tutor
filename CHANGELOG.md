@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Test Stability**: Fixed floating-point precision issue in `GameBlockingLogicTest` by using tolerance-based assertion for progress percentage calculation
+
 ### Added
 - **Goals Feature - Phase 1: Domain Models & Database Layer**
   - Complete data model for goals feature with goal components, progress tracking, and history
