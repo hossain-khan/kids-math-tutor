@@ -174,5 +174,10 @@ data object ParentSettingsScreen : Screen {
          * User tapped the back button.
          */
         data object NavigateBack : Event
+
+        /**
+         * User requested to manage goals (view catalog, create, edit, delete goals).
+         */
+        data object ManageGoalsClicked : Event
     }
 }

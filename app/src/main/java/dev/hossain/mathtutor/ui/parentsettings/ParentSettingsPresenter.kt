@@ -15,6 +15,7 @@ import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
+import dev.hossain.mathtutor.ui.goals.catalog.GoalCatalogScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -308,7 +309,8 @@ class ParentSettingsPresenter
                         Timber.d("ParentSettings: Navigate back")
                         navigator.pop()
                     }
-                }
-            }
-        }
-    }
+
+                    is ParentSettingsScreen.Event.ManageGoalsClicked -> {
+                        Timber.d("ParentSettings: Navigate to manage goals")
+                        navigator.goTo(GoalCatalogScreen)
+                    }
