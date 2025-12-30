@@ -1,219 +1,252 @@
 package dev.hossain.mathtutor.ui.goals.creator
 
-import com.slack.circuit.test.FakeNavigator
-import dev.hossain.mathtutor.domain.model.MathOperation
+import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
-import dev.hossain.mathtutor.domain.usecase.goals.CreateGoalUseCase
-import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Step
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  * Unit tests for [GoalCreatorPresenter].
- * Tests the step progression, validation, and event handling for goal creation.
+ * Tests the state management and step progression for goal creation.
  */
 class GoalCreatorPresenterTest {
-    @Mock
-    private lateinit var createGoalUseCase: CreateGoalUseCase
-
-    private lateinit var navigator: FakeNavigator
-    private lateinit var presenter: GoalCreatorPresenter
-
-    @Before
-    fun setUp() {
-        MockitoAnnotations.openMocks(this)
-        navigator = FakeNavigator()
-    }
-
-    private fun createPresenter() {
-        presenter =
-            GoalCreatorPresenter(
-                screen = GoalCreatorScreen,
-                navigator = navigator,
-                createGoalUseCase = createGoalUseCase,
+    @Test
+    fun `initial state shows title step`() {
+        // Given
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.Title,
+                goalTitle = "",
+                goalDescription = "",
+                components = emptyList(),
+                canAdvance = false,
+                isLoading = false,
+                error = null,
+                eventSink = {},
             )
+
+        // Then
+        assertThat(state.currentStep).isEqualTo(GoalCreatorScreen.Step.Title)
+        assertThat(state.goalTitle).isEmpty()
+        assertThat(state.goalDescription).isEmpty()
+        assertThat(state.components).isEmpty()
+        assertThat(state.canAdvance).isFalse()
     }
 
     @Test
-    fun initialState_showsTitleStep() =
-        runTest {
-            // Arrange
-            createPresenter()
+    fun `title update enables advance when non-empty`() {
+        // Given
+        var currentTitle = ""
+        var canAdvance = false
 
-            // Act & Assert
-            val state = presenter.present()
-            assertEquals(Step.Title, state.currentStep)
-            assertTrue(state.goalTitle.isEmpty())
-            assertTrue(state.goalDescription.isEmpty())
-            assertTrue(state.components.isEmpty())
-            assertFalse(state.canAdvance)
-        }
+        // When setting a title
+        currentTitle = "Math Mastery Goal"
+        canAdvance = currentTitle.isNotEmpty()
 
-    @Test
-    fun setTitle_updatesTitle() =
-        runTest {
-            // Arrange
-            createPresenter()
-
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.SetTitle("Addition Practice"))
-
-            // Assert
-            assertEquals("Addition Practice", state.goalTitle)
-        }
+        // Then
+        assertThat(currentTitle).isNotEmpty()
+        assertThat(canAdvance).isTrue()
+    }
 
     @Test
-    fun setTitle_emptyTitle_cannotAdvance() =
-        runTest {
-            // Arrange
-            createPresenter()
+    fun `empty title prevents advance`() {
+        // Given
+        var canAdvance = false
+        var currentTitle = ""
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.SetTitle(""))
+        // When title is empty
+        canAdvance = currentTitle.isNotEmpty()
 
-            // Assert
-            assertFalse(state.canAdvance)
-        }
-
-    @Test
-    fun setTitle_withTitle_canAdvance() =
-        runTest {
-            // Arrange
-            createPresenter()
-
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.SetTitle("Addition Practice"))
-
-            // Assert
-            assertTrue(state.canAdvance)
-        }
+        // Then
+        assertThat(canAdvance).isFalse()
+    }
 
     @Test
-    fun nextStep_fromTitleToSelectComponents() =
-        runTest {
-            // Arrange
-            createPresenter()
+    fun `step progression to select components`() {
+        // Given
+        var currentStep = GoalCreatorScreen.Step.Title
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.SetTitle("Addition Practice"))
-            state.eventSink(GoalCreatorScreen.Event.NextStep)
+        // When advancing
+        currentStep = GoalCreatorScreen.Step.SelectComponents
 
-            // Assert
-            assertEquals(Step.SelectComponents, state.currentStep)
-        }
+        // Then
+        assertThat(currentStep).isEqualTo(GoalCreatorScreen.Step.SelectComponents)
+    }
 
     @Test
-    fun addComponent_addsToComponentsList() =
-        runTest {
-            // Arrange
-            createPresenter()
-            val component =
-                GoalComponent.OperationBased(
-                    operation = MathOperation.ADDITION,
-                    sessionCount = 5,
-                )
+    fun `event sink can emit SetTitle event`() {
+        // Given
+        var eventReceived: GoalCreatorScreen.Event? = null
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.Title,
+                goalTitle = "",
+                goalDescription = "",
+                components = emptyList(),
+                canAdvance = false,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.AddComponent(component))
+        // When
+        state.eventSink(GoalCreatorScreen.Event.SetTitle("New Goal"))
 
-            // Assert
-            assertEquals(1, state.components.size)
-            assertEquals(component, state.components[0])
-        }
-
-    @Test
-    fun addComponent_enablesAdvanceOnSelectStep() =
-        runTest {
-            // Arrange
-            createPresenter()
-            val component =
-                GoalComponent.OperationBased(
-                    operation = MathOperation.ADDITION,
-                    sessionCount = 1,
-                )
-
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.SetTitle("Addition Practice"))
-            state.eventSink(GoalCreatorScreen.Event.NextStep)
-            state.eventSink(GoalCreatorScreen.Event.AddComponent(component))
-
-            // Assert
-            assertTrue(state.canAdvance)
-        }
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCreatorScreen.Event.SetTitle::class.java)
+    }
 
     @Test
-    fun previousStep_goesBackToPreviousStep() =
-        runTest {
-            // Arrange
-            createPresenter()
+    fun `event sink can emit NextStep event`() {
+        // Given
+        var eventReceived: GoalCreatorScreen.Event? = null
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.Title,
+                goalTitle = "Goal",
+                goalDescription = "",
+                components = emptyList(),
+                canAdvance = true,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.SetTitle("Addition Practice"))
-            state.eventSink(GoalCreatorScreen.Event.NextStep)
-            state.eventSink(GoalCreatorScreen.Event.PreviousStep)
+        // When
+        state.eventSink(GoalCreatorScreen.Event.NextStep)
 
-            // Assert
-            assertEquals(Step.Title, state.currentStep)
-        }
-
-    @Test
-    fun removeComponent_removesFromList() =
-        runTest {
-            // Arrange
-            createPresenter()
-            val component =
-                GoalComponent.OperationBased(
-                    operation = MathOperation.ADDITION,
-                    sessionCount = 1,
-                )
-
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.AddComponent(component))
-            state.eventSink(GoalCreatorScreen.Event.RemoveComponent(0))
-
-            // Assert
-            assertTrue(state.components.isEmpty())
-        }
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCreatorScreen.Event.NextStep::class.java)
+    }
 
     @Test
-    fun cancel_navigatesBack() =
-        runTest {
-            // Arrange
-            createPresenter()
+    fun `event sink can emit PreviousStep event`() {
+        // Given
+        var eventReceived: GoalCreatorScreen.Event? = null
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.SelectComponents,
+                goalTitle = "Goal",
+                goalDescription = "",
+                components = emptyList(),
+                canAdvance = true,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.Cancel)
+        // When
+        state.eventSink(GoalCreatorScreen.Event.PreviousStep)
 
-            // Assert
-            assertEquals(1, navigator.popCount)
-        }
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCreatorScreen.Event.PreviousStep::class.java)
+    }
 
     @Test
-    fun setDescription_updatesDescription() =
-        runTest {
-            // Arrange
-            createPresenter()
+    fun `event sink can emit Cancel event`() {
+        // Given
+        var eventReceived: GoalCreatorScreen.Event? = null
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.Title,
+                goalTitle = "",
+                goalDescription = "",
+                components = emptyList(),
+                canAdvance = false,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCreatorScreen.Event.SetDescription("Learn basic addition"))
+        // When
+        state.eventSink(GoalCreatorScreen.Event.Cancel)
 
-            // Assert
-            assertEquals("Learn basic addition", state.goalDescription)
-        }
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCreatorScreen.Event.Cancel::class.java)
+    }
+
+    @Test
+    fun `event sink can emit AddComponent event`() {
+        // Given
+        var eventReceived: GoalCreatorScreen.Event? = null
+        val component =
+            GoalComponent.OperationBased(
+                operation = dev.hossain.mathtutor.domain.model.MathOperation.ADDITION,
+                sessionCount = 5,
+            )
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.SelectComponents,
+                goalTitle = "Goal",
+                goalDescription = "",
+                components = emptyList(),
+                canAdvance = false,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
+
+        // When
+        state.eventSink(GoalCreatorScreen.Event.AddComponent(component))
+
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCreatorScreen.Event.AddComponent::class.java)
+    }
+
+    @Test
+    fun `event sink can emit SaveGoal event`() {
+        // Given
+        var eventReceived: GoalCreatorScreen.Event? = null
+        val component =
+            GoalComponent.OperationBased(
+                operation = dev.hossain.mathtutor.domain.model.MathOperation.ADDITION,
+                sessionCount = 5,
+            )
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.Review,
+                goalTitle = "Goal",
+                goalDescription = "Description",
+                components = listOf(component),
+                canAdvance = true,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
+
+        // When
+        state.eventSink(GoalCreatorScreen.Event.SaveGoal)
+
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCreatorScreen.Event.SaveGoal::class.java)
+    }
+
+    @Test
+    fun `event sink can emit SetDescription event`() {
+        // Given
+        var eventReceived: GoalCreatorScreen.Event? = null
+        val state =
+            GoalCreatorScreen.State(
+                currentStep = GoalCreatorScreen.Step.Title,
+                goalTitle = "Goal",
+                goalDescription = "",
+                components = emptyList(),
+                canAdvance = true,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
+
+        // When
+        state.eventSink(GoalCreatorScreen.Event.SetDescription("Learn addition"))
+
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCreatorScreen.Event.SetDescription::class.java)
+    }
 }

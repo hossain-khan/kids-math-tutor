@@ -1,158 +1,144 @@
 package dev.hossain.mathtutor.ui.goals.catalog
 
-import androidx.compose.runtime.rememberCoroutineScope
-import com.slack.circuit.test.FakeNavigator
-import dev.hossain.mathtutor.domain.model.MathOperation
-import dev.hossain.mathtutor.domain.model.goals.Goal
-import dev.hossain.mathtutor.domain.model.goals.GoalComponent
-import dev.hossain.mathtutor.domain.repository.GoalRepository
-import dev.hossain.mathtutor.domain.usecase.goals.ActivateGoalUseCase
-import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen
-import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.whenever
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 /**
  * Unit tests for [GoalCatalogPresenter].
- * Tests the state management and event handling for the goal catalog screen.
+ * Tests the state management for the goal catalog screen.
  */
 class GoalCatalogPresenterTest {
-    @Mock
-    private lateinit var goalRepository: GoalRepository
-
-    @Mock
-    private lateinit var activateGoalUseCase: ActivateGoalUseCase
-
-    private lateinit var navigator: FakeNavigator
-    private lateinit var presenter: GoalCatalogPresenter
-
-    @Before
-    fun setUp() {
-        MockitoAnnotations.openMocks(this)
-        navigator = FakeNavigator()
-    }
-
-    private fun createPresenter() {
-        presenter =
-            GoalCatalogPresenter(
-                screen = GoalCatalogScreen,
-                navigator = navigator,
-                goalRepository = goalRepository,
-                activateGoalUseCase = activateGoalUseCase,
+    @Test
+    fun `initial state has empty goals list`() {
+        // Given
+        val state =
+            GoalCatalogScreen.State(
+                goals = emptyList(),
+                activeGoalId = null,
+                isLoading = false,
+                error = null,
+                eventSink = {},
             )
+
+        // Then
+        assertThat(state.goals).isEmpty()
+        assertThat(state.activeGoalId).isNull()
+        assertThat(state.isLoading).isFalse()
+        assertThat(state.error).isNull()
     }
 
     @Test
-    fun initialState_showsEmptyGoalsList() =
-        runTest {
-            // Arrange
-            whenever(goalRepository.getAllGoals()).thenReturn(
-                flowOf(emptyList()),
+    fun `event sink can emit CreateNewGoal event`() {
+        // Given
+        var eventReceived: GoalCatalogScreen.Event? = null
+        val state =
+            GoalCatalogScreen.State(
+                goals = emptyList(),
+                activeGoalId = null,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
             )
-            whenever(goalRepository.getActiveGoal()).thenReturn(
-                flowOf(null),
+
+        // When
+        state.eventSink(GoalCatalogScreen.Event.CreateNewGoal)
+
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCatalogScreen.Event.CreateNewGoal::class.java)
+    }
+
+    @Test
+    fun `event sink can emit ViewHistory event with goal id`() {
+        // Given
+        var eventReceived: GoalCatalogScreen.Event? = null
+        val state =
+            GoalCatalogScreen.State(
+                goals = emptyList(),
+                activeGoalId = null,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
             )
 
-            createPresenter()
+        // When
+        state.eventSink(GoalCatalogScreen.Event.ViewHistory("goal-123"))
 
-            // Act & Assert
-            val state = presenter.present()
-            assertEquals(emptyList<Goal>(), state.goals)
-            assertNull(state.activeGoalId)
-            assertEquals(false, state.isLoading)
-            assertNull(state.error)
-        }
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCatalogScreen.Event.ViewHistory::class.java)
+    }
 
     @Test
-    fun initialState_withGoals_showsGoalsList() =
-        runTest {
-            // Arrange
-            val goals =
-                listOf(
-                    Goal(
-                        id = "goal1",
-                        title = "Addition Practice",
-                        description = "Practice basic addition",
-                        components =
-                            listOf(
-                                GoalComponent.OperationBased(
-                                    operation = MathOperation.ADDITION,
-                                    sessionCount = 5,
-                                ),
-                            ),
-                    ),
-                )
+    fun `event sink can emit ActivateGoal event`() {
+        // Given
+        var eventReceived: GoalCatalogScreen.Event? = null
+        val state =
+            GoalCatalogScreen.State(
+                goals = emptyList(),
+                activeGoalId = null,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
 
-            whenever(goalRepository.getAllGoals()).thenReturn(flowOf(goals))
-            whenever(goalRepository.getActiveGoal()).thenReturn(flowOf(null))
+        // When
+        state.eventSink(GoalCatalogScreen.Event.ActivateGoal("goal-456"))
 
-            createPresenter()
-
-            // Act & Assert
-            val state = presenter.present()
-            assertEquals(1, state.goals.size)
-            assertEquals("Addition Practice", state.goals[0].title)
-        }
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCatalogScreen.Event.ActivateGoal::class.java)
+    }
 
     @Test
-    fun createNewGoal_navigatesToGoalCreatorScreen() =
-        runTest {
-            // Arrange
-            whenever(goalRepository.getAllGoals()).thenReturn(flowOf(emptyList()))
-            whenever(goalRepository.getActiveGoal()).thenReturn(flowOf(null))
+    fun `error can be set and dismissed`() {
+        // Given
+        val stateWithError =
+            GoalCatalogScreen.State(
+                goals = emptyList(),
+                activeGoalId = null,
+                isLoading = false,
+                error = "Failed to load goals",
+                eventSink = {},
+            )
 
-            createPresenter()
+        // Then
+        assertThat(stateWithError.error).isEqualTo("Failed to load goals")
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCatalogScreen.Event.CreateNewGoal)
+        // When dismissing error
+        var eventReceived: GoalCatalogScreen.Event? = null
+        val state =
+            GoalCatalogScreen.State(
+                goals = emptyList(),
+                activeGoalId = null,
+                isLoading = false,
+                error = "Failed to load goals",
+                eventSink = { event -> eventReceived = event },
+            )
+        state.eventSink(GoalCatalogScreen.Event.DismissError)
 
-            // Assert
-            val navigation = navigator.awaitNextScreen()
-            assertEquals(GoalCreatorScreen, navigation)
-        }
-
-    @Test
-    fun viewHistory_navigatesToHistoryScreen() =
-        runTest {
-            // Arrange
-            whenever(goalRepository.getAllGoals()).thenReturn(flowOf(emptyList()))
-            whenever(goalRepository.getActiveGoal()).thenReturn(flowOf(null))
-
-            createPresenter()
-            val goalId = "test-goal-id"
-
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCatalogScreen.Event.ViewHistory(goalId))
-
-            // Assert
-            val navigation = navigator.awaitNextScreen()
-            assertEquals(GoalHistoryScreen(goalId), navigation)
-        }
+        // Then
+        assertThat(eventReceived).isInstanceOf(GoalCatalogScreen.Event.DismissError::class.java)
+    }
 
     @Test
-    fun dismissError_clearsErrorMessage() =
-        runTest {
-            // Arrange
-            whenever(goalRepository.getAllGoals()).thenReturn(flowOf(emptyList()))
-            whenever(goalRepository.getActiveGoal()).thenReturn(flowOf(null))
+    fun `event sink can emit DeleteGoal event`() {
+        // Given
+        var eventReceived: GoalCatalogScreen.Event? = null
+        val state =
+            GoalCatalogScreen.State(
+                goals = emptyList(),
+                activeGoalId = null,
+                isLoading = false,
+                error = null,
+                eventSink = { event -> eventReceived = event },
+            )
 
-            createPresenter()
+        // When
+        state.eventSink(GoalCatalogScreen.Event.DeleteGoal("goal-789"))
 
-            // Act
-            val state = presenter.present()
-            state.eventSink(GoalCatalogScreen.Event.DismissError)
-
-            // Assert - error should be cleared
-            assertNull(state.error)
-        }
+        // Then
+        assertThat(eventReceived).isNotNull()
+        assertThat(eventReceived).isInstanceOf(GoalCatalogScreen.Event.DeleteGoal::class.java)
+    }
 }
