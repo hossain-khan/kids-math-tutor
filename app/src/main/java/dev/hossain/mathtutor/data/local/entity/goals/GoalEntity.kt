@@ -20,6 +20,8 @@ import java.time.Instant
     tableName = "goals_catalog",
     indices = [
         Index("createdAt"),
+        Index("isArchived"),
+        Index("isArchived", "createdAt"),
     ],
 )
 data class GoalEntity(

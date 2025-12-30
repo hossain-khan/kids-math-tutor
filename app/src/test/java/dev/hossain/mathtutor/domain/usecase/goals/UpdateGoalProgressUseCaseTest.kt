@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.domain.usecase.goals
 
+import dev.hossain.mathtutor.analytics.GoalAnalyticsTracker
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
 import dev.hossain.mathtutor.domain.model.goals.Goal
@@ -21,12 +22,15 @@ class UpdateGoalProgressUseCaseTest {
     @Mock
     private lateinit var goalRepository: GoalRepository
 
+    @Mock
+    private lateinit var analyticsTracker: GoalAnalyticsTracker
+
     private lateinit var useCase: UpdateGoalProgressUseCase
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        useCase = UpdateGoalProgressUseCase(goalRepository)
+        useCase = UpdateGoalProgressUseCase(goalRepository, analyticsTracker)
     }
 
     @Test
