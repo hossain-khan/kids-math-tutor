@@ -1,16 +1,14 @@
 package dev.hossain.mathtutor.ui.goals.creator
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.hossain.mathtutor.domain.model.MathOperation
-import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
 import dev.hossain.mathtutor.domain.usecase.goals.CreateGoalUseCase
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Event
@@ -20,6 +18,8 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AssistedInject
 class GoalCreatorPresenter(
@@ -38,6 +38,8 @@ class GoalCreatorPresenter(
 
     @Composable
     override fun present(): State {
+        val coroutineScope = rememberCoroutineScope()
+
         var currentStep by remember { mutableStateOf(Step.Title) }
         var goalTitle by remember { mutableStateOf("") }
         var goalDescription by remember { mutableStateOf("") }
@@ -93,19 +95,31 @@ class GoalCreatorPresenter(
                 }
 
                 Event.SaveGoal -> {
-                    isLoading = true
-                    error = null
-                    // Create goal in coroutine context (should be wrapped in proper scope)
-                    val newGoal =
-                        Goal(
-                            title = goalTitle,
-                            description = goalDescription,
-                            components = components,
+                    if (isLoading) return
+
+                    coroutineScope.launch {
+                        isLoading = true
+                        error = null
+
+                        Timber.d(
+                            "GoalCreator: Save goal requested (titleLength=%d, componentCount=%d)",
+                            goalTitle.length,
+                            components.size,
                         )
-                    // In a real implementation, this would be properly handled with coroutines
-                    // For now, we'll just navigate back
-                    isLoading = false
-                    navigator.pop()
+
+                        val result = createGoalUseCase(goalTitle, goalDescription, components)
+                        if (result.isSuccess) {
+                            val goalId = result.getOrNull()?.id
+                            Timber.d("GoalCreator: Goal saved successfully (goalId=%s)", goalId)
+                            navigator.pop()
+                        } else {
+                            val message = result.exceptionOrNull()?.message ?: "Failed to save goal"
+                            Timber.w(result.exceptionOrNull(), "GoalCreator: Save goal failed")
+                            error = message
+                        }
+
+                        isLoading = false
+                    }
                 }
 
                 Event.Cancel -> {
