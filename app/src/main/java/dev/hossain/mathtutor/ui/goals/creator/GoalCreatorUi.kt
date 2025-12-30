@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.domain.model.CustomChallenge
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Event
@@ -119,6 +120,7 @@ fun GoalCreatorUi(
                             components = state.components,
                             onAddComponent = { state.eventSink(Event.AddComponent(it)) },
                             onRemoveComponent = { state.eventSink(Event.RemoveComponent(it)) },
+                            availableChallenges = state.availableChallenges,
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
@@ -264,6 +266,7 @@ private fun SelectComponentsContent(
     components: List<GoalComponent>,
     onAddComponent: (GoalComponent) -> Unit,
     onRemoveComponent: (Int) -> Unit,
+    availableChallenges: List<CustomChallenge> = emptyList(),
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -276,7 +279,7 @@ private fun SelectComponentsContent(
         )
 
         Text(
-            text = "Choose which math operations your child should practice:",
+            text = "Choose which math operations and custom challenges your child should practice:",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -290,36 +293,90 @@ private fun SelectComponentsContent(
                 MathOperation.DIVISION,
             )
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            operations.forEach { operation ->
-                val isSelected =
-                    components.any {
-                        it is GoalComponent.OperationBased && it.operation == operation
-                    }
-                OperationButton(
-                    operation = operation,
-                    isSelected = isSelected,
-                    onClick = {
-                        if (isSelected) {
-                            onRemoveComponent(
-                                components.indexOfFirst {
-                                    it is GoalComponent.OperationBased && it.operation == operation
-                                },
-                            )
-                        } else {
-                            val component =
-                                GoalComponent.OperationBased(
-                                    operation = operation,
-                                    sessionCount = 1,
-                                )
-                            onAddComponent(component)
+        // Math Operations Section
+        if (operations.isNotEmpty()) {
+            Text(
+                text = "Math Operations",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                operations.forEach { operation ->
+                    val isSelected =
+                        components.any {
+                            it is GoalComponent.OperationBased && it.operation == operation
                         }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                    OperationButton(
+                        operation = operation,
+                        isSelected = isSelected,
+                        onClick = {
+                            if (isSelected) {
+                                onRemoveComponent(
+                                    components.indexOfFirst {
+                                        it is GoalComponent.OperationBased && it.operation == operation
+                                    },
+                                )
+                            } else {
+                                val component =
+                                    GoalComponent.OperationBased(
+                                        operation = operation,
+                                        sessionCount = 1,
+                                    )
+                                onAddComponent(component)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        }
+
+        // Custom Challenges Section
+        if (availableChallenges.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Custom Challenges",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                availableChallenges.forEach { challenge ->
+                    val isSelected =
+                        components.any {
+                            it is GoalComponent.CustomChallengeBased && it.challengeId == challenge.id
+                        }
+                    CustomChallengeButton(
+                        challenge = challenge,
+                        isSelected = isSelected,
+                        onClick = {
+                            if (isSelected) {
+                                onRemoveComponent(
+                                    components.indexOfFirst {
+                                        it is GoalComponent.CustomChallengeBased && it.challengeId == challenge.id
+                                    },
+                                )
+                            } else {
+                                val component =
+                                    GoalComponent.CustomChallengeBased(
+                                        challengeId = challenge.id,
+                                        challengeTitle = challenge.title,
+                                        sessionCount = 1,
+                                    )
+                                onAddComponent(component)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             }
         }
 
@@ -362,6 +419,39 @@ private fun OperationButton(
     ) {
         Text(
             text = "${operation.symbol} ${operation.displayName}",
+            style = MaterialTheme.typography.labelLarge,
+        )
+    }
+}
+
+@Composable
+private fun CustomChallengeButton(
+    challenge: CustomChallenge,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(48.dp),
+        colors =
+            androidx.compose.material3.ButtonDefaults.buttonColors(
+                containerColor =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+                contentColor =
+                    if (isSelected) {
+                        MaterialTheme.colorScheme.onSecondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+            ),
+    ) {
+        Text(
+            text = challenge.title,
             style = MaterialTheme.typography.labelLarge,
         )
     }

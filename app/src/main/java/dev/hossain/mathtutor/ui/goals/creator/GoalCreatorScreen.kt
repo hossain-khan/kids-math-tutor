@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.mathtutor.domain.model.CustomChallenge
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
 import kotlinx.parcelize.Parcelize
 
@@ -47,6 +48,7 @@ data object GoalCreatorScreen : Screen {
         val goalTitle: String = "",
         val goalDescription: String = "",
         val components: List<GoalComponent> = emptyList(),
+        val availableChallenges: List<CustomChallenge> = emptyList(),
         val canAdvance: Boolean = false,
         val isLoading: Boolean = false,
         val error: String? = null,
