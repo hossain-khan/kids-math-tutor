@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Goals Feature Bug Fixes**
+  - Fixed archived/deleted goals not clearing active goal state - when a goal is archived, the active goal reference is now properly deleted, preventing orphaned references from appearing on home screen
   - Fixed goal progress screen launching wrong operation type - now correctly passes component operation (ADDITION, DIVISION, etc.) to MathPracticeScreen instead of defaulting to ADDITION
   - Fixed goal creator not persisting newly created goals to database (GoalCreatorPresenter.Event.SaveGoal handler implementation)
   - Implemented goal catalog operations: activate, delete, and archive goal handlers with proper async/error handling

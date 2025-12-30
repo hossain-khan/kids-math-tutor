@@ -107,6 +107,12 @@ class GoalRepositoryImpl(
                 goalsDao.getGoalById(goalId)
                     ?: return Result.failure(GoalError.GoalNotFound(goalId))
 
+            // Check if this goal is currently active and clear it if so
+            val activeGoal = activeGoalDao.getActiveGoalById(goalId)
+            if (activeGoal != null) {
+                activeGoalDao.delete(activeGoal)
+            }
+
             goalsDao.archiveGoal(goalId)
             Result.success(Unit)
         } catch (e: Exception) {
