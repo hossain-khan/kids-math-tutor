@@ -20,15 +20,19 @@ Learn more: [Firebase Test Lab - Robo Scripts Documentation](https://firebase.go
 
 ## Test Coverage
 
-The `robo_script.json` file covers the following app features and user flows:
+The directory contains two Robo test scripts:
 
-### 1. **Onboarding Flow** (First Launch Experience)
+### 1. `robo_script.json` - Complete First Launch Flow
+
+This is the primary script that covers the **first-time user experience**:
+
+#### 1.1 **Onboarding Flow** (First Launch Experience)
    - Welcome screens (4 onboarding pages)
    - Grade selection (Kindergarten, Grade 1, Grade 2)
    - Name entry
    - Completion and transition to home screen
 
-### 2. **Home Screen**
+#### 1.2 **Home Screen**
    - Main dashboard display
    - Welcome message
    - Streak calendar
@@ -36,7 +40,7 @@ The `robo_script.json` file covers the following app features and user flows:
    - Latest badges section
    - Navigation buttons
 
-### 3. **Math Practice Flow**
+#### 1.3 **Math Practice Flow**
    - Operation selection screen
    - Math operation cards:
      - Addition
@@ -52,7 +56,7 @@ The `robo_script.json` file covers the following app features and user flows:
      - Progress tracking
    - Results screen
 
-### 4. **Games Section**
+#### 1.4 **Games Section**
    - Game selection screen
    - Available games:
      - Math Race (60-second challenge)
@@ -61,15 +65,30 @@ The `robo_script.json` file covers the following app features and user flows:
    - Game unlock status
    - Trial play functionality
 
-### 5. **Progress Tracking**
+#### 1.5 **Progress Tracking**
    - Stats screen (session history, accuracy)
    - Badges screen (achievement viewing)
 
-### 6. **Settings**
+#### 1.6 **Settings**
    - Settings menu access
    - Audio/haptic preferences
    - Accessibility options
    - Profile management
+
+### 2. `robo_script_advanced.json` - Returning User Experience
+
+This secondary script tests **returning user flows** with deeper interaction:
+
+- **Math Practice with Multiple Problems**: Tests answering multiple problems in sequence
+- **Mixed Operations**: Tests the "Mix It Up!" feature with various operations
+- **Answer Corrections**: Tests the Clear button to correct wrong answers
+- **Early Exit Flow**: Tests exiting a practice session mid-way
+- **Math Race Game**: Tests the timed 60-second challenge game with multiple answers
+- **Music Toggle**: Tests background music on/off functionality
+- **Settings Deep Dive**: Tests navigation through Audio & Haptics and Accessibility settings
+- **Multi-digit Answers**: Tests entering two-digit numbers (e.g., 10)
+
+**Use Case**: Run this script on a device that has already completed onboarding (has existing user data).
 
 ## Running the Robo Test
 
@@ -91,7 +110,8 @@ The `robo_script.json` file covers the following app features and user flows:
    - Select "Robo test"
    - Upload your APK file (`app/build/outputs/apk/debug/app-debug.apk`)
    - Under "Advanced options" → "Test script"
-   - Upload `robo_script.json` from this directory
+   - Upload `robo_script.json` (for first launch) OR `robo_script_advanced.json` (for returning user)
+   - **Recommendation**: Run both scripts on different test runs for comprehensive coverage
 
 5. **Configure Test:**
    - Select devices (recommended: mix of physical devices and emulators)
@@ -115,12 +135,20 @@ gcloud config set project YOUR_PROJECT_ID
 # Build the APK
 ./gradlew assembleDebug
 
-# Run the Robo test with script
+# Run the Robo test with primary script (first launch)
 gcloud firebase test android run \
   --type robo \
   --app app/build/outputs/apk/debug/app-debug.apk \
   --robo-script project-resources/robo-test/robo_script.json \
   --device model=Pixel2,version=28,locale=en,orientation=portrait \
+  --timeout 10m
+
+# Run the Robo test with advanced script (returning user)
+gcloud firebase test android run \
+  --type robo \
+  --app app/build/outputs/apk/debug/app-debug.apk \
+  --robo-script project-resources/robo-test/robo_script_advanced.json \
+  --device model=Pixel4,version=30,locale=en,orientation=portrait \
   --timeout 10m
 ```
 

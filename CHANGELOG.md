@@ -8,13 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Firebase Test Lab Robo Script** - Added comprehensive Robo test script for automated UI testing in Firebase Test Lab
-  - Covers complete onboarding flow (4 pages, grade selection, name entry)
-  - Tests math practice operations (Addition, Subtraction, Multiplication, Division)
-  - Tests games section navigation and interaction
-  - Includes stats and badges screen verification
-  - Tests settings menu access and navigation
-  - Script saved in `project-resources/robo-test/robo_script.json`
+- **Firebase Test Lab Robo Script** - Added comprehensive Robo test scripts for automated UI testing in Firebase Test Lab
+  - **Primary Script (robo_script.json)**: Covers first-time user experience
+    - Complete onboarding flow (4 pages, grade selection, name entry)
+    - Tests math practice operations (Addition, Subtraction, Multiplication, Division)
+    - Tests games section navigation and interaction
+    - Includes stats and badges screen verification
+    - Tests settings menu access and navigation
+  - **Advanced Script (robo_script_advanced.json)**: Covers returning user experience
+    - Tests multiple problem-solving in sequence
+    - Tests "Mix It Up!" mixed operations feature
+    - Tests answer correction with Clear button
+    - Tests Math Race game with timed challenges
+    - Tests music toggle and deep settings navigation
+    - Tests multi-digit number entry
+  - Both scripts saved in `project-resources/robo-test/` directory
   - Comprehensive documentation in `project-resources/robo-test/README.md`
   - Includes usage instructions for Firebase Console and gcloud CLI
   - Provides recommended device test matrix
