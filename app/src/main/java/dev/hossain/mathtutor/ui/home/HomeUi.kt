@@ -325,6 +325,19 @@ fun HomeUi(
             }
         }
     }
+
+    // Show session resumption dialog if user has active goal
+    if (state.showSessionResumptionDialog && state.activeGoal != null) {
+        SessionResumptionDialog(
+            activeGoal = state.activeGoal,
+            onContinueClicked = {
+                state.eventSink(HomeScreen.Event.ContinueGoalClicked)
+            },
+            onDismissClicked = {
+                state.eventSink(HomeScreen.Event.SessionResumptionDismissed)
+            },
+        )
+    }
 }
 
 /**

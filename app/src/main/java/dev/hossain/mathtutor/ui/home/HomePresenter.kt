@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -126,6 +129,20 @@ class HomePresenter
             // Collect active goal if one exists
             val activeGoal by goalRepository.getActiveGoal().collectAsState(initial = null)
 
+            // Track whether session resumption dialog has been shown in current session
+            var hasShownSessionResumptionDialog by remember { mutableStateOf(false) }
+
+            // Show resumption dialog on first appearance if goal is active and hasn't been shown yet
+            val showSessionResumptionDialog = activeGoal != null && !hasShownSessionResumptionDialog
+
+            LaunchedEffect(activeGoal?.goal?.id) {
+                val currentGoal = activeGoal
+                if (currentGoal != null && !hasShownSessionResumptionDialog) {
+                    hasShownSessionResumptionDialog = true
+                    Timber.d("HomeScreen: Showing session resumption dialog for goal: ${currentGoal.goal.title}")
+                }
+            }
+
             // Log state changes in LaunchedEffect to avoid recomposition spam
             LaunchedEffect(userProfile?.name, userProfile?.gradeLevel) {
                 Timber.d(
@@ -157,6 +174,7 @@ class HomePresenter
                 recentBadges = recentBadges,
                 activeGoal = activeGoal,
                 isMusicPlaying = isMusicPlaying,
+                showSessionResumptionDialog = showSessionResumptionDialog,
             ) { event ->
                 when (event) {
                     is HomeScreen.Event.StartPracticeClicked -> {
@@ -210,6 +228,16 @@ class HomePresenter
 
                     is HomeScreen.Event.ViewGoalProgressClicked -> {
                         Timber.d("HomeScreen: Navigating to GoalProgressScreen")
+                        navigator.goTo(GoalProgressScreen)
+                    }
+
+                    is HomeScreen.Event.SessionResumptionDismissed -> {
+                        Timber.d("HomeScreen: Session resumption dialog dismissed")
+                        // Dialog is already dismissed, no further action needed
+                    }
+
+                    is HomeScreen.Event.ContinueGoalClicked -> {
+                        Timber.d("HomeScreen: User continuing with active goal from resumption dialog")
                         navigator.goTo(GoalProgressScreen)
                     }
                 }
