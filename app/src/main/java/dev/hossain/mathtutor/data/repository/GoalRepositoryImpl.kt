@@ -181,9 +181,69 @@ class GoalRepositoryImpl(
                 return Result.failure(GoalError.InvalidAccuracy(accuracy))
             }
 
-            // This is simplified - in production you'd need to properly handle Flow here
-            // For now, we return an error indicating this needs more work
-            Result.failure(GoalError.DatabaseError)
+            // Get the current active goal
+            val activeGoalEntity =
+                activeGoalDao.getActiveGoalSync()
+                    ?: return Result.failure(GoalError.NoActiveGoal)
+
+            // Deserialize current component progress
+            val currentProgress: MutableList<ComponentProgress> =
+                try {
+                    Json.decodeFromString(
+                        ListSerializer(ComponentProgress.serializer()),
+                        activeGoalEntity.componentProgress,
+                    ) as MutableList<ComponentProgress>
+                } catch (e: Exception) {
+                    return Result.failure(GoalError.DatabaseError)
+                }
+
+            // Validate component index
+            if (componentIndex < 0 || componentIndex >= currentProgress.size) {
+                return Result.failure(GoalError.InvalidComponent("Invalid component index"))
+            }
+
+            // Update the component progress
+            val componentProgress = currentProgress[componentIndex]
+            val updatedProgress =
+                componentProgress.copy(
+                    completedSessions = componentProgress.completedSessions + completedSessions,
+                    accuracy =
+                        if (componentProgress.completedSessions == 0) {
+                            accuracy
+                        } else {
+                            // Calculate weighted average
+                            (componentProgress.accuracy * componentProgress.completedSessions + accuracy * completedSessions) /
+                                (componentProgress.completedSessions + completedSessions)
+                        },
+                    totalTimeSeconds = componentProgress.totalTimeSeconds + timeSeconds,
+                )
+            currentProgress[componentIndex] = updatedProgress
+
+            // Serialize updated progress
+            val updatedProgressJson =
+                Json.encodeToString(
+                    ListSerializer(ComponentProgress.serializer()),
+                    currentProgress,
+                )
+
+            // Update the database
+            activeGoalDao.updateComponentProgress(
+                activeGoalId = activeGoalEntity.id,
+                componentIndex = componentIndex,
+                componentProgress = updatedProgressJson,
+            )
+
+            // Return updated active goal with the goal information
+            val updatedEntity =
+                activeGoalDao.getActiveGoalById(activeGoalEntity.id)
+                    ?: return Result.failure(GoalError.DatabaseError)
+
+            // Fetch the goal to get full details
+            val goalEntity =
+                goalsDao.getGoalById(updatedEntity.goalId)
+                    ?: return Result.failure(GoalError.InvalidGoal("Goal not found"))
+
+            Result.success(updatedEntity.toDomain(goalEntity.toDomain()))
         } catch (e: Exception) {
             Result.failure(GoalError.DatabaseError)
         }

@@ -88,4 +88,13 @@ interface ActiveGoalDao {
      */
     @Query("SELECT COUNT(*) FROM active_goals")
     suspend fun getActiveGoalCount(): Int
+
+    /**
+     * Gets the currently active goal synchronously (non-Flow version).
+     * Used when you need the value immediately in a suspend function.
+     *
+     * @return The active goal entity, or null if none exists
+     */
+    @Query("SELECT * FROM active_goals LIMIT 1")
+    suspend fun getActiveGoalSync(): ActiveGoalEntity?
 }
