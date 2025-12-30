@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Goals Feature Bug Fixes**
+  - Fixed goal creator not persisting newly created goals to database (GoalCreatorPresenter.Event.SaveGoal handler implementation)
+  - Implemented goal catalog operations: activate, delete, and archive goal handlers with proper async/error handling
+
 ### Added
 - **Goals Feature - Phase 5: Integration, Testing & Polish**
   - End-to-end test suite for complete goal workflows (parent creation → child completion)

@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
@@ -19,6 +20,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AssistedInject
 class GoalCatalogPresenter(
@@ -38,6 +40,7 @@ class GoalCatalogPresenter(
 
     @Composable
     override fun present(): GoalCatalogScreen.State {
+        val coroutineScope = rememberCoroutineScope()
         var isLoading by remember { mutableStateOf(false) }
         var error by remember { mutableStateOf<String?>(null) }
 
@@ -62,16 +65,39 @@ class GoalCatalogPresenter(
                     }
 
                     is GoalCatalogScreen.Event.ActivateGoal -> {
-                        isLoading = true
-                        error = null
-                        // Activate the goal
-                        // This will be done via coroutine in real implementation
+                        coroutineScope.launch {
+                            if (isLoading) return@launch
+                            isLoading = true
+                            error = null
+                            Timber.d("GoalCatalog: Activating goal (goalId=%s)", event.goalId)
+                            val result = activateGoalUseCase(event.goalId)
+                            if (result.isSuccess) {
+                                Timber.d("GoalCatalog: Goal activated successfully (goalId=%s)", event.goalId)
+                            } else {
+                                val message = result.exceptionOrNull()?.message ?: "Failed to activate goal"
+                                Timber.w(result.exceptionOrNull(), "GoalCatalog: Activate goal failed")
+                                error = message
+                            }
+                            isLoading = false
+                        }
                     }
 
                     is GoalCatalogScreen.Event.DeleteGoal -> {
-                        isLoading = true
-                        error = null
-                        // Delete the goal from repository
+                        coroutineScope.launch {
+                            if (isLoading) return@launch
+                            isLoading = true
+                            error = null
+                            Timber.d("GoalCatalog: Archiving goal (goalId=%s)", event.goalId)
+                            val result = goalRepository.archiveGoal(event.goalId)
+                            if (result.isSuccess) {
+                                Timber.d("GoalCatalog: Goal archived successfully (goalId=%s)", event.goalId)
+                            } else {
+                                val message = result.exceptionOrNull()?.message ?: "Failed to delete goal"
+                                Timber.w(result.exceptionOrNull(), "GoalCatalog: Archive goal failed")
+                                error = message
+                            }
+                            isLoading = false
+                        }
                     }
 
                     is GoalCatalogScreen.Event.ViewHistory -> {
@@ -79,9 +105,21 @@ class GoalCatalogPresenter(
                     }
 
                     is GoalCatalogScreen.Event.ArchiveGoal -> {
-                        isLoading = true
-                        error = null
-                        // Archive the goal
+                        coroutineScope.launch {
+                            if (isLoading) return@launch
+                            isLoading = true
+                            error = null
+                            Timber.d("GoalCatalog: Archiving goal (goalId=%s)", event.goalId)
+                            val result = goalRepository.archiveGoal(event.goalId)
+                            if (result.isSuccess) {
+                                Timber.d("GoalCatalog: Goal archived successfully (goalId=%s)", event.goalId)
+                            } else {
+                                val message = result.exceptionOrNull()?.message ?: "Failed to archive goal"
+                                Timber.w(result.exceptionOrNull(), "GoalCatalog: Archive goal failed")
+                                error = message
+                            }
+                            isLoading = false
+                        }
                     }
 
                     GoalCatalogScreen.Event.DismissError -> {
