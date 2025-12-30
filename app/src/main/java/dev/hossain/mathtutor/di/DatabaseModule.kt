@@ -17,6 +17,8 @@ import dev.zacsweers.metro.SingleIn
  * Uses Metro DI to provide database and DAOs as singletons scoped to the application lifecycle.
  *
  * This interface uses [ContributesTo] which automatically contributes bindings to the [AppScope].
+ *
+ * Note: Goals-related DAOs are provided by GoalsModule in the goals DI package.
  */
 @ContributesTo(AppScope::class)
 interface DatabaseModule {
@@ -30,8 +32,7 @@ interface DatabaseModule {
                 context,
                 MathDatabase::class.java,
                 MathDatabase.DATABASE_NAME,
-            ).fallbackToDestructiveMigration(dropAllTables = true)
-            .build()
+            ).build()
 
     @Provides
     @SingleIn(AppScope::class)
