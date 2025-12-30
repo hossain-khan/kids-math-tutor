@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Goals Feature - Phase 1: Domain Models & Database Layer**
+  - Complete data model for goals feature with goal components, progress tracking, and history
+  - Domain models: GoalComponent (sealed class with OperationBased and CustomChallengeBased variants), Goal, ComponentProgress, SessionMetadata, ActiveGoal, ComponentResult, GoalHistory
+  - Room database entities with proper indexing and relationships
+  - Data Access Objects (DAOs) for goals CRUD operations: GoalsDao, ActiveGoalDao, GoalHistoryDao, PracticeSessionToGoalDao
+  - JSON serialization support for complex types using kotlinx-serialization
+  - Type converters for Room database integration (GoalsConverter)
+  - Comprehensive unit tests (26 test cases) covering domain models and type conversion
+  - Support for goal-to-practice-session linking for progress tracking
+
 ### Changed
 - Docs: Corrected adaptive layout status checklist to reflect implemented navigation and foldable posture utilities
 
