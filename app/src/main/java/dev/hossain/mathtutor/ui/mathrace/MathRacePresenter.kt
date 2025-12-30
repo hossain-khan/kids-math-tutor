@@ -30,6 +30,7 @@ import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.goals.dialog.GoalActiveDialogScreen
 import dev.hossain.mathtutor.ui.goals.progress.GoalProgressScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -475,7 +476,14 @@ class MathRacePresenter
                     }
 
                     MathRaceScreen.Event.ViewGoalProgressClicked -> {
-                        navigator.goTo(GoalProgressScreen)
+                        val activeGoal = goalRepository.getActiveGoal().firstOrNull()
+                        if (activeGoal != null) {
+                            Timber.d("MathRace: Navigating to GoalActiveDialog")
+                            navigator.goTo(GoalActiveDialogScreen(activeGoal))
+                        } else {
+                            Timber.w("MathRace: No active goal found, navigating to GoalProgressScreen")
+                            navigator.goTo(GoalProgressScreen)
+                        }
                     }
 
                     MathRaceScreen.Event.NavigateHome -> {
