@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.hossain.mathtutor.domain.repository.goals.GoalRepository
+import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen.Event
 import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen.State
 import dev.zacsweers.metro.AppScope
@@ -35,7 +35,9 @@ class GoalHistoryPresenter(
     @Composable
     override fun present(): State {
         val goal by goalRepository.getGoalById(screen.goalId).collectAsState(null)
-        val histories by goalRepository.getGoalHistory(screen.goalId).collectAsState(emptyList())
+        val allHistories by goalRepository.getGoalHistory().collectAsState(emptyList())
+        // Filter histories for this specific goal
+        val histories = allHistories.filter { it.goal.id == screen.goalId }
         var selectedHistory by remember { mutableStateOf<dev.hossain.mathtutor.domain.model.goals.GoalHistory?>(null) }
         var isLoading by remember { mutableStateOf(true) }
         var error by remember { mutableStateOf<String?>(null) }

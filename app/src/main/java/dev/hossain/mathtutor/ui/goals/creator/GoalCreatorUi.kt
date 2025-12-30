@@ -36,8 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
-import dev.hossain.mathtutor.domain.model.goals.MathOperation
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Event
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.State
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Step
@@ -288,21 +288,24 @@ private fun SelectComponentsContent(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             operations.forEach { operation ->
-                val isSelected = components.any { it.operation == operation }
+                val isSelected = components.any { 
+                    it is GoalComponent.OperationBased && it.operation == operation 
+                }
                 OperationButton(
                     operation = operation,
                     isSelected = isSelected,
                     onClick = {
                         if (isSelected) {
-                            onRemoveComponent(components.indexOfFirst { it.operation == operation })
+                            onRemoveComponent(
+                                components.indexOfFirst { 
+                                    it is GoalComponent.OperationBased && it.operation == operation 
+                                }
+                            )
                         } else {
-                            val component =
-                                GoalComponent(
-                                    operation = operation,
-                                    minRange = 1,
-                                    maxRange = 10,
-                                    problemCount = 10,
-                                )
+                            val component = GoalComponent.OperationBased(
+                                operation = operation,
+                                sessionCount = 1,
+                            )
                             onAddComponent(component)
                         }
                     },
@@ -413,7 +416,7 @@ private fun ReviewStepContent(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = components.joinToString(", ") { it.operation.displayName },
+                    text = components.joinToString(", ") { it.getDescription() },
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

@@ -150,9 +150,9 @@ private fun HistoryListView(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
-                if (goal.description.isNotEmpty()) {
+                if (!goal.description.isNullOrEmpty()) {
                     Text(
-                        text = goal.description,
+                        text = goal.description ?: "",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
