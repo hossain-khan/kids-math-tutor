@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Test Stability**: Fixed floating-point precision issue in multiple goal tests by using tolerance-based assertions (`isWithin()`) for progress percentage calculations
+- **Goals (Parent UI)**: Fixed Goal Creator "Save" action not persisting new goals (now calls CreateGoalUseCase and shows errors).
 
 ### Added
 - **Goals Feature - Phase 1: Domain Models & Database Layer**
