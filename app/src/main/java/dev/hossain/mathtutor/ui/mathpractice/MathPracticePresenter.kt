@@ -543,12 +543,12 @@ class MathPracticePresenter
 
                                             Timber.d(
                                                 "[MathPractice] Updating goal progress for goal: ${activeGoal.goal.id}, " +
-                                                    "componentIndex=0, accuracy=$accuracy%, time=$durationSeconds seconds",
+                                                    "componentIndex=${screen.goalComponentIndex}, accuracy=$accuracy%, time=$durationSeconds seconds",
                                             )
 
                                             val goalUpdateResult =
                                                 updateGoalProgressUseCase(
-                                                    componentIndex = 0, // Always update first component for now
+                                                    componentIndex = screen.goalComponentIndex,
                                                     completedSessions = 1,
                                                     accuracy = accuracy,
                                                     timeSeconds = durationSeconds,

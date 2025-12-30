@@ -19,12 +19,16 @@ import kotlinx.parcelize.Parcelize
  * @param operation The math operation type for this practice session
  * @param problemCount Number of problems in this practice session
  * @param customChallengeId Optional ID of custom challenge for parent-created challenges
+ * @param goalComponentIndex Optional index of the goal component (for tracking goal progress)
+ * @param goalId Optional ID of the goal being worked on (for tracking goal progress)
  */
 @Parcelize
 data class MathPracticeScreen(
     val operation: MathOperation = MathOperation.ADDITION,
     val problemCount: Int = 10,
     val customChallengeId: String? = null,
+    val goalComponentIndex: Int = 0,
+    val goalId: String? = null,
 ) : Screen {
     /**
      * State for [MathPracticeScreen].

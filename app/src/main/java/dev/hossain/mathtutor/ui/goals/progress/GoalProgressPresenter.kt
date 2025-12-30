@@ -47,25 +47,45 @@ class GoalProgressPresenter(
                 when (event) {
                     is GoalProgressScreen.Event.StartComponent -> {
                         currentComponentIndex = event.componentIndex
-                        // Navigate to MathPracticeScreen with the correct operation
+                        // Navigate to MathPracticeScreen with the correct operation and component index
                         val component = activeGoal?.goal?.components?.getOrNull(event.componentIndex)
                         if (component is GoalComponent.OperationBased) {
-                            navigator.goTo(MathPracticeScreen(operation = component.operation))
+                            navigator.goTo(
+                                MathPracticeScreen(
+                                    operation = component.operation,
+                                    goalComponentIndex = event.componentIndex,
+                                    goalId = activeGoal?.goal?.id,
+                                ),
+                            )
                         } else if (component is GoalComponent.CustomChallengeBased) {
                             navigator.goTo(
-                                MathPracticeScreen(customChallengeId = component.challengeId),
+                                MathPracticeScreen(
+                                    customChallengeId = component.challengeId,
+                                    goalComponentIndex = event.componentIndex,
+                                    goalId = activeGoal?.goal?.id,
+                                ),
                             )
                         }
                     }
 
                     GoalProgressScreen.Event.ResumeCurrentComponent -> {
-                        // Resume current component by navigating to practice with correct operation
+                        // Resume current component by navigating to practice with correct operation and component index
                         val component = activeGoal?.goal?.components?.getOrNull(currentComponentIndex)
                         if (component is GoalComponent.OperationBased) {
-                            navigator.goTo(MathPracticeScreen(operation = component.operation))
+                            navigator.goTo(
+                                MathPracticeScreen(
+                                    operation = component.operation,
+                                    goalComponentIndex = currentComponentIndex,
+                                    goalId = activeGoal?.goal?.id,
+                                ),
+                            )
                         } else if (component is GoalComponent.CustomChallengeBased) {
                             navigator.goTo(
-                                MathPracticeScreen(customChallengeId = component.challengeId),
+                                MathPracticeScreen(
+                                    customChallengeId = component.challengeId,
+                                    goalComponentIndex = currentComponentIndex,
+                                    goalId = activeGoal?.goal?.id,
+                                ),
                             )
                         }
                     }
