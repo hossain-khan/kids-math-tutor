@@ -23,12 +23,15 @@ import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PracticeSession
 import dev.hossain.mathtutor.domain.model.SessionAnswer
+import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.repository.PerformanceRepository
 import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
+import dev.hossain.mathtutor.domain.usecase.goals.UpdateGoalProgressUseCase
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.goals.completion.GoalCompletionScreen
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -64,6 +67,8 @@ class MathPracticePresenter
         private val hapticService: HapticService,
         private val analyticsService: AnalyticsService,
         private val customChallengeService: dev.hossain.mathtutor.domain.service.CustomChallengeService,
+        private val goalRepository: GoalRepository,
+        private val updateGoalProgressUseCase: UpdateGoalProgressUseCase,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -525,6 +530,46 @@ class MathPracticePresenter
                                             "longest=${updatedStreak.longestStreak}",
                                     )
 
+                                    // Update goal progress if active goal exists
+                                    val activeGoal = goalRepository.getActiveGoal().firstOrNull()
+                                    if (activeGoal != null) {
+                                        try {
+                                            val accuracy =
+                                                if (problems.isNotEmpty()) {
+                                                    (correctCount.toFloat() / problems.size.toFloat()) * 100f
+                                                } else {
+                                                    0f
+                                                }
+
+                                            Timber.d(
+                                                "[MathPractice] Updating goal progress for goal: ${activeGoal.goal.id}, " +
+                                                    "componentIndex=0, accuracy=$accuracy%, time=$durationSeconds seconds",
+                                            )
+
+                                            val goalUpdateResult =
+                                                updateGoalProgressUseCase(
+                                                    componentIndex = 0, // Always update first component for now
+                                                    completedSessions = 1,
+                                                    accuracy = accuracy,
+                                                    timeSeconds = durationSeconds,
+                                                )
+
+                                            if (goalUpdateResult.isSuccess) {
+                                                val updatedGoal = goalUpdateResult.getOrNull()
+                                                Timber.d(
+                                                    "[MathPractice] Goal progress updated successfully: " +
+                                                        "goalId=${updatedGoal?.goal?.id}",
+                                                )
+                                            } else {
+                                                Timber.e(
+                                                    "Failed to update goal progress: ${goalUpdateResult.exceptionOrNull()}",
+                                                )
+                                            }
+                                        } catch (e: Exception) {
+                                            Timber.e(e, "Error updating goal progress")
+                                        }
+                                    }
+
                                     // Check for badge unlocks
                                     Timber.d("[MathPractice] Checking for badge unlocks...")
                                     val newlyUnlocked = checkBadgeUnlocksUseCase.checkAndUnlockBadges()
@@ -562,16 +607,46 @@ class MathPracticePresenter
                                             currentBadgeIndex = 0
                                         } else {
                                             Timber.d("No new badges unlocked")
-                                            // Navigate to results immediately if no badges
-                                            navigator.goTo(
-                                                ResultsScreen(
-                                                    problems = problems,
-                                                    userAnswers = userAnswers,
-                                                    badgesAlreadyChecked = true,
-                                                    customChallengeId = screen.customChallengeId,
-                                                    customChallengeTitle = customChallengeTitle,
-                                                ),
-                                            )
+                                            // Check if goal is completed
+                                            val updatedActiveGoal = goalRepository.getActiveGoal().firstOrNull()
+                                            if (updatedActiveGoal != null) {
+                                                // Check if all components are completed
+                                                val totalComponents = updatedActiveGoal.goal.components.size
+                                                val completedComponents =
+                                                    updatedActiveGoal.componentProgress.count {
+                                                        it.completedSessions >
+                                                            0
+                                                    }
+
+                                                if (completedComponents >= totalComponents && totalComponents > 0) {
+                                                    Timber.d("[MathPractice] Goal completed! Navigating to completion screen")
+                                                    navigator.goTo(
+                                                        GoalCompletionScreen(goalId = updatedActiveGoal.goal.id),
+                                                    )
+                                                } else {
+                                                    // Goal not completed, show results
+                                                    navigator.goTo(
+                                                        ResultsScreen(
+                                                            problems = problems,
+                                                            userAnswers = userAnswers,
+                                                            badgesAlreadyChecked = true,
+                                                            customChallengeId = screen.customChallengeId,
+                                                            customChallengeTitle = customChallengeTitle,
+                                                        ),
+                                                    )
+                                                }
+                                            } else {
+                                                // No active goal, show results normally
+                                                navigator.goTo(
+                                                    ResultsScreen(
+                                                        problems = problems,
+                                                        userAnswers = userAnswers,
+                                                        badgesAlreadyChecked = true,
+                                                        customChallengeId = screen.customChallengeId,
+                                                        customChallengeTitle = customChallengeTitle,
+                                                    ),
+                                                )
+                                            }
                                         }
                                     }
                                 } catch (e: Exception) {
