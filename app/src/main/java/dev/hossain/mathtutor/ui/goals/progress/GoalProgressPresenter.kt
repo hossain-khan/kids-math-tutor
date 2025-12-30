@@ -11,6 +11,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
+import dev.hossain.mathtutor.domain.model.goals.GoalComponent
 import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
 import dev.zacsweers.metro.AppScope
@@ -46,13 +47,27 @@ class GoalProgressPresenter(
                 when (event) {
                     is GoalProgressScreen.Event.StartComponent -> {
                         currentComponentIndex = event.componentIndex
-                        // Navigate to MathPracticeScreen to start the component
-                        navigator.goTo(MathPracticeScreen())
+                        // Navigate to MathPracticeScreen with the correct operation
+                        val component = activeGoal?.goal?.components?.getOrNull(event.componentIndex)
+                        if (component is GoalComponent.OperationBased) {
+                            navigator.goTo(MathPracticeScreen(operation = component.operation))
+                        } else if (component is GoalComponent.CustomChallengeBased) {
+                            navigator.goTo(
+                                MathPracticeScreen(customChallengeId = component.challengeId),
+                            )
+                        }
                     }
 
                     GoalProgressScreen.Event.ResumeCurrentComponent -> {
-                        // Resume current component by navigating to practice
-                        navigator.goTo(MathPracticeScreen())
+                        // Resume current component by navigating to practice with correct operation
+                        val component = activeGoal?.goal?.components?.getOrNull(currentComponentIndex)
+                        if (component is GoalComponent.OperationBased) {
+                            navigator.goTo(MathPracticeScreen(operation = component.operation))
+                        } else if (component is GoalComponent.CustomChallengeBased) {
+                            navigator.goTo(
+                                MathPracticeScreen(customChallengeId = component.challengeId),
+                            )
+                        }
                     }
 
                     GoalProgressScreen.Event.Back -> {
