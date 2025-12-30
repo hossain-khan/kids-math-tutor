@@ -252,12 +252,17 @@ private fun ComponentCard(
 ) {
     val backgroundColor =
         when {
-            isCompleted ->
+            isCompleted -> {
                 MaterialTheme.colorScheme.surfaceVariant
-            isCurrentComponent ->
+            }
+
+            isCurrentComponent -> {
                 MaterialTheme.colorScheme.secondaryContainer
-            else ->
+            }
+
+            else -> {
                 MaterialTheme.colorScheme.surface
+            }
         }
 
     Card(
@@ -330,8 +335,6 @@ private fun ComponentCard(
 }
 
 @Composable
-private fun PaddingValues(
-    horizontal: androidx.compose.ui.unit.Dp,
-): androidx.compose.foundation.layout.PaddingValues {
-    return androidx.compose.foundation.layout.PaddingValues(horizontal = horizontal)
-}
+private fun PaddingValues(horizontal: androidx.compose.ui.unit.Dp): androidx.compose.foundation.layout.PaddingValues =
+    androidx.compose.foundation.layout
+        .PaddingValues(horizontal = horizontal)

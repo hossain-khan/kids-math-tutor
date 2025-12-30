@@ -21,7 +21,9 @@ data object GoalProgressScreen : Screen {
     ) : CircuitUiState
 
     sealed interface Event : CircuitUiEvent {
-        data class StartComponent(val componentIndex: Int) : Event
+        data class StartComponent(
+            val componentIndex: Int,
+        ) : Event
 
         object ResumeCurrentComponent : Event
 

@@ -35,15 +35,13 @@ class GoalProgressPresenter(
                 .catch { exception ->
                     error = exception.message ?: "Failed to load active goal"
                     isLoading = false
-                }
-                .collectLatest { result ->
+                }.collectLatest { result ->
                     result
                         .onSuccess { goal ->
                             activeGoal = goal
                             currentComponentIndex = 0
                             isLoading = false
-                        }
-                        .onFailure { exception ->
+                        }.onFailure { exception ->
                             error = exception.message ?: "Failed to load active goal"
                             isLoading = false
                         }
