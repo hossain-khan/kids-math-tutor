@@ -27,6 +27,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive unit tests (25+ test cases) for use cases covering success and error scenarios
   - Entity-to-domain model conversions for type-safe data handling
   - Support for goal statistics calculation (total goals, completion counts, average accuracy and time)
+- **Goals Feature - Phase 3: Parent UI Screens**
+  - GoalCatalogScreen: Lists all goals with activation status, supports create/edit/delete/archive operations
+  - GoalCreatorScreen: 3-step wizard (Title input, Component selection, Review) for creating new goals
+  - GoalHistoryScreen: Shows goal completion history with analytics cards and per-session breakdown
+  - Full Circuit framework integration with @CircuitInject decorators and @AssistedFactory patterns
+  - Material 3 design system implementation with responsive layouts and proper theming
+  - State management with Flow observation for reactive UI updates
+  - Navigation integration between catalog, creator, and history screens
+  - Analytics calculation: total sessions, average accuracy, total time spent
+  - Proper null safety and error handling in all screens
 
 ### Changed
 - Docs: Corrected adaptive layout status checklist to reflect implemented navigation and foldable posture utilities
