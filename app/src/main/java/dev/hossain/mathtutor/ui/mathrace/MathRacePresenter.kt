@@ -476,13 +476,15 @@ class MathRacePresenter
                     }
 
                     MathRaceScreen.Event.ViewGoalProgressClicked -> {
-                        val activeGoal = goalRepository.getActiveGoal().firstOrNull()
-                        if (activeGoal != null) {
-                            Timber.d("MathRace: Navigating to GoalActiveDialog")
-                            navigator.goTo(GoalActiveDialogScreen(activeGoal))
-                        } else {
-                            Timber.w("MathRace: No active goal found, navigating to GoalProgressScreen")
-                            navigator.goTo(GoalProgressScreen)
+                        coroutineScope.launch {
+                            val activeGoal = goalRepository.getActiveGoal().firstOrNull()
+                            if (activeGoal != null) {
+                                Timber.d("MathRace: Navigating to GoalActiveDialog")
+                                navigator.goTo(GoalActiveDialogScreen(activeGoal))
+                            } else {
+                                Timber.w("MathRace: No active goal found, navigating to GoalProgressScreen")
+                                navigator.goTo(GoalProgressScreen)
+                            }
                         }
                     }
 

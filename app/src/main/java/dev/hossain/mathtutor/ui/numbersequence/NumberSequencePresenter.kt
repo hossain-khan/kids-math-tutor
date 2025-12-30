@@ -427,13 +427,15 @@ class NumberSequencePresenter
                     }
 
                     NumberSequenceScreen.Event.ViewGoalProgressClicked -> {
-                        val activeGoal = goalRepository.getActiveGoal().firstOrNull()
-                        if (activeGoal != null) {
-                            Timber.d("NumberSequence: Navigating to GoalActiveDialog")
-                            navigator.goTo(GoalActiveDialogScreen(activeGoal))
-                        } else {
-                            Timber.w("NumberSequence: No active goal found, navigating to GoalProgressScreen")
-                            navigator.goTo(GoalProgressScreen)
+                        coroutineScope.launch {
+                            val activeGoal = goalRepository.getActiveGoal().firstOrNull()
+                            if (activeGoal != null) {
+                                Timber.d("NumberSequence: Navigating to GoalActiveDialog")
+                                navigator.goTo(GoalActiveDialogScreen(activeGoal))
+                            } else {
+                                Timber.w("NumberSequence: No active goal found, navigating to GoalProgressScreen")
+                                navigator.goTo(GoalProgressScreen)
+                            }
                         }
                     }
 

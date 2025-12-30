@@ -577,13 +577,15 @@ class MemoryMatchPresenter
                     }
 
                     MemoryMatchScreen.Event.ViewGoalProgressClicked -> {
-                        val activeGoal = goalRepository.getActiveGoal().firstOrNull()
-                        if (activeGoal != null) {
-                            Timber.d("MemoryMatch: Navigating to GoalActiveDialog")
-                            navigator.goTo(GoalActiveDialogScreen(activeGoal))
-                        } else {
-                            Timber.w("MemoryMatch: No active goal found, navigating to GoalProgressScreen")
-                            navigator.goTo(GoalProgressScreen)
+                        coroutineScope.launch {
+                            val activeGoal = goalRepository.getActiveGoal().firstOrNull()
+                            if (activeGoal != null) {
+                                Timber.d("MemoryMatch: Navigating to GoalActiveDialog")
+                                navigator.goTo(GoalActiveDialogScreen(activeGoal))
+                            } else {
+                                Timber.w("MemoryMatch: No active goal found, navigating to GoalProgressScreen")
+                                navigator.goTo(GoalProgressScreen)
+                            }
                         }
                     }
 
