@@ -32,10 +32,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.domain.model.goals.ComponentProgress
+import dev.zacsweers.metro.AppScope
 import kotlin.math.roundToInt
 
+@CircuitInject(GoalProgressScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoalProgressUi(

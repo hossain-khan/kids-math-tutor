@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
@@ -14,6 +15,7 @@ import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 
 @AssistedInject
@@ -21,6 +23,12 @@ class GoalProgressPresenter(
     @Assisted private val navigator: Navigator,
     private val goalRepository: GoalRepository,
 ) : Presenter<GoalProgressScreen.State> {
+    @CircuitInject(GoalProgressScreen::class, AppScope::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(navigator: Navigator): GoalProgressPresenter
+    }
+
     @Composable
     override fun present(): GoalProgressScreen.State {
         val activeGoal by goalRepository.getActiveGoal().collectAsState(null)
