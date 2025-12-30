@@ -44,11 +44,12 @@ class GoalHistoryPresenter(
 
         // Calculate analytics
         val totalCompleted = histories.size
-        val averageAccuracy = if (histories.isNotEmpty()) {
-            histories.map { it.overallAccuracy }.average().toFloat()
-        } else {
-            0f
-        }
+        val averageAccuracy =
+            if (histories.isNotEmpty()) {
+                histories.map { it.overallAccuracy }.average().toFloat()
+            } else {
+                0f
+            }
         val totalTimeMins = histories.sumOf { it.totalTimeSeconds / 60 }
 
         // Update loading state once data is loaded

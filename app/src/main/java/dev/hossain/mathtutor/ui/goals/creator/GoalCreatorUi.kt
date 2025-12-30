@@ -288,24 +288,26 @@ private fun SelectComponentsContent(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             operations.forEach { operation ->
-                val isSelected = components.any { 
-                    it is GoalComponent.OperationBased && it.operation == operation 
-                }
+                val isSelected =
+                    components.any {
+                        it is GoalComponent.OperationBased && it.operation == operation
+                    }
                 OperationButton(
                     operation = operation,
                     isSelected = isSelected,
                     onClick = {
                         if (isSelected) {
                             onRemoveComponent(
-                                components.indexOfFirst { 
-                                    it is GoalComponent.OperationBased && it.operation == operation 
-                                }
+                                components.indexOfFirst {
+                                    it is GoalComponent.OperationBased && it.operation == operation
+                                },
                             )
                         } else {
-                            val component = GoalComponent.OperationBased(
-                                operation = operation,
-                                sessionCount = 1,
-                            )
+                            val component =
+                                GoalComponent.OperationBased(
+                                    operation = operation,
+                                    sessionCount = 1,
+                                )
                             onAddComponent(component)
                         }
                     },
