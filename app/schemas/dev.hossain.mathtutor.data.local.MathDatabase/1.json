@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0b8ba8f654cf26b9239f676bf69f8c5b",
+    "identityHash": "38d302bc5f11dc9d0a656a1f7d3a5bee",
     "entities": [
       {
         "tableName": "practice_sessions",
@@ -563,6 +563,25 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_goals_catalog_createdAt` ON `${TABLE_NAME}` (`createdAt`)"
+          },
+          {
+            "name": "index_goals_catalog_isArchived",
+            "unique": false,
+            "columnNames": [
+              "isArchived"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_goals_catalog_isArchived` ON `${TABLE_NAME}` (`isArchived`)"
+          },
+          {
+            "name": "index_goals_catalog_isArchived_createdAt",
+            "unique": false,
+            "columnNames": [
+              "isArchived",
+              "createdAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_goals_catalog_isArchived_createdAt` ON `${TABLE_NAME}` (`isArchived`, `createdAt`)"
           }
         ]
       },
@@ -606,7 +625,27 @@
           "columnNames": [
             "id"
           ]
-        }
+        },
+        "indices": [
+          {
+            "name": "index_active_goals_goalId",
+            "unique": false,
+            "columnNames": [
+              "goalId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_active_goals_goalId` ON `${TABLE_NAME}` (`goalId`)"
+          },
+          {
+            "name": "index_active_goals_activatedAt",
+            "unique": false,
+            "columnNames": [
+              "activatedAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_active_goals_activatedAt` ON `${TABLE_NAME}` (`activatedAt`)"
+          }
+        ]
       },
       {
         "tableName": "goal_history",
@@ -751,7 +790,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0b8ba8f654cf26b9239f676bf69f8c5b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38d302bc5f11dc9d0a656a1f7d3a5bee')"
     ]
   }
 }

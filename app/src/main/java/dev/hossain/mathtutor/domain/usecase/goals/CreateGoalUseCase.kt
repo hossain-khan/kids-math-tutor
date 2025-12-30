@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.domain.usecase.goals
 
+import dev.hossain.mathtutor.analytics.GoalAnalyticsTracker
 import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
 import dev.hossain.mathtutor.domain.model.goals.GoalError
@@ -8,14 +9,16 @@ import javax.inject.Inject
 
 /**
  * Use case for creating a new goal.
- * Validates input parameters and delegates to the repository for persistence.
+ * Validates input parameters, delegates to the repository for persistence, and tracks analytics.
  *
  * @property repository The goal repository
+ * @property analyticsTracker The analytics tracker for logging goal events
  */
 class CreateGoalUseCase
     @Inject
     constructor(
         private val repository: GoalRepository,
+        private val analyticsTracker: GoalAnalyticsTracker,
     ) {
         /**
          * Creates a new goal with the given parameters.
@@ -29,6 +32,9 @@ class CreateGoalUseCase
          * - Title is not empty and less than 100 characters
          * - At least one component provided
          * - Each component has valid session count (1-10)
+         *
+         * Side effects:
+         * - On success, tracks goal creation event with analytics
          */
         suspend operator fun invoke(
             title: String,
@@ -60,6 +66,27 @@ class CreateGoalUseCase
             }
 
             // Delegate to repository
-            return repository.createGoal(title, description, components)
+            val result = repository.createGoal(title, description, components)
+
+            // Track successful creation
+            if (result.isSuccess) {
+                val goal = result.getOrNull()
+                if (goal != null) {
+                    val componentTypes =
+                        components.map { component ->
+                            when (component) {
+                                is GoalComponent.OperationBased -> component.operation.displayName
+                                is GoalComponent.CustomChallengeBased -> "Custom: ${component.challengeTitle}"
+                            }
+                        }
+                    analyticsTracker.trackGoalCreated(
+                        goal = goal,
+                        componentCount = components.size,
+                        componentTypes = componentTypes,
+                    )
+                }
+            }
+
+            return result
         }
     }

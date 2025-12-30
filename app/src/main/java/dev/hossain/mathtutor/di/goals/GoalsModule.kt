@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.di.goals
 
+import dev.hossain.mathtutor.analytics.GoalAnalyticsTracker
 import dev.hossain.mathtutor.data.local.MathDatabase
 import dev.hossain.mathtutor.data.local.dao.goals.ActiveGoalDao
 import dev.hossain.mathtutor.data.local.dao.goals.GoalHistoryDao
@@ -72,41 +73,57 @@ interface GoalsModule {
      * Provides the CreateGoalUseCase.
      *
      * @param repository The goal repository
+     * @param analyticsTracker The analytics tracker for goal events
      * @return A new instance of CreateGoalUseCase
      */
     @Provides
     @SingleIn(AppScope::class)
-    fun provideCreateGoalUseCase(repository: GoalRepository): CreateGoalUseCase = CreateGoalUseCase(repository)
+    fun provideCreateGoalUseCase(
+        repository: GoalRepository,
+        analyticsTracker: GoalAnalyticsTracker,
+    ): CreateGoalUseCase = CreateGoalUseCase(repository, analyticsTracker)
 
     /**
      * Provides the ActivateGoalUseCase.
      *
      * @param repository The goal repository
+     * @param analyticsTracker The analytics tracker for goal events
      * @return A new instance of ActivateGoalUseCase
      */
     @Provides
     @SingleIn(AppScope::class)
-    fun provideActivateGoalUseCase(repository: GoalRepository): ActivateGoalUseCase = ActivateGoalUseCase(repository)
+    fun provideActivateGoalUseCase(
+        repository: GoalRepository,
+        analyticsTracker: GoalAnalyticsTracker,
+    ): ActivateGoalUseCase = ActivateGoalUseCase(repository, analyticsTracker)
 
     /**
      * Provides the UpdateGoalProgressUseCase.
      *
      * @param repository The goal repository
+     * @param analyticsTracker The analytics tracker for goal events
      * @return A new instance of UpdateGoalProgressUseCase
      */
     @Provides
     @SingleIn(AppScope::class)
-    fun provideUpdateGoalProgressUseCase(repository: GoalRepository): UpdateGoalProgressUseCase = UpdateGoalProgressUseCase(repository)
+    fun provideUpdateGoalProgressUseCase(
+        repository: GoalRepository,
+        analyticsTracker: GoalAnalyticsTracker,
+    ): UpdateGoalProgressUseCase = UpdateGoalProgressUseCase(repository, analyticsTracker)
 
     /**
      * Provides the CompleteGoalUseCase.
      *
      * @param repository The goal repository
+     * @param analyticsTracker The analytics tracker for goal events
      * @return A new instance of CompleteGoalUseCase
      */
     @Provides
     @SingleIn(AppScope::class)
-    fun provideCompleteGoalUseCase(repository: GoalRepository): CompleteGoalUseCase = CompleteGoalUseCase(repository)
+    fun provideCompleteGoalUseCase(
+        repository: GoalRepository,
+        analyticsTracker: GoalAnalyticsTracker,
+    ): CompleteGoalUseCase = CompleteGoalUseCase(repository, analyticsTracker)
 
     /**
      * Provides the ResumeGoalUseCase.

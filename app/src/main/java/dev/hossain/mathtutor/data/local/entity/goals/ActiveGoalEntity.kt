@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.data.local.entity.goals
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.Instant
 
@@ -14,7 +15,13 @@ import java.time.Instant
  * @property currentComponentIndex Index of the component currently being worked on
  * @property componentProgress JSON serialized list of ComponentProgress objects
  */
-@Entity(tableName = "active_goals")
+@Entity(
+    tableName = "active_goals",
+    indices = [
+        Index("goalId"),
+        Index("activatedAt"),
+    ],
+)
 data class ActiveGoalEntity(
     @PrimaryKey
     val id: String,

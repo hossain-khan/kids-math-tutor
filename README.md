@@ -11,6 +11,32 @@ A fun, free math learning app for K-2 children. No ads. No data collection. Just
 | Addition, Subtraction, Multiplication, Division | 🏎️ Math Race (60-sec challenge) | 👨‍👩‍👧 Custom worksheets for parents |
 | Grade-appropriate difficulty (K-2)              | 🧩 Memory Match (4×4 cards)      | 📋 27 pre-built templates              |
 | Instant feedback with animations                | 🏆 27 Achievement Badges         | 📊 Progress tracking & stats           |
+| 🎯 **Smart Learning Goals** (custom & templates) | 🔐 Game blocking (earn unlocks)   | 📈 Goal analytics & completion tracking |
+
+### Smart Learning Goals
+
+Create **personalized learning paths** for children with milestone-based progress tracking:
+
+**For Parents:**
+- 📝 **Goal Templates**: Pre-built math focus areas (Addition Master, Times Table Wizard, etc.)
+- 🎯 **Custom Goals**: Create goals with 3-5 milestones (e.g., "100 addition problems by Friday")
+- 📊 **Progress Dashboard**: Real-time milestones, accuracy tracking, game access controls
+- 🎮 **Smart Game Blocking**: Unlock games by completing goals (motivates focused practice)
+- 📊 **Session Resumption**: Pause and resume mid-session with progress saved
+
+**For Children:**
+- 🏆 **Progress Banner**: See active goal with milestone progress on home screen
+- ✨ **Achievement Celebration**: Special animations and badges when completing goals
+- 🔓 **Unlocked Games**: New games become playable as milestones are completed
+- 📈 **Math Practice Integration**: Track progress while practicing custom worksheets
+
+**Key Capabilities:**
+- Create up to 10 concurrent goals with flexible timelines
+- 3-5 customizable milestones per goal with accuracy targets
+- Persistent session state with resume capability
+- Goal completion history and analytics
+- Material 3 design with adaptive layouts
+- Full accessibility support (WCAG 2.1 AA)
 
 **Accessibility**: TalkBack support, high contrast mode, dynamic text sizing (WCAG 2.1 AA)
 

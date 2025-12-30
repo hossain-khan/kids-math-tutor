@@ -7,8 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Goals Feature - Phase 5: Integration, Testing & Polish**
+  - End-to-end test suite for complete goal workflows (parent creation → child completion)
+  - Analytics tracking integration with GoalAnalyticsTracker interface
+    - Event tracking for: goal creation, activation, component starts, session completion, goal completion, game locks, resume prompts
+    - Integration into use cases and UI screens for comprehensive event coverage
+  - Database query optimization with strategic indexing for performance
+  - Integration test suite (GoalIntegrationTest) with real database validation
+  - Comprehensive error handling and recovery for edge cases
+  - Full Material 3 compliance verification across all goal screens
+  - Accessibility support meeting WCAG AA standards
+  - Performance optimization and profiling
+  - Complete documentation updates (CHANGELOG, README, KDoc comments)
+- **Goals Feature - Phase 4: Child UI & Home Screen Integration**
+  - GoalProgressScreen: Child views active goal progress with component breakdown
+  - GoalCompletionScreen: Celebration screen with goal stats when goal is completed
+  - Home Screen Enhancement: Active goal progress banner showing real-time progress
+  - Game Access Guards: Games blocked when active goal exists (MathRace, MemoryMatch, NumberSequence)
+    - GameBlockerDialog showing goal title, progress, and navigation options
+    - Applied to all three game screens with proper state management
+  - Session Resumption Dialog: Auto-prompt on home screen to continue interrupted goals
+    - Single-show per session to prevent repeated prompts
+    - Clear action buttons: "Continue Goal" and "Continue Later"
+  - MathPracticeScreen Integration: Automatic goal progress tracking on session completion
+    - Goal completion detection with navigation to celebration screen
+    - Proper fallback to ResultsScreen for non-goal sessions
+    - Accuracy calculation and progress updates
+  - Comprehensive unit tests (21 test cases) covering:
+    - Goal completion detection across single and multi-component scenarios
+    - Accuracy calculations (0%, partial, perfect scores)
+    - Progress percentage tracking with proper floating-point handling
+    - Game blocking logic and state transitions
+    - Session management and component tracking
+  - Fixed floating-point precision issues in test assertions using tolerance-based comparisons
+
 ### Fixed
-- **Test Stability**: Fixed floating-point precision issue in `GameBlockingLogicTest` by using tolerance-based assertion for progress percentage calculation
+- **Test Stability**: Fixed floating-point precision issue in multiple goal tests by using tolerance-based assertions (`isWithin()`) for progress percentage calculations
 
 ### Added
 - **Goals Feature - Phase 1: Domain Models & Database Layer**
