@@ -1,9 +1,10 @@
 # Goals Feature - Implementation Assessment
 
-**Assessment Date:** December 30, 2025  
-**Status:** Phase 4 (Child UI) ~75% Complete  
-**Merged PR:** goals-feature-base-branch  
-**Bug Count:** 3 Critical, 2 Major, 3 Minor  
+**Assessment Date:** December 30, 2025 (Updated)  
+**Status:** Phase 4 (Child UI) ~85% Complete  
+**Merged PR:** goals-feature-base-branch (PR #453 merged)  
+**Bug Count:** 2 Critical, 1 Major, 3 Minor  
+**Latest:** GoalActiveDialog fully implemented and merged - Session resumption confirmed working  
 
 ---
 
@@ -37,56 +38,58 @@ The Goals feature has been substantially implemented across **5 phases**, with m
 - [x] ParentSettingsScreen integration
 - [x] Circuit navigation working
 
-### Phase 4: Child UI (Partial) ⚠️
+### Phase 4: Child UI ✅ (85% Complete)
 - [x] GoalProgressScreen (view and start components)
 - [x] GoalCompletionScreen (celebration on goal finish)
-- [x] HomeScreen enhancement (goal banner + resumption dialog logic)
+- [x] HomeScreen enhancement (goal banner + resumption dialog working)
 - [x] GameBlockerDialog (prevents game access)
 - [x] MathPracticeScreen integration (update goal progress)
-- [x] Session resumption dialog implementation
-- [ ] **MISSING:** Session resumption dialog UI not showing (state prepared but not rendered in HomeUi)
-- [ ] **MISSING:** GoalActiveDialog screen (planned but not implemented)
+- [x] Session resumption dialog implementation (confirmed working)
+- [x] GoalActiveDialog screen (newly implemented - PR #453)
+- [x] Game presenter integration (MathRace, MemoryMatch, NumberSequence)
+- [x] Proper navigation when goals are locked
 
-### Phase 5: Integration ⚠️
+### Phase 5: Integration ⚠️ (85% Complete)
 - [x] PracticeSession completion hooks to goal progress
 - [x] Game lock checks (MathRace, MemoryMatch, NumberSequence)
 - [x] Goal analytics tracking framework
 - [x] Unit and integration tests
-- [ ] **INCOMPLETE:** Resume dialog not actually displayed
+- [x] GoalActiveDialog navigation from game screens (PR #453)
+- [x] Resume dialog properly displayed and working
+- [ ] Custom challenge analytics details (optional enhancement)
 
 ---
 
 ## 🐛 Critical Issues Found
 
-### 1. **Session Resumption Dialog Not Displaying** 🔴
-**Severity:** Critical  
-**Impact:** User can't resume interrupted goals; state is prepared but UI doesn't render  
+### 1. **Session Resumption Dialog Not Displaying** ✅ RESOLVED
+**Severity:** Critical (FIXED)  
+**Impact:** ✅ User can resume interrupted goals  
 **Location:** `HomePresenter.kt` & `HomeUi.kt`
 
-**Problem:**
+**Resolution:**
+Session resumption dialog is properly implemented and rendering at [HomeUi.kt lines 330-340](HomeUi.kt#L330):
 ```kotlin
 // HomePresenter prepares state correctly:
 val showSessionResumptionDialog = activeGoal != null && !hasShownSessionResumptionDialog
 
-// But HomeUi never renders it when true:
-// Missing: if (state.showSessionResumptionDialog) { SessionResumptionDialog(...) }
-```
-
-**Files Involved:**
-- [HomeUi.kt](HomeUi.kt) - Missing conditional render in the UI
-- [SessionResumptionDialog.kt](SessionResumptionDialog.kt) - Dialog component exists
-
-**Fix Required:**
-Add to `HomeUi` composable:
-```kotlin
+// HomeUi correctly renders it:
 if (state.showSessionResumptionDialog && state.activeGoal != null) {
     SessionResumptionDialog(
-        goal = state.activeGoal.goal,
-        onContinue = { state.eventSink(HomeScreen.Event.ContinueGoalClicked) },
-        onDismiss = { state.eventSink(HomeScreen.Event.SessionResumptionDismissed) }
+        activeGoal = state.activeGoal,
+        onContinueClicked = { state.eventSink(HomeScreen.Event.ContinueGoalClicked) },
+        onDismissClicked = { state.eventSink(HomeScreen.Event.SessionResumptionDismissed) },
     )
 }
 ```
+**Status:** ✅ Verified and working correctly
+
+**Files Involved:**
+- [HomeUi.kt](HomeUi.kt) - ✅ Conditional render implemented and working
+- [SessionResumptionDialog.kt](SessionResumptionDialog.kt) - ✅ Dialog component rendering correctly
+
+**What Was Done:**
+The dialog is properly implemented in `HomeUi` composable with correct event binding and null checks.
 
 ---
 
@@ -117,42 +120,51 @@ if (state.showSessionResumptionDialog && state.activeGoal != null) {
 
 ---
 
-### 3. **Cascading Delete Fixed But Edge Cases Remain** 🔴
+### 3. **Cascading Delete Fixed But Edge Cases Remain** ✅ PARTIALLY RESOLVED
 **Severity:** Critical (partially fixed)  
-**Impact:** Various edge cases with archived/deleted goals  
+**Impact:** Most critical edge cases now handled  
 **Location:** `GoalRepositoryImpl.kt`
 
-**Recent Fix (PR #452):**
+**Fixed (PR #452):**
 ✅ When goal is archived, active goal is now cleared
+✅ Game lock behavior properly implemented (PR #453)
+✅ Navigation from games to dialog working correctly
 
-**But Still Missing:**
+**Remaining Edge Cases (Lower Priority):**
 - [ ] Cleanup when CustomChallenge is deleted (if used in a goal component)
 - [ ] Behavior if goal is archived while child is viewing GoalProgressScreen
 - [ ] Update cascade - if goal description is edited, does activeGoal reflect it?
 - [ ] History entries for archived goals (should probably hard-delete or soft-delete cleanly)
 
+**Note:** Core functionality is stable; remaining items are edge cases for future enhancement
+
 ---
 
 ## 📌 Major Issues
 
-### 4. **GoalActiveDialog Not Implemented** 🟠
-**Severity:** Major  
-**Impact:** No lock dialog exists - games can't properly communicate why they're blocked  
-**Location:** Nowhere (not created)
+### 4. **GoalActiveDialog Not Implemented** ✅ RESOLVED
+**Severity:** Major (FIXED)  
+**Impact:** ✅ Lock dialog fully implemented and integrated  
+**Location:** `ui/goals/dialog/` (newly created)
 
-**What's Missing:**
-- [ ] GoalActiveDialogScreen.kt (Screen definition)
-- [ ] GoalActiveDialogUi.kt (Dialog UI)
-- [ ] Navigation from game screens
+**What Was Implemented (PR #453):**
+- [x] GoalActiveDialogScreen.kt (Screen definition with State/Event)
+- [x] GoalActiveDialogPresenter.kt (Presenter with navigation logic)
+- [x] GoalActiveDialogUi.kt (Material 3 Dialog UI showing goal progress)
+- [x] Navigation from all game screens
 
-**What Exists:**
-- GameBlockerDialog exists and shows in MathRace, MemoryMatch, NumberSequence
-- But it's a temporary/basic blocker, not a full dialog screen
+**What Exists Now:**
+- ✅ GoalActiveDialog shows when user tries to play locked game
+- ✅ Displays goal title and component progress
+- ✅ Visual LinearProgressIndicator for progress
+- ✅ Proper navigation routing to GoalProgressScreen on continue
 
-**Files Affected:**
-- [MathRaceUi.kt](MathRaceUi.kt#L26) - Uses GameBlockerDialog, could use GoalActiveDialog instead
-- [MemoryMatchUi.kt](MemoryMatchUi.kt#L81) - Uses GameBlockerDialog
-- [NumberSequenceUi.kt](NumberSequenceUi.kt#L26) - Uses GameBlockerDialog
+**Files Updated:**
+- [MathRacePresenter.kt](MathRacePresenter.kt) - ✅ Updated event handler
+- [MemoryMatchPresenter.kt](MemoryMatchPresenter.kt) - ✅ Updated event handler
+- [NumberSequencePresenter.kt](NumberSequencePresenter.kt) - ✅ Updated event handler
+
+**Status:** ✅ Fully implemented, tested, and merged
 
 ---
 
@@ -239,10 +251,10 @@ if (state.showSessionResumptionDialog && state.activeGoal != null) {
 Phase 1: Domain & Data        ████████████████████ 100% ✅
 Phase 2: Repository & Cases   ████████████████████ 100% ✅
 Phase 3: Parent UI            ████████████████████ 100% ✅
-Phase 4: Child UI             ████████████░░░░░░░░  75% ⚠️
-Phase 5: Integration/Polish   ████████████░░░░░░░░  75% ⚠️
+Phase 4: Child UI             ██████████████████░░  85% ✅
+Phase 5: Integration/Polish   ██████████████████░░  85% ✅
 ────────────────────────────────────────────────────────
-Overall                       ████████████░░░░░░░░  75% ⚠️
+Overall                       ██████████████████░░  85% ✅
 ```
 
 ---
@@ -251,20 +263,20 @@ Overall                       ████████████░░░░�
 
 ### P0 - CRITICAL (Must Fix Before Release)
 
-1. **Display Session Resumption Dialog** (1 hour)
-   - Add conditional render in HomeUi
-   - Wire up event handlers
-   - Test dialog shows and dismisses correctly
+1. **Display Session Resumption Dialog** ✅ DONE
+   - [x] Conditional render in HomeUi
+   - [x] Event handlers wired
+   - [x] Dialog shows and dismisses correctly
 
 2. **Add Custom Challenge Support to Goal Creator** (2-3 hours)
    - Add UI step for custom challenge selection
    - Wire up event handlers
    - Update validation logic
 
-3. **Implement GoalActiveDialog Screen** (1-2 hours)
-   - Create screen definition (like other dialog screens)
-   - Implement dialog UI
-   - Wire up from game screens
+3. **Implement GoalActiveDialog Screen** ✅ DONE
+   - [x] Screen definition with State/Event
+   - [x] Dialog UI with Material 3 styling
+   - [x] Navigation from all game screens (PR #453)
 
 ### P1 - IMPORTANT (High Priority)
 
@@ -390,31 +402,38 @@ Overall                       ████████████░░░░�
 | **Database Layer** | ✅ 100% | Room entities, DAOs, converters working |
 | **Repository** | ✅ 100% | All CRUD operations implemented |
 | **Parent UI** | ✅ 100% | Catalog, creator, history complete |
-| **Child UI** | ⚠️ 75% | Progress screen works, completion works, but resume dialog missing |
-| **Game Integration** | ⚠️ 80% | Blocking works, but needs proper dialog screen |
+| **Child UI** | ✅ 85% | Progress screen works, completion works, resume dialog working, GoalActiveDialog implemented |
+| **Game Integration** | ✅ 90% | Lock dialog fully implemented, navigation working, all game presenters updated |
 | **Analytics** | ⚠️ 60% | Framework exists, details incomplete |
 | **Testing** | ⚠️ 70% | Core logic tested, edge cases missing |
 | **Documentation** | ✅ 95% | Architecture docs complete, code docs good |
-| **Overall** | ⚠️ 75% | Feature works but needs fixes before release |
+| **Overall** | ✅ 85% | Feature mostly complete, custom challenge UI remaining |
+| **Custom Challenges** | ⚠️ 40% | Model and domain support exist, UI not exposed |
 
 ---
 
 ## 🚀 Release Readiness
 
-**Current Status:** NOT READY FOR RELEASE
+**Current Status:** MOSTLY READY - Ready for integration testing, 1 critical feature remaining
 
-**Blocking Issues:**
-1. Session resumption dialog not displaying
-2. Custom challenges not creatable via UI
-3. Lock dialog (GoalActiveDialog) not implemented
+**Completed Critical Items:**
+1. ✅ Session resumption dialog displaying
+2. ⏳ Custom challenges not creatable via UI (high priority, 2-3 hours work)
+3. ✅ Lock dialog (GoalActiveDialog) fully implemented
 
 **To Make Release-Ready:**
-- Implement 3 critical fixes above (~4-5 hours)
+- Implement custom challenge UI support (~2-3 hours)
 - Run full integration testing
 - Verify Material 3 compliance
 - Accessibility testing
 - Performance testing with larger datasets
 
+**Estimated Time to Release:** 3-5 hours additional work
+
 ---
 
-**Assessment Complete:** This is a comprehensive mid-phase implementation with good fundamentals but critical gaps in UX flows and feature completeness. The fixes are straightforward and mostly involve completing partially-done work rather than architectural changes.
+**Assessment Complete - Updated December 30, 2025:** 
+
+With PR #453 merged, the Goals feature has progressed from 75% to 85% completion. The critical session resumption dialog was already implemented and working, and the GoalActiveDialog lock screen has been fully implemented with proper navigation from all game screens.
+
+Remaining work is primarily adding custom challenge UI support to the goal creator (2-3 hours), which will bring the feature to ~95% completion and release-ready status. The architecture is solid, core functionality is working well, and most gaps are UX enhancements rather than architectural issues.
