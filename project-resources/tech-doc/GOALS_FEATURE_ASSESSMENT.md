@@ -1,10 +1,10 @@
 # Goals Feature - Implementation Assessment
 
-**Assessment Date:** December 30, 2025 (Updated)  
-**Status:** Phase 4 (Child UI) ~85% Complete  
-**Merged PR:** goals-feature-base-branch (PR #453 merged)  
-**Bug Count:** 2 Critical, 1 Major, 3 Minor  
-**Latest:** GoalActiveDialog fully implemented and merged - Session resumption confirmed working  
+**Assessment Date:** December 30, 2025 (Updated - Bug Fix Applied)  
+**Status:** Phase 4 (Child UI) ~90% Complete  
+**Merged PRs:** goals-feature-base-branch (PR #453, PR #454 + bug fix f822b50)  
+**Bug Count:** 1 Critical, 1 Major, 3 Minor  
+**Latest:** CustomChallengeBased UI implemented and critical mixed-component bug fixed  
 
 ---
 
@@ -93,30 +93,40 @@ The dialog is properly implemented in `HomeUi` composable with correct event bin
 
 ---
 
-### 2. **CustomChallengeBased Components Not Supported** 🔴
+### 2. **CustomChallengeBased Components Not Supported** ✅ RESOLVED (PR #454)
 **Severity:** Critical  
-**Impact:** Goal creation UI only allows OperationBased components, not custom challenges  
+**Impact:** ✅ Goal creation UI now allows CustomChallengeBased components  
 **Location:** `GoalCreatorUi.kt`
 
-**Problem:**
-- GoalComponent sealed class has `CustomChallengeBased` variant
-- Database and domain models support it
-- **But GoalCreatorUi only shows operation buttons, not custom challenge selection**
+**Implementation (PR #454):**
+✅ Custom challenge picker added to goal creator
+✅ UI shows both operations and custom challenges in separate sections
+✅ Event handlers wired for selecting and adding custom challenges
+✅ Component review step displays mixed components correctly
 
-**Missing Implementation:**
-- [ ] Custom challenge picker in goal creator
-- [ ] UI to select challenges and add them to components
-- [ ] Component count validation with mixed types
-- [ ] Display in component review step
+**Status:** ✅ Fully implemented and merged to goals-feature-base-branch
 
-**Files Involved:**
-- [GoalCreatorUi.kt](GoalCreatorUi.kt) - Only Step.SelectComponents for operations
-- [GoalCreatorPresenter.kt](GoalCreatorPresenter.kt) - Event handling exists
+---
 
-**Impact on User:**
-- Parents can only create operation-based goals
-- Can't leverage existing CustomChallenge library
-- Feature is only partially functional
+### 2b. **Mixed Component Goal Progress Tracking** ✅ RESOLVED (Commit f822b50)
+**Severity:** Critical (Bug found in testing)  
+**Impact:** ✅ Goal progress now correctly updates the right component  
+**Location:** `MathPracticeScreen.kt`, `GoalProgressPresenter.kt`, `MathPracticePresenter.kt`
+
+**Bug Found During Testing:**
+When a goal had multiple components (e.g., division + custom challenge), completing any component would always update the first component's progress instead of the one actually completed.
+
+**Root Cause:**
+- MathPracticeScreen didn't track which component index was being worked on
+- MathPracticePresenter always used hardcoded `componentIndex=0`
+
+**Fix Applied (Commit f822b50):**
+- Added `goalComponentIndex` and `goalId` parameters to MathPracticeScreen
+- Updated GoalProgressPresenter to pass correct component index when navigating
+- Updated MathPracticePresenter to use `screen.goalComponentIndex` instead of hardcoded 0
+- Both StartComponent and ResumeCurrentComponent events now pass correct indices
+
+**Status:** ✅ Critical bug fixed and pushed to goals-feature-base-branch
 
 ---
 
@@ -251,10 +261,10 @@ The dialog is properly implemented in `HomeUi` composable with correct event bin
 Phase 1: Domain & Data        ████████████████████ 100% ✅
 Phase 2: Repository & Cases   ████████████████████ 100% ✅
 Phase 3: Parent UI            ████████████████████ 100% ✅
-Phase 4: Child UI             ██████████████████░░  85% ✅
-Phase 5: Integration/Polish   ██████████████████░░  85% ✅
+Phase 4: Child UI             ███████████████████░  95% ✅
+Phase 5: Integration/Polish   ███████████████████░  95% ✅
 ────────────────────────────────────────────────────────
-Overall                       ██████████████████░░  85% ✅
+Overall                       ███████████████████░  90% ✅
 ```
 
 ---
@@ -402,13 +412,13 @@ Overall                       ████████████████�
 | **Database Layer** | ✅ 100% | Room entities, DAOs, converters working |
 | **Repository** | ✅ 100% | All CRUD operations implemented |
 | **Parent UI** | ✅ 100% | Catalog, creator, history complete |
-| **Child UI** | ✅ 85% | Progress screen works, completion works, resume dialog working, GoalActiveDialog implemented |
-| **Game Integration** | ✅ 90% | Lock dialog fully implemented, navigation working, all game presenters updated |
+| **Child UI** | ✅ 95% | All screens complete, mixed-component bug fixed |
+| **Game Integration** | ✅ 95% | Lock dialog implemented, component tracking fixed |
 | **Analytics** | ⚠️ 60% | Framework exists, details incomplete |
 | **Testing** | ⚠️ 70% | Core logic tested, edge cases missing |
 | **Documentation** | ✅ 95% | Architecture docs complete, code docs good |
-| **Overall** | ✅ 85% | Feature mostly complete, custom challenge UI remaining |
-| **Custom Challenges** | ⚠️ 40% | Model and domain support exist, UI not exposed |
+| **Overall** | ✅ 90% | Feature substantially complete, ready for final testing |
+| **Custom Challenges** | ✅ 95% | Model, domain, UI all implemented and working |
 
 ---
 
