@@ -66,22 +66,24 @@ class UpdateGoalProgressUseCase
             }
 
             // Delegate to repository
-            val result = repository.updateComponentProgress(
-                componentIndex = componentIndex,
-                completedSessions = completedSessions,
-                accuracy = accuracy,
-                timeSeconds = timeSeconds,
-            )
+            val result =
+                repository.updateComponentProgress(
+                    componentIndex = componentIndex,
+                    completedSessions = completedSessions,
+                    accuracy = accuracy,
+                    timeSeconds = timeSeconds,
+                )
 
             // Track session completion
             if (result.isSuccess) {
                 val activeGoal = result.getOrNull()
                 if (activeGoal != null && componentIndex < activeGoal.goal.components.size) {
                     val component = activeGoal.goal.components[componentIndex]
-                    val componentDescription = when (component) {
-                        is GoalComponent.OperationBased -> component.getDescription()
-                        is GoalComponent.CustomChallengeBased -> component.getDescription()
-                    }
+                    val componentDescription =
+                        when (component) {
+                            is GoalComponent.OperationBased -> component.getDescription()
+                            is GoalComponent.CustomChallengeBased -> component.getDescription()
+                        }
 
                     analyticsTracker.trackSessionCompleted(
                         goalId = activeGoal.goalId,

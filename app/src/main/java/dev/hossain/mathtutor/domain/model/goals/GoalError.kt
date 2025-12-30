@@ -167,7 +167,5 @@ sealed class GoalError : Throwable() {
     /**
      * Returns the type of error for categorization.
      */
-    fun getErrorType(): String =
-        this::class.simpleName ?: "UnknownError"
+    fun getErrorType(): String = this::class.simpleName ?: "UnknownError"
 }
-

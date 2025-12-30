@@ -72,12 +72,13 @@ class CreateGoalUseCase
             if (result.isSuccess) {
                 val goal = result.getOrNull()
                 if (goal != null) {
-                    val componentTypes = components.map { component ->
-                        when (component) {
-                            is GoalComponent.OperationBased -> component.operation.displayName
-                            is GoalComponent.CustomChallengeBased -> "Custom: ${component.challengeTitle}"
+                    val componentTypes =
+                        components.map { component ->
+                            when (component) {
+                                is GoalComponent.OperationBased -> component.operation.displayName
+                                is GoalComponent.CustomChallengeBased -> "Custom: ${component.challengeTitle}"
+                            }
                         }
-                    }
                     analyticsTracker.trackGoalCreated(
                         goal = goal,
                         componentCount = components.size,

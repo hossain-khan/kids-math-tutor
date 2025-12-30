@@ -28,13 +28,14 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_created",
-                parameters = mapOf(
-                    "goal_id" to goal.id,
-                    "goal_title" to goal.title,
-                    "component_count" to componentCount,
-                    "component_types" to componentTypes.joinToString(","),
-                    "has_description" to (goal.description != null),
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goal.id,
+                        "goal_title" to goal.title,
+                        "component_count" to componentCount,
+                        "component_types" to componentTypes.joinToString(","),
+                        "has_description" to (goal.description != null),
+                    ),
             )
             Timber.d("Tracked goal creation: ${goal.title} with $componentCount components")
         } catch (e: Exception) {
@@ -50,11 +51,12 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_activated",
-                parameters = mapOf(
-                    "goal_id" to goalId,
-                    "goal_title" to goalTitle,
-                    "total_sessions" to totalSessions,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalId,
+                        "goal_title" to goalTitle,
+                        "total_sessions" to totalSessions,
+                    ),
             )
             Timber.d("Tracked goal activation: $goalTitle")
         } catch (e: Exception) {
@@ -70,11 +72,12 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_component_started",
-                parameters = mapOf(
-                    "goal_id" to goalId,
-                    "component_index" to componentIndex,
-                    "component_description" to componentDescription,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalId,
+                        "component_index" to componentIndex,
+                        "component_description" to componentDescription,
+                    ),
             )
             Timber.d("Tracked component start: $componentDescription (index=$componentIndex)")
         } catch (e: Exception) {
@@ -92,13 +95,14 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_session_completed",
-                parameters = mapOf(
-                    "goal_id" to goalId,
-                    "component_index" to componentIndex,
-                    "accuracy" to "%.1f".format(accuracy),
-                    "duration_seconds" to durationSeconds,
-                    "problems_completed" to problemsCompleted,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalId,
+                        "component_index" to componentIndex,
+                        "accuracy" to "%.1f".format(accuracy),
+                        "duration_seconds" to durationSeconds,
+                        "problems_completed" to problemsCompleted,
+                    ),
             )
             Timber.d("Tracked session completion: $accuracy% accuracy, ${durationSeconds}s duration")
         } catch (e: Exception) {
@@ -115,14 +119,15 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_completed",
-                parameters = mapOf(
-                    "goal_id" to goalHistory.goalId,
-                    "goal_title" to goalHistory.goalTitle,
-                    "total_days_active" to totalDaysActive,
-                    "achieved_accuracy" to "%.1f".format(achievedAccuracy),
-                    "game_levels_unlocked" to gameLevelsUnlocked,
-                    "total_time_seconds" to goalHistory.totalTimeSeconds,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalHistory.goalId,
+                        "goal_title" to goalHistory.goalTitle,
+                        "total_days_active" to totalDaysActive,
+                        "achieved_accuracy" to "%.1f".format(achievedAccuracy),
+                        "game_levels_unlocked" to gameLevelsUnlocked,
+                        "total_time_seconds" to goalHistory.totalTimeSeconds,
+                    ),
             )
             Timber.d("Tracked goal completion: ${goalHistory.goalTitle} with $achievedAccuracy% accuracy")
         } catch (e: Exception) {
@@ -139,12 +144,13 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "game_locked_by_goal",
-                parameters = mapOf(
-                    "game_type" to gameType,
-                    "blocking_goal_id" to goalId,
-                    "blocking_goal_title" to goalTitle,
-                    "goal_progress_percent" to "%.1f".format(progressPercent),
-                ),
+                parameters =
+                    mapOf(
+                        "game_type" to gameType,
+                        "blocking_goal_id" to goalId,
+                        "blocking_goal_title" to goalTitle,
+                        "goal_progress_percent" to "%.1f".format(progressPercent),
+                    ),
             )
             Timber.d("Tracked game lock: $gameType blocked by goal ($progressPercent% progress)")
         } catch (e: Exception) {
@@ -161,12 +167,13 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_resume_dialog_shown",
-                parameters = mapOf(
-                    "goal_id" to goalId,
-                    "goal_title" to goalTitle,
-                    "component_index" to componentIndex,
-                    "minutes_since_pause" to minutesSincePause,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalId,
+                        "goal_title" to goalTitle,
+                        "component_index" to componentIndex,
+                        "minutes_since_pause" to minutesSincePause,
+                    ),
             )
             Timber.d("Tracked resume dialog shown for $goalTitle (paused ${minutesSincePause}m ago)")
         } catch (e: Exception) {
@@ -181,10 +188,11 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_session_resumed",
-                parameters = mapOf(
-                    "goal_id" to goalId,
-                    "component_index" to componentIndex,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalId,
+                        "component_index" to componentIndex,
+                    ),
             )
             Timber.d("Tracked session resume for goal (component=$componentIndex)")
         } catch (e: Exception) {
@@ -199,10 +207,11 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_session_restarted",
-                parameters = mapOf(
-                    "goal_id" to goalId,
-                    "component_index" to componentIndex,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalId,
+                        "component_index" to componentIndex,
+                    ),
             )
             Timber.d("Tracked session restart for goal (component=$componentIndex)")
         } catch (e: Exception) {
@@ -219,12 +228,13 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_deleted",
-                parameters = mapOf(
-                    "goal_id" to goalId,
-                    "goal_title" to goalTitle,
-                    "had_completions" to hadCompletions,
-                    "completion_count" to completionCount,
-                ),
+                parameters =
+                    mapOf(
+                        "goal_id" to goalId,
+                        "goal_title" to goalTitle,
+                        "had_completions" to hadCompletions,
+                        "completion_count" to completionCount,
+                    ),
             )
             Timber.d("Tracked goal deletion: $goalTitle ($completionCount completions)")
         } catch (e: Exception) {
@@ -241,12 +251,13 @@ class GoalAnalyticsTrackerImpl(
         try {
             analyticsService.logEvent(
                 eventName = "goal_badge_earned",
-                parameters = mapOf(
-                    "badge_type" to badgeType,
-                    "goal_id" to goalId,
-                    "goal_title" to goalTitle,
-                    "total_badges" to badgeCount,
-                ),
+                parameters =
+                    mapOf(
+                        "badge_type" to badgeType,
+                        "goal_id" to goalId,
+                        "goal_title" to goalTitle,
+                        "total_badges" to badgeCount,
+                    ),
             )
             Timber.d("Tracked badge earned: $badgeType for $goalTitle (total=$badgeCount)")
         } catch (e: Exception) {

@@ -22,8 +22,10 @@ data object GoalCreatorScreen : Screen {
     enum class Step {
         /** Step 1: Enter goal title and description */
         Title,
+
         /** Step 2: Select or add goal components (milestones) */
         SelectComponents,
+
         /** Step 3: Review all settings and confirm creation */
         Review,
     }

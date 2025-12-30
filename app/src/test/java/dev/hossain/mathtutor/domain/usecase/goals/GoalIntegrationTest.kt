@@ -138,7 +138,7 @@ class GoalIntegrationTest {
                     completedSessions = eq(1),
                     accuracy = eq(85.5f),
                     timeSeconds = eq(300L),
-                )
+                ),
             ).thenReturn(Result.success(updatedActiveGoal))
 
             val progressResult1 = updateProgressUseCase(0, 1, 85.5f, 300L, 10)
@@ -168,7 +168,7 @@ class GoalIntegrationTest {
                     completedSessions = eq(2),
                     accuracy = eq(92.0f),
                     timeSeconds = eq(280L),
-                )
+                ),
             ).thenReturn(Result.success(updatedActiveGoal2))
 
             val progressResult2 = updateProgressUseCase(0, 2, 92.0f, 280L, 10)
@@ -214,9 +214,10 @@ class GoalIntegrationTest {
     @Test
     fun `cannot create goal with empty title`() =
         runTest {
-            val components = listOf(
-                GoalComponent.OperationBased(MathOperation.ADDITION, 3),
-            )
+            val components =
+                listOf(
+                    GoalComponent.OperationBased(MathOperation.ADDITION, 3),
+                )
             val result = createGoalUseCase("", "", components)
 
             assertThat(result.isFailure).isTrue()
@@ -264,22 +265,25 @@ class GoalIntegrationTest {
     @Test
     fun `progress tracking with high accuracy`() =
         runTest {
-            val goal = Goal(
-                id = "goal-1",
-                title = "Expert Level",
-                components = listOf(
-                    GoalComponent.OperationBased(MathOperation.DIVISION, 2),
-                ),
-            )
+            val goal =
+                Goal(
+                    id = "goal-1",
+                    title = "Expert Level",
+                    components =
+                        listOf(
+                            GoalComponent.OperationBased(MathOperation.DIVISION, 2),
+                        ),
+                )
 
-            val activeGoal = dev.hossain.mathtutor.domain.model.goals.ActiveGoal(
-                id = "active-1",
-                goalId = goal.id,
-                goal = goal,
-                activatedAt = Instant.now(),
-                currentComponentIndex = 0,
-                componentProgress = emptyList(),
-            )
+            val activeGoal =
+                dev.hossain.mathtutor.domain.model.goals.ActiveGoal(
+                    id = "active-1",
+                    goalId = goal.id,
+                    goal = goal,
+                    activatedAt = Instant.now(),
+                    currentComponentIndex = 0,
+                    componentProgress = emptyList(),
+                )
 
             whenever(
                 goalRepository.updateComponentProgress(
@@ -287,7 +291,7 @@ class GoalIntegrationTest {
                     completedSessions = eq(1),
                     accuracy = eq(100.0f),
                     timeSeconds = eq(180L),
-                )
+                ),
             ).thenReturn(Result.success(activeGoal))
 
             val result = updateProgressUseCase(0, 1, 100.0f, 180L, 10)
@@ -306,22 +310,25 @@ class GoalIntegrationTest {
     @Test
     fun `progress tracking with low accuracy still succeeds`() =
         runTest {
-            val goal = Goal(
-                id = "goal-2",
-                title = "Learning Goal",
-                components = listOf(
-                    GoalComponent.OperationBased(MathOperation.SUBTRACTION, 3),
-                ),
-            )
+            val goal =
+                Goal(
+                    id = "goal-2",
+                    title = "Learning Goal",
+                    components =
+                        listOf(
+                            GoalComponent.OperationBased(MathOperation.SUBTRACTION, 3),
+                        ),
+                )
 
-            val activeGoal = dev.hossain.mathtutor.domain.model.goals.ActiveGoal(
-                id = "active-2",
-                goalId = goal.id,
-                goal = goal,
-                activatedAt = Instant.now(),
-                currentComponentIndex = 0,
-                componentProgress = emptyList(),
-            )
+            val activeGoal =
+                dev.hossain.mathtutor.domain.model.goals.ActiveGoal(
+                    id = "active-2",
+                    goalId = goal.id,
+                    goal = goal,
+                    activatedAt = Instant.now(),
+                    currentComponentIndex = 0,
+                    componentProgress = emptyList(),
+                )
 
             whenever(
                 goalRepository.updateComponentProgress(
@@ -329,7 +336,7 @@ class GoalIntegrationTest {
                     completedSessions = eq(1),
                     accuracy = eq(45.0f),
                     timeSeconds = eq(600L),
-                )
+                ),
             ).thenReturn(Result.success(activeGoal))
 
             val result = updateProgressUseCase(0, 1, 45.0f, 600L, 10)
