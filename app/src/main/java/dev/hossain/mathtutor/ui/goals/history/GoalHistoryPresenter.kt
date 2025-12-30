@@ -6,20 +6,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.repository.goals.GoalRepository
 import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen.Event
 import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen.State
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 
-@Inject
+@AssistedInject
 class GoalHistoryPresenter(
     @Assisted private val screen: GoalHistoryScreen,
     @Assisted private val navigator: Navigator,
     private val goalRepository: GoalRepository,
 ) : Presenter<State> {
+    
+    @CircuitInject(GoalHistoryScreen::class, AppScope::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            screen: GoalHistoryScreen,
+            navigator: Navigator,
+        ): GoalHistoryPresenter
+    }
 
     @Composable
     override fun present(): State {

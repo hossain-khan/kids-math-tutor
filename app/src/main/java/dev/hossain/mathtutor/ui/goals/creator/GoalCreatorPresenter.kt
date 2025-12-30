@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.goals.Goal
@@ -15,16 +16,27 @@ import dev.hossain.mathtutor.domain.usecase.goals.CreateGoalUseCase
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Event
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.State
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Step
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 
-@Inject
+@AssistedInject
 class GoalCreatorPresenter(
     @Assisted private val screen: GoalCreatorScreen,
     @Assisted private val navigator: Navigator,
     private val createGoalUseCase: CreateGoalUseCase,
 ) : Presenter<State> {
+    
+    @CircuitInject(GoalCreatorScreen::class, AppScope::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            screen: GoalCreatorScreen,
+            navigator: Navigator,
+        ): GoalCreatorPresenter
+    }
 
     @Composable
     override fun present(): State {

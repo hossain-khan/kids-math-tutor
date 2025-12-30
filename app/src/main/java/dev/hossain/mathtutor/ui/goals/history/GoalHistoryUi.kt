@@ -31,14 +31,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.goals.Goal
 import dev.hossain.mathtutor.domain.model.goals.GoalHistory
 import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen.Event
 import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen.State
+import dev.zacsweers.metro.AppScope
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@CircuitInject(GoalHistoryScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoalHistoryUi(

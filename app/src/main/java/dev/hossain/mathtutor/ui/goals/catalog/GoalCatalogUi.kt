@@ -31,15 +31,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.goals.Goal
-import dev.hossain.mathtutor.di.AppScope
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.AppScope
 
-@Inject
-class GoalCatalogUiFactory : (CircuitContext) -> Unit by { }
-
+@CircuitInject(GoalCatalogScreen::class, AppScope::class)
 @Composable
 fun GoalCatalogUi(
     state: GoalCatalogScreen.State,

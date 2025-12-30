@@ -35,12 +35,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.goals.GoalComponent
 import dev.hossain.mathtutor.domain.model.goals.MathOperation
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Event
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.State
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen.Step
+import dev.zacsweers.metro.AppScope
 
+@CircuitInject(GoalCreatorScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoalCreatorUi(

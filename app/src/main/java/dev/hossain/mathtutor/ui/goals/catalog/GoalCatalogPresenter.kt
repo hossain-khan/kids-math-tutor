@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.di.AppScope
@@ -14,17 +15,28 @@ import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.usecase.goals.ActivateGoalUseCase
 import dev.hossain.mathtutor.ui.goals.history.GoalHistoryScreen
 import dev.hossain.mathtutor.ui.goals.creator.GoalCreatorScreen
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 
-@Inject
+@AssistedInject
 class GoalCatalogPresenter(
     @Assisted private val screen: GoalCatalogScreen,
     @Assisted private val navigator: Navigator,
     private val goalRepository: GoalRepository,
     private val activateGoalUseCase: ActivateGoalUseCase,
 ) : Presenter<GoalCatalogScreen.State> {
+    
+    @CircuitInject(GoalCatalogScreen::class, AppScope::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            screen: GoalCatalogScreen,
+            navigator: Navigator,
+        ): GoalCatalogPresenter
+    }
     @Composable
     override fun present(): GoalCatalogScreen.State {
         var isLoading by remember { mutableStateOf(false) }
