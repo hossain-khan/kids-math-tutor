@@ -1,7 +1,7 @@
 package dev.hossain.mathtutor.ui.goals.progress
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -12,48 +12,27 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.ui.mathpractice.MathPracticeScreen
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
 
-@Inject
+@AssistedInject
 class GoalProgressPresenter(
     @Assisted private val navigator: Navigator,
     private val goalRepository: GoalRepository,
 ) : Presenter<GoalProgressScreen.State> {
     @Composable
     override fun present(): GoalProgressScreen.State {
-        var activeGoal by remember { mutableStateOf<ActiveGoal?>(null) }
+        val activeGoal by goalRepository.getActiveGoal().collectAsState(null)
         var currentComponentIndex by remember { mutableIntStateOf(0) }
-        var isLoading by remember { mutableStateOf(true) }
         var error by remember { mutableStateOf<String?>(null) }
-
-        LaunchedEffect(Unit) {
-            goalRepository
-                .getActiveGoal()
-                .catch { exception ->
-                    error = exception.message ?: "Failed to load active goal"
-                    isLoading = false
-                }.collectLatest { result ->
-                    result
-                        .onSuccess { goal ->
-                            activeGoal = goal
-                            currentComponentIndex = 0
-                            isLoading = false
-                        }.onFailure { exception ->
-                            error = exception.message ?: "Failed to load active goal"
-                            isLoading = false
-                        }
-                }
-        }
 
         return GoalProgressScreen.State(
             activeGoal = activeGoal,
             currentComponentIndex = currentComponentIndex,
             componentProgress = activeGoal?.componentProgress ?: emptyList(),
             overallProgress = calculateOverallProgress(activeGoal),
-            isLoading = isLoading,
+            isLoading = activeGoal == null,
             error = error,
             eventSink = { event ->
                 when (event) {

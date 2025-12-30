@@ -149,7 +149,7 @@ private fun GoalProgressContent(
                 component = component,
                 progress = progress,
                 isCurrentComponent = index == currentComponentIndex,
-                isCompleted = progress?.isComplete == true,
+                isCompleted = progress?.isComplete() == true,
                 onStartClick = {
                     eventSink(GoalProgressScreen.Event.StartComponent(index))
                 },
@@ -158,7 +158,7 @@ private fun GoalProgressContent(
 
         // Start next session button
         item {
-            val nextComponentIndex = activeGoal.componentProgress.indexOfFirst { !it.isComplete }
+            val nextComponentIndex = activeGoal.componentProgress.indexOfFirst { !it.isComplete() }
             if (nextComponentIndex >= 0) {
                 Button(
                     onClick = {
@@ -216,7 +216,7 @@ private fun OverallProgressCard(
             )
 
             LinearProgressIndicator(
-                progress = animatedProgress,
+                { animatedProgress },
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primary,
             )
@@ -310,9 +310,10 @@ private fun ComponentCard(
 
             if (progress != null && !isCompleted) {
                 LinearProgressIndicator(
-                    progress =
+                    {
                         progress.completedSessions.toFloat() /
-                            maxOf(1, component.sessionCount),
+                            maxOf(1, component.sessionCount)
+                    },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
