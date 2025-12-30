@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.ui.numbersequence
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,10 +21,13 @@ import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.Game
 import dev.hossain.mathtutor.domain.model.GameSession
 import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.domain.repository.GameRepository
+import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.goals.progress.GoalProgressScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -55,6 +59,7 @@ class NumberSequencePresenter
         @Assisted private val navigator: Navigator,
         private val sequenceGenerator: SequenceGenerator,
         private val gameRepository: GameRepository,
+        private val goalRepository: GoalRepository,
         private val userProfileRepository: UserProfileRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val audioService: AudioService,
@@ -92,6 +97,34 @@ class NumberSequencePresenter
                     screenName = "Number Sequence",
                     screenClass = NumberSequenceScreen::class.java.name,
                 )
+            }
+
+            // Check for active goal - if present, block game access
+            val activeGoal by goalRepository.getActiveGoal().collectAsState(initial = null)
+
+            if (activeGoal != null) {
+                // Return a blocked state that the UI will handle by showing a blocker dialog
+                return NumberSequenceScreen.State(
+                    gameState = NumberSequenceScreen.GameState.NotStarted,
+                    currentSequence = null,
+                    currentAnswer = "",
+                    score = 0,
+                    timeRemaining = GAME_DURATION_SECONDS,
+                    personalBest = 0,
+                    totalAttempts = 0,
+                    correctAnswers = 0,
+                    lastAnswerCorrect = null,
+                    userName = null,
+                    activeGoal = activeGoal,
+                ) { event ->
+                    when (event) {
+                        NumberSequenceScreen.Event.NavigateHome -> {
+                            navigator.pop()
+                        }
+
+                        else -> {} // Ignore all other events while blocked
+                    }
+                }
             }
 
             val coroutineScope = rememberCoroutineScope()
@@ -310,6 +343,7 @@ class NumberSequencePresenter
                 correctAnswers = correctAnswers,
                 lastAnswerCorrect = lastAnswerCorrect,
                 userName = userName,
+                activeGoal = activeGoal,
             ) { event ->
                 when (event) {
                     NumberSequenceScreen.Event.StartGame -> {
@@ -389,6 +423,10 @@ class NumberSequencePresenter
                             warningPlayed = false
                             Timber.d("[NumberSequence] Reset for new game")
                         }
+                    }
+
+                    NumberSequenceScreen.Event.ViewGoalProgressClicked -> {
+                        navigator.goTo(GoalProgressScreen)
                     }
 
                     NumberSequenceScreen.Event.NavigateHome -> {

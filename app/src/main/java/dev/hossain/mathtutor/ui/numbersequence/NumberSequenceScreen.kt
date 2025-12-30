@@ -5,6 +5,7 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.generator.SequenceQuestion
 import dev.hossain.mathtutor.domain.model.Badge
+import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -99,6 +100,7 @@ data class NumberSequenceScreen(
         val correctAnswers: Int,
         val lastAnswerCorrect: Boolean?,
         val userName: String?,
+        val activeGoal: ActiveGoal? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -133,6 +135,11 @@ data class NumberSequenceScreen(
          * User wants to play again after game over.
          */
         data object PlayAgain : Event
+
+        /**
+         * User wants to view goal progress (from blocker dialog).
+         */
+        data object ViewGoalProgressClicked : Event
 
         /**
          * User wants to navigate back to game selection.

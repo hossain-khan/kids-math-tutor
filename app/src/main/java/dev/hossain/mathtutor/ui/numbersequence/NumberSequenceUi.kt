@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.numbersequence
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.ui.games.GameBlockerDialog
 import dev.zacsweers.metro.AppScope
 
 /**
@@ -20,6 +21,20 @@ fun NumberSequenceUi(
     state: NumberSequenceScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // If there's an active goal, show the blocker dialog
+    if (state.activeGoal != null) {
+        GameBlockerDialog(
+            activeGoal = state.activeGoal,
+            onViewGoalProgressClicked = {
+                state.eventSink(NumberSequenceScreen.Event.ViewGoalProgressClicked)
+            },
+            onBackToHomeClicked = {
+                state.eventSink(NumberSequenceScreen.Event.NavigateHome)
+            },
+        )
+        return
+    }
+
     when (val gameState = state.gameState) {
         is NumberSequenceScreen.GameState.NotStarted -> {
             NumberSequenceStartScreen(

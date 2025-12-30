@@ -5,6 +5,7 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -94,6 +95,7 @@ data class MemoryMatchScreen(
         val firstFlippedCard: Card? = null,
         val secondFlippedCard: Card? = null,
         val userName: String? = null,
+        val activeGoal: ActiveGoal? = null,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState {
         /**
@@ -123,6 +125,11 @@ data class MemoryMatchScreen(
          * Player wants to play again after game ends.
          */
         data object PlayAgain : Event
+
+        /**
+         * Player wants to view goal progress (from blocker dialog).
+         */
+        data object ViewGoalProgressClicked : Event
 
         /**
          * Player wants to return to home/game selection.

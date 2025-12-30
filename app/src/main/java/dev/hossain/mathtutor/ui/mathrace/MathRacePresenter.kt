@@ -2,6 +2,7 @@ package dev.hossain.mathtutor.ui.mathrace
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,10 +24,13 @@ import dev.hossain.mathtutor.domain.model.GameSession
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.domain.model.goals.ActiveGoal
 import dev.hossain.mathtutor.domain.repository.GameRepository
+import dev.hossain.mathtutor.domain.repository.GoalRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.goals.progress.GoalProgressScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -57,6 +61,7 @@ class MathRacePresenter
         @Assisted private val navigator: Navigator,
         private val problemGenerator: ProblemGenerator,
         private val gameRepository: GameRepository,
+        private val goalRepository: GoalRepository,
         private val userProfileRepository: UserProfileRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val audioService: AudioService,
@@ -97,6 +102,25 @@ class MathRacePresenter
                     screenName = "Math Race",
                     screenClass = MathRaceScreen::class.java.name,
                 )
+            }
+
+            // Check for active goal - if present, block game access
+            val activeGoal by goalRepository.getActiveGoal().collectAsState(initial = null)
+
+            if (activeGoal != null) {
+                // Return a blocked state that the UI will handle by showing a blocker dialog
+                return MathRaceScreen.State(
+                    gameState = MathRaceScreen.GameState.NotStarted,
+                    activeGoal = activeGoal,
+                ) { event ->
+                    when (event) {
+                        MathRaceScreen.Event.NavigateHome -> {
+                            navigator.pop()
+                        }
+
+                        else -> {} // Ignore all other events while blocked
+                    }
+                }
             }
 
             val coroutineScope = rememberCoroutineScope()
@@ -367,6 +391,7 @@ class MathRacePresenter
                 correctAnswers = correctAnswers,
                 lastAnswerCorrect = lastAnswerCorrect,
                 userName = userName,
+                activeGoal = activeGoal,
             ) { event ->
                 when (event) {
                     MathRaceScreen.Event.StartGame -> {
@@ -447,6 +472,10 @@ class MathRacePresenter
                             usedProblemStrings = emptySet() // Clear used problems for new game
                             Timber.d("[MathRace] Reset for new game")
                         }
+                    }
+
+                    MathRaceScreen.Event.ViewGoalProgressClicked -> {
+                        navigator.goTo(GoalProgressScreen)
                     }
 
                     MathRaceScreen.Event.NavigateHome -> {

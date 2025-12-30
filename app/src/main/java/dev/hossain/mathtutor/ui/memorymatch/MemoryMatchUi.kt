@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.ui.component.BadgeIcon
+import dev.hossain.mathtutor.ui.games.GameBlockerDialog
 import dev.hossain.mathtutor.ui.mathrace.CountdownScreen
 import dev.zacsweers.metro.AppScope
 
@@ -75,6 +76,20 @@ fun MemoryMatchUi(
     state: MemoryMatchScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    // If there's an active goal, show the blocker dialog
+    if (state.activeGoal != null) {
+        GameBlockerDialog(
+            activeGoal = state.activeGoal,
+            onViewGoalProgressClicked = {
+                state.eventSink(MemoryMatchScreen.Event.ViewGoalProgressClicked)
+            },
+            onBackToHomeClicked = {
+                state.eventSink(MemoryMatchScreen.Event.NavigateHome)
+            },
+        )
+        return
+    }
+
     when (val gameState = state.gameState) {
         is MemoryMatchScreen.GameState.NotStarted -> {
             MemoryMatchStartScreen(
