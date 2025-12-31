@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.compose.material.icons.outlined.Share
@@ -93,7 +99,10 @@ fun ImportChallengeUi(
 
             // Parent information section
             item {
-                ParentInfoSection()
+                ParentInfoSection(
+                    isExpanded = state.isGuideExpanded,
+                    onToggleExpand = { state.eventSink(ImportChallengeScreen.Event.ToggleGuideExpanded) },
+                )
             }
 
             // Validation messages (shown above input field)
@@ -166,6 +175,17 @@ private fun JsonInputSection(
     onClear: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    val sampleJson =
+        """
+        {
+          "type": "generated",
+          "title": "Addition Practice",
+          "subtitle": "Numbers 1-10",
+          "operation": "addition",
+          "problemCount": 10,
+          "numberRange": {"min": 1, "max": 10}
+        }
+        """.trimIndent()
 
     Card(
         modifier =
@@ -202,8 +222,50 @@ private fun JsonInputSection(
                 textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
+            // Sample JSON suggestion
+            if (jsonInput.isBlank()) {
+                Card(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                        ),
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Text(
+                            text = "Example JSON Format:",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                            text = sampleJson,
+                            style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 4,
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        TextButton(
+                            onClick = { onJsonChanged(sampleJson) },
+                            modifier = Modifier.align(Alignment.End),
+                        ) {
+                            Text("Use This Example", style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // Action buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -259,7 +321,7 @@ private fun ValidationErrorsDisplay(errors: Map<String, String>) {
 }
 
 /**
- * Display validation errors as a section above the input field.
+ * Display validation errors as a section above the input field with helpful guidance.
  */
 @Composable
 private fun ValidationErrorsSection(errors: Map<String, String>) {
@@ -273,39 +335,76 @@ private fun ValidationErrorsSection(errors: Map<String, String>) {
                 containerColor = MaterialTheme.colorScheme.errorContainer,
             ),
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Warning,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(24.dp),
-            )
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Error header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Warning,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(24.dp),
+                )
 
-            Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Validation Failed",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onErrorContainer,
                 )
+            }
 
-                Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-                errors.forEach { (field, error) ->
+            // Detailed error messages
+            errors.forEach { (field, error) ->
+                if (field == "general" || field == "duplicate") {
+                    // General or duplicate errors show as full-width messages
                     Text(
-                        text = if (field == "general" || field == "duplicate") error else "• $field: $error",
+                        text = "⚠ $error",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                    )
+                } else {
+                    // Field-specific errors show with field name
+                    Text(
+                        text = "• ${fieldDisplayName(field)}: $error",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer,
                     )
                 }
+                Spacer(modifier = Modifier.height(4.dp))
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Helpful hint
+            Text(
+                text = "💡 Tip: Check the JSON format and ensure all required fields are present.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f),
+            )
         }
     }
 }
+
+/**
+ * Convert field name to display-friendly format.
+ */
+private fun fieldDisplayName(field: String): String =
+    when (field) {
+        "title" -> "Challenge Title"
+        "operation" -> "Operation Type"
+        "problemCount" -> "Number of Problems"
+        "numberRange" -> "Number Range"
+        "type" -> "Challenge Type"
+        "problems" -> "Problems"
+        "subtitle" -> "Subtitle (Optional)"
+        else -> field.replaceFirstChar { it.uppercase() }
+    }
 
 /**
  * Display validation success message as a section above the input field.
@@ -538,10 +637,15 @@ private fun formatDuration(duration: Duration): String {
 }
 
 /**
- * Information section for parents with instructions and link to the worksheet creator.
+ * Information section for parents with quick-start guide and link to the worksheet creator.
+ * Can be collapsed and expanded with state persistence.
  */
 @Composable
-private fun ParentInfoSection(modifier: Modifier = Modifier) {
+private fun ParentInfoSection(
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val worksheetUrl = "https://math-worksheet.gohk.xyz/"
 
@@ -556,57 +660,165 @@ private fun ParentInfoSection(modifier: Modifier = Modifier) {
             ),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+            // Header with expand/collapse button
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(24.dp),
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "For Parents",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(24.dp),
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Quick Start Guide",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+
+                // Expand/Collapse button
+                IconButton(
+                    onClick = onToggleExpand,
+                    modifier = Modifier.size(32.dp),
+                ) {
+                    Icon(
+                        imageVector =
+                            if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                        contentDescription = if (isExpanded) "Collapse guide" else "Expand guide",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = "This feature allows you to create custom math challenges for your child using JSON.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text =
-                    "You can easily generate challenge JSON using our online worksheet creator at " +
-                        "math-worksheet.gohk.xyz. Once generated, copy the JSON and paste it below.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            ElevatedButton(
-                onClick = {
-                    openWorksheetCreator(context, worksheetUrl)
-                },
-                modifier = Modifier.fillMaxWidth(),
+            // Animated content
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.OpenInBrowser,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
+                Column {
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Step-by-step instructions
+                    QuickStartStep(
+                        stepNumber = 1,
+                        title = "Create Challenge",
+                        description = "Use our worksheet creator to design custom math challenges",
+                        onButtonClick = {
+                            openWorksheetCreator(context, worksheetUrl)
+                            // Collapse the guide after opening the creator
+                            onToggleExpand()
+                        },
+                        buttonLabel = "Open Creator",
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    QuickStartStep(
+                        stepNumber = 2,
+                        title = "Copy JSON",
+                        description = "The creator generates a JSON specification you can copy",
+                        onButtonClick = null,
+                        buttonLabel = null,
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    QuickStartStep(
+                        stepNumber = 3,
+                        title = "Paste & Save",
+                        description = "Paste the JSON below, preview it, and save to your library",
+                        onButtonClick = null,
+                        buttonLabel = null,
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Individual step in the quick-start guide.
+ */
+@Composable
+private fun QuickStartStep(
+    stepNumber: Int,
+    title: String,
+    description: String,
+    onButtonClick: (() -> Unit)?,
+    buttonLabel: String?,
+    textColor: androidx.compose.ui.graphics.Color,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top,
+    ) {
+        // Step number badge
+        Card(
+            modifier =
+                Modifier
+                    .size(32.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = textColor.copy(alpha = 0.3f),
+                ),
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stepNumber.toString(),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = textColor,
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Open Worksheet Creator")
+            }
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                color = textColor,
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                color = textColor.copy(alpha = 0.9f),
+            )
+
+            if (onButtonClick != null && buttonLabel != null) {
+                Spacer(modifier = Modifier.height(6.dp))
+
+                TextButton(
+                    onClick = onButtonClick,
+                    modifier = Modifier.height(32.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.OpenInBrowser,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(buttonLabel, style = MaterialTheme.typography.labelMedium)
+                }
             }
         }
     }
@@ -725,6 +937,7 @@ private fun ImportChallengeUiPreview() {
                     previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = false,
+                    isGuideExpanded = true,
                     eventSink = {},
                 ),
         )
@@ -753,6 +966,7 @@ private fun ImportChallengeUiWithJsonPreview() {
                     previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = false,
+                    isGuideExpanded = true,
                     eventSink = {},
                 ),
         )
@@ -811,6 +1025,7 @@ private fun ImportChallengeUiWithValidationSuccessPreview() {
                         ),
                     isLoading = false,
                     detectedJsonFromShare = false,
+                    isGuideExpanded = true,
                     eventSink = {},
                 ),
         )
@@ -845,6 +1060,7 @@ private fun ImportChallengeUiWithValidationErrorsPreview() {
                     previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = false,
+                    isGuideExpanded = true,
                     eventSink = {},
                 ),
         )
@@ -901,6 +1117,7 @@ private fun ImportChallengeUiLoadingPreview() {
                         ),
                     isLoading = true,
                     detectedJsonFromShare = false,
+                    isGuideExpanded = true,
                     eventSink = {},
                 ),
         )
@@ -929,6 +1146,7 @@ private fun ImportChallengeUiWithShareDetectionPreview() {
                     previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = true,
+                    isGuideExpanded = true,
                     eventSink = {},
                 ),
         )
@@ -962,6 +1180,7 @@ private fun ImportChallengeUiWithShareDetectionAndErrorsPreview() {
                     previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = true,
+                    isGuideExpanded = true,
                     eventSink = {},
                 ),
         )
