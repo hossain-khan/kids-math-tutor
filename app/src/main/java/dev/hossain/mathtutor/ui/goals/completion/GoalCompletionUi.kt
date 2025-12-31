@@ -20,8 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.zacsweers.metro.AppScope
 import kotlin.math.roundToInt
 
+@CircuitInject(GoalCompletionScreen::class, AppScope::class)
 @Composable
 fun GoalCompletionUi(
     state: GoalCompletionScreen.State,
