@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -337,12 +338,3 @@ private fun ComponentCard(
         }
     }
 }
-
-/**
- * Helper function that creates PaddingValues with equal padding on all sides.
- * Note: This is equivalent to the standard Compose PaddingValues(all: Dp) function.
- */
-@Composable
-private fun PaddingValues(all: androidx.compose.ui.unit.Dp): androidx.compose.foundation.layout.PaddingValues =
-    androidx.compose.foundation.layout
-        .PaddingValues(all = all)
