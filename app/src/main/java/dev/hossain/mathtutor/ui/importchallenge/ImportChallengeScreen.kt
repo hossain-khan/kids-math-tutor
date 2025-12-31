@@ -31,6 +31,7 @@ data class ImportChallengeScreen(
      * @property previewData Preview data if validation is successful
      * @property isLoading Whether a save operation is in progress
      * @property detectedJsonFromShare Whether JSON was detected and extracted from shared content
+     * @property isGuideExpanded Whether the quick start guide is expanded
      * @property eventSink Handler for screen events
      */
     data class State(
@@ -39,6 +40,7 @@ data class ImportChallengeScreen(
         val previewData: PreviewData?,
         val isLoading: Boolean,
         val detectedJsonFromShare: Boolean,
+        val isGuideExpanded: Boolean,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -72,6 +74,11 @@ data class ImportChallengeScreen(
          * User requested to navigate back.
          */
         data object NavigateBack : Event
+
+        /**
+         * User toggled the quick start guide expansion state.
+         */
+        data object ToggleGuideExpanded : Event
     }
 
     /**

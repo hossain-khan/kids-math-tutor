@@ -42,6 +42,7 @@ class ImportChallengePresenter
         private val jsonParser: ChallengeJsonParser,
         private val challengeService: CustomChallengeService,
         private val challengeRepository: CustomChallengeRepository,
+        private val userPreferencesRepository: dev.hossain.mathtutor.data.UserPreferencesRepository,
     ) : Presenter<ImportChallengeScreen.State> {
         @CircuitInject(ImportChallengeScreen::class, AppScope::class)
         @AssistedFactory
@@ -61,6 +62,14 @@ class ImportChallengePresenter
             var previewData by remember { mutableStateOf<PreviewData?>(null) }
             var isLoading by remember { mutableStateOf(false) }
             var detectedJsonFromShare by remember { mutableStateOf(false) }
+            var isGuideExpanded by remember { mutableStateOf(true) }
+
+            // Load guide expansion state from preferences
+            LaunchedEffect(Unit) {
+                userPreferencesRepository.isImportGuideExpanded.collect { expanded ->
+                    isGuideExpanded = expanded
+                }
+            }
 
             // Initialize with shared text if provided
             LaunchedEffect(screen.prefilledJson) {
@@ -85,6 +94,7 @@ class ImportChallengePresenter
                 previewData = previewData,
                 isLoading = isLoading,
                 detectedJsonFromShare = detectedJsonFromShare,
+                isGuideExpanded = isGuideExpanded,
             ) { event ->
                 when (event) {
                     is ImportChallengeScreen.Event.JsonInputChanged -> {
@@ -243,6 +253,14 @@ class ImportChallengePresenter
 
                     ImportChallengeScreen.Event.NavigateBack -> {
                         navigator.pop()
+                    }
+
+                    ImportChallengeScreen.Event.ToggleGuideExpanded -> {
+                        isGuideExpanded = !isGuideExpanded
+                        coroutineScope.launch {
+                            userPreferencesRepository.setImportGuideExpanded(isGuideExpanded)
+                            Timber.d("Import guide expanded state toggled: $isGuideExpanded")
+                        }
                     }
                 }
             }

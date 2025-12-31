@@ -211,6 +211,14 @@ class AudioHapticSettingsPresenterTest {
             analyticsEnabledFlow.value = enabled
         }
 
+        private val importGuideExpandedFlow = MutableStateFlow(true)
+
+        override val isImportGuideExpanded: Flow<Boolean> = importGuideExpandedFlow
+
+        override suspend fun setImportGuideExpanded(expanded: Boolean) {
+            importGuideExpandedFlow.value = expanded
+        }
+
         private val gameTrialAttemptsFlows = mutableMapOf<dev.hossain.mathtutor.domain.model.Game, MutableStateFlow<Int>>()
 
         override fun getGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Flow<Int> =
