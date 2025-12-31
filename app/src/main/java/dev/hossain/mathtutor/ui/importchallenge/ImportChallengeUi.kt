@@ -831,7 +831,6 @@ private fun QuickStartStep(
 
                 TextButton(
                     onClick = onButtonClick,
-                    modifier = Modifier.height(32.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.OpenInBrowser,
@@ -839,7 +838,7 @@ private fun QuickStartStep(
                         modifier = Modifier.size(16.dp),
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(buttonLabel, style = MaterialTheme.typography.labelMedium)
+                    Text(buttonLabel, style = MaterialTheme.typography.labelSmall)
                 }
             }
         }
