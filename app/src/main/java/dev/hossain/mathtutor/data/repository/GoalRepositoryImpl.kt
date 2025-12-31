@@ -258,13 +258,53 @@ class GoalRepositoryImpl(
     override suspend fun completeActiveGoal(): Result<GoalHistory> {
         return try {
             // Get active goal
-            val activeGoalCount = activeGoalDao.getActiveGoalCount()
-            if (activeGoalCount == 0) {
-                return Result.failure(GoalError.NoActiveGoal)
+            val activeGoalEntity = activeGoalDao.getActiveGoalSync()
+                ?: return Result.failure(GoalError.NoActiveGoal)
+
+            // Get the goal details
+            val goalEntity = goalsDao.getGoalById(activeGoalEntity.goalId)
+                ?: return Result.failure(GoalError.InvalidGoal("Goal not found"))
+
+            val goal = goalEntity.toDomain()
+
+            // Parse component progress from JSON
+            val componentProgressList = Json.decodeFromString(
+                ListSerializer(ComponentProgress.serializer()),
+                activeGoalEntity.componentProgress
+            )
+
+            // Calculate overall accuracy and total time
+            val overallAccuracy = if (componentProgressList.isNotEmpty()) {
+                componentProgressList.map { it.accuracy }.average().toFloat()
+            } else {
+                0f
             }
 
-            // For now, return error - proper Flow handling needed
-            Result.failure(GoalError.DatabaseError)
+            val totalTimeSeconds = componentProgressList.sumOf { it.totalTimeSeconds }
+
+            // Create goal history entry
+            val historyId = java.util.UUID.randomUUID().toString()
+            val completedAt = Instant.now()
+
+            val historyEntity = GoalHistoryEntity(
+                id = historyId,
+                goalId = activeGoalEntity.goalId,
+                goalTitle = goal.title,
+                completedAt = completedAt,
+                totalTimeSeconds = totalTimeSeconds,
+                overallAccuracy = overallAccuracy,
+                componentResults = ""  // Empty for now, can be enhanced later
+            )
+
+            // Save history record
+            goalHistoryDao.insert(historyEntity)
+
+            // Clear active goal
+            activeGoalDao.clearActiveGoal()
+
+            // Return the goal history
+            val goalHistory = historyEntity.toDomain(goal)
+            Result.success(goalHistory)
         } catch (e: Exception) {
             Result.failure(GoalError.DatabaseError)
         }
