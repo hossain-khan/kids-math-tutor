@@ -27,7 +27,7 @@ class GoalCompletionPresenter(
     @CircuitInject(GoalCompletionScreen::class, AppScope::class)
     @AssistedFactory
     interface Factory {
-        fun create(navigator: Navigator): GoalCompletionPresenter
+        fun create(screen: GoalCompletionScreen, navigator: Navigator): GoalCompletionPresenter
     }
 
     @Composable
