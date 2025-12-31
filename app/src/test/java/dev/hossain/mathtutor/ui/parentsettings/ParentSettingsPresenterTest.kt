@@ -273,6 +273,14 @@ class ParentSettingsPresenterTest {
             largeTextFlow.value = enabled
         }
 
+        private val importGuideExpandedFlow = MutableStateFlow(true)
+
+        override val isImportGuideExpanded: Flow<Boolean> = importGuideExpandedFlow
+
+        override suspend fun setImportGuideExpanded(expanded: Boolean) {
+            importGuideExpandedFlow.value = expanded
+        }
+
         override fun getGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Flow<Int> = MutableStateFlow(0)
 
         override suspend fun incrementGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Int = 0
