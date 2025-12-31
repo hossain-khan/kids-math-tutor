@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
@@ -89,9 +90,11 @@ fun ImportChallengeUi(
         // Auto-scroll to preview when validation is successful
         LaunchedEffect(state.validationState, state.previewData) {
             if (state.validationState is ValidationState.Valid && state.previewData != null) {
-                // Find the index of the preview item and scroll to it
+                // Scroll to preview with slower animation by adding a small delay
+                // This gives a more relaxed feel to the automatic scroll
                 // Items: 0-detectedJsonBanner (conditional), 1-guide, 2-validation success (conditional), 3-json input, 4-preview
                 val previewIndex = 4
+                kotlinx.coroutines.delay(400)
                 lazyListState.animateScrollToItem(previewIndex)
             }
         }
