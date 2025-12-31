@@ -172,7 +172,7 @@ private fun HistoryListView(
                 )
                 AnalyticsCard(
                     title = "Average Accuracy",
-                    value = "${String.format("%.1f", averageAccuracy * 100)}%",
+                    value = "${String.format("%.1f", averageAccuracy)}%",
                     modifier = Modifier.fillMaxWidth(),
                 )
                 AnalyticsCard(
