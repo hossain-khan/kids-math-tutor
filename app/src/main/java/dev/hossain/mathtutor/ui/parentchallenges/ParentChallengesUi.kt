@@ -29,8 +29,10 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Archive
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Quiz
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -749,15 +751,13 @@ private fun getOperationIcon(operation: MathOperation): androidx.compose.ui.grap
     when (operation) {
         MathOperation.ADDITION -> Icons.Default.Add
 
-        MathOperation.SUBTRACTION -> Icons.Outlined.Quiz
+        MathOperation.SUBTRACTION -> Icons.Outlined.Remove
 
-        // Using quiz as placeholder
-        MathOperation.MULTIPLICATION -> Icons.Outlined.Quiz
+        MathOperation.MULTIPLICATION -> Icons.Outlined.Close
 
-        // Using quiz as placeholder
         MathOperation.DIVISION -> Icons.Outlined.Quiz
 
-        // Using quiz as placeholder
+        // No direct division icon in Material Design
         MathOperation.MIXED -> Icons.Outlined.Quiz
     }
 
