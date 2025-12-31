@@ -338,7 +338,11 @@ private fun ComponentCard(
     }
 }
 
+/**
+ * Helper function that creates PaddingValues with equal padding on all sides.
+ * Note: This is equivalent to the standard Compose PaddingValues(all: Dp) function.
+ */
 @Composable
-private fun PaddingValues(horizontal: androidx.compose.ui.unit.Dp): androidx.compose.foundation.layout.PaddingValues =
+private fun PaddingValues(all: androidx.compose.ui.unit.Dp): androidx.compose.foundation.layout.PaddingValues =
     androidx.compose.foundation.layout
-        .PaddingValues(horizontal = horizontal)
+        .PaddingValues(all = all)
