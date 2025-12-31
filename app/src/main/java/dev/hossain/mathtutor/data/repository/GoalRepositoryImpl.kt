@@ -258,43 +258,51 @@ class GoalRepositoryImpl(
     override suspend fun completeActiveGoal(): Result<GoalHistory> {
         return try {
             // Get active goal
-            val activeGoalEntity = activeGoalDao.getActiveGoalSync()
-                ?: return Result.failure(GoalError.NoActiveGoal)
+            val activeGoalEntity =
+                activeGoalDao.getActiveGoalSync()
+                    ?: return Result.failure(GoalError.NoActiveGoal)
 
             // Get the goal details
-            val goalEntity = goalsDao.getGoalById(activeGoalEntity.goalId)
-                ?: return Result.failure(GoalError.InvalidGoal("Goal not found"))
+            val goalEntity =
+                goalsDao.getGoalById(activeGoalEntity.goalId)
+                    ?: return Result.failure(GoalError.InvalidGoal("Goal not found"))
 
             val goal = goalEntity.toDomain()
 
             // Parse component progress from JSON
-            val componentProgressList = Json.decodeFromString(
-                ListSerializer(ComponentProgress.serializer()),
-                activeGoalEntity.componentProgress
-            )
+            val componentProgressList =
+                Json.decodeFromString(
+                    ListSerializer(ComponentProgress.serializer()),
+                    activeGoalEntity.componentProgress,
+                )
 
             // Calculate overall accuracy and total time
-            val overallAccuracy = if (componentProgressList.isNotEmpty()) {
-                componentProgressList.map { it.accuracy }.average().toFloat()
-            } else {
-                0f
-            }
+            val overallAccuracy =
+                if (componentProgressList.isNotEmpty()) {
+                    componentProgressList.map { it.accuracy }.average().toFloat()
+                } else {
+                    0f
+                }
 
             val totalTimeSeconds = componentProgressList.sumOf { it.totalTimeSeconds }
 
             // Create goal history entry
-            val historyId = java.util.UUID.randomUUID().toString()
+            val historyId =
+                java.util.UUID
+                    .randomUUID()
+                    .toString()
             val completedAt = Instant.now()
 
-            val historyEntity = GoalHistoryEntity(
-                id = historyId,
-                goalId = activeGoalEntity.goalId,
-                goalTitle = goal.title,
-                completedAt = completedAt,
-                totalTimeSeconds = totalTimeSeconds,
-                overallAccuracy = overallAccuracy,
-                componentResults = ""  // Empty for now, can be enhanced later
-            )
+            val historyEntity =
+                GoalHistoryEntity(
+                    id = historyId,
+                    goalId = activeGoalEntity.goalId,
+                    goalTitle = goal.title,
+                    completedAt = completedAt,
+                    totalTimeSeconds = totalTimeSeconds,
+                    overallAccuracy = overallAccuracy,
+                    componentResults = "", // Empty for now, can be enhanced later
+                )
 
             // Save history record
             goalHistoryDao.insert(historyEntity)
