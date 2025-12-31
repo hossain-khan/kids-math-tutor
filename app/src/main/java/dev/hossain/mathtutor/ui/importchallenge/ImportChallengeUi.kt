@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ExpandLess
@@ -47,6 +48,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -82,7 +84,20 @@ fun ImportChallengeUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
+        val lazyListState = rememberLazyListState()
+
+        // Auto-scroll to preview when validation is successful
+        LaunchedEffect(state.validationState, state.previewData) {
+            if (state.validationState is ValidationState.Valid && state.previewData != null) {
+                // Find the index of the preview item and scroll to it
+                // Items: 0-detectedJsonBanner (conditional), 1-guide, 2-validation success (conditional), 3-json input, 4-preview
+                val previewIndex = 4
+                lazyListState.animateScrollToItem(previewIndex)
+            }
+        }
+
         LazyColumn(
+            state = lazyListState,
             modifier =
                 Modifier
                     .fillMaxSize()
