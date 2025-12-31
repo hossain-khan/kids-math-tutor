@@ -60,12 +60,13 @@ class GoalCompletionPresenter(
                                 // 1. Creating GoalHistory record
                                 // 2. Clearing the active goal
                                 // 3. Tracking analytics
-                                completeGoalUseCase().onSuccess {
-                                    navigator.resetRoot(HomeScreen)
-                                }.onFailure { exception ->
-                                    error = "Failed to complete goal: ${exception.message}"
-                                    isCompletingGoal = false
-                                }
+                                completeGoalUseCase()
+                                    .onSuccess {
+                                        navigator.resetRoot(HomeScreen)
+                                    }.onFailure { exception ->
+                                        error = "Failed to complete goal: ${exception.message}"
+                                        isCompletingGoal = false
+                                    }
                             }
                         }
                     }
