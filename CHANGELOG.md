@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Visual Hint Display with Large Numbers**
+  - Fixed visual hints (dot visualizers) getting cut off when showing large numbers (e.g., 12+15)
+  - Added horizontal scrolling capability to DotVisualizer for seamless overflow handling
+  - Improved layout to ensure all dot groups are visible regardless of operand size
+
 ### Added
 - **Hint System Toggle Setting**
   - Parents can now enable/disable hints app-wide via Parent Settings screen

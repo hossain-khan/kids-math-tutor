@@ -4,10 +4,13 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,24 +47,34 @@ fun DotVisualizer(
     val animationDurationMs = 800
     val staggerDelayMs = 100
 
-    when (operation) {
-        MathOperation.ADDITION -> {
-            AdditionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+    // Use horizontalScroll for overflow cases (large numbers)
+    Row(
+        modifier =
+            modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        when (operation) {
+            MathOperation.ADDITION -> {
+                AdditionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.SUBTRACTION -> {
-            SubtractionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+            MathOperation.SUBTRACTION -> {
+                SubtractionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.MULTIPLICATION -> {
-            MultiplicationDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+            MathOperation.MULTIPLICATION -> {
+                MultiplicationDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.DIVISION -> {
-            DivisionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+            MathOperation.DIVISION -> {
+                DivisionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.MIXED -> {}
+            MathOperation.MIXED -> {}
+        }
     }
 }
 
@@ -74,10 +87,8 @@ private fun AdditionDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -117,10 +128,8 @@ private fun SubtractionDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -161,13 +170,11 @@ private fun MultiplicationDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
     val maxGroups = 5 // Limit display for readability
     val groupsToShow = firstNumber.coerceAtMost(maxGroups)
 
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -201,12 +208,10 @@ private fun DivisionDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
     val groupsToShow = secondNumber.coerceAtMost(4) // Limit groups for readability
 
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
