@@ -164,6 +164,7 @@ class AudioHapticSettingsPresenterTest {
         private val highContrastEnabledFlow = MutableStateFlow(false)
         private val largeTextEnabledFlow = MutableStateFlow(false)
         private val analyticsEnabledFlow = MutableStateFlow(true)
+        private val hintSystemEnabledFlow = MutableStateFlow(true)
 
         override val isOnboardingCompleted: Flow<Boolean> = MutableStateFlow(false)
 
@@ -280,6 +281,12 @@ class AudioHapticSettingsPresenterTest {
         override val maxGradeLevel: Flow<GradeLevel?> = MutableStateFlow(null)
 
         override suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?) {}
+
+        override val isHintSystemEnabled: Flow<Boolean> = hintSystemEnabledFlow
+
+        override suspend fun setHintSystemEnabled(enabled: Boolean) {
+            hintSystemEnabledFlow.value = enabled
+        }
     }
 
     /**

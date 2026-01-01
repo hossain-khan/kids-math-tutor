@@ -205,6 +205,7 @@ class ParentSettingsPresenterTest {
         private val volumeFlow = MutableStateFlow(0.5f)
         private val highContrastFlow = MutableStateFlow(false)
         private val largeTextFlow = MutableStateFlow(false)
+        private val hintSystemEnabledFlow = MutableStateFlow(true)
 
         override val maxGradeLevel: Flow<GradeLevel?> = maxGradeLevelFlow
 
@@ -284,5 +285,11 @@ class ParentSettingsPresenterTest {
         override fun getGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Flow<Int> = MutableStateFlow(0)
 
         override suspend fun incrementGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Int = 0
+
+        override val isHintSystemEnabled: Flow<Boolean> = hintSystemEnabledFlow
+
+        override suspend fun setHintSystemEnabled(enabled: Boolean) {
+            hintSystemEnabledFlow.value = enabled
+        }
     }
 }

@@ -408,7 +408,6 @@ class MathPracticePresenter
                                 // Show hint button after 1st wrong attempt (if hint system is enabled)
                                 if (wrongAttempts >= 1 && isHintSystemEnabled) {
                                     showHintButton = true
-
                                 }
                                 Timber.d("[MathPractice] Wrong attempt #$wrongAttempts for problem ${currentProblem.id}")
                             }

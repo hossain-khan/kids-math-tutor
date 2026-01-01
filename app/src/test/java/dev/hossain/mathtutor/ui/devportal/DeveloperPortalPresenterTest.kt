@@ -424,6 +424,7 @@ class DeveloperPortalPresenterTest {
         private val volumeFlow = MutableStateFlow(dev.hossain.mathtutor.audio.AudioConstants.DEFAULT_SOUND_EFFECTS_VOLUME)
         private val highContrastEnabledFlow = MutableStateFlow(false)
         private val largeTextEnabledFlow = MutableStateFlow(false)
+        private val hintSystemEnabledFlow = MutableStateFlow(true)
 
         override val isAnalyticsEnabled: Flow<Boolean> = analyticsEnabledFlow
 
@@ -523,6 +524,12 @@ class DeveloperPortalPresenterTest {
 
         override suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?) {
             maxGradeLevelFlow.value = gradeLevel
+        }
+
+        override val isHintSystemEnabled: Flow<Boolean> = hintSystemEnabledFlow
+
+        override suspend fun setHintSystemEnabled(enabled: Boolean) {
+            hintSystemEnabledFlow.value = enabled
         }
     }
 
