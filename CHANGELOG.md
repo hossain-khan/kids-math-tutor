@@ -8,13 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Visual Hint Feasibility Detector**
+  - Smart detection prevents "Show Visually" button for problems too complex for visual representation
+  - Addition: visual hints only for operands ≤ 20 (prevents 54+43 with 97 dots)
+  - Subtraction: visual hints only for minuend ≤ 20
+  - Multiplication: visual hints only for operands ≤ 9 (prevents 14×11 with too many dots)
+  - Division: visual hints only for dividend ≤ 100 and divisor ≤ 10
+  - Mixed operations: visual hints never shown
+  - Comprehensive documentation of decision factors and thresholds
+  - Better UX: button naturally hidden instead of confusing users with overwhelming visualizations
+  - Other hint types (text, work breakdown) still available for all problems
 - **Hint System Toggle Setting**
   - Parents can now enable/disable hints app-wide via Parent Settings screen
   - Default: hints enabled for educational benefit
   - Provides parental control over hint availability
   - UI card in Parent Settings with clear enable/disable buttons
   - Analytics tracking for hint system toggle changes
-  
 - **Hint System Refinements (Phases 1-3 Improvements)**
   - Enhanced hint messaging with encouragement and emojis
     - Level 1 hints: Gentle nudges with emoji context ("You're doing great! Try counting up from 5 🎯")
@@ -42,7 +51,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Avoids regeneration on recomposition without losing fresh generation per problem
     - Improves performance on lower-end devices for K-2 math problems
 
+
 ### Fixed
+- **Visual Hint Display with Large Numbers**
+  - Fixed visual hints (dot visualizers) getting cut off when showing large numbers (e.g., 12+15)
+  - Replaced horizontal scrolling with vertical wrapping layout for better portrait mode support
+  - Dots now wrap to multiple rows (max 6 dots per row) instead of requiring horizontal scroll
+  - Added vertical scroll support to handle tall visualizations
+  - Fixed multiplication visualization to show correct number of groups and dots (was limiting to 5 groups of 4 dots)
+  - Fixed division visualization to show all groups (increased from 4 to 10 maximum groups)
+  - Improved layout to ensure all dot groups are visible regardless of operand size
+  - Increased dot size from 12.dp to 20.dp for better visibility and child accessibility
+  - Increased dot spacing from 4.dp to 8.dp to accommodate larger dots
 - Hint generation performance on frequent recompositions
 - Dialog visibility management for better control flow
 

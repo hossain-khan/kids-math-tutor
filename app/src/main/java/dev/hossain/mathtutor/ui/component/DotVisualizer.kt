@@ -6,9 +6,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,24 +48,34 @@ fun DotVisualizer(
     val animationDurationMs = 800
     val staggerDelayMs = 100
 
-    when (operation) {
-        MathOperation.ADDITION -> {
-            AdditionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+    // Use vertical layout that wraps naturally for portrait mode with vertical scroll support
+    Column(
+        modifier =
+            modifier
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        when (operation) {
+            MathOperation.ADDITION -> {
+                AdditionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.SUBTRACTION -> {
-            SubtractionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+            MathOperation.SUBTRACTION -> {
+                SubtractionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.MULTIPLICATION -> {
-            MultiplicationDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+            MathOperation.MULTIPLICATION -> {
+                MultiplicationDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.DIVISION -> {
-            DivisionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs, modifier)
-        }
+            MathOperation.DIVISION -> {
+                DivisionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
 
-        MathOperation.MIXED -> {}
+            MathOperation.MIXED -> {}
+        }
     }
 }
 
@@ -74,18 +88,20 @@ private fun AdditionDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    // Combine all dots into one visualization with a plus sign in between
+    val totalDots = firstNumber + secondNumber
+    var dotIndex = 0
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // First group of dots
-        DotGroup(
+        // First group of dots - wrapped in rows
+        WrappedDotGrid(
             count = firstNumber,
             color = MaterialTheme.colorScheme.primary,
-            delayMs = 0,
+            startDelayMs = 0,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -97,11 +113,11 @@ private fun AdditionDotVisualizer(
             durationMs = 300,
         )
 
-        // Second group of dots
-        DotGroup(
+        // Second group of dots - wrapped in rows
+        WrappedDotGrid(
             count = secondNumber,
             color = MaterialTheme.colorScheme.tertiary,
-            delayMs = durationMs + 300,
+            startDelayMs = durationMs + 300,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -117,18 +133,16 @@ private fun SubtractionDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         // All dots initially
-        DotGroup(
+        WrappedDotGrid(
             count = firstNumber,
             color = MaterialTheme.colorScheme.primary,
-            delayMs = 0,
+            startDelayMs = 0,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -142,10 +156,10 @@ private fun SubtractionDotVisualizer(
 
         // Remaining dots (shown in a different style)
         val remainingCount = (firstNumber - secondNumber).coerceAtLeast(0)
-        DotGroup(
+        WrappedDotGrid(
             count = remainingCount,
             color = MaterialTheme.colorScheme.secondary,
-            delayMs = durationMs + 300,
+            startDelayMs = durationMs + 300,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -153,7 +167,10 @@ private fun SubtractionDotVisualizer(
 }
 
 /**
- * Multiplication visualization: shows groups of dots
+ * Multiplication visualization: shows groups of dots.
+ *
+ * Displays repeated addition: 2 × 5 becomes 5 + 5 (two groups of five dots)
+ * This helps children understand multiplication as equal groups being combined.
  */
 @Composable
 private fun MultiplicationDotVisualizer(
@@ -161,29 +178,27 @@ private fun MultiplicationDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
-    val maxGroups = 5 // Limit display for readability
+    val maxGroups = 12 // Increased limit for better accuracy
     val groupsToShow = firstNumber.coerceAtMost(maxGroups)
 
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(groupsToShow) { groupIndex ->
             DotGroup(
-                count = secondNumber.coerceAtMost(4), // Limit dots per group for readability
+                count = secondNumber.coerceAtMost(6), // Increased limit for better accuracy
                 color = MaterialTheme.colorScheme.primary,
                 delayMs = groupIndex * delayMs,
                 durationMs = durationMs,
                 staggerMs = delayMs / 2,
             )
 
-            // Show "×" between groups except after last
+            // Show "+" between groups except after last (represents repeated addition)
             if (groupIndex < groupsToShow - 1) {
                 AnimatedText(
-                    text = "×",
+                    text = "+",
                     delayMs = (groupIndex + 1) * delayMs,
                     durationMs = 300,
                 )
@@ -201,14 +216,13 @@ private fun DivisionDotVisualizer(
     secondNumber: Int,
     durationMs: Int,
     delayMs: Int,
-    modifier: Modifier = Modifier,
 ) {
-    val groupsToShow = secondNumber.coerceAtMost(4) // Limit groups for readability
+    val maxGroups = 10 // Increased limit for better accuracy
+    val groupsToShow = secondNumber.coerceAtMost(maxGroups)
 
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(groupsToShow) { groupIndex ->
             val dotsPerGroup = firstNumber / secondNumber
@@ -219,6 +233,45 @@ private fun DivisionDotVisualizer(
                 durationMs = durationMs,
                 staggerMs = delayMs,
             )
+        }
+    }
+}
+
+/**
+ * Wrapped grid of dots that breaks into multiple rows for better portrait mode support.
+ * Maximum 6 dots per row.
+ */
+@Composable
+private fun WrappedDotGrid(
+    count: Int,
+    color: androidx.compose.ui.graphics.Color,
+    startDelayMs: Int,
+    durationMs: Int,
+    staggerMs: Int,
+) {
+    val dotsPerRow = 6
+    val rows = (count + dotsPerRow - 1) / dotsPerRow
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        repeat(rows) { rowIndex ->
+            val startDot = rowIndex * dotsPerRow
+            val endDot = (startDot + dotsPerRow).coerceAtMost(count)
+            val dotsInRow = endDot - startDot
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                repeat(dotsInRow) { dotIndex ->
+                    AnimatedDot(
+                        color = color,
+                        delayMs = startDelayMs + ((startDot + dotIndex) * staggerMs),
+                        durationMs = durationMs,
+                    )
+                }
+            }
         }
     }
 }
@@ -237,7 +290,7 @@ private fun DotGroup(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(count) { dotIndex ->
             AnimatedDot(
@@ -275,7 +328,7 @@ private fun AnimatedDot(
     Box(
         modifier =
             Modifier
-                .size(12.dp)
+                .size(20.dp)
                 .background(color, CircleShape)
                 .graphicsLayer {
                     scaleX = scale.value

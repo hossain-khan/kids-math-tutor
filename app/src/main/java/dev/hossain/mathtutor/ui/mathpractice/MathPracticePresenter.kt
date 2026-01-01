@@ -18,6 +18,7 @@ import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.hint.HintProvider
+import dev.hossain.mathtutor.domain.hint.VisualHintFeasibilityChecker
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -382,6 +383,7 @@ class MathPracticePresenter
                 currentHintText = currentHintText,
                 hintButtonClicked = hintButtonClicked,
                 showVisualHint = showVisualHint,
+                isVisualHintFeasible = currentProblem?.let { VisualHintFeasibilityChecker.isFeasible(it) } ?: false,
                 showWorkBreakdown = showWorkBreakdown,
                 workBreakdownSteps = workBreakdownSteps,
             ) { event ->

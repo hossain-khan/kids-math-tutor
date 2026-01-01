@@ -50,6 +50,7 @@ data class MathPracticeScreen(
         val currentHintText: String? = null,
         val hintButtonClicked: Boolean = false,
         val showVisualHint: Boolean = false,
+        val isVisualHintFeasible: Boolean = false,
         val showWorkBreakdown: Boolean = false,
         val workBreakdownSteps: List<WorkBreakdownStep> = emptyList(),
         val eventSink: (Event) -> Unit,
