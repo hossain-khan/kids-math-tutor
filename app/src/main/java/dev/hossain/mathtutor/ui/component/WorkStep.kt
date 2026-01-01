@@ -67,8 +67,7 @@ fun WorkStep(
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(12.dp),
-                    )
-                    .padding(16.dp),
+                    ).padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.Top,
         ) {
@@ -79,8 +78,7 @@ fun WorkStep(
                         .background(
                             color = MaterialTheme.colorScheme.primary,
                             shape = RoundedCornerShape(50),
-                        )
-                        .width(40.dp)
+                        ).width(40.dp)
                         .height(40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,

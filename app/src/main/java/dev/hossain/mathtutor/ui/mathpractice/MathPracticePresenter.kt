@@ -18,8 +18,6 @@ import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.hint.HintProvider
-import dev.hossain.mathtutor.domain.work.WorkProvider
-import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -31,7 +29,9 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
+import dev.hossain.mathtutor.domain.work.WorkProvider
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -124,7 +124,7 @@ class MathPracticePresenter
             var showWorkBreakdown by remember { mutableStateOf(false) }
             var workBreakdownSteps by remember {
                 mutableStateOf<List<WorkBreakdownStep>>(
-                    emptyList()
+                    emptyList(),
                 )
             }
 
