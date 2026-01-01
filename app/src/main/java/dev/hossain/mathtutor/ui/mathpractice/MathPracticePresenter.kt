@@ -128,6 +128,12 @@ class MathPracticePresenter
                 )
             }
 
+            // Memoization cache for hints to avoid regeneration on recomposition
+            val hintCache = remember { mutableMapOf<String, String>() }
+            val workBreakdownCache = remember { mutableMapOf<String, List<WorkBreakdownStep>>() }
+
+            fun getCacheKey(problem: MathProblem): String = "${problem.operation}_${problem.num1}_${problem.num2}"
+
             /**
              * Manually deduplicates problems by removing duplicate problem strings,
              * then generates additional problems to reach the target count.
@@ -665,11 +671,15 @@ class MathPracticePresenter
                     is MathPracticeScreen.Event.RequestHint -> {
                         if (currentProblem != null) {
                             val hintLevel = if (wrongAttempts <= 1) 1 else 2
+                            val cacheKey = getCacheKey(currentProblem)
+                            val cacheKeyWithLevel = "${cacheKey}_L$hintLevel"
                             currentHintText =
-                                if (hintLevel == 1) {
-                                    hintProvider.getFirstHint(currentProblem)
-                                } else {
-                                    hintProvider.getSecondHint(currentProblem)
+                                hintCache.getOrPut(cacheKeyWithLevel) {
+                                    if (hintLevel == 1) {
+                                        hintProvider.getFirstHint(currentProblem)
+                                    } else {
+                                        hintProvider.getSecondHint(currentProblem)
+                                    }
                                 }
                             hintButtonClicked = true
 
@@ -717,7 +727,11 @@ class MathPracticePresenter
 
                     is MathPracticeScreen.Event.ShowWork -> {
                         if (currentProblem != null) {
-                            workBreakdownSteps = workProvider.getWorkBreakdown(currentProblem)
+                            val cacheKey = getCacheKey(currentProblem)
+                            workBreakdownSteps =
+                                workBreakdownCache.getOrPut(cacheKey) {
+                                    workProvider.getWorkBreakdown(currentProblem)
+                                }
                             showWorkBreakdown = true
 
                             // Analytics: Track work breakdown usage

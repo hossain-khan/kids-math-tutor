@@ -37,11 +37,25 @@ interface HintProvider {
 /**
  * Default implementation of HintProvider with encouragement-based hints.
  * Provides warm, supportive guidance that helps children problem-solve.
+ *
+ * Uses memoization to cache hints, avoiding regeneration for the same problem.
  */
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultHintProvider : HintProvider {
-    override fun getFirstHint(problem: MathProblem): String =
+    private val firstHintCache = mutableMapOf<String, String>()
+    private val secondHintCache = mutableMapOf<String, String>()
+
+    private fun getCacheKey(problem: MathProblem): String = "${problem.operation}_${problem.num1}_${problem.num2}"
+
+    override fun getFirstHint(problem: MathProblem): String {
+        val cacheKey = getCacheKey(problem)
+        return firstHintCache.getOrPut(cacheKey) {
+            generateFirstHint(problem)
+        }
+    }
+
+    private fun generateFirstHint(problem: MathProblem): String =
         when (problem.operation) {
             MathOperation.ADDITION -> {
                 "You're doing great! Try counting up from ${problem.num1} 🎯"
@@ -64,7 +78,14 @@ class DefaultHintProvider : HintProvider {
             }
         }
 
-    override fun getSecondHint(problem: MathProblem): String =
+    override fun getSecondHint(problem: MathProblem): String {
+        val cacheKey = getCacheKey(problem)
+        return secondHintCache.getOrPut(cacheKey) {
+            generateSecondHint(problem)
+        }
+    }
+
+    private fun generateSecondHint(problem: MathProblem): String =
         when (problem.operation) {
             MathOperation.ADDITION -> {
                 "Start at ${problem.num1}, then: ${problem.num1 + 1}, ${problem.num1 + 2}... keep counting! 💡"
