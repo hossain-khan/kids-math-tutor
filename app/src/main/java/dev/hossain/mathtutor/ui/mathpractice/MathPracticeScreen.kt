@@ -48,6 +48,7 @@ data class MathPracticeScreen(
         val showHintButton: Boolean = false,
         val currentHintText: String? = null,
         val hintButtonClicked: Boolean = false,
+        val showVisualHint: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -74,5 +75,9 @@ data class MathPracticeScreen(
         data object RequestHint : Event
 
         data object DismissHint : Event
+
+        data object ShowVisualHint : Event
+
+        data object DismissVisualHint : Event
     }
 }

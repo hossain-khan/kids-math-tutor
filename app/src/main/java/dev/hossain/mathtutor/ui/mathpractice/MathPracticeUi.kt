@@ -61,7 +61,9 @@ import dev.hossain.mathtutor.ui.animation.SuccessAnimation
 import dev.hossain.mathtutor.ui.animation.shake
 import dev.hossain.mathtutor.ui.component.AnswerField
 import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
+import dev.hossain.mathtutor.ui.component.DotVisualizer
 import dev.hossain.mathtutor.ui.component.NumberPad
+import dev.hossain.mathtutor.ui.component.VisualHintCard
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
@@ -342,6 +344,37 @@ internal fun MathPracticeUi(
                                         onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
                                     )
                                 }
+
+                                // Visual hint button
+                                if (state.showHintButton && !state.hintButtonClicked) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Button(
+                                        onClick = { state.eventSink(MathPracticeScreen.Event.ShowVisualHint) },
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp),
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            ),
+                                    ) {
+                                        Text(
+                                            "🎨 Show visually",
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        )
+                                    }
+                                }
+
+                                // Visual hint display card (landscape)
+                                if (state.showVisualHint && state.currentProblem != null) {
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    VisualHintCard(
+                                        hintText = state.currentHintText ?: "See how the problem works!",
+                                        problem = state.currentProblem,
+                                        onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissVisualHint) },
+                                    )
+                                }
                             }
                         }
                     } else {
@@ -437,6 +470,37 @@ internal fun MathPracticeUi(
                                 HintCard(
                                     hintText = state.currentHintText,
                                     onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                                )
+                            }
+
+                            // Visual hint button (portrait)
+                            if (state.showHintButton && !state.hintButtonClicked) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(
+                                    onClick = { state.eventSink(MathPracticeScreen.Event.ShowVisualHint) },
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    colors =
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        ),
+                                ) {
+                                    Text(
+                                        "🎨 Show visually",
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    )
+                                }
+                            }
+
+                            // Visual hint display card (portrait)
+                            if (state.showVisualHint && state.currentProblem != null) {
+                                Spacer(modifier = Modifier.height(12.dp))
+                                VisualHintCard(
+                                    hintText = state.currentHintText ?: "See how the problem works!",
+                                    problem = state.currentProblem,
+                                    onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissVisualHint) },
                                 )
                             }
                         }
