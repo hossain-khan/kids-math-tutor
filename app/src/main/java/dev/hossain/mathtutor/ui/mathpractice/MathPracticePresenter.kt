@@ -128,6 +128,12 @@ class MathPracticePresenter
                 )
             }
 
+            // Memoization cache for hints to avoid regeneration on recomposition
+            val hintCache = remember { mutableMapOf<String, String>() }
+            val workBreakdownCache = remember { mutableMapOf<String, List<WorkBreakdownStep>>() }
+
+            fun getCacheKey(problem: MathProblem): String = "${problem.operation}_${problem.num1}_${problem.num2}"
+
             /**
              * Manually deduplicates problems by removing duplicate problem strings,
              * then generates additional problems to reach the target count.
@@ -665,13 +671,29 @@ class MathPracticePresenter
                     is MathPracticeScreen.Event.RequestHint -> {
                         if (currentProblem != null) {
                             val hintLevel = if (wrongAttempts <= 1) 1 else 2
+                            val cacheKey = getCacheKey(currentProblem)
+                            val cacheKeyWithLevel = "${cacheKey}_L$hintLevel"
                             currentHintText =
-                                if (hintLevel == 1) {
-                                    hintProvider.getFirstHint(currentProblem)
-                                } else {
-                                    hintProvider.getSecondHint(currentProblem)
+                                hintCache.getOrPut(cacheKeyWithLevel) {
+                                    if (hintLevel == 1) {
+                                        hintProvider.getFirstHint(currentProblem)
+                                    } else {
+                                        hintProvider.getSecondHint(currentProblem)
+                                    }
                                 }
                             hintButtonClicked = true
+
+                            // Analytics: Track hint usage
+                            analyticsService.logEvent(
+                                eventName = AnalyticsEvent.HINT_REQUESTED,
+                                parameters =
+                                    mapOf(
+                                        AnalyticsParam.HINT_LEVEL to hintLevel,
+                                        AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                        AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                    ),
+                            )
+
                             Timber.d("[MathPractice] Hint requested - level $hintLevel for problem ${currentProblem.id}")
                         }
                     }
@@ -684,6 +706,17 @@ class MathPracticePresenter
 
                     is MathPracticeScreen.Event.ShowVisualHint -> {
                         showVisualHint = true
+
+                        // Analytics: Track visual hint usage
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.VISUAL_HINT_SHOWN,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                    AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                ),
+                        )
+
                         Timber.d("[MathPractice] Visual hint shown")
                     }
 
@@ -694,9 +727,22 @@ class MathPracticePresenter
 
                     is MathPracticeScreen.Event.ShowWork -> {
                         if (currentProblem != null) {
-                            workBreakdownSteps = workProvider.getWorkBreakdown(currentProblem)
+                            val cacheKey = getCacheKey(currentProblem)
+                            workBreakdownSteps =
+                                workBreakdownCache.getOrPut(cacheKey) {
+                                    workProvider.getWorkBreakdown(currentProblem)
+                                }
                             showWorkBreakdown = true
-                            Timber.d("[MathPractice] Work breakdown shown for problem ${currentProblem.id}")
+
+                            // Analytics: Track work breakdown usage
+                            analyticsService.logEvent(
+                                eventName = AnalyticsEvent.WORK_BREAKDOWN_SHOWN,
+                                parameters =
+                                    mapOf(
+                                        AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                        AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                    ),
+                            )
                         }
                     }
 

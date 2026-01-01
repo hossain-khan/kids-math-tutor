@@ -25,11 +25,24 @@ interface WorkProvider {
 
 /**
  * Default implementation of WorkProvider with operation-specific breakdowns.
+ *
+ * Uses memoization to cache work breakdowns, avoiding regeneration for the same problem.
  */
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultWorkProvider : WorkProvider {
-    override fun getWorkBreakdown(problem: MathProblem): List<WorkBreakdownStep> =
+    private val workBreakdownCache = mutableMapOf<String, List<WorkBreakdownStep>>()
+
+    private fun getCacheKey(problem: MathProblem): String = "${problem.operation}_${problem.num1}_${problem.num2}"
+
+    override fun getWorkBreakdown(problem: MathProblem): List<WorkBreakdownStep> {
+        val cacheKey = getCacheKey(problem)
+        return workBreakdownCache.getOrPut(cacheKey) {
+            generateWorkBreakdown(problem)
+        }
+    }
+
+    private fun generateWorkBreakdown(problem: MathProblem): List<WorkBreakdownStep> =
         when (problem.operation) {
             MathOperation.ADDITION -> getAdditionWork(problem)
             MathOperation.SUBTRACTION -> getSubtractionWork(problem)
