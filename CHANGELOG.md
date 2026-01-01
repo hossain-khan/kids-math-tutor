@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Hint messaging to be more encouraging and context-aware
 - Button placement to follow natural error recovery flow
+- **"Need help?" button timing** - Now appears after 2 failed attempts instead of 1 to allow more opportunity for independent problem-solving
 - **Test Infrastructure**: Consolidated `FakeUserPreferencesRepository` into shared `fakes` package to eliminate duplication across test files
 
   - **Modal overlay dialog** - Work breakdown displayed in AlertDialog for full visibility

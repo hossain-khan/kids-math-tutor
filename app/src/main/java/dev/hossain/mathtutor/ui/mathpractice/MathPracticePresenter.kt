@@ -407,8 +407,8 @@ class MathPracticePresenter
                             // Track wrong attempts for hint feature
                             if (userAnswer != null && !correct) {
                                 wrongAttempts++
-                                // Show hint button after 1st wrong attempt (if hint system is enabled)
-                                if (wrongAttempts >= 1 && isHintSystemEnabled) {
+                                // Show hint button after 2nd wrong attempt (if hint system is enabled)
+                                if (wrongAttempts >= 2 && isHintSystemEnabled) {
                                     showHintButton = true
                                 }
                                 Timber.d("[MathPractice] Wrong attempt #$wrongAttempts for problem ${currentProblem.id}")
