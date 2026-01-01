@@ -8,6 +8,7 @@ import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.ui.component.StepByStepBreakdown
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -49,6 +50,8 @@ data class MathPracticeScreen(
         val currentHintText: String? = null,
         val hintButtonClicked: Boolean = false,
         val showVisualHint: Boolean = false,
+        val showWorkBreakdown: Boolean = false,
+        val workBreakdownSteps: List<StepByStepBreakdown.WorkBreakdownStep> = emptyList(),
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -79,5 +82,9 @@ data class MathPracticeScreen(
         data object ShowVisualHint : Event
 
         data object DismissVisualHint : Event
+
+        data object ShowWork : Event
+
+        data object DismissWork : Event
     }
 }

@@ -63,6 +63,7 @@ import dev.hossain.mathtutor.ui.component.AnswerField
 import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.component.DotVisualizer
 import dev.hossain.mathtutor.ui.component.NumberPad
+import dev.hossain.mathtutor.ui.component.StepByStepBreakdown
 import dev.hossain.mathtutor.ui.component.VisualHintCard
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
@@ -211,6 +212,30 @@ internal fun MathPracticeUi(
             confirmButton = {
                 TextButton(onClick = { state.eventSink(MathPracticeScreen.Event.DismissVisualHint) }) {
                     Text("Got it")
+                }
+            },
+        )
+    }
+
+    // Work breakdown dialog - shown as overlay
+    if (state.showWorkBreakdown && state.currentProblem != null) {
+        AlertDialog(
+            onDismissRequest = { state.eventSink(MathPracticeScreen.Event.DismissWork) },
+            title = { Text("📚 How to Solve") },
+            text = {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    StepByStepBreakdown(
+                        problem = state.currentProblem,
+                        steps = state.workBreakdownSteps,
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { state.eventSink(MathPracticeScreen.Event.DismissWork) }) {
+                    Text("Understand now!")
                 }
             },
         )
@@ -411,6 +436,27 @@ internal fun MathPracticeUi(
                                         )
                                     }
                                 }
+
+                                // Work breakdown button
+                                if (state.showHintButton && !state.hintButtonClicked) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Button(
+                                        onClick = { state.eventSink(MathPracticeScreen.Event.ShowWork) },
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp),
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                            ),
+                                    ) {
+                                        Text(
+                                            "📚 How to solve",
+                                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        )
+                                    }
+                                }
                             }
                         }
                     } else {
@@ -517,6 +563,27 @@ internal fun MathPracticeUi(
                                     Text(
                                         "🎨 Show visually",
                                         color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    )
+                                }
+                            }
+
+                            // Work breakdown button (portrait)
+                            if (state.showHintButton && !state.hintButtonClicked) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(
+                                    onClick = { state.eventSink(MathPracticeScreen.Event.ShowWork) },
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    colors =
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                        ),
+                                ) {
+                                    Text(
+                                        "📚 How to solve",
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
                                     )
                                 }
                             }
