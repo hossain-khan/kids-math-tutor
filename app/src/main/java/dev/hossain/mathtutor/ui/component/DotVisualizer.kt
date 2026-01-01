@@ -176,7 +176,7 @@ private fun MultiplicationDotVisualizer(
     durationMs: Int,
     delayMs: Int,
 ) {
-    val maxGroups = 5 // Limit display for readability
+    val maxGroups = 12 // Increased limit for better accuracy
     val groupsToShow = firstNumber.coerceAtMost(maxGroups)
 
     Column(
@@ -185,7 +185,7 @@ private fun MultiplicationDotVisualizer(
     ) {
         repeat(groupsToShow) { groupIndex ->
             DotGroup(
-                count = secondNumber.coerceAtMost(4), // Limit dots per group for readability
+                count = secondNumber.coerceAtMost(6), // Increased limit for better accuracy
                 color = MaterialTheme.colorScheme.primary,
                 delayMs = groupIndex * delayMs,
                 durationMs = durationMs,
@@ -214,7 +214,8 @@ private fun DivisionDotVisualizer(
     durationMs: Int,
     delayMs: Int,
 ) {
-    val groupsToShow = secondNumber.coerceAtMost(4) // Limit groups for readability
+    val maxGroups = 10 // Increased limit for better accuracy
+    val groupsToShow = secondNumber.coerceAtMost(maxGroups)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

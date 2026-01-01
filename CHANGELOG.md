@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Replaced horizontal scrolling with vertical wrapping layout for better portrait mode support
   - Dots now wrap to multiple rows (max 6 dots per row) instead of requiring horizontal scroll
   - Added vertical scroll support to handle tall visualizations
+  - Fixed multiplication visualization to show correct number of groups and dots (was limiting to 5 groups of 4 dots)
+  - Fixed division visualization to show all groups (increased from 4 to 10 maximum groups)
   - Improved layout to ensure all dot groups are visible regardless of operand size
   - Increased dot size from 12.dp to 20.dp for better visibility and child accessibility
   - Increased dot spacing from 4.dp to 8.dp to accommodate larger dots
