@@ -44,6 +44,10 @@ data class MathPracticeScreen(
         val actualGradeLevel: GradeLevel? = null,
         val showDifficultyChangeNotice: Boolean = false,
         val customChallengeTitle: String? = null,
+        val wrongAttempts: Int = 0,
+        val showHintButton: Boolean = false,
+        val currentHintText: String? = null,
+        val hintButtonClicked: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -66,5 +70,9 @@ data class MathPracticeScreen(
         data object DismissBadgeDialog : Event
 
         data object DismissDifficultyNotice : Event
+
+        data object RequestHint : Event
+
+        data object DismissHint : Event
     }
 }

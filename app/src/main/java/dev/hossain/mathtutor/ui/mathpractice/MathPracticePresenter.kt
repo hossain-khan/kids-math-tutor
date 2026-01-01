@@ -17,6 +17,7 @@ import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
+import dev.hossain.mathtutor.domain.hint.HintProvider
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -64,6 +65,7 @@ class MathPracticePresenter
         private val hapticService: HapticService,
         private val analyticsService: AnalyticsService,
         private val customChallengeService: dev.hossain.mathtutor.domain.service.CustomChallengeService,
+        private val hintProvider: HintProvider,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -111,6 +113,10 @@ class MathPracticePresenter
             var isAdaptiveEnabled by remember { mutableStateOf(false) }
             var userName by remember { mutableStateOf<String?>(null) }
             var customChallengeTitle by remember { mutableStateOf<String?>(null) }
+            var wrongAttempts by remember { mutableStateOf(0) }
+            var showHintButton by remember { mutableStateOf(false) }
+            var currentHintText by remember { mutableStateOf<String?>(null) }
+            var hintButtonClicked by remember { mutableStateOf(false) }
 
             /**
              * Manually deduplicates problems by removing duplicate problem strings,
@@ -345,6 +351,10 @@ class MathPracticePresenter
                 actualGradeLevel = actualGradeLevel,
                 showDifficultyChangeNotice = showDifficultyChangeNotice,
                 customChallengeTitle = customChallengeTitle,
+                wrongAttempts = wrongAttempts,
+                showHintButton = showHintButton,
+                currentHintText = currentHintText,
+                hintButtonClicked = hintButtonClicked,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
@@ -362,6 +372,16 @@ class MathPracticePresenter
                             val userAnswer = currentAnswer.toIntOrNull()
                             val correct = userAnswer?.let { currentProblem.checkAnswer(it) } ?: false
                             isCorrect = if (userAnswer != null) correct else null
+
+                            // Track wrong attempts for hint feature
+                            if (userAnswer != null && !correct) {
+                                wrongAttempts++
+                                // Show hint button after 1st wrong attempt
+                                if (wrongAttempts >= 1) {
+                                    showHintButton = true
+                                }
+                                Timber.d("[MathPractice] Wrong attempt #$wrongAttempts for problem ${currentProblem.id}")
+                            }
 
                             // Play audio and haptic feedback based on correctness
                             if (userAnswer != null) {
@@ -426,6 +446,11 @@ class MathPracticePresenter
                             currentAnswer = ""
                             isCorrect = null
                             problemStartTime = Instant.now() // Reset timer for next problem
+                            // Reset hint state for new problem
+                            wrongAttempts = 0
+                            showHintButton = false
+                            currentHintText = null
+                            hintButtonClicked = false
                         } else {
                             // All problems completed, save session and check for badges/streak
                             val sessionEndTime = Instant.now()
@@ -618,6 +643,26 @@ class MathPracticePresenter
 
                     is MathPracticeScreen.Event.DismissDifficultyNotice -> {
                         showDifficultyChangeNotice = false
+                    }
+
+                    is MathPracticeScreen.Event.RequestHint -> {
+                        if (currentProblem != null) {
+                            val hintLevel = if (wrongAttempts <= 1) 1 else 2
+                            currentHintText =
+                                if (hintLevel == 1) {
+                                    hintProvider.getFirstHint(currentProblem)
+                                } else {
+                                    hintProvider.getSecondHint(currentProblem)
+                                }
+                            hintButtonClicked = true
+                            Timber.d("[MathPractice] Hint requested - level $hintLevel for problem ${currentProblem.id}")
+                        }
+                    }
+
+                    is MathPracticeScreen.Event.DismissHint -> {
+                        currentHintText = null
+                        hintButtonClicked = false
+                        Timber.d("[MathPractice] Hint dismissed")
                     }
                 }
             }

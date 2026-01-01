@@ -312,6 +312,36 @@ internal fun MathPracticeUi(
                                     onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
                                     hapticService = hapticService,
                                 )
+
+                                // Hint button (landscape mode)
+                                if (state.showHintButton && !state.hintButtonClicked) {
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Button(
+                                        onClick = { state.eventSink(MathPracticeScreen.Event.RequestHint) },
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp),
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                            ),
+                                    ) {
+                                        Text(
+                                            "💡 Need help?",
+                                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        )
+                                    }
+                                }
+
+                                // Hint display card (landscape)
+                                if (state.currentHintText != null) {
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    HintCard(
+                                        hintText = state.currentHintText,
+                                        onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                                    )
+                                }
                             }
                         }
                     } else {
@@ -379,6 +409,36 @@ internal fun MathPracticeUi(
                                 onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
                                 hapticService = hapticService,
                             )
+
+                            // Hint button (appears after 1st wrong attempt)
+                            if (state.showHintButton && !state.hintButtonClicked) {
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Button(
+                                    onClick = { state.eventSink(MathPracticeScreen.Event.RequestHint) },
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    colors =
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                        ),
+                                ) {
+                                    Text(
+                                        "💡 Need help?",
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    )
+                                }
+                            }
+
+                            // Hint display card
+                            if (state.currentHintText != null) {
+                                Spacer(modifier = Modifier.height(12.dp))
+                                HintCard(
+                                    hintText = state.currentHintText,
+                                    onDismiss = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                                )
+                            }
                         }
                     }
                 }
@@ -835,5 +895,55 @@ private fun MathPracticeUiIncorrectPreview() {
                     override fun setHapticsEnabled(enabled: Boolean) {}
                 },
         )
+    }
+}
+
+/**
+ * Displays a hint card with helpful guidance text.
+ * Kids can dismiss the hint to try solving on their own.
+ */
+@Composable
+private fun HintCard(
+    hintText: String,
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth().padding(16.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "💡",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    "Hint:",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+            }
+            Text(
+                text = hintText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.End),
+            ) {
+                Text("Got it!")
+            }
+        }
     }
 }
