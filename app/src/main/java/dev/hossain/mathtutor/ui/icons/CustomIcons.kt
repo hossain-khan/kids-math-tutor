@@ -1,8 +1,10 @@
 package dev.hossain.mathtutor.ui.icons
 
-import androidx.compose.material.icons.materialIcon
-import androidx.compose.material.icons.materialPath
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
+import androidx.compose.ui.unit.dp
 
 /**
  * Custom icon set for math operations and other custom needs.
@@ -14,36 +16,45 @@ object CustomIcons {
      * Division operator icon (÷)
      *
      * Represents mathematical division operation with two dots and a horizontal line.
-     * Follows Material Design icon conventions (24x24 grid).
+     * Generated from SVG for proper rendering.
      */
     val Division: ImageVector
-        get() =
-            materialIcon(name = "Custom.Division") {
-                materialPath {
-                    // Top dot (circle at ~8, 6)
-                    moveTo(8f, 5f)
-                    curveToRelative(-0.55f, 0f, -1f, 0.45f, -1f, 1f)
-                    curveToRelative(0f, 0.55f, 0.45f, 1f, 1f, 1f)
-                    curveToRelative(0.55f, 0f, 1f, -0.45f, 1f, -1f)
-                    curveToRelative(0f, -0.55f, -0.45f, -1f, -1f, -1f)
+        get() {
+            if (_Division != null) {
+                return _Division!!
+            }
+            _Division = ImageVector.Builder(
+                name = "Division",
+                defaultWidth = 800.dp,
+                defaultHeight = 800.dp,
+                viewportWidth = 19f,
+                viewportHeight = 19f
+            ).apply {
+                path(fill = SolidColor(Color.Black)) {
+                    moveTo(15.711f, 9.182f)
+                    arcToRelative(1.03f, 1.03f, 0f, isMoreThanHalf = false, isPositiveArc = true, -1.03f, 1.03f)
+                    lineTo(4.319f, 10.212f)
+                    arcToRelative(1.03f, 1.03f, 0f, isMoreThanHalf = true, isPositiveArc = true, 0f, -2.059f)
+                    horizontalLineToRelative(10.364f)
+                    arcToRelative(1.03f, 1.03f, 0f, isMoreThanHalf = false, isPositiveArc = true, 1.029f, 1.03f)
                     close()
-
-                    // Horizontal line
-                    moveTo(2f, 12f)
-                    lineTo(22f, 12f)
-                    lineTo(22f, 14f)
-                    lineTo(2f, 14f)
+                    moveTo(8.03f, 4.586f)
+                    arcToRelative(1.47f, 1.47f, 0f, isMoreThanHalf = true, isPositiveArc = true, 1.47f, 1.47f)
+                    arcToRelative(1.47f, 1.47f, 0f, isMoreThanHalf = false, isPositiveArc = true, -1.47f, -1.47f)
                     close()
-
-                    // Bottom dot (circle at ~8, 18)
-                    moveTo(8f, 17f)
-                    curveToRelative(-0.55f, 0f, -1f, 0.45f, -1f, 1f)
-                    curveToRelative(0f, 0.55f, 0.45f, 1f, 1f, 1f)
-                    curveToRelative(0.55f, 0f, 1f, -0.45f, 1f, -1f)
-                    curveToRelative(0f, -0.55f, -0.45f, -1f, -1f, -1f)
+                    moveTo(10.97f, 13.779f)
+                    arcToRelative(1.47f, 1.47f, 0f, isMoreThanHalf = true, isPositiveArc = true, -1.47f, -1.47f)
+                    arcToRelative(1.47f, 1.47f, 0f, isMoreThanHalf = false, isPositiveArc = true, 1.47f, 1.47f)
                     close()
                 }
-            }
+            }.build()
+
+            return _Division!!
+        }
+
+    @Suppress("ObjectPropertyName")
+    private var _Division: ImageVector? = null
 }
+
 
 
