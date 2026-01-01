@@ -2,10 +2,10 @@ package dev.hossain.mathtutor.ui.parentsettings
 
 import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.analytics.AnalyticsService
-import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
+import dev.hossain.mathtutor.fakes.FakeUserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Test
@@ -143,7 +143,7 @@ class ParentSettingsPresenterTest {
     }
 
     /**
-     * Fake implementation of UserProfileRepository for testing.
+     * Fake implementation of UserPreferencesRepository for testing.
      */
     private class FakeUserProfileRepository : UserProfileRepository {
         private val profileFlow = MutableStateFlow<UserProfile?>(null)
@@ -189,107 +189,6 @@ class ParentSettingsPresenterTest {
             profileFlow.value?.let { current ->
                 profileFlow.value = current.copy(name = name)
             }
-        }
-    }
-
-    /**
-     * Fake implementation of UserPreferencesRepository for testing.
-     */
-    private class FakeUserPreferencesRepository : UserPreferencesRepository {
-        private val maxGradeLevelFlow = MutableStateFlow<GradeLevel?>(null)
-        private val analyticsEnabledFlow = MutableStateFlow(true)
-        private val onboardingFlow = MutableStateFlow(false)
-        private val hapticFlow = MutableStateFlow(true)
-        private val soundFlow = MutableStateFlow(true)
-        private val musicFlow = MutableStateFlow(true)
-        private val volumeFlow = MutableStateFlow(0.5f)
-        private val highContrastFlow = MutableStateFlow(false)
-        private val largeTextFlow = MutableStateFlow(false)
-        private val hintSystemEnabledFlow = MutableStateFlow(true)
-
-        override val maxGradeLevel: Flow<GradeLevel?> = maxGradeLevelFlow
-
-        fun setMaxGradeLevelSync(gradeLevel: GradeLevel?) {
-            maxGradeLevelFlow.value = gradeLevel
-        }
-
-        override suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?) {
-            maxGradeLevelFlow.value = gradeLevel
-        }
-
-        // Stub implementations for other methods
-        override val parentPinHash: Flow<String?> = MutableStateFlow(null)
-
-        override suspend fun setParentPin(pin: String) {}
-
-        override suspend fun verifyParentPin(pin: String): Boolean = false
-
-        override suspend fun clearParentPin() {}
-
-        override val isAnalyticsEnabled: Flow<Boolean> = analyticsEnabledFlow
-
-        override suspend fun setAnalyticsEnabled(enabled: Boolean) {
-            analyticsEnabledFlow.value = enabled
-        }
-
-        override val isOnboardingCompleted: Flow<Boolean> = onboardingFlow
-
-        override suspend fun setOnboardingCompleted(completed: Boolean) {
-            onboardingFlow.value = completed
-        }
-
-        override val isHapticsEnabled: Flow<Boolean> = hapticFlow
-
-        override suspend fun setHapticsEnabled(enabled: Boolean) {
-            hapticFlow.value = enabled
-        }
-
-        override val isSoundEffectsEnabled: Flow<Boolean> = soundFlow
-
-        override suspend fun setSoundEffectsEnabled(enabled: Boolean) {
-            soundFlow.value = enabled
-        }
-
-        override val isBackgroundMusicEnabled: Flow<Boolean> = musicFlow
-
-        override suspend fun setBackgroundMusicEnabled(enabled: Boolean) {
-            musicFlow.value = enabled
-        }
-
-        override val volume: Flow<Float> = volumeFlow
-
-        override suspend fun setVolume(volume: Float) {
-            volumeFlow.value = volume
-        }
-
-        override val isHighContrastEnabled: Flow<Boolean> = highContrastFlow
-
-        override suspend fun setHighContrastEnabled(enabled: Boolean) {
-            highContrastFlow.value = enabled
-        }
-
-        override val isLargeTextEnabled: Flow<Boolean> = largeTextFlow
-
-        override suspend fun setLargeTextEnabled(enabled: Boolean) {
-            largeTextFlow.value = enabled
-        }
-
-        private val importGuideExpandedFlow = MutableStateFlow(true)
-
-        override val isImportGuideExpanded: Flow<Boolean> = importGuideExpandedFlow
-
-        override suspend fun setImportGuideExpanded(expanded: Boolean) {
-            importGuideExpandedFlow.value = expanded
-        }
-
-        override fun getGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Flow<Int> = MutableStateFlow(0)
-
-        override suspend fun incrementGameTrialAttempts(game: dev.hossain.mathtutor.domain.model.Game): Int = 0
-
-        override val isHintSystemEnabled: Flow<Boolean> = hintSystemEnabledFlow
-
-        override suspend fun setHintSystemEnabled(enabled: Boolean) {
-            hintSystemEnabledFlow.value = enabled
         }
     }
 }
