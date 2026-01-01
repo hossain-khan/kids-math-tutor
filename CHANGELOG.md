@@ -2189,7 +2189,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...HEAD
+[1.21.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...1.21.0
 [1.20.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...1.20.0
 [1.19.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.18.0...1.19.0
 [1.18.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.17.0...1.18.0
@@ -2197,9 +2198,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.16.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.0...1.16.1
 [1.16.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.15.0...1.16.0
 [1.15.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.1...1.15.0
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...HEAD
-[1.21.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...1.21.0
-[1.20.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...1.20.0
 [1.14.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.0...1.14.1
 [1.14.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.13.0...1.14.0
 [1.13.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.12.0...1.13.0
