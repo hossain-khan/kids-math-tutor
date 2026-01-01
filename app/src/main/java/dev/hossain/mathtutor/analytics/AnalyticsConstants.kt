@@ -48,6 +48,7 @@ object AnalyticsEvent {
     // Parent control events
     const val PARENT_PIN_SETUP_STARTED = "parent_pin_setup_started"
     const val PARENT_PIN_SETUP_COMPLETED = "parent_pin_setup_completed"
+    const val PARENT_HINT_SYSTEM_TOGGLED = "parent_hint_system_toggled"
 
     // Settings events
     const val SETTINGS_CHANGED = "settings_changed"

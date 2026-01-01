@@ -66,6 +66,7 @@ class ParentSettingsPresenter
             // Observe PIN and grade limit from repository
             val pinHash by preferencesRepository.parentPinHash.collectAsState(initial = null)
             val maxGradeLevel by preferencesRepository.maxGradeLevel.collectAsState(initial = null)
+            val isHintSystemEnabled by preferencesRepository.isHintSystemEnabled.collectAsState(initial = true)
 
             // Dialog states
             var showPinSetup by remember { mutableStateOf(false) }
@@ -81,6 +82,7 @@ class ParentSettingsPresenter
             return ParentSettingsScreen.State(
                 hasPinSet = pinHash != null,
                 maxGradeLevel = maxGradeLevel,
+                isHintSystemEnabled = isHintSystemEnabled,
                 showPinSetup = showPinSetup,
                 showPinVerification = showPinVerification,
                 showPinReset = showPinReset,
@@ -302,6 +304,17 @@ class ParentSettingsPresenter
                         Timber.d("ParentSettings: PIN verification cancelled")
                         showPinVerification = false
                         pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE
+                    }
+
+                    is ParentSettingsScreen.Event.HintSystemToggled -> {
+                        Timber.d("ParentSettings: Hint system toggled - enabled=${event.enabled}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.PARENT_HINT_SYSTEM_TOGGLED,
+                            parameters = mapOf("enabled" to event.enabled.toString()),
+                        )
+                        coroutineScope.launch {
+                            preferencesRepository.setHintSystemEnabled(event.enabled)
+                        }
                     }
 
                     is ParentSettingsScreen.Event.NavigateBack -> {
