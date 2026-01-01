@@ -4,7 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,7 +69,7 @@ fun VisualHintCard(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 // Header with emoji and dismiss button
-                androidx.compose.foundation.layout.Row(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -101,7 +103,7 @@ fun VisualHintCard(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Visual representation
-                androidx.compose.foundation.layout.Box(
+                Box(
                     modifier =
                         Modifier
                             .fillMaxWidth()
