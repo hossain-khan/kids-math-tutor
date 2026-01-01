@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Hint System (Phase 1)** - Text-based hint system to guide children toward solving problems
+  - Tracks wrong attempts per problem
+  - Shows "💡 Need help?" button after first wrong attempt
+  - Operation-specific hints for Addition, Subtraction, Multiplication, and Division
+  - Two levels of hints: gentle nudge (Level 1) and more specific guidance (Level 2)
+  - Hints encourage problem-solving without directly revealing the answer
+  - Hint state resets when moving to next problem
+  - Material 3 design with tertiaryContainer color for hint UI
 - **Smart Wrong Answer Feedback** - Enhanced feedback when children get answers wrong
   - **Varied encouragement messages** - Multiple messages like "Try again", "Not quite", "Keep going!", "Give it another shot" to reduce repetition and stay engaging
   - **Close answer detection** - When answer is off by 1, shows more encouraging messages ("Almost!", "Very close!", "You're getting there!", "So close!") for all math operation types
