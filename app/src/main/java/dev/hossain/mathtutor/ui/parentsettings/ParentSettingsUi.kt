@@ -478,36 +478,31 @@ private fun HintSystemCard(
             )
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedButton(
                     onClick = { onToggleHintSystem(false) },
                     modifier = Modifier.weight(1f),
-                    colors = if (!isHintSystemEnabled) {
-                        androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
-                        )
-                    } else {
-                        androidx.compose.material3.ButtonDefaults.outlinedButtonColors()
-                    },
                 ) {
                     Text("Disable")
                 }
                 Button(
                     onClick = { onToggleHintSystem(true) },
                     modifier = Modifier.weight(1f),
-                    colors = if (isHintSystemEnabled) {
-                        androidx.compose.material3.ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    } else {
-                        androidx.compose.material3.ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    },
+                    colors =
+                        if (isHintSystemEnabled) {
+                            androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                            )
+                        } else {
+                            androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            )
+                        },
                 ) {
                     Text("Enable")
                 }
