@@ -185,28 +185,45 @@ internal fun MathPracticeUi(
                 )
             },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        // Ask if they want visual hint
-                        state.eventSink(MathPracticeScreen.Event.ShowVisualHint)
-                    },
-                    modifier =
-                        Modifier.semantics {
-                            contentDescription = "Show the hint visually with dots and pictures"
+                // Only show "Show Visually" button if visual hint is feasible for this problem
+                if (state.isVisualHintFeasible) {
+                    TextButton(
+                        onClick = {
+                            // Ask if they want visual hint
+                            state.eventSink(MathPracticeScreen.Event.ShowVisualHint)
                         },
-                ) {
-                    Text("Show Visually")
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Show the hint visually with dots and pictures"
+                            },
+                    ) {
+                        Text("Show Visually")
+                    }
+                } else {
+                    TextButton(
+                        onClick = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Close this hint"
+                            },
+                    ) {
+                        Text("Got it")
+                    }
                 }
             },
             dismissButton = {
-                TextButton(
-                    onClick = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
-                    modifier =
-                        Modifier.semantics {
-                            contentDescription = "Close this hint"
-                        },
-                ) {
-                    Text("Got it")
+                if (state.isVisualHintFeasible) {
+                    TextButton(
+                        onClick = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Close this hint"
+                            },
+                    ) {
+                        Text("Got it")
+                    }
+                } else {
+                    null
                 }
             },
         )
