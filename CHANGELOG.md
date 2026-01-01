@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Hint System (Phase 3)** - Step-by-step work breakdown to teach solution process
+  - **StepByStepBreakdown composable** - Shows complete solution steps with animations
+    - Problem statement display with number and operation
+    - Individual solution steps with number badges and emojis
+    - Final answer display with checkmark emoji
+    - Staggered animation timing (200ms between steps) for smooth reveal
+  - **WorkStep composable** - Individual step component with visual design
+    - Colored circular badge showing step number
+    - Emoji for visual representation (🎯, ➕/➖/📦/🎁, 💡/💭/➕/📊, ✅)
+    - Description text explaining what to do
+    - Animated reveal with expandVertically + fadeIn transitions
+    - Material 3 design using primaryContainer color
+  - **WorkProvider interface & DefaultWorkProvider** - Generates operation-specific breakdowns
+    - Addition: "Start with" → "Add" → "Count on" → "Result"
+    - Subtraction: "Start with" → "Take away" → "Count back" → "Result"
+    - Multiplication: "Groups of" → "Items in each" → "Add repeatedly" → "Result"
+    - Division: "Total items" → "Share among" → "Each gets" → "Result"
+    - Each operation returns 4 intuitive steps with emojis
+    - Dependency injection with @Inject, @ContributesBinding(AppScope::class)
+  - **"📚 How to solve" button** - Appears after first wrong attempt for guided learning
+  - **Modal overlay dialog** - Work breakdown displayed in AlertDialog for full visibility
+  - **Combines with Phases 1 & 2** - Provides three levels of help: text hints, visual hints, and step-by-step work
 - **Hint System (Phase 2)** - Visual hints with animated dots to help children understand math concepts
   - **DotVisualizer component** - Shows operation-specific visual representations
     - Addition: Shows dots for first number, plus sign, then dots for second number

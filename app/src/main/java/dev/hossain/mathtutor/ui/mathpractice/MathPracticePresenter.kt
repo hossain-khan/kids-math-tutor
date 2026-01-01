@@ -29,7 +29,9 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
+import dev.hossain.mathtutor.domain.work.WorkProvider
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -66,6 +68,7 @@ class MathPracticePresenter
         private val analyticsService: AnalyticsService,
         private val customChallengeService: dev.hossain.mathtutor.domain.service.CustomChallengeService,
         private val hintProvider: HintProvider,
+        private val workProvider: WorkProvider,
     ) : Presenter<MathPracticeScreen.State> {
         @CircuitInject(MathPracticeScreen::class, AppScope::class)
         @AssistedFactory
@@ -118,6 +121,12 @@ class MathPracticePresenter
             var currentHintText by remember { mutableStateOf<String?>(null) }
             var hintButtonClicked by remember { mutableStateOf(false) }
             var showVisualHint by remember { mutableStateOf(false) }
+            var showWorkBreakdown by remember { mutableStateOf(false) }
+            var workBreakdownSteps by remember {
+                mutableStateOf<List<WorkBreakdownStep>>(
+                    emptyList(),
+                )
+            }
 
             /**
              * Manually deduplicates problems by removing duplicate problem strings,
@@ -357,6 +366,8 @@ class MathPracticePresenter
                 currentHintText = currentHintText,
                 hintButtonClicked = hintButtonClicked,
                 showVisualHint = showVisualHint,
+                showWorkBreakdown = showWorkBreakdown,
+                workBreakdownSteps = workBreakdownSteps,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
@@ -454,6 +465,9 @@ class MathPracticePresenter
                             currentHintText = null
                             hintButtonClicked = false
                             showVisualHint = false
+                            // Reset work breakdown state for new problem
+                            showWorkBreakdown = false
+                            workBreakdownSteps = emptyList()
                         } else {
                             // All problems completed, save session and check for badges/streak
                             val sessionEndTime = Instant.now()
@@ -676,6 +690,20 @@ class MathPracticePresenter
                     is MathPracticeScreen.Event.DismissVisualHint -> {
                         showVisualHint = false
                         Timber.d("[MathPractice] Visual hint dismissed")
+                    }
+
+                    is MathPracticeScreen.Event.ShowWork -> {
+                        if (currentProblem != null) {
+                            workBreakdownSteps = workProvider.getWorkBreakdown(currentProblem)
+                            showWorkBreakdown = true
+                            Timber.d("[MathPractice] Work breakdown shown for problem ${currentProblem.id}")
+                        }
+                    }
+
+                    is MathPracticeScreen.Event.DismissWork -> {
+                        showWorkBreakdown = false
+                        workBreakdownSteps = emptyList()
+                        Timber.d("[MathPractice] Work breakdown dismissed")
                     }
                 }
             }
