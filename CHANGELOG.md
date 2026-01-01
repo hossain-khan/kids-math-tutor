@@ -8,26 +8,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Hint System (Phase 3)** - Step-by-step work breakdown to teach solution process
-  - **StepByStepBreakdown composable** - Shows complete solution steps with animations
-    - Problem statement display with number and operation
-    - Individual solution steps with number badges and emojis
-    - Final answer display with checkmark emoji
-    - Staggered animation timing (200ms between steps) for smooth reveal
-  - **WorkStep composable** - Individual step component with visual design
-    - Colored circular badge showing step number
-    - Emoji for visual representation (🎯, ➕/➖/📦/🎁, 💡/💭/➕/📊, ✅)
-    - Description text explaining what to do
-    - Animated reveal with expandVertically + fadeIn transitions
-    - Material 3 design using primaryContainer color
-  - **WorkProvider interface & DefaultWorkProvider** - Generates operation-specific breakdowns
-    - Addition: "Start with" → "Add" → "Count on" → "Result"
-    - Subtraction: "Start with" → "Take away" → "Count back" → "Result"
-    - Multiplication: "Groups of" → "Items in each" → "Add repeatedly" → "Result"
-    - Division: "Total items" → "Share among" → "Each gets" → "Result"
-    - Each operation returns 4 intuitive steps with emojis
-    - Dependency injection with @Inject, @ContributesBinding(AppScope::class)
-  - **"📚 How to solve" button** - Appears after first wrong attempt for guided learning
+- **Hint System Refinements (Phases 1-3 Improvements)**
+  - Enhanced hint messaging with encouragement and emojis
+    - Level 1 hints: Gentle nudges with emoji context ("You're doing great! Try counting up from 5 🎯")
+    - Level 2 hints: Specific step-by-step guidance with visual aids
+    - Child-friendly language across all operations (addition, subtraction, multiplication, division)
+  - Analytics tracking for hint system usage
+    - New events: `HINT_REQUESTED`, `VISUAL_HINT_SHOWN`, `WORK_BREAKDOWN_SHOWN`
+    - New parameters: `HINT_LEVEL` (1 or 2), `ATTEMPT_NUMBER`, `OPERATION_TYPE`
+    - Enables understanding which hints help children most and identifying problem areas
+  - Accessibility improvements for hints and work dialogs
+    - Added semantic descriptions to all dialogs for screen readers
+    - Improved heading markup for dialog titles
+    - Better button descriptions for TalkBack and accessibility features
+    - Ensured emoji convey meaning via text alternatives
+  - Optimized button layout and organization
+    - "Need help?" button now appears right after feedback section ("Try again")
+    - Removed "Show visually" button (visual hints accessible from hint dialog)
+    - Simplified landscape mode to show only "How to solve" button
+    - Improved visual hierarchy and UX flow
+  - Performance improvements through memoization
+    - Added caching to `DefaultHintProvider` for first and second hints
+    - Added caching to `DefaultWorkProvider` for work breakdown steps
+    - Cache key based on problem operation and operands (e.g., "ADDITION_5_3")
+    - Memoization in presenter using Compose `remember` within session
+    - Avoids regeneration on recomposition without losing fresh generation per problem
+    - Improves performance on lower-end devices for K-2 math problems
+
+### Fixed
+- Hint generation performance on frequent recompositions
+- Dialog visibility management for better control flow
+
+### Changed
+- Hint messaging to be more encouraging and context-aware
+- Button placement to follow natural error recovery flow
+
   - **Modal overlay dialog** - Work breakdown displayed in AlertDialog for full visibility
   - **Combines with Phases 1 & 2** - Provides three levels of help: text hints, visual hints, and step-by-step work
 - **Hint System (Phase 2)** - Visual hints with animated dots to help children understand math concepts
