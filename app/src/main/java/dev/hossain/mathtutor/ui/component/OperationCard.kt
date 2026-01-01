@@ -38,25 +38,27 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 /**
  * A reusable card component for displaying math operation options.
  *
- * Shows the operation name, icon, and example problems in a Material 3 elevated card.
+ * Shows the operation name, icon (or text), and example problems in a Material 3 elevated card.
  * Includes an optional hero image on the right side with a fade effect.
  *
  * @param title The name of the operation (e.g., "Addition", "Subtraction")
- * @param icon The icon representing the operation
+ * @param icon The icon representing the operation (optional if iconText is provided)
  * @param examples List of example problem strings (e.g., "5 + 3 = ?")
  * @param operation The math operation type (used to determine hero image)
  * @param onClick Callback when the card is clicked
  * @param modifier Optional modifier for the card
+ * @param iconText Optional text to display as icon (e.g., "÷" for division)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OperationCard(
     title: String,
-    icon: ImageVector,
+    icon: ImageVector? = null,
     examples: List<String>,
     operation: MathOperation? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    iconText: String? = null,
 ) {
     Card(
         onClick = onClick,
@@ -123,13 +125,23 @@ fun OperationCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                // Icon
-                Icon(
-                    imageVector = icon,
-                    contentDescription = title,
-                    modifier = Modifier.size(72.dp),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
+                // Icon or Text Icon
+                if (iconText != null) {
+                    Text(
+                        text = iconText,
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(72.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                } else if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = title,
+                        modifier = Modifier.size(72.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
 
                 // Title
                 Text(

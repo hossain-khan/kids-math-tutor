@@ -197,7 +197,8 @@ fun OperationSelectorUi(
             if (state.gradeLevel == GradeLevel.GRADE_2) {
                 OperationCard(
                     title = "Division",
-                    icon = Icons.Default.Percent,
+                    icon = null,
+                    iconText = "÷",
                     examples = listOf("20 ÷ 5 = ?", "15 ÷ 3 = ?"),
                     operation = MathOperation.DIVISION,
                     onClick = {
