@@ -114,20 +114,20 @@ class VisualHintFeasibilityCheckerTest {
 
     @Test
     fun `division at maximum threshold is feasible`() {
-        val problem = MathProblem(num1 = 100, num2 = 10, operation = MathOperation.DIVISION, correctAnswer = 10)
+        val problem = MathProblem(num1 = 50, num2 = 10, operation = MathOperation.DIVISION, correctAnswer = 5)
         assertThat(VisualHintFeasibilityChecker.isFeasible(problem)).isTrue()
     }
 
     @Test
-    fun `division 72 divided by 8 is feasible`() {
-        // The reported case: 9 groups of 8 dots
-        val problem = MathProblem(num1 = 72, num2 = 8, operation = MathOperation.DIVISION, correctAnswer = 9)
+    fun `division 40 divided by 8 is feasible`() {
+        // Within limits: 5 groups of 8 dots
+        val problem = MathProblem(num1 = 40, num2 = 8, operation = MathOperation.DIVISION, correctAnswer = 5)
         assertThat(VisualHintFeasibilityChecker.isFeasible(problem)).isTrue()
     }
 
     @Test
     fun `division exceeding dividend limit is not feasible`() {
-        val problem = MathProblem(num1 = 101, num2 = 5, operation = MathOperation.DIVISION, correctAnswer = 20)
+        val problem = MathProblem(num1 = 51, num2 = 5, operation = MathOperation.DIVISION, correctAnswer = 10)
         assertThat(VisualHintFeasibilityChecker.isFeasible(problem)).isFalse()
     }
 

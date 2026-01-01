@@ -25,7 +25,7 @@ import dev.hossain.mathtutor.domain.model.MathProblem
  * | Addition | Both operands ≤ 20 | Sum ≤ 40, manageable dot count |
  * | Subtraction | Minuend ≤ 20 | Minuend determines dot count |
  * | Multiplication | Both operands ≤ 9 | Max 9×9 = 81 dots across groups |
- * | Division | Dividend ≤ 100, Divisor ≤ 10 | Max 10 groups of ~10 dots |
+ * | Division | Dividend ≤ 50, Divisor ≤ 10 | Max 10 groups of ~5 dots |
  *
  * Children using visual hints benefit most when:
  * ✓ They can count dots without overwhelming visual complexity
@@ -57,7 +57,7 @@ object VisualHintFeasibilityChecker {
      * Maximum dividend for division.
      * Controls total dot count across groups.
      */
-    private const val MAX_DIVISION_DIVIDEND = 100
+    private const val MAX_DIVISION_DIVIDEND = 50
 
     /**
      * Maximum divisor for division.
@@ -83,7 +83,7 @@ object VisualHintFeasibilityChecker {
      * - `8 × 5` → true (8 groups of 5 dots)
      * - `14 × 11` → false (14 groups of 11, exceeds limits)
      * - `72 ÷ 8` → true (9 groups of 8 dots)
-     * - `100 ÷ 10` → true (10 groups of 10 dots, at limit)
+     * - `50 ÷ 10` → true (5 groups of 10 dots)
      */
     fun isFeasible(problem: MathProblem): Boolean =
         when (problem.operation) {

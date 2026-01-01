@@ -167,7 +167,10 @@ private fun SubtractionDotVisualizer(
 }
 
 /**
- * Multiplication visualization: shows groups of dots
+ * Multiplication visualization: shows groups of dots.
+ *
+ * Displays repeated addition: 2 × 5 becomes 5 + 5 (two groups of five dots)
+ * This helps children understand multiplication as equal groups being combined.
  */
 @Composable
 private fun MultiplicationDotVisualizer(
@@ -192,10 +195,10 @@ private fun MultiplicationDotVisualizer(
                 staggerMs = delayMs / 2,
             )
 
-            // Show "×" between groups except after last
+            // Show "+" between groups except after last (represents repeated addition)
             if (groupIndex < groupsToShow - 1) {
                 AnimatedText(
-                    text = "×",
+                    text = "+",
                     delayMs = (groupIndex + 1) * delayMs,
                     durationMs = 300,
                 )
