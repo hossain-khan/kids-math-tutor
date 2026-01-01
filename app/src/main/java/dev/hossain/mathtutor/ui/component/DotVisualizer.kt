@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,9 +48,12 @@ fun DotVisualizer(
     val animationDurationMs = 800
     val staggerDelayMs = 100
 
-    // Use vertical layout that wraps naturally for portrait mode
+    // Use vertical layout that wraps naturally for portrait mode with vertical scroll support
     Column(
-        modifier = modifier.padding(vertical = 8.dp),
+        modifier =
+            modifier
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
