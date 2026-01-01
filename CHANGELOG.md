@@ -7,19 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- **Goals Feature - Complete Missing Features**
-  - Implemented GoalActiveDialog screen for game lock behavior - displays when user tries to play a locked game while active goal exists
-    - Shows goal title and component progress with visual indicator
-    - Allows user to continue goal progress or dismiss the dialog
-    - Properly navigates to GoalProgressScreen on continue
-  - Updated all game presenters (MathRace, MemoryMatch, NumberSequence) to navigate to GoalActiveDialog when a goal is active
-- **Goals Feature Bug Fixes**
-  - Fixed archived/deleted goals not clearing active goal state - when a goal is archived, the active goal reference is now properly deleted, preventing orphaned references from appearing on home screen
-  - Fixed goal progress screen launching wrong operation type - now correctly passes component operation (ADDITION, DIVISION, etc.) to MathPracticeScreen instead of defaulting to ADDITION
-  - Fixed goal creator not persisting newly created goals to database (GoalCreatorPresenter.Event.SaveGoal handler implementation)
-  - Implemented goal catalog operations: activate, delete, and archive goal handlers with proper async/error handling
-
 ### Added
 - **Goals Feature - Phase 5: Integration, Testing & Polish**
   - End-to-end test suite for complete goal workflows (parent creation → child completion)
@@ -54,12 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Game blocking logic and state transitions
     - Session management and component tracking
   - Fixed floating-point precision issues in test assertions using tolerance-based comparisons
-
-### Fixed
-- **Test Stability**: Fixed floating-point precision issue in multiple goal tests by using tolerance-based assertions (`isWithin()`) for progress percentage calculations
-- **Goals (Parent UI)**: Fixed Goal Creator "Save" action not persisting new goals (now calls CreateGoalUseCase and shows errors).
-
-### Added
 - **Goals Feature - Phase 1: Domain Models & Database Layer**
   - Complete data model for goals feature with goal components, progress tracking, and history
   - Domain models: GoalComponent (sealed class with OperationBased and CustomChallengeBased variants), Goal, ComponentProgress, SessionMetadata, ActiveGoal, ComponentResult, GoalHistory
@@ -103,6 +84,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - GoalHistoryPresenterTest (6 test cases): analytics tracking, history selection, state management
   - Test implementation follows project patterns with Google Truth assertions and Arrange-Act-Assert pattern
   - All tests passing with full integration validation
+
+### Fixed
+- **Test Stability**: Fixed floating-point precision issue in multiple goal tests by using tolerance-based assertions (`isWithin()`) for progress percentage calculations
+- **Goals (Parent UI)**: Fixed Goal Creator "Save" action not persisting new goals (now calls CreateGoalUseCase and shows errors).
+### Fixed
+- **Goals Feature - Complete Missing Features**
+  - Implemented GoalActiveDialog screen for game lock behavior - displays when user tries to play a locked game while active goal exists
+    - Shows goal title and component progress with visual indicator
+    - Allows user to continue goal progress or dismiss the dialog
+    - Properly navigates to GoalProgressScreen on continue
+  - Updated all game presenters (MathRace, MemoryMatch, NumberSequence) to navigate to GoalActiveDialog when a goal is active
+- **Goals Feature Bug Fixes**
+  - Fixed archived/deleted goals not clearing active goal state - when a goal is archived, the active goal reference is now properly deleted, preventing orphaned references from appearing on home screen
+  - Fixed goal progress screen launching wrong operation type - now correctly passes component operation (ADDITION, DIVISION, etc.) to MathPracticeScreen instead of defaulting to ADDITION
+  - Fixed goal creator not persisting newly created goals to database (GoalCreatorPresenter.Event.SaveGoal handler implementation)
+  - Implemented goal catalog operations: activate, delete, and archive goal handlers with proper async/error handling
+
 ## [1.20.0] - 2025-12-31
 
 ### Added
