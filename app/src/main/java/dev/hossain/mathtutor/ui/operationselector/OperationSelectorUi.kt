@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.Button
@@ -43,6 +42,7 @@ import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.OperationCard
 import dev.hossain.mathtutor.ui.component.TopBarFeature
+import dev.hossain.mathtutor.ui.icons.CustomIcons
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 
@@ -197,7 +197,7 @@ fun OperationSelectorUi(
             if (state.gradeLevel == GradeLevel.GRADE_2) {
                 OperationCard(
                     title = "Division",
-                    icon = Icons.Default.Percent,
+                    icon = CustomIcons.Division,
                     examples = listOf("20 ÷ 5 = ?", "15 ÷ 3 = ?"),
                     operation = MathOperation.DIVISION,
                     onClick = {
