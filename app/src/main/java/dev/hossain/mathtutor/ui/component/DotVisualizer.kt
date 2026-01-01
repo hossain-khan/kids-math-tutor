@@ -4,13 +4,12 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,14 +46,11 @@ fun DotVisualizer(
     val animationDurationMs = 800
     val staggerDelayMs = 100
 
-    // Use horizontalScroll for overflow cases (large numbers)
-    Row(
-        modifier =
-            modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
+    // Use vertical layout that wraps naturally for portrait mode
+    Column(
+        modifier = modifier.padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         when (operation) {
             MathOperation.ADDITION -> {
@@ -88,15 +84,19 @@ private fun AdditionDotVisualizer(
     durationMs: Int,
     delayMs: Int,
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    // Combine all dots into one visualization with a plus sign in between
+    val totalDots = firstNumber + secondNumber
+    var dotIndex = 0
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // First group of dots
-        DotGroup(
+        // First group of dots - wrapped in rows
+        WrappedDotGrid(
             count = firstNumber,
             color = MaterialTheme.colorScheme.primary,
-            delayMs = 0,
+            startDelayMs = 0,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -108,11 +108,11 @@ private fun AdditionDotVisualizer(
             durationMs = 300,
         )
 
-        // Second group of dots
-        DotGroup(
+        // Second group of dots - wrapped in rows
+        WrappedDotGrid(
             count = secondNumber,
             color = MaterialTheme.colorScheme.tertiary,
-            delayMs = durationMs + 300,
+            startDelayMs = durationMs + 300,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -129,15 +129,15 @@ private fun SubtractionDotVisualizer(
     durationMs: Int,
     delayMs: Int,
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         // All dots initially
-        DotGroup(
+        WrappedDotGrid(
             count = firstNumber,
             color = MaterialTheme.colorScheme.primary,
-            delayMs = 0,
+            startDelayMs = 0,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -151,10 +151,10 @@ private fun SubtractionDotVisualizer(
 
         // Remaining dots (shown in a different style)
         val remainingCount = (firstNumber - secondNumber).coerceAtLeast(0)
-        DotGroup(
+        WrappedDotGrid(
             count = remainingCount,
             color = MaterialTheme.colorScheme.secondary,
-            delayMs = durationMs + 300,
+            startDelayMs = durationMs + 300,
             durationMs = durationMs,
             staggerMs = delayMs,
         )
@@ -174,9 +174,9 @@ private fun MultiplicationDotVisualizer(
     val maxGroups = 5 // Limit display for readability
     val groupsToShow = firstNumber.coerceAtMost(maxGroups)
 
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(groupsToShow) { groupIndex ->
             DotGroup(
@@ -211,9 +211,9 @@ private fun DivisionDotVisualizer(
 ) {
     val groupsToShow = secondNumber.coerceAtMost(4) // Limit groups for readability
 
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(groupsToShow) { groupIndex ->
             val dotsPerGroup = firstNumber / secondNumber
@@ -224,6 +224,45 @@ private fun DivisionDotVisualizer(
                 durationMs = durationMs,
                 staggerMs = delayMs,
             )
+        }
+    }
+}
+
+/**
+ * Wrapped grid of dots that breaks into multiple rows for better portrait mode support.
+ * Maximum 6 dots per row.
+ */
+@Composable
+private fun WrappedDotGrid(
+    count: Int,
+    color: androidx.compose.ui.graphics.Color,
+    startDelayMs: Int,
+    durationMs: Int,
+    staggerMs: Int,
+) {
+    val dotsPerRow = 6
+    val rows = (count + dotsPerRow - 1) / dotsPerRow
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        repeat(rows) { rowIndex ->
+            val startDot = rowIndex * dotsPerRow
+            val endDot = (startDot + dotsPerRow).coerceAtMost(count)
+            val dotsInRow = endDot - startDot
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                repeat(dotsInRow) { dotIndex ->
+                    AnimatedDot(
+                        color = color,
+                        delayMs = startDelayMs + ((startDot + dotIndex) * staggerMs),
+                        durationMs = durationMs,
+                    )
+                }
+            }
         }
     }
 }

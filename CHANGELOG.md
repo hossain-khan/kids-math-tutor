@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Visual Hint Display with Large Numbers**
   - Fixed visual hints (dot visualizers) getting cut off when showing large numbers (e.g., 12+15)
-  - Added horizontal scrolling capability to DotVisualizer for seamless overflow handling
+  - Replaced horizontal scrolling with vertical wrapping layout for better portrait mode support
+  - Dots now wrap to multiple rows (max 6 dots per row) instead of requiring horizontal scroll
   - Improved layout to ensure all dot groups are visible regardless of operand size
   - Increased dot size from 12.dp to 20.dp for better visibility and child accessibility
   - Increased dot spacing from 4.dp to 8.dp to accommodate larger dots
