@@ -26,7 +26,6 @@ import dev.hossain.mathtutor.domain.model.MathProblem
 fun StepByStepBreakdown(
     problem: MathProblem,
     steps: List<WorkBreakdownStep>,
-    answer: Int,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -64,7 +63,7 @@ fun StepByStepBreakdown(
 
         // Final answer
         Text(
-            text = "✨ Answer: $answer",
+            text = "✨ Answer: ${problem.correctAnswer}",
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Center,
@@ -76,7 +75,7 @@ fun StepByStepBreakdown(
 /**
  * Represents a single step in a work breakdown.
  */
-data class WorkBreakdownStep(
+public data class WorkBreakdownStep(
     val emoji: String,
     val description: String,
 )

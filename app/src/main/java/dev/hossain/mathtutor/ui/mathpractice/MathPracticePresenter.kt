@@ -19,7 +19,7 @@ import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
 import dev.hossain.mathtutor.domain.hint.HintProvider
 import dev.hossain.mathtutor.domain.work.WorkProvider
-import dev.hossain.mathtutor.ui.component.StepByStepBreakdown
+import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -123,7 +123,7 @@ class MathPracticePresenter
             var showVisualHint by remember { mutableStateOf(false) }
             var showWorkBreakdown by remember { mutableStateOf(false) }
             var workBreakdownSteps by remember {
-                mutableStateOf<List<StepByStepBreakdown.WorkBreakdownStep>>(
+                mutableStateOf<List<WorkBreakdownStep>>(
                     emptyList()
                 )
             }
