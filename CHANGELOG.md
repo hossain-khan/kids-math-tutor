@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Hint System Toggle Setting**
-  - Parents can now enable/disable hints app-wide via settings
+  - Parents can now enable/disable hints app-wide via Parent Settings screen
   - Default: hints enabled for educational benefit
   - Provides parental control over hint availability
+  - UI card in Parent Settings with clear enable/disable buttons
+  - Analytics tracking for hint system toggle changes
   
 - **Hint System Refinements (Phases 1-3 Improvements)**
   - Enhanced hint messaging with encouragement and emojis
