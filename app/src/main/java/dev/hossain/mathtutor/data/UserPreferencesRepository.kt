@@ -115,6 +115,21 @@ interface UserPreferencesRepository {
      * @param gradeLevel The maximum grade level to set, or null to remove limit
      */
     suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?)
+
+    /**
+     * Gets whether the import challenge quick start guide is expanded.
+     * Defaults to true if not previously set.
+     *
+     * @return Flow of guide expansion state
+     */
+    val isImportGuideExpanded: Flow<Boolean>
+
+    /**
+     * Sets whether the import challenge quick start guide is expanded.
+     *
+     * @param expanded true to expand guide, false to collapse
+     */
+    suspend fun setImportGuideExpanded(expanded: Boolean)
 }
 
 @SingleIn(AppScope::class)
@@ -140,6 +155,9 @@ class UserPreferencesRepositoryImpl
             // Parent controls keys
             val PARENT_PIN_HASH = stringPreferencesKey("parent_pin_hash")
             val MAX_GRADE_LEVEL = stringPreferencesKey("max_grade_level")
+
+            // UI state keys
+            val IMPORT_GUIDE_EXPANDED = booleanPreferencesKey("import_guide_expanded")
         }
 
         override val isOnboardingCompleted: Flow<Boolean> =
@@ -319,6 +337,18 @@ class UserPreferencesRepositoryImpl
                 } else {
                     preferences.remove(PreferencesKeys.MAX_GRADE_LEVEL)
                 }
+            }
+        }
+
+        override val isImportGuideExpanded: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.IMPORT_GUIDE_EXPANDED] ?: true
+            }
+
+        override suspend fun setImportGuideExpanded(expanded: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting import guide expanded = $expanded")
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.IMPORT_GUIDE_EXPANDED] = expanded
             }
         }
 

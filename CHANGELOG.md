@@ -103,7 +103,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - GoalHistoryPresenterTest (6 test cases): analytics tracking, history selection, state management
   - Test implementation follows project patterns with Google Truth assertions and Arrange-Act-Assert pattern
   - All tests passing with full integration validation
+## [1.20.0] - 2025-12-31
+
 ### Added
+- **Import Challenge UI Improvements** - Enhanced the import challenge screen to make it easier for parents to import custom challenges
+  - New **Quick Start Guide** with step-by-step instructions (Create Challenge → Copy JSON → Paste & Save)
+  - **Step-by-step visual guide** with numbered badges and clear descriptions
+  - **Example JSON** in the input field when empty, with "Use This Example" button to help parents get started faster
+  - **Improved error messages** with friendly field names and helpful tips
+  - **Better error display** with visual hierarchy and emoji hints to guide parents
+  - **Collapsible Quick Start Guide** - Parents can collapse/expand the guide with an expand/collapse button
+  - **Persistent guide state** - App remembers if the guide was collapsed, preference is saved across sessions
+  - **Smooth animations** - Expand/collapse transitions are animated for better UX
+  - **Auto-collapse on action** - Guide automatically collapses when user clicks "Open Creator" button
 - **Firebase Test Lab Robo Script** - Added comprehensive Robo test scripts for automated UI testing in Firebase Test Lab
   - **Primary Script (robo_script.json)**: Covers first-time user experience
     - Complete onboarding flow (4 pages, grade selection, name entry)
@@ -126,6 +138,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Docs: Corrected adaptive layout status checklist to reflect implemented navigation and foldable posture utilities
+- **Parent Challenges Stats** - Replaced placeholder icons with appropriate Material Design icons
+  - Subtraction: Now uses Remove icon (−) instead of placeholder
+  - Multiplication: Now uses Close icon (×) instead of placeholder
+  - Improves visual clarity of math operation types in challenge statistics
 
 ## [1.19.0] - 2025-12-29
 
@@ -2173,7 +2189,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...HEAD
+[1.20.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...1.20.0
 [1.19.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.18.0...1.19.0
 [1.18.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.17.0...1.18.0
 [1.17.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.1...1.17.0
