@@ -242,7 +242,7 @@ private fun DotGroup(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         repeat(count) { dotIndex ->
             AnimatedDot(
@@ -280,7 +280,7 @@ private fun AnimatedDot(
     Box(
         modifier =
             Modifier
-                .size(12.dp)
+                .size(20.dp)
                 .background(color, CircleShape)
                 .graphicsLayer {
                     scaleX = scale.value
