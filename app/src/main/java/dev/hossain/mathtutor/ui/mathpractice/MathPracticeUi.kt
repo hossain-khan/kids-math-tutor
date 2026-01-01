@@ -262,6 +262,8 @@ internal fun MathPracticeUi(
                                 FeedbackSection(
                                     isCorrect = state.isCorrect,
                                     userName = state.userName,
+                                    currentProblem = state.currentProblem,
+                                    userAnswer = state.currentAnswer.toIntOrNull(),
                                 )
                             }
 
@@ -353,6 +355,8 @@ internal fun MathPracticeUi(
                             FeedbackSection(
                                 isCorrect = state.isCorrect,
                                 userName = state.userName,
+                                currentProblem = state.currentProblem,
+                                userAnswer = state.currentAnswer.toIntOrNull(),
                             )
 
                             Spacer(modifier = Modifier.weight(1f))
@@ -516,6 +520,8 @@ private fun ProblemCard(
 private fun FeedbackSection(
     isCorrect: Boolean?,
     userName: String? = null,
+    currentProblem: MathProblem? = null,
+    userAnswer: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -556,8 +562,37 @@ private fun FeedbackSection(
             }
 
             false -> {
+                // Check if answer is close (off by 1)
+                val isClose =
+                    if (currentProblem != null && userAnswer != null) {
+                        val correctAnswer = currentProblem.correctAnswer
+                        kotlin.math.abs(correctAnswer - userAnswer) == 1
+                    } else {
+                        false
+                    }
+
+                // Varied encouragement messages based on closeness
+                val feedbackMessage =
+                    if (isClose) {
+                        // Messages for close answers - more encouraging
+                        listOf(
+                            "✗ Almost! Try again",
+                            "✗ Very close! Try again",
+                            "✗ You're getting there!",
+                            "✗ So close! Give it another try",
+                        ).random()
+                    } else {
+                        // General messages for incorrect answers
+                        listOf(
+                            "✗ Try again",
+                            "✗ Not quite. Try again",
+                            "✗ Keep going!",
+                            "✗ Give it another shot",
+                        ).random()
+                    }
+
                 Text(
-                    text = "✗ Try again",
+                    text = feedbackMessage,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.error,
                 )

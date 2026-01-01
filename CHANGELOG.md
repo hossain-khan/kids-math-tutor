@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Smart Wrong Answer Feedback** - Enhanced feedback when children get answers wrong
+  - **Varied encouragement messages** - Multiple messages like "Try again", "Not quite", "Keep going!", "Give it another shot" to reduce repetition and stay engaging
+  - **Close answer detection** - When answer is off by 1, shows more encouraging messages ("Almost!", "Very close!", "You're getting there!", "So close!") for all math operation types
+  - Applies to all operations: Addition, Subtraction, Multiplication, and Division
+
 ## [1.20.0] - 2025-12-31
 
 ### Added
