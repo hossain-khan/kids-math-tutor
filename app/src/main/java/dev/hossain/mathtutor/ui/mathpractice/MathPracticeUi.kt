@@ -239,7 +239,7 @@ internal fun MathPracticeUi(
                             Modifier.semantics {
                                 contentDescription =
                                     "Visual representation showing " +
-                                        "${state.currentProblem.num1} and ${state.currentProblem.num2} for ${state.currentProblem.operation.name.lowercase()}"
+                                    "${state.currentProblem.num1} and ${state.currentProblem.num2} for ${state.currentProblem.operation.name.lowercase()}"
                             },
                     )
                     Text(
@@ -288,7 +288,7 @@ internal fun MathPracticeUi(
                             .semantics {
                                 contentDescription =
                                     "Step-by-step breakdown showing how to solve " +
-                                        "${state.currentProblem.num1} ${state.currentProblem.operation.name.lowercase()} ${state.currentProblem.num2}"
+                                    "${state.currentProblem.num1} ${state.currentProblem.operation.name.lowercase()} ${state.currentProblem.num2}"
                             },
                     contentAlignment = Alignment.Center,
                 ) {
@@ -466,49 +466,7 @@ internal fun MathPracticeUi(
                                     hapticService = hapticService,
                                 )
 
-                                // Hint button (landscape mode)
-                                if (state.showHintButton && !state.hintButtonClicked) {
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    Button(
-                                        onClick = { state.eventSink(MathPracticeScreen.Event.RequestHint) },
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 16.dp),
-                                        colors =
-                                            ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                            ),
-                                    ) {
-                                        Text(
-                                            "💡 Need help?",
-                                            color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                        )
-                                    }
-                                }
-
-                                // Visual hint button
-                                if (state.showHintButton && !state.hintButtonClicked) {
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Button(
-                                        onClick = { state.eventSink(MathPracticeScreen.Event.ShowVisualHint) },
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 16.dp),
-                                        colors =
-                                            ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                            ),
-                                    ) {
-                                        Text(
-                                            "🎨 Show visually",
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        )
-                                    }
-                                }
-
-                                // Work breakdown button
+                                // Work breakdown button (landscape only)
                                 if (state.showHintButton && !state.hintButtonClicked) {
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Button(
@@ -575,28 +533,7 @@ internal fun MathPracticeUi(
                                 userAnswer = state.currentAnswer.toIntOrNull(),
                             )
 
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            // Number pad
-                            NumberPad(
-                                onNumberClick = { number ->
-                                    state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                hapticService = hapticService,
-                            )
-
-                            // Action buttons
-                            ActionButtons(
-                                hasAnswer = state.currentAnswer.isNotEmpty(),
-                                isCorrect = state.isCorrect,
-                                onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
-                                onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
-                                onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
-                                hapticService = hapticService,
-                            )
-
-                            // Hint button (appears after 1st wrong attempt)
+                            // Hint button (appears after feedback when wrong)
                             if (state.showHintButton && !state.hintButtonClicked) {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Button(
@@ -617,47 +554,26 @@ internal fun MathPracticeUi(
                                 }
                             }
 
-                            // Visual hint button (portrait)
-                            if (state.showHintButton && !state.hintButtonClicked) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Button(
-                                    onClick = { state.eventSink(MathPracticeScreen.Event.ShowVisualHint) },
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 16.dp),
-                                    colors =
-                                        ButtonDefaults.buttonColors(
-                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        ),
-                                ) {
-                                    Text(
-                                        "🎨 Show visually",
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    )
-                                }
-                            }
+                            Spacer(modifier = Modifier.weight(1f))
 
-                            // Work breakdown button (portrait)
-                            if (state.showHintButton && !state.hintButtonClicked) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Button(
-                                    onClick = { state.eventSink(MathPracticeScreen.Event.ShowWork) },
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 16.dp),
-                                    colors =
-                                        ButtonDefaults.buttonColors(
-                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                        ),
-                                ) {
-                                    Text(
-                                        "📚 How to solve",
-                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                    )
-                                }
-                            }
+                            // Number pad
+                            NumberPad(
+                                onNumberClick = { number ->
+                                    state.eventSink(MathPracticeScreen.Event.NumberClicked(number))
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                hapticService = hapticService,
+                            )
+
+                            // Action buttons
+                            ActionButtons(
+                                hasAnswer = state.currentAnswer.isNotEmpty(),
+                                isCorrect = state.isCorrect,
+                                onClear = { state.eventSink(MathPracticeScreen.Event.ClearAnswer) },
+                                onCheck = { state.eventSink(MathPracticeScreen.Event.CheckAnswer) },
+                                onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
+                                hapticService = hapticService,
+                            )
                         }
                     }
                 }
