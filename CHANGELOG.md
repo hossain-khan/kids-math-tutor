@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Visual Hint Feasibility Detector**
+  - Smart detection prevents "Show Visually" button for problems too complex for visual representation
+  - Addition: visual hints only for operands ≤ 20 (prevents 54+43 with 97 dots)
+  - Subtraction: visual hints only for minuend ≤ 20
+  - Multiplication: visual hints only for operands ≤ 9 (prevents 14×11 with too many dots)
+  - Division: visual hints only for dividend ≤ 100 and divisor ≤ 10
+  - Mixed operations: visual hints never shown
+  - Comprehensive documentation of decision factors and thresholds
+  - Better UX: button naturally hidden instead of confusing users with overwhelming visualizations
+  - Other hint types (text, work breakdown) still available for all problems
+
 ### Fixed
 - **Visual Hint Display with Large Numbers**
   - Fixed visual hints (dot visualizers) getting cut off when showing large numbers (e.g., 12+15)
