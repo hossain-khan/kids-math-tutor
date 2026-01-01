@@ -54,6 +54,10 @@ interface UserPreferencesRepository {
 
     suspend fun setAnalyticsEnabled(enabled: Boolean)
 
+    val isHintSystemEnabled: Flow<Boolean>
+
+    suspend fun setHintSystemEnabled(enabled: Boolean)
+
     /**
      * Gets the number of trial attempts used for a specific game.
      * Trial attempts allow kids to try locked games up to 3 times before unlocking.
@@ -148,6 +152,7 @@ class UserPreferencesRepositoryImpl
             val HIGH_CONTRAST_ENABLED = booleanPreferencesKey("high_contrast_enabled")
             val LARGE_TEXT_ENABLED = booleanPreferencesKey("large_text_enabled")
             val ANALYTICS_ENABLED = booleanPreferencesKey("analytics_enabled")
+            val HINT_SYSTEM_ENABLED = booleanPreferencesKey("hint_system_enabled")
 
             // Game trial attempts keys (max 3 trials per game)
             fun gameTrialAttempts(game: Game) = intPreferencesKey("game_trial_${game.name}")
@@ -253,6 +258,18 @@ class UserPreferencesRepositoryImpl
             Timber.d("UserPreferencesRepository: Setting analytics enabled = $enabled")
             context.userPreferencesDataStore.edit { preferences ->
                 preferences[PreferencesKeys.ANALYTICS_ENABLED] = enabled
+            }
+        }
+
+        override val isHintSystemEnabled: Flow<Boolean> =
+            context.userPreferencesDataStore.data.map { preferences ->
+                preferences[PreferencesKeys.HINT_SYSTEM_ENABLED] ?: true
+            }
+
+        override suspend fun setHintSystemEnabled(enabled: Boolean) {
+            Timber.d("UserPreferencesRepository: Setting hint system enabled = $enabled")
+            context.userPreferencesDataStore.edit { preferences ->
+                preferences[PreferencesKeys.HINT_SYSTEM_ENABLED] = enabled
             }
         }
 
