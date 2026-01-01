@@ -44,46 +44,46 @@ class DefaultHintProvider : HintProvider {
     override fun getFirstHint(problem: MathProblem): String =
         when (problem.operation) {
             MathOperation.ADDITION -> {
-                "Try counting up from ${problem.num1}"
+                "You're doing great! Try counting up from ${problem.num1} 🎯"
             }
 
             MathOperation.SUBTRACTION -> {
-                "How many are left if you take away ${problem.num2}?"
+                "Great question! Start with ${problem.num1}, then take away ${problem.num2} 💭"
             }
 
             MathOperation.MULTIPLICATION -> {
-                "You have ${problem.num1} groups of ${problem.num2}"
+                "Nice try! You have ${problem.num1} groups with ${problem.num2} in each 📦"
             }
 
             MathOperation.DIVISION -> {
-                "Share ${problem.num1} equally among ${problem.num2}"
+                "You're thinking right! Share ${problem.num1} equally with ${problem.num2} friends 🎁"
             }
 
             MathOperation.MIXED -> {
-                ""
+                "You've got this!"
             }
         }
 
     override fun getSecondHint(problem: MathProblem): String =
         when (problem.operation) {
             MathOperation.ADDITION -> {
-                "${problem.num1}... ${problem.num1 + 1}, ${problem.num1 + 2}, count on!"
+                "Start at ${problem.num1}, then: ${problem.num1 + 1}, ${problem.num1 + 2}... keep counting! 💡"
             }
 
             MathOperation.SUBTRACTION -> {
-                "Start with ${problem.num1}, count back ${problem.num2}"
+                "Count backwards: ${problem.num1}... ${problem.num1 - 1}, ${problem.num1 - 2}... stop after ${problem.num2} steps! 💭"
             }
 
             MathOperation.MULTIPLICATION -> {
-                "Add ${problem.num2} + ${problem.num2}... ${problem.num1} times"
+                "Add this ${problem.num1} times: ${problem.num2} + ${problem.num2} + ... 🔢"
             }
 
             MathOperation.DIVISION -> {
-                "Each gets the same amount. How many each?"
+                "Give each friend 1 at a time until they all have the same amount 📊"
             }
 
             MathOperation.MIXED -> {
-                ""
+                "You can do it!"
             }
         }
 }

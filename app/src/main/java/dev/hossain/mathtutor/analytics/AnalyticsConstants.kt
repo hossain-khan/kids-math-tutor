@@ -25,6 +25,11 @@ object AnalyticsEvent {
     const val OPERATION_SELECTED = "operation_selected"
     const val MIXED_OPERATIONS_SELECTED = "mixed_operations_selected"
 
+    // Problem solving events
+    const val HINT_REQUESTED = "hint_requested"
+    const val VISUAL_HINT_SHOWN = "visual_hint_shown"
+    const val WORK_BREAKDOWN_SHOWN = "work_breakdown_shown"
+
     // Badge events
     const val BADGE_UNLOCKED = "badge_unlocked"
     const val BADGES_VIEWED = "badges_viewed"
@@ -72,6 +77,8 @@ object AnalyticsParam {
     const val ACCURACY = "accuracy"
     const val SESSION_DURATION = "session_duration"
     const val SOLVE_TIME = "solve_time"
+    const val HINT_LEVEL = "hint_level"
+    const val ATTEMPT_NUMBER = "attempt_number"
 
     // Badge parameters
     const val BADGE_ID = "badge_id"

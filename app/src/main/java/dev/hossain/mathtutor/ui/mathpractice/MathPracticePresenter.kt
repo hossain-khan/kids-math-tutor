@@ -672,6 +672,18 @@ class MathPracticePresenter
                                     hintProvider.getSecondHint(currentProblem)
                                 }
                             hintButtonClicked = true
+                            
+                            // Analytics: Track hint usage
+                            analyticsService.logEvent(
+                                eventName = AnalyticsEvent.HINT_REQUESTED,
+                                parameters =
+                                    mapOf(
+                                        AnalyticsParam.HINT_LEVEL to hintLevel,
+                                        AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                        AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                    ),
+                            )
+                            
                             Timber.d("[MathPractice] Hint requested - level $hintLevel for problem ${currentProblem.id}")
                         }
                     }
@@ -684,6 +696,17 @@ class MathPracticePresenter
 
                     is MathPracticeScreen.Event.ShowVisualHint -> {
                         showVisualHint = true
+                        
+                        // Analytics: Track visual hint usage
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.VISUAL_HINT_SHOWN,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                    AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                ),
+                        )
+                        
                         Timber.d("[MathPractice] Visual hint shown")
                     }
 
@@ -696,7 +719,16 @@ class MathPracticePresenter
                         if (currentProblem != null) {
                             workBreakdownSteps = workProvider.getWorkBreakdown(currentProblem)
                             showWorkBreakdown = true
-                            Timber.d("[MathPractice] Work breakdown shown for problem ${currentProblem.id}")
+                            
+                            // Analytics: Track work breakdown usage
+                            analyticsService.logEvent(
+                                eventName = AnalyticsEvent.WORK_BREAKDOWN_SHOWN,
+                                parameters =
+                                    mapOf(
+                                        AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                        AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                    ),
+                            )
                         }
                     }
 
