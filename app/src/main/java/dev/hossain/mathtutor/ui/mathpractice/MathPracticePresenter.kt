@@ -117,6 +117,7 @@ class MathPracticePresenter
             var showHintButton by remember { mutableStateOf(false) }
             var currentHintText by remember { mutableStateOf<String?>(null) }
             var hintButtonClicked by remember { mutableStateOf(false) }
+            var showVisualHint by remember { mutableStateOf(false) }
 
             /**
              * Manually deduplicates problems by removing duplicate problem strings,
@@ -355,6 +356,7 @@ class MathPracticePresenter
                 showHintButton = showHintButton,
                 currentHintText = currentHintText,
                 hintButtonClicked = hintButtonClicked,
+                showVisualHint = showVisualHint,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
@@ -451,6 +453,7 @@ class MathPracticePresenter
                             showHintButton = false
                             currentHintText = null
                             hintButtonClicked = false
+                            showVisualHint = false
                         } else {
                             // All problems completed, save session and check for badges/streak
                             val sessionEndTime = Instant.now()
@@ -663,6 +666,16 @@ class MathPracticePresenter
                         currentHintText = null
                         hintButtonClicked = false
                         Timber.d("[MathPractice] Hint dismissed")
+                    }
+
+                    is MathPracticeScreen.Event.ShowVisualHint -> {
+                        showVisualHint = true
+                        Timber.d("[MathPractice] Visual hint shown")
+                    }
+
+                    is MathPracticeScreen.Event.DismissVisualHint -> {
+                        showVisualHint = false
+                        Timber.d("[MathPractice] Visual hint dismissed")
                     }
                 }
             }

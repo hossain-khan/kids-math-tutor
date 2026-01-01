@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Hint System (Phase 2)** - Visual hints with animated dots to help children understand math concepts
+  - **DotVisualizer component** - Shows operation-specific visual representations
+    - Addition: Shows dots for first number, plus sign, then dots for second number
+    - Subtraction: Shows initial dots with remaining dots highlighted
+    - Multiplication: Shows groups of dots representing multiplication
+    - Division: Shows dots distributed into groups
+  - **Animated dot reveal** - Dots appear one by one with staggered timing for engaging visual feedback
+  - **VisualHintCard composable** - Displays visual hints alongside text hints
+    - Material 3 design using secondaryContainer color
+    - Shows operation-specific encouragement text ("Count all the dots together!", etc.)
+    - Dismiss button to close visual hint
+  - **"🎨 Show visually" button** - Appears after first wrong attempt for visual learners
+  - **Smooth animations** - Dots scale in with LinearEasing for consistent reveal timing
+  - **Operation-specific visualizations** - Each math operation has tailored visual representation
+  - Combines with Phase 1 text hints for multi-modal learning experience
 - **Hint System (Phase 1)** - Text-based hint system to guide children toward solving problems
   - Tracks wrong attempts per problem
   - Shows "💡 Need help?" button after first wrong attempt
