@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.21.0] - 2026-01-01
+
 ### Added
 - **Visual Hint Feasibility Detector**
   - Smart detection prevents "Show Visually" button for problems too complex for visual representation
@@ -2195,6 +2197,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.16.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.16.0...1.16.1
 [1.16.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.15.0...1.16.0
 [1.15.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.1...1.15.0
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...HEAD
+[1.21.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...1.21.0
+[1.20.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...1.20.0
 [1.14.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.14.0...1.14.1
 [1.14.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.13.0...1.14.0
 [1.13.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.12.0...1.13.0
