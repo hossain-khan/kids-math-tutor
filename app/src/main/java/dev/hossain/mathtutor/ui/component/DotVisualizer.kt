@@ -231,7 +231,7 @@ private fun SubtractionAnimatedDot(
             Modifier
                 .size(20.dp)
                 .background(
-                    color = if (shouldDim && alpha.value < 1f) dimColor else color,
+                    color = color,
                     shape = CircleShape,
                 ).graphicsLayer {
                     scaleX = scale.value
