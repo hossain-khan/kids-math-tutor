@@ -136,15 +136,6 @@ class SettingsScreenTest {
     }
 
     @Test
-    fun event_toggleAdaptiveDifficulty_createsCorrectEvent() {
-        // When
-        val event = SettingsScreen.Event.ToggleAdaptiveDifficulty(true)
-
-        // Then
-        assertThat(event.enabled).isTrue()
-    }
-
-    @Test
     fun event_saveName_createsCorrectEvent() {
         // When
         val event = SettingsScreen.Event.SaveName("John")
@@ -247,16 +238,15 @@ class SettingsScreenTest {
             )
 
         // When
-        state.eventSink(SettingsScreen.Event.ToggleAdaptiveDifficulty(false))
+        state.eventSink(SettingsScreen.Event.BackClicked)
 
         // Then
         assertThat(receivedEvent).isNotNull()
-        assertThat(receivedEvent is SettingsScreen.Event.ToggleAdaptiveDifficulty).isTrue()
-        assertThat((receivedEvent as SettingsScreen.Event.ToggleAdaptiveDifficulty).enabled).isFalse()
+        assertThat(receivedEvent is SettingsScreen.Event.BackClicked).isTrue()
     }
 
     @Test
-    fun state_withAdaptiveDifficultyEnabled_hasCorrectValue() {
+    fun state_withProfileData_hasCorrectValue() {
         // Given
         val profile =
             UserProfile(

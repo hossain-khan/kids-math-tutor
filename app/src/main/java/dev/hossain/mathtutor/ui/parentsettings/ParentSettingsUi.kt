@@ -559,13 +559,13 @@ private fun AdaptiveDifficultyCard(
                     )
                     Column {
                         Text(
-                            text = \"Adaptive Difficulty\",
+                            text = "Adaptive Difficulty",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         Text(
                             text =
-                                if (isAdaptiveDifficultyEnabled) \"Enabled\" else \"Disabled\",
+                                if (isAdaptiveDifficultyEnabled) "Enabled" else "Disabled",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -575,8 +575,8 @@ private fun AdaptiveDifficultyCard(
 
             Text(
                 text =
-                    \"When enabled, problem difficulty adjusts automatically based on performance. \" +
-                        \"When disabled, problems remain at the selected grade level.\",
+                    "When enabled, problem difficulty adjusts automatically based on performance. " +
+                        "When disabled, problems remain at the selected grade level.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -592,7 +592,7 @@ private fun AdaptiveDifficultyCard(
                     onClick = { onToggleAdaptiveDifficulty(false) },
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(\"Disable\")
+                    Text("Disable")
                 }
                 Button(
                     onClick = { onToggleAdaptiveDifficulty(true) },
@@ -608,7 +608,7 @@ private fun AdaptiveDifficultyCard(
                             )
                         },
                 ) {
-                    Text(\"Enable\")
+                    Text("Enable")
                 }
             }
         }
