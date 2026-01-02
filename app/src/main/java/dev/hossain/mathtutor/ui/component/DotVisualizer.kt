@@ -146,6 +146,11 @@ private fun SubtractionDotVisualizer(
     val dotsPerRow = 6
     val rows = (firstNumber + dotsPerRow - 1) / dotsPerRow
 
+    // Calculate when all dots finish appearing
+    val lastDotStartTime = (firstNumber - 1) * delayMs
+    val allDotsAppearTime = lastDotStartTime + durationMs
+    val dimStartDelay = allDotsAppearTime + 1000 // Wait 1 second after all dots appear
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -174,7 +179,7 @@ private fun SubtractionDotVisualizer(
                             shouldDim = shouldDim,
                             appearDelayMs = globalDotIndex * delayMs,
                             appearDurationMs = durationMs,
-                            dimDelayMs = 1000, // Wait 1 second after all dots appear
+                            dimDelayMs = dimStartDelay,
                             dimDurationMs = 1000, // Dim animation takes 1 second
                         )
                     }
