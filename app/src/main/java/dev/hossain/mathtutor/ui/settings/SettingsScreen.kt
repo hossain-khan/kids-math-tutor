@@ -53,13 +53,6 @@ data object SettingsScreen : Screen {
         data object ChangeGradeClicked : Event
 
         /**
-         * User toggled the adaptive difficulty switch.
-         */
-        data class ToggleAdaptiveDifficulty(
-            val enabled: Boolean,
-        ) : Event
-
-        /**
          * User saved a new name from the name edit dialog.
          */
         data class SaveName(

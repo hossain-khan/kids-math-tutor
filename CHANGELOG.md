@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Adaptive Difficulty moved to Parent Settings**: Adaptive difficulty toggle has been relocated from the main Settings screen to the Parent Settings screen for better parental control
+  - Parents can now manage adaptive difficulty alongside other educational controls like grade limits and hint system
+  - Maintains the same functionality with improved organization of parent-controlled vs child-accessible settings
+
 ## [1.21.0] - 2026-01-01
 
 ### Added

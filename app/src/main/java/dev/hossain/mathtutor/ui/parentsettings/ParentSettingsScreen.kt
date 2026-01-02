@@ -28,6 +28,8 @@ data object ParentSettingsScreen : Screen {
      *
      * @property hasPinSet Whether a parent PIN has been configured
      * @property maxGradeLevel The maximum grade level children can select (null = unlimited)
+     * @property isHintSystemEnabled Whether the hint system is enabled
+     * @property adaptiveDifficultyEnabled Whether adaptive difficulty is enabled
      * @property showPinSetup Whether to show the PIN setup dialog
      * @property showPinVerification Whether to show PIN verification dialog
      * @property showPinReset Whether to show PIN reset dialog (requires old PIN)
@@ -41,6 +43,7 @@ data object ParentSettingsScreen : Screen {
         val hasPinSet: Boolean,
         val maxGradeLevel: GradeLevel?,
         val isHintSystemEnabled: Boolean,
+        val adaptiveDifficultyEnabled: Boolean,
         val showPinSetup: Boolean,
         val showPinVerification: Boolean,
         val showPinReset: Boolean,
@@ -163,6 +166,15 @@ data object ParentSettingsScreen : Screen {
          * @property enabled Whether to enable or disable the hint system
          */
         data class HintSystemToggled(
+            val enabled: Boolean,
+        ) : Event
+
+        /**
+         * User toggled adaptive difficulty on/off.
+         *
+         * @property enabled Whether to enable or disable adaptive difficulty
+         */
+        data class AdaptiveDifficultyToggled(
             val enabled: Boolean,
         ) : Event
 

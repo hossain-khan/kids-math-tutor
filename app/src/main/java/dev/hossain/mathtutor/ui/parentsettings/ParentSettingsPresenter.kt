@@ -68,6 +68,10 @@ class ParentSettingsPresenter
             val maxGradeLevel by preferencesRepository.maxGradeLevel.collectAsState(initial = null)
             val isHintSystemEnabled by preferencesRepository.isHintSystemEnabled.collectAsState(initial = true)
 
+            // Observe user profile for adaptive difficulty setting
+            val userProfile by userProfileRepository.getProfile().collectAsState(initial = null)
+            val adaptiveDifficultyEnabled = userProfile?.adaptiveDifficultyEnabled ?: true
+
             // Dialog states
             var showPinSetup by remember { mutableStateOf(false) }
             var showPinVerification by remember { mutableStateOf(false) }
@@ -83,6 +87,7 @@ class ParentSettingsPresenter
                 hasPinSet = pinHash != null,
                 maxGradeLevel = maxGradeLevel,
                 isHintSystemEnabled = isHintSystemEnabled,
+                adaptiveDifficultyEnabled = adaptiveDifficultyEnabled,
                 showPinSetup = showPinSetup,
                 showPinVerification = showPinVerification,
                 showPinReset = showPinReset,
@@ -314,6 +319,21 @@ class ParentSettingsPresenter
                         )
                         coroutineScope.launch {
                             preferencesRepository.setHintSystemEnabled(event.enabled)
+                        }
+                    }
+
+                    is ParentSettingsScreen.Event.AdaptiveDifficultyToggled -> {
+                        Timber.d("ParentSettings: Adaptive difficulty toggled - enabled=${event.enabled}")
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.SETTINGS_CHANGED,
+                            parameters =
+                                mapOf(
+                                    "setting_name" to "adaptive_difficulty",
+                                    "setting_value" to event.enabled.toString(),
+                                ),
+                        )
+                        coroutineScope.launch {
+                            userProfileRepository.updateAdaptiveDifficulty(event.enabled)
                         }
                     }
 

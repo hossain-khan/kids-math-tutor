@@ -114,21 +114,6 @@ class SettingsPresenter
                         navigator.goTo(dev.hossain.mathtutor.ui.devportal.DeveloperPortalScreen)
                     }
 
-                    is SettingsScreen.Event.ToggleAdaptiveDifficulty -> {
-                        Timber.d("SettingsScreen: Toggle adaptive difficulty - enabled=${event.enabled}")
-                        analyticsService.logEvent(
-                            eventName = AnalyticsEvent.SETTINGS_CHANGED,
-                            parameters =
-                                mapOf(
-                                    AnalyticsParam.SETTING_NAME to "adaptive_difficulty",
-                                    AnalyticsParam.SETTING_VALUE to event.enabled.toString(),
-                                ),
-                        )
-                        scope.launch {
-                            userProfileRepository.updateAdaptiveDifficulty(event.enabled)
-                        }
-                    }
-
                     is SettingsScreen.Event.SaveName -> {
                         Timber.d("SettingsScreen: Saving name - ${event.name}")
                         analyticsService.logEvent(
