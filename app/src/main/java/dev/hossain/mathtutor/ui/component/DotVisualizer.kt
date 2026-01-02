@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 
 /**
  * Visual representation using animated dots to represent grouped quantities.
@@ -448,7 +449,7 @@ private fun AnimatedText(
 @Preview(showBackground = true, name = "Addition 8 + 5")
 @Composable
 private fun AdditionVisualizerPreview() {
-    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+    KidsMathTutorAppTheme {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -473,7 +474,7 @@ private fun AdditionVisualizerPreview() {
 @Preview(showBackground = true, name = "Subtraction 13 - 3")
 @Composable
 private fun SubtractionVisualizerPreview() {
-    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+    KidsMathTutorAppTheme {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -498,7 +499,7 @@ private fun SubtractionVisualizerPreview() {
 @Preview(showBackground = true, name = "Multiplication 4 × 6")
 @Composable
 private fun MultiplicationVisualizerPreview() {
-    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+    KidsMathTutorAppTheme {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -523,7 +524,7 @@ private fun MultiplicationVisualizerPreview() {
 @Preview(showBackground = true, name = "Division 12 ÷ 3")
 @Composable
 private fun DivisionVisualizerPreview() {
-    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+    KidsMathTutorAppTheme {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
