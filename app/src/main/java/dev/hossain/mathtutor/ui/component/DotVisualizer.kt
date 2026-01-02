@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.MathOperation
 
@@ -437,4 +440,104 @@ private fun AnimatedText(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.graphicsLayer { this.alpha = alpha.value },
     )
+}
+
+/**
+ * Preview of addition visualization showing 8 + 5 with animated dots.
+ */
+@Preview(showBackground = true, name = "Addition 8 + 5")
+@Composable
+private fun AdditionVisualizerPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "8 + 5 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.ADDITION,
+                firstNumber = 8,
+                secondNumber = 5,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of subtraction visualization showing 13 - 3 with dimming animation.
+ */
+@Preview(showBackground = true, name = "Subtraction 13 - 3")
+@Composable
+private fun SubtractionVisualizerPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "13 - 3 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.SUBTRACTION,
+                firstNumber = 13,
+                secondNumber = 3,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of multiplication visualization showing 4 × 6 with groups.
+ */
+@Preview(showBackground = true, name = "Multiplication 4 × 6")
+@Composable
+private fun MultiplicationVisualizerPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "4 × 6 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.MULTIPLICATION,
+                firstNumber = 4,
+                secondNumber = 6,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of division visualization showing 12 ÷ 3 with equal groups.
+ */
+@Preview(showBackground = true, name = "Division 12 ÷ 3")
+@Composable
+private fun DivisionVisualizerPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "12 ÷ 3 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.DIVISION,
+                firstNumber = 12,
+                secondNumber = 3,
+            )
+        }
+    }
 }
