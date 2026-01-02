@@ -31,8 +31,8 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
-import dev.hossain.mathtutor.domain.work.WorkProvider
 import dev.hossain.mathtutor.domain.usecase.goals.UpdateGoalProgressUseCase
+import dev.hossain.mathtutor.domain.work.WorkProvider
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import dev.hossain.mathtutor.ui.goals.completion.GoalCompletionScreen
