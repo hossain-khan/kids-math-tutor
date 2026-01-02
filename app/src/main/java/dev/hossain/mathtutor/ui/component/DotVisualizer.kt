@@ -125,10 +125,11 @@ private fun AdditionDotVisualizer(
 }
 
 /**
- * Subtraction visualization: shows num1 dots with the last num2 dots dimmed.
+ * Subtraction visualization: shows num1 dots with the last num2 dots dimmed with animation.
  *
- * For example, 13 - 3 shows 13 dots where the last 3 are dimmed/faded,
- * making it intuitive for kids to see "taking away" from the original number.
+ * For example, 13 - 3 shows 13 dots initially bright, then after 1 second,
+ * the last 3 dots animate to dimmed state over 1 second, making it intuitive
+ * for kids to see "taking away" from the original number.
  */
 @Composable
 private fun SubtractionDotVisualizer(
@@ -145,7 +146,7 @@ private fun SubtractionDotVisualizer(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // Show all dots in a grid, with the last 'secondNumber' dots dimmed
+        // Show all dots in a grid, with the last 'secondNumber' dots animating to dim
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -160,24 +161,80 @@ private fun SubtractionDotVisualizer(
                 ) {
                     repeat(dotsInRow) { dotIndex ->
                         val globalDotIndex = startDot + dotIndex
-                        // Dim the last 'secondNumber' dots to show what's being taken away
-                        val isDimmed = globalDotIndex >= remainingCount
+                        // Determine if this dot should be dimmed
+                        val shouldDim = globalDotIndex >= remainingCount
 
-                        AnimatedDot(
-                            color =
-                                if (isDimmed) {
-                                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)
-                                } else {
-                                    MaterialTheme.colorScheme.primary
-                                },
-                            delayMs = globalDotIndex * delayMs,
-                            durationMs = durationMs,
+                        SubtractionAnimatedDot(
+                            color = MaterialTheme.colorScheme.primary,
+                            dimColor = MaterialTheme.colorScheme.secondary,
+                            shouldDim = shouldDim,
+                            appearDelayMs = globalDotIndex * delayMs,
+                            appearDurationMs = durationMs,
+                            dimDelayMs = 1000, // Wait 1 second after all dots appear
+                            dimDurationMs = 1000, // Dim animation takes 1 second
                         )
                     }
                 }
             }
         }
     }
+}
+
+/**
+ * A single dot for subtraction that appears first, then optionally dims with animation.
+ */
+@Composable
+private fun SubtractionAnimatedDot(
+    color: androidx.compose.ui.graphics.Color,
+    dimColor: androidx.compose.ui.graphics.Color,
+    shouldDim: Boolean,
+    appearDelayMs: Int,
+    appearDurationMs: Int,
+    dimDelayMs: Int,
+    dimDurationMs: Int,
+) {
+    val scale = remember { Animatable(0f) }
+    val alpha = remember { Animatable(1f) }
+
+    // Animate dot appearance
+    LaunchedEffect(Unit) {
+        scale.animateTo(
+            targetValue = 1f,
+            animationSpec =
+                tween(
+                    durationMillis = appearDurationMs,
+                    delayMillis = appearDelayMs,
+                    easing = LinearEasing,
+                ),
+        )
+
+        // After dot appears, wait and then animate to dim if needed
+        if (shouldDim) {
+            alpha.animateTo(
+                targetValue = 0.3f,
+                animationSpec =
+                    tween(
+                        durationMillis = dimDurationMs,
+                        delayMillis = dimDelayMs,
+                        easing = LinearEasing,
+                    ),
+            )
+        }
+    }
+
+    Box(
+        modifier =
+            Modifier
+                .size(20.dp)
+                .background(
+                    color = if (shouldDim && alpha.value < 1f) dimColor else color,
+                    shape = CircleShape,
+                ).graphicsLayer {
+                    scaleX = scale.value
+                    scaleY = scale.value
+                    this.alpha = alpha.value
+                },
+    )
 }
 
 /**
