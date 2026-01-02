@@ -1,0 +1,369 @@
+package dev.hossain.mathtutor.ui.component
+
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
+import dev.hossain.mathtutor.domain.model.MathOperation
+
+/**
+ * Visual representation using animated dots to represent grouped quantities.
+ *
+ * For example:
+ * - Addition: Shows dots grouped by first number, then added dots
+ * - Subtraction: Shows initial dots, then crossed-out removed dots
+ * - Multiplication: Shows groups of dots
+ * - Division: Shows dots being shared into groups
+ *
+ * @param operation The math operation to visualize
+ * @param firstNumber The first number in the operation
+ * @param secondNumber The second number in the operation
+ * @param modifier Optional modifier
+ */
+@Composable
+fun DotVisualizer(
+    operation: MathOperation,
+    firstNumber: Int,
+    secondNumber: Int,
+    modifier: Modifier = Modifier,
+) {
+    val animationDurationMs = 800
+    val staggerDelayMs = 100
+
+    // Use vertical layout that wraps naturally for portrait mode with vertical scroll support
+    Column(
+        modifier =
+            modifier
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        when (operation) {
+            MathOperation.ADDITION -> {
+                AdditionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
+
+            MathOperation.SUBTRACTION -> {
+                SubtractionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
+
+            MathOperation.MULTIPLICATION -> {
+                MultiplicationDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
+
+            MathOperation.DIVISION -> {
+                DivisionDotVisualizer(firstNumber, secondNumber, animationDurationMs, staggerDelayMs)
+            }
+
+            MathOperation.MIXED -> {}
+        }
+    }
+}
+
+/**
+ * Addition visualization: shows num1 dots, then num2 additional dots being added
+ */
+@Composable
+private fun AdditionDotVisualizer(
+    firstNumber: Int,
+    secondNumber: Int,
+    durationMs: Int,
+    delayMs: Int,
+) {
+    // Combine all dots into one visualization with a plus sign in between
+    val totalDots = firstNumber + secondNumber
+    var dotIndex = 0
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        // First group of dots - wrapped in rows
+        WrappedDotGrid(
+            count = firstNumber,
+            color = MaterialTheme.colorScheme.primary,
+            startDelayMs = 0,
+            durationMs = durationMs,
+            staggerMs = delayMs,
+        )
+
+        // Plus sign
+        AnimatedText(
+            text = "+",
+            delayMs = durationMs,
+            durationMs = 300,
+        )
+
+        // Second group of dots - wrapped in rows
+        WrappedDotGrid(
+            count = secondNumber,
+            color = MaterialTheme.colorScheme.tertiary,
+            startDelayMs = durationMs + 300,
+            durationMs = durationMs,
+            staggerMs = delayMs,
+        )
+    }
+}
+
+/**
+ * Subtraction visualization: shows num1 dots with num2 becoming faded
+ */
+@Composable
+private fun SubtractionDotVisualizer(
+    firstNumber: Int,
+    secondNumber: Int,
+    durationMs: Int,
+    delayMs: Int,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        // All dots initially
+        WrappedDotGrid(
+            count = firstNumber,
+            color = MaterialTheme.colorScheme.primary,
+            startDelayMs = 0,
+            durationMs = durationMs,
+            staggerMs = delayMs,
+        )
+
+        // Minus sign
+        AnimatedText(
+            text = "-",
+            delayMs = durationMs,
+            durationMs = 300,
+        )
+
+        // Remaining dots (shown in a different style)
+        val remainingCount = (firstNumber - secondNumber).coerceAtLeast(0)
+        WrappedDotGrid(
+            count = remainingCount,
+            color = MaterialTheme.colorScheme.secondary,
+            startDelayMs = durationMs + 300,
+            durationMs = durationMs,
+            staggerMs = delayMs,
+        )
+    }
+}
+
+/**
+ * Multiplication visualization: shows groups of dots.
+ *
+ * Displays repeated addition: 2 × 5 becomes 5 + 5 (two groups of five dots)
+ * This helps children understand multiplication as equal groups being combined.
+ */
+@Composable
+private fun MultiplicationDotVisualizer(
+    firstNumber: Int,
+    secondNumber: Int,
+    durationMs: Int,
+    delayMs: Int,
+) {
+    val maxGroups = 12 // Increased limit for better accuracy
+    val groupsToShow = firstNumber.coerceAtMost(maxGroups)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        repeat(groupsToShow) { groupIndex ->
+            DotGroup(
+                count = secondNumber.coerceAtMost(6), // Increased limit for better accuracy
+                color = MaterialTheme.colorScheme.primary,
+                delayMs = groupIndex * delayMs,
+                durationMs = durationMs,
+                staggerMs = delayMs / 2,
+            )
+
+            // Show "+" between groups except after last (represents repeated addition)
+            if (groupIndex < groupsToShow - 1) {
+                AnimatedText(
+                    text = "+",
+                    delayMs = (groupIndex + 1) * delayMs,
+                    durationMs = 300,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Division visualization: shows dots being distributed into groups
+ */
+@Composable
+private fun DivisionDotVisualizer(
+    firstNumber: Int,
+    secondNumber: Int,
+    durationMs: Int,
+    delayMs: Int,
+) {
+    val maxGroups = 10 // Increased limit for better accuracy
+    val groupsToShow = secondNumber.coerceAtMost(maxGroups)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        repeat(groupsToShow) { groupIndex ->
+            val dotsPerGroup = firstNumber / secondNumber
+            DotGroup(
+                count = dotsPerGroup,
+                color = MaterialTheme.colorScheme.primary,
+                delayMs = groupIndex * delayMs,
+                durationMs = durationMs,
+                staggerMs = delayMs,
+            )
+        }
+    }
+}
+
+/**
+ * Wrapped grid of dots that breaks into multiple rows for better portrait mode support.
+ * Maximum 6 dots per row.
+ */
+@Composable
+private fun WrappedDotGrid(
+    count: Int,
+    color: androidx.compose.ui.graphics.Color,
+    startDelayMs: Int,
+    durationMs: Int,
+    staggerMs: Int,
+) {
+    val dotsPerRow = 6
+    val rows = (count + dotsPerRow - 1) / dotsPerRow
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        repeat(rows) { rowIndex ->
+            val startDot = rowIndex * dotsPerRow
+            val endDot = (startDot + dotsPerRow).coerceAtMost(count)
+            val dotsInRow = endDot - startDot
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                repeat(dotsInRow) { dotIndex ->
+                    AnimatedDot(
+                        color = color,
+                        delayMs = startDelayMs + ((startDot + dotIndex) * staggerMs),
+                        durationMs = durationMs,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * A group of animated dots that appear one by one with staggered timing.
+ */
+@Composable
+private fun DotGroup(
+    count: Int,
+    color: androidx.compose.ui.graphics.Color,
+    delayMs: Int,
+    durationMs: Int,
+    staggerMs: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        repeat(count) { dotIndex ->
+            AnimatedDot(
+                color = color,
+                delayMs = delayMs + (dotIndex * staggerMs),
+                durationMs = durationMs,
+            )
+        }
+    }
+}
+
+/**
+ * A single dot that animates in with scale effect.
+ */
+@Composable
+private fun AnimatedDot(
+    color: androidx.compose.ui.graphics.Color,
+    delayMs: Int,
+    durationMs: Int,
+) {
+    val scale = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        scale.animateTo(
+            targetValue = 1f,
+            animationSpec =
+                tween(
+                    durationMillis = durationMs,
+                    delayMillis = delayMs,
+                    easing = LinearEasing,
+                ),
+        )
+    }
+
+    Box(
+        modifier =
+            Modifier
+                .size(20.dp)
+                .background(color, CircleShape)
+                .graphicsLayer {
+                    scaleX = scale.value
+                    scaleY = scale.value
+                },
+    )
+}
+
+/**
+ * Animated text that fades in.
+ */
+@Composable
+private fun AnimatedText(
+    text: String,
+    delayMs: Int,
+    durationMs: Int,
+) {
+    val alpha = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        alpha.animateTo(
+            targetValue = 1f,
+            animationSpec =
+                tween(
+                    durationMillis = durationMs,
+                    delayMillis = delayMs,
+                    easing = LinearEasing,
+                ),
+        )
+    }
+
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineMedium,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.graphicsLayer { this.alpha = alpha.value },
+    )
+}

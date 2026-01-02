@@ -17,6 +17,8 @@ import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.audio.AudioService
 import dev.hossain.mathtutor.domain.generator.AdaptiveProblemGenerator
 import dev.hossain.mathtutor.domain.generator.ProblemGenerator
+import dev.hossain.mathtutor.domain.hint.HintProvider
+import dev.hossain.mathtutor.domain.hint.VisualHintFeasibilityChecker
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
@@ -29,8 +31,10 @@ import dev.hossain.mathtutor.domain.repository.SessionRepository
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.domain.usecase.CheckBadgeUnlocksUseCase
 import dev.hossain.mathtutor.domain.usecase.UpdateStreakUseCase
+import dev.hossain.mathtutor.domain.work.WorkProvider
 import dev.hossain.mathtutor.domain.usecase.goals.UpdateGoalProgressUseCase
 import dev.hossain.mathtutor.haptic.HapticService
+import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import dev.hossain.mathtutor.ui.goals.completion.GoalCompletionScreen
 import dev.hossain.mathtutor.ui.practiceresults.ResultsScreen
 import dev.zacsweers.metro.AppScope
@@ -60,6 +64,7 @@ class MathPracticePresenter
         private val adaptiveProblemGenerator: AdaptiveProblemGenerator,
         private val sessionRepository: SessionRepository,
         private val userProfileRepository: UserProfileRepository,
+        private val userPreferencesRepository: dev.hossain.mathtutor.data.UserPreferencesRepository,
         private val performanceRepository: PerformanceRepository,
         private val checkBadgeUnlocksUseCase: CheckBadgeUnlocksUseCase,
         private val updateStreakUseCase: UpdateStreakUseCase,
@@ -67,6 +72,8 @@ class MathPracticePresenter
         private val hapticService: HapticService,
         private val analyticsService: AnalyticsService,
         private val customChallengeService: dev.hossain.mathtutor.domain.service.CustomChallengeService,
+        private val hintProvider: HintProvider,
+        private val workProvider: WorkProvider,
         private val goalRepository: GoalRepository,
         private val updateGoalProgressUseCase: UpdateGoalProgressUseCase,
     ) : Presenter<MathPracticeScreen.State> {
@@ -116,6 +123,24 @@ class MathPracticePresenter
             var isAdaptiveEnabled by remember { mutableStateOf(false) }
             var userName by remember { mutableStateOf<String?>(null) }
             var customChallengeTitle by remember { mutableStateOf<String?>(null) }
+            var wrongAttempts by remember { mutableStateOf(0) }
+            var showHintButton by remember { mutableStateOf(false) }
+            var isHintSystemEnabled by remember { mutableStateOf(true) }
+            var currentHintText by remember { mutableStateOf<String?>(null) }
+            var hintButtonClicked by remember { mutableStateOf(false) }
+            var showVisualHint by remember { mutableStateOf(false) }
+            var showWorkBreakdown by remember { mutableStateOf(false) }
+            var workBreakdownSteps by remember {
+                mutableStateOf<List<WorkBreakdownStep>>(
+                    emptyList(),
+                )
+            }
+
+            // Memoization cache for hints to avoid regeneration on recomposition
+            val hintCache = remember { mutableMapOf<String, String>() }
+            val workBreakdownCache = remember { mutableMapOf<String, List<WorkBreakdownStep>>() }
+
+            fun getCacheKey(problem: MathProblem): String = "${problem.operation}_${problem.num1}_${problem.num2}"
 
             /**
              * Manually deduplicates problems by removing duplicate problem strings,
@@ -215,6 +240,14 @@ class MathPracticePresenter
                         "using fallback deduplication",
                 )
                 return deduplicateProblems(currentProblems, targetCount, gradeLevel)
+            }
+
+            // Load hint system preference
+            LaunchedEffect(Unit) {
+                userPreferencesRepository.isHintSystemEnabled.collect { enabled ->
+                    isHintSystemEnabled = enabled
+                    Timber.d("Hint system enabled: $enabled")
+                }
             }
 
             // Fetch user profile and generate problems in a single LaunchedEffect
@@ -350,6 +383,14 @@ class MathPracticePresenter
                 actualGradeLevel = actualGradeLevel,
                 showDifficultyChangeNotice = showDifficultyChangeNotice,
                 customChallengeTitle = customChallengeTitle,
+                wrongAttempts = wrongAttempts,
+                showHintButton = showHintButton,
+                currentHintText = currentHintText,
+                hintButtonClicked = hintButtonClicked,
+                showVisualHint = showVisualHint,
+                isVisualHintFeasible = currentProblem?.let { VisualHintFeasibilityChecker.isFeasible(it) } ?: false,
+                showWorkBreakdown = showWorkBreakdown,
+                workBreakdownSteps = workBreakdownSteps,
             ) { event ->
                 when (event) {
                     is MathPracticeScreen.Event.NumberClicked -> {
@@ -367,6 +408,16 @@ class MathPracticePresenter
                             val userAnswer = currentAnswer.toIntOrNull()
                             val correct = userAnswer?.let { currentProblem.checkAnswer(it) } ?: false
                             isCorrect = if (userAnswer != null) correct else null
+
+                            // Track wrong attempts for hint feature
+                            if (userAnswer != null && !correct) {
+                                wrongAttempts++
+                                // Show hint button after 2nd wrong attempt (if hint system is enabled)
+                                if (wrongAttempts >= 2 && isHintSystemEnabled) {
+                                    showHintButton = true
+                                }
+                                Timber.d("[MathPractice] Wrong attempt #$wrongAttempts for problem ${currentProblem.id}")
+                            }
 
                             // Play audio and haptic feedback based on correctness
                             if (userAnswer != null) {
@@ -431,6 +482,15 @@ class MathPracticePresenter
                             currentAnswer = ""
                             isCorrect = null
                             problemStartTime = Instant.now() // Reset timer for next problem
+                            // Reset hint state for new problem
+                            wrongAttempts = 0
+                            showHintButton = false
+                            currentHintText = null
+                            hintButtonClicked = false
+                            showVisualHint = false
+                            // Reset work breakdown state for new problem
+                            showWorkBreakdown = false
+                            workBreakdownSteps = emptyList()
                         } else {
                             // All problems completed, save session and check for badges/streak
                             val sessionEndTime = Instant.now()
@@ -693,6 +753,90 @@ class MathPracticePresenter
 
                     is MathPracticeScreen.Event.DismissDifficultyNotice -> {
                         showDifficultyChangeNotice = false
+                    }
+
+                    is MathPracticeScreen.Event.RequestHint -> {
+                        if (currentProblem != null) {
+                            val hintLevel = if (wrongAttempts <= 1) 1 else 2
+                            val cacheKey = getCacheKey(currentProblem)
+                            val cacheKeyWithLevel = "${cacheKey}_L$hintLevel"
+                            currentHintText =
+                                hintCache.getOrPut(cacheKeyWithLevel) {
+                                    if (hintLevel == 1) {
+                                        hintProvider.getFirstHint(currentProblem)
+                                    } else {
+                                        hintProvider.getSecondHint(currentProblem)
+                                    }
+                                }
+                            hintButtonClicked = true
+
+                            // Analytics: Track hint usage
+                            analyticsService.logEvent(
+                                eventName = AnalyticsEvent.HINT_REQUESTED,
+                                parameters =
+                                    mapOf(
+                                        AnalyticsParam.HINT_LEVEL to hintLevel,
+                                        AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                        AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                    ),
+                            )
+
+                            Timber.d("[MathPractice] Hint requested - level $hintLevel for problem ${currentProblem.id}")
+                        }
+                    }
+
+                    is MathPracticeScreen.Event.DismissHint -> {
+                        currentHintText = null
+                        hintButtonClicked = false
+                        Timber.d("[MathPractice] Hint dismissed")
+                    }
+
+                    is MathPracticeScreen.Event.ShowVisualHint -> {
+                        showVisualHint = true
+
+                        // Analytics: Track visual hint usage
+                        analyticsService.logEvent(
+                            eventName = AnalyticsEvent.VISUAL_HINT_SHOWN,
+                            parameters =
+                                mapOf(
+                                    AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                    AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                ),
+                        )
+
+                        Timber.d("[MathPractice] Visual hint shown")
+                    }
+
+                    is MathPracticeScreen.Event.DismissVisualHint -> {
+                        showVisualHint = false
+                        Timber.d("[MathPractice] Visual hint dismissed")
+                    }
+
+                    is MathPracticeScreen.Event.ShowWork -> {
+                        if (currentProblem != null) {
+                            val cacheKey = getCacheKey(currentProblem)
+                            workBreakdownSteps =
+                                workBreakdownCache.getOrPut(cacheKey) {
+                                    workProvider.getWorkBreakdown(currentProblem)
+                                }
+                            showWorkBreakdown = true
+
+                            // Analytics: Track work breakdown usage
+                            analyticsService.logEvent(
+                                eventName = AnalyticsEvent.WORK_BREAKDOWN_SHOWN,
+                                parameters =
+                                    mapOf(
+                                        AnalyticsParam.OPERATION_TYPE to screen.operation.name.lowercase(),
+                                        AnalyticsParam.ATTEMPT_NUMBER to (wrongAttempts + 1),
+                                    ),
+                            )
+                        }
+                    }
+
+                    is MathPracticeScreen.Event.DismissWork -> {
+                        showWorkBreakdown = false
+                        workBreakdownSteps = emptyList()
+                        Timber.d("[MathPractice] Work breakdown dismissed")
                     }
                 }
             }

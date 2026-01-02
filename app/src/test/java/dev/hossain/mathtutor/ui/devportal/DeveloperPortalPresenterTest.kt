@@ -2,9 +2,9 @@ package dev.hossain.mathtutor.ui.devportal
 
 import com.google.common.truth.Truth.assertThat
 import dev.hossain.mathtutor.analytics.FakeAnalyticsService
-import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.domain.model.Game
 import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.fakes.FakeUserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -408,121 +408,6 @@ class DeveloperPortalPresenterTest {
 
         override fun setHapticsEnabled(enabled: Boolean) {
             hapticsEnabled = enabled
-        }
-    }
-
-    /**
-     * Fake implementation of [UserPreferencesRepository] for testing.
-     * Provides in-memory storage for preferences with Flow support.
-     */
-    private class FakeUserPreferencesRepository : UserPreferencesRepository {
-        private val analyticsEnabledFlow = MutableStateFlow(true)
-        private val onboardingCompletedFlow = MutableStateFlow(false)
-        private val hapticsEnabledFlow = MutableStateFlow(true)
-        private val soundEffectsEnabledFlow = MutableStateFlow(true)
-        private val backgroundMusicEnabledFlow = MutableStateFlow(false)
-        private val volumeFlow = MutableStateFlow(dev.hossain.mathtutor.audio.AudioConstants.DEFAULT_SOUND_EFFECTS_VOLUME)
-        private val highContrastEnabledFlow = MutableStateFlow(false)
-        private val largeTextEnabledFlow = MutableStateFlow(false)
-
-        override val isAnalyticsEnabled: Flow<Boolean> = analyticsEnabledFlow
-
-        override suspend fun setAnalyticsEnabled(enabled: Boolean) {
-            analyticsEnabledFlow.value = enabled
-        }
-
-        fun getAnalyticsEnabled(): Boolean = analyticsEnabledFlow.value
-
-        fun getOnboardingCompleted(): Boolean = onboardingCompletedFlow.value
-
-        fun getHapticsEnabled(): Boolean = hapticsEnabledFlow.value
-
-        fun getSoundEffectsEnabled(): Boolean = soundEffectsEnabledFlow.value
-
-        fun getVolume(): Float = volumeFlow.value
-
-        // Other UserPreferencesRepository methods (minimal implementation for testing)
-        override val isOnboardingCompleted: Flow<Boolean> = onboardingCompletedFlow
-
-        override suspend fun setOnboardingCompleted(completed: Boolean) {
-            onboardingCompletedFlow.value = completed
-        }
-
-        override val isHapticsEnabled: Flow<Boolean> = hapticsEnabledFlow
-
-        override suspend fun setHapticsEnabled(enabled: Boolean) {
-            hapticsEnabledFlow.value = enabled
-        }
-
-        override val isSoundEffectsEnabled: Flow<Boolean> = soundEffectsEnabledFlow
-
-        override suspend fun setSoundEffectsEnabled(enabled: Boolean) {
-            soundEffectsEnabledFlow.value = enabled
-        }
-
-        override val isBackgroundMusicEnabled: Flow<Boolean> = backgroundMusicEnabledFlow
-
-        override suspend fun setBackgroundMusicEnabled(enabled: Boolean) {
-            backgroundMusicEnabledFlow.value = enabled
-        }
-
-        override val volume: Flow<Float> = volumeFlow
-
-        override suspend fun setVolume(volume: Float) {
-            volumeFlow.value = volume
-        }
-
-        override val isHighContrastEnabled: Flow<Boolean> = highContrastEnabledFlow
-
-        override suspend fun setHighContrastEnabled(enabled: Boolean) {
-            highContrastEnabledFlow.value = enabled
-        }
-
-        override val isLargeTextEnabled: Flow<Boolean> = largeTextEnabledFlow
-
-        override suspend fun setLargeTextEnabled(enabled: Boolean) {
-            largeTextEnabledFlow.value = enabled
-        }
-
-        private val importGuideExpandedFlow = MutableStateFlow(true)
-
-        override val isImportGuideExpanded: Flow<Boolean> = importGuideExpandedFlow
-
-        override suspend fun setImportGuideExpanded(expanded: Boolean) {
-            importGuideExpandedFlow.value = expanded
-        }
-
-        private val gameTrialAttemptsFlows = mutableMapOf<Game, MutableStateFlow<Int>>()
-
-        override fun getGameTrialAttempts(game: Game): Flow<Int> = gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
-
-        override suspend fun incrementGameTrialAttempts(game: Game): Int {
-            val flow = gameTrialAttemptsFlows.getOrPut(game) { MutableStateFlow(0) }
-            val newCount = (flow.value + 1).coerceAtMost(3)
-            flow.value = newCount
-            return newCount
-        }
-
-        // Parent control methods (minimal implementation for testing)
-        private val parentPinHashFlow = MutableStateFlow<String?>(null)
-        private val maxGradeLevelFlow = MutableStateFlow<GradeLevel?>(null)
-
-        override val parentPinHash: Flow<String?> = parentPinHashFlow
-
-        override suspend fun setParentPin(pin: String) {
-            parentPinHashFlow.value = "hashed_$pin"
-        }
-
-        override suspend fun verifyParentPin(pin: String): Boolean = false
-
-        override suspend fun clearParentPin() {
-            parentPinHashFlow.value = null
-        }
-
-        override val maxGradeLevel: Flow<GradeLevel?> = maxGradeLevelFlow
-
-        override suspend fun setMaxGradeLevel(gradeLevel: GradeLevel?) {
-            maxGradeLevelFlow.value = gradeLevel
         }
     }
 

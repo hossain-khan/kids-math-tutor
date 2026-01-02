@@ -8,6 +8,7 @@ import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -48,6 +49,14 @@ data class MathPracticeScreen(
         val actualGradeLevel: GradeLevel? = null,
         val showDifficultyChangeNotice: Boolean = false,
         val customChallengeTitle: String? = null,
+        val wrongAttempts: Int = 0,
+        val showHintButton: Boolean = false,
+        val currentHintText: String? = null,
+        val hintButtonClicked: Boolean = false,
+        val showVisualHint: Boolean = false,
+        val isVisualHintFeasible: Boolean = false,
+        val showWorkBreakdown: Boolean = false,
+        val workBreakdownSteps: List<WorkBreakdownStep> = emptyList(),
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -70,5 +79,17 @@ data class MathPracticeScreen(
         data object DismissBadgeDialog : Event
 
         data object DismissDifficultyNotice : Event
+
+        data object RequestHint : Event
+
+        data object DismissHint : Event
+
+        data object ShowVisualHint : Event
+
+        data object DismissVisualHint : Event
+
+        data object ShowWork : Event
+
+        data object DismissWork : Event
     }
 }

@@ -9,97 +9,195 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Goals Feature - Phase 5: Integration, Testing & Polish**
-  - End-to-end test suite for complete goal workflows (parent creation → child completion)
-  - Analytics tracking integration with GoalAnalyticsTracker interface
-    - Event tracking for: goal creation, activation, component starts, session completion, goal completion, game locks, resume prompts
-    - Integration into use cases and UI screens for comprehensive event coverage
-  - Database query optimization with strategic indexing for performance
-  - Integration test suite (GoalIntegrationTest) with real database validation
-  - Comprehensive error handling and recovery for edge cases
-  - Full Material 3 compliance verification across all goal screens
-  - Accessibility support meeting WCAG AA standards
-  - Performance optimization and profiling
-  - Complete documentation updates (CHANGELOG, README, KDoc comments)
+    - End-to-end test suite for complete goal workflows (parent creation → child completion)
+    - Analytics tracking integration with GoalAnalyticsTracker interface
+        - Event tracking for: goal creation, activation, component starts, session completion, goal completion, game locks, resume prompts
+        - Integration into use cases and UI screens for comprehensive event coverage
+    - Database query optimization with strategic indexing for performance
+    - Integration test suite (GoalIntegrationTest) with real database validation
+    - Comprehensive error handling and recovery for edge cases
+    - Full Material 3 compliance verification across all goal screens
+    - Accessibility support meeting WCAG AA standards
+    - Performance optimization and profiling
+    - Complete documentation updates (CHANGELOG, README, KDoc comments)
 - **Goals Feature - Phase 4: Child UI & Home Screen Integration**
-  - GoalProgressScreen: Child views active goal progress with component breakdown
-  - GoalCompletionScreen: Celebration screen with goal stats when goal is completed
-  - Home Screen Enhancement: Active goal progress banner showing real-time progress
-  - Game Access Guards: Games blocked when active goal exists (MathRace, MemoryMatch, NumberSequence)
-    - GameBlockerDialog showing goal title, progress, and navigation options
-    - Applied to all three game screens with proper state management
-  - Session Resumption Dialog: Auto-prompt on home screen to continue interrupted goals
-    - Single-show per session to prevent repeated prompts
-    - Clear action buttons: "Continue Goal" and "Continue Later"
-  - MathPracticeScreen Integration: Automatic goal progress tracking on session completion
-    - Goal completion detection with navigation to celebration screen
-    - Proper fallback to ResultsScreen for non-goal sessions
-    - Accuracy calculation and progress updates
-  - Comprehensive unit tests (21 test cases) covering:
-    - Goal completion detection across single and multi-component scenarios
-    - Accuracy calculations (0%, partial, perfect scores)
-    - Progress percentage tracking with proper floating-point handling
-    - Game blocking logic and state transitions
-    - Session management and component tracking
-  - Fixed floating-point precision issues in test assertions using tolerance-based comparisons
+    - GoalProgressScreen: Child views active goal progress with component breakdown
+    - GoalCompletionScreen: Celebration screen with goal stats when goal is completed
+    - Home Screen Enhancement: Active goal progress banner showing real-time progress
+    - Game Access Guards: Games blocked when active goal exists (MathRace, MemoryMatch, NumberSequence)
+        - GameBlockerDialog showing goal title, progress, and navigation options
+        - Applied to all three game screens with proper state management
+    - Session Resumption Dialog: Auto-prompt on home screen to continue interrupted goals
+        - Single-show per session to prevent repeated prompts
+        - Clear action buttons: "Continue Goal" and "Continue Later"
+    - MathPracticeScreen Integration: Automatic goal progress tracking on session completion
+        - Goal completion detection with navigation to celebration screen
+        - Proper fallback to ResultsScreen for non-goal sessions
+        - Accuracy calculation and progress updates
+    - Comprehensive unit tests (21 test cases) covering:
+        - Goal completion detection across single and multi-component scenarios
+        - Accuracy calculations (0%, partial, perfect scores)
+        - Progress percentage tracking with proper floating-point handling
+        - Game blocking logic and state transitions
+        - Session management and component tracking
+    - Fixed floating-point precision issues in test assertions using tolerance-based comparisons
 - **Goals Feature - Phase 1: Domain Models & Database Layer**
-  - Complete data model for goals feature with goal components, progress tracking, and history
-  - Domain models: GoalComponent (sealed class with OperationBased and CustomChallengeBased variants), Goal, ComponentProgress, SessionMetadata, ActiveGoal, ComponentResult, GoalHistory
-  - Room database entities with proper indexing and relationships
-  - Data Access Objects (DAOs) for goals CRUD operations: GoalsDao, ActiveGoalDao, GoalHistoryDao, PracticeSessionToGoalDao
-  - JSON serialization support for complex types using kotlinx-serialization
-  - Type converters for Room database integration (GoalsConverter)
-  - Comprehensive unit tests (26 test cases) covering domain models and type conversion
-  - Support for goal-to-practice-session linking for progress tracking
-  - **Database Migration Infrastructure**: Removed destructive migration fallback to prevent data loss on app updates
-    - MigrationTest suite with 6 test cases validating database schema creation and integrity
-    - Tests verify all 12 database tables exist with correct column types and indexes
-    - Migration infrastructure ready for future schema version updates
-    - Ensures safe database upgrades without losing user data
+    - Complete data model for goals feature with goal components, progress tracking, and history
+    - Domain models: GoalComponent (sealed class with OperationBased and CustomChallengeBased variants), Goal, ComponentProgress, SessionMetadata, ActiveGoal, ComponentResult, GoalHistory
+    - Room database entities with proper indexing and relationships
+    - Data Access Objects (DAOs) for goals CRUD operations: GoalsDao, ActiveGoalDao, GoalHistoryDao, PracticeSessionToGoalDao
+    - JSON serialization support for complex types using kotlinx-serialization
+    - Type converters for Room database integration (GoalsConverter)
+    - Comprehensive unit tests (26 test cases) covering domain models and type conversion
+    - Support for goal-to-practice-session linking for progress tracking
+    - **Database Migration Infrastructure**: Removed destructive migration fallback to prevent data loss on app updates
+        - MigrationTest suite with 6 test cases validating database schema creation and integrity
+        - Tests verify all 12 database tables exist with correct column types and indexes
+        - Migration infrastructure ready for future schema version updates
+        - Ensures safe database upgrades without losing user data
 - **Goals Feature - Phase 2: Repository & Use Cases**
-  - GoalRepository interface and implementation with comprehensive goal lifecycle API
-  - Repository methods: createGoal, activateGoal, updateComponentProgress, completeActiveGoal, clearActiveGoal, getGoalHistory, getRecentGoalHistory, linkSessionToActiveGoal, getGoalStatistics
-  - Six use case classes for business logic: CreateGoalUseCase, ActivateGoalUseCase, UpdateGoalProgressUseCase, CompleteGoalUseCase, ResumeGoalUseCase, GetGoalAnalyticsUseCase
-  - Input validation for all use cases (title length, session counts, accuracy ranges)
-  - GoalProgressCallback interface for integration with PracticeSessionRepository
-  - Metro DI module (GoalsModule) providing singleton-scoped bindings for repository and use cases
-  - Comprehensive unit tests (25+ test cases) for use cases covering success and error scenarios
-  - Entity-to-domain model conversions for type-safe data handling
-  - Support for goal statistics calculation (total goals, completion counts, average accuracy and time)
+    - GoalRepository interface and implementation with comprehensive goal lifecycle API
+    - Repository methods: createGoal, activateGoal, updateComponentProgress, completeActiveGoal, clearActiveGoal, getGoalHistory, getRecentGoalHistory, linkSessionToActiveGoal, getGoalStatistics
+    - Six use case classes for business logic: CreateGoalUseCase, ActivateGoalUseCase, UpdateGoalProgressUseCase, CompleteGoalUseCase, ResumeGoalUseCase, GetGoalAnalyticsUseCase
+    - Input validation for all use cases (title length, session counts, accuracy ranges)
+    - GoalProgressCallback interface for integration with PracticeSessionRepository
+    - Metro DI module (GoalsModule) providing singleton-scoped bindings for repository and use cases
+    - Comprehensive unit tests (25+ test cases) for use cases covering success and error scenarios
+    - Entity-to-domain model conversions for type-safe data handling
+    - Support for goal statistics calculation (total goals, completion counts, average accuracy and time)
 - **Goals Feature - Phase 3: Parent UI Screens**
-  - GoalCatalogScreen: Lists all goals with activation status, supports create/edit/delete/archive operations
-  - GoalCreatorScreen: 3-step wizard (Title input, Component selection, Review) for creating new goals
-  - GoalHistoryScreen: Shows goal completion history with analytics cards and per-session breakdown
-  - Full Circuit framework integration with @CircuitInject decorators and @AssistedFactory patterns
-  - Material 3 design system implementation with responsive layouts and proper theming
-  - State management with Flow observation for reactive UI updates
-  - Navigation integration between catalog, creator, and history screens
-  - Analytics calculation: total sessions, average accuracy, total time spent
-  - Proper null safety and error handling in all screens
+    - GoalCatalogScreen: Lists all goals with activation status, supports create/edit/delete/archive operations
+    - GoalCreatorScreen: 3-step wizard (Title input, Component selection, Review) for creating new goals
+    - GoalHistoryScreen: Shows goal completion history with analytics cards and per-session breakdown
+    - Full Circuit framework integration with @CircuitInject decorators and @AssistedFactory patterns
+    - Material 3 design system implementation with responsive layouts and proper theming
+    - State management with Flow observation for reactive UI updates
+    - Navigation integration between catalog, creator, and history screens
+    - Analytics calculation: total sessions, average accuracy, total time spent
+    - Proper null safety and error handling in all screens
 - **Goals Feature - Phase 3 Completion: ParentSettingsScreen Integration & Unit Tests**
-  - ParentSettingsScreen "Manage Goals" button for accessing goal management feature
-  - Navigation from ParentSettingsScreen to GoalCatalogScreen via ManageGoalsClicked event
-  - Comprehensive unit tests for all goal presenter screens (21 test cases total)
-    - GoalCatalogPresenterTest (6 test cases): state initialization, event handling, error management
-    - GoalCreatorPresenterTest (9 test cases): step progression, title validation, component management
-    - GoalHistoryPresenterTest (6 test cases): analytics tracking, history selection, state management
-  - Test implementation follows project patterns with Google Truth assertions and Arrange-Act-Assert pattern
-  - All tests passing with full integration validation
+    - ParentSettingsScreen "Manage Goals" button for accessing goal management feature
+    - Navigation from ParentSettingsScreen to GoalCatalogScreen via ManageGoalsClicked event
+    - Comprehensive unit tests for all goal presenter screens (21 test cases total)
+        - GoalCatalogPresenterTest (6 test cases): state initialization, event handling, error management
+        - GoalCreatorPresenterTest (9 test cases): step progression, title validation, component management
+        - GoalHistoryPresenterTest (6 test cases): analytics tracking, history selection, state management
+    - Test implementation follows project patterns with Google Truth assertions and Arrange-Act-Assert pattern
+    - All tests passing with full integration validation
 
 ### Fixed
 - **Test Stability**: Fixed floating-point precision issue in multiple goal tests by using tolerance-based assertions (`isWithin()`) for progress percentage calculations
 - **Goals (Parent UI)**: Fixed Goal Creator "Save" action not persisting new goals (now calls CreateGoalUseCase and shows errors).
 ### Fixed
 - **Goals Feature - Complete Missing Features**
-  - Implemented GoalActiveDialog screen for game lock behavior - displays when user tries to play a locked game while active goal exists
-    - Shows goal title and component progress with visual indicator
-    - Allows user to continue goal progress or dismiss the dialog
-    - Properly navigates to GoalProgressScreen on continue
-  - Updated all game presenters (MathRace, MemoryMatch, NumberSequence) to navigate to GoalActiveDialog when a goal is active
+    - Implemented GoalActiveDialog screen for game lock behavior - displays when user tries to play a locked game while active goal exists
+        - Shows goal title and component progress with visual indicator
+        - Allows user to continue goal progress or dismiss the dialog
+        - Properly navigates to GoalProgressScreen on continue
+    - Updated all game presenters (MathRace, MemoryMatch, NumberSequence) to navigate to GoalActiveDialog when a goal is active
 - **Goals Feature Bug Fixes**
-  - Fixed archived/deleted goals not clearing active goal state - when a goal is archived, the active goal reference is now properly deleted, preventing orphaned references from appearing on home screen
-  - Fixed goal progress screen launching wrong operation type - now correctly passes component operation (ADDITION, DIVISION, etc.) to MathPracticeScreen instead of defaulting to ADDITION
-  - Fixed goal creator not persisting newly created goals to database (GoalCreatorPresenter.Event.SaveGoal handler implementation)
-  - Implemented goal catalog operations: activate, delete, and archive goal handlers with proper async/error handling
+    - Fixed archived/deleted goals not clearing active goal state - when a goal is archived, the active goal reference is now properly deleted, preventing orphaned references from appearing on home screen
+    - Fixed goal progress screen launching wrong operation type - now correctly passes component operation (ADDITION, DIVISION, etc.) to MathPracticeScreen instead of defaulting to ADDITION
+    - Fixed goal creator not persisting newly created goals to database (GoalCreatorPresenter.Event.SaveGoal handler implementation)
+    - Implemented goal catalog operations: activate, delete, and archive goal handlers with proper async/error handling
+
+
+## [1.21.0] - 2026-01-01
+
+### Added
+- **Visual Hint Feasibility Detector**
+  - Smart detection prevents "Show Visually" button for problems too complex for visual representation
+  - Addition: visual hints only for operands ≤ 20 (prevents 54+43 with 97 dots)
+  - Subtraction: visual hints only for minuend ≤ 20
+  - Multiplication: visual hints only for operands ≤ 9 (prevents 14×11 with too many dots)
+  - Division: visual hints only for dividend ≤ 100 and divisor ≤ 10
+  - Mixed operations: visual hints never shown
+  - Comprehensive documentation of decision factors and thresholds
+  - Better UX: button naturally hidden instead of confusing users with overwhelming visualizations
+  - Other hint types (text, work breakdown) still available for all problems
+- **Hint System Toggle Setting**
+  - Parents can now enable/disable hints app-wide via Parent Settings screen
+  - Default: hints enabled for educational benefit
+  - Provides parental control over hint availability
+  - UI card in Parent Settings with clear enable/disable buttons
+  - Analytics tracking for hint system toggle changes
+- **Hint System Refinements (Phases 1-3 Improvements)**
+  - Enhanced hint messaging with encouragement and emojis
+    - Level 1 hints: Gentle nudges with emoji context ("You're doing great! Try counting up from 5 🎯")
+    - Level 2 hints: Specific step-by-step guidance with visual aids
+    - Child-friendly language across all operations (addition, subtraction, multiplication, division)
+  - Analytics tracking for hint system usage
+    - New events: `HINT_REQUESTED`, `VISUAL_HINT_SHOWN`, `WORK_BREAKDOWN_SHOWN`
+    - New parameters: `HINT_LEVEL` (1 or 2), `ATTEMPT_NUMBER`, `OPERATION_TYPE`
+    - Enables understanding which hints help children most and identifying problem areas
+  - Accessibility improvements for hints and work dialogs
+    - Added semantic descriptions to all dialogs for screen readers
+    - Improved heading markup for dialog titles
+    - Better button descriptions for TalkBack and accessibility features
+    - Ensured emoji convey meaning via text alternatives
+  - Optimized button layout and organization
+    - "Need help?" button now appears right after feedback section ("Try again")
+    - Removed "Show visually" button (visual hints accessible from hint dialog)
+    - Simplified landscape mode to show only "How to solve" button
+    - Improved visual hierarchy and UX flow
+  - Performance improvements through memoization
+    - Added caching to `DefaultHintProvider` for first and second hints
+    - Added caching to `DefaultWorkProvider` for work breakdown steps
+    - Cache key based on problem operation and operands (e.g., "ADDITION_5_3")
+    - Memoization in presenter using Compose `remember` within session
+    - Avoids regeneration on recomposition without losing fresh generation per problem
+    - Improves performance on lower-end devices for K-2 math problems
+
+
+### Fixed
+- **Visual Hint Display with Large Numbers**
+  - Fixed visual hints (dot visualizers) getting cut off when showing large numbers (e.g., 12+15)
+  - Replaced horizontal scrolling with vertical wrapping layout for better portrait mode support
+  - Dots now wrap to multiple rows (max 6 dots per row) instead of requiring horizontal scroll
+  - Added vertical scroll support to handle tall visualizations
+  - Fixed multiplication visualization to show correct number of groups and dots (was limiting to 5 groups of 4 dots)
+  - Fixed division visualization to show all groups (increased from 4 to 10 maximum groups)
+  - Improved layout to ensure all dot groups are visible regardless of operand size
+  - Increased dot size from 12.dp to 20.dp for better visibility and child accessibility
+  - Increased dot spacing from 4.dp to 8.dp to accommodate larger dots
+- Hint generation performance on frequent recompositions
+- Dialog visibility management for better control flow
+
+### Changed
+- Hint messaging to be more encouraging and context-aware
+- Button placement to follow natural error recovery flow
+- **"Need help?" button timing** - Now appears after 2 failed attempts instead of 1 to allow more opportunity for independent problem-solving
+- **Test Infrastructure**: Consolidated `FakeUserPreferencesRepository` into shared `fakes` package to eliminate duplication across test files
+
+  - **Modal overlay dialog** - Work breakdown displayed in AlertDialog for full visibility
+  - **Combines with Phases 1 & 2** - Provides three levels of help: text hints, visual hints, and step-by-step work
+- **Hint System (Phase 2)** - Visual hints with animated dots to help children understand math concepts
+  - **DotVisualizer component** - Shows operation-specific visual representations
+    - Addition: Shows dots for first number, plus sign, then dots for second number
+    - Subtraction: Shows initial dots with remaining dots highlighted
+    - Multiplication: Shows groups of dots representing multiplication
+    - Division: Shows dots distributed into groups
+  - **Animated dot reveal** - Dots appear one by one with staggered timing for engaging visual feedback
+  - **VisualHintCard composable** - Displays visual hints alongside text hints
+    - Material 3 design using secondaryContainer color
+    - Shows operation-specific encouragement text ("Count all the dots together!", etc.)
+    - Dismiss button to close visual hint
+  - **"🎨 Show visually" button** - Appears after first wrong attempt for visual learners
+  - **Smooth animations** - Dots scale in with LinearEasing for consistent reveal timing
+  - **Operation-specific visualizations** - Each math operation has tailored visual representation
+  - Combines with Phase 1 text hints for multi-modal learning experience
+- **Hint System (Phase 1)** - Text-based hint system to guide children toward solving problems
+  - Tracks wrong attempts per problem
+  - Shows "💡 Need help?" button after first wrong attempt
+  - Operation-specific hints for Addition, Subtraction, Multiplication, and Division
+  - Two levels of hints: gentle nudge (Level 1) and more specific guidance (Level 2)
+  - Hints encourage problem-solving without directly revealing the answer
+  - Hint state resets when moving to next problem
+  - Material 3 design with tertiaryContainer color for hint UI
+- **Smart Wrong Answer Feedback** - Enhanced feedback when children get answers wrong
+  - **Varied encouragement messages** - Multiple messages like "Try again", "Not quite", "Keep going!", "Give it another shot" to reduce repetition and stay engaging
+  - **Close answer detection** - When answer is off by 1, shows more encouraging messages ("Almost!", "Very close!", "You're getting there!", "So close!") for all math operation types
+  - Applies to all operations: Addition, Subtraction, Multiplication, and Division
 
 ## [1.20.0] - 2025-12-31
 
@@ -2187,7 +2285,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...HEAD
+[1.21.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...1.21.0
 [1.20.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...1.20.0
 [1.19.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.18.0...1.19.0
 [1.18.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.17.0...1.18.0

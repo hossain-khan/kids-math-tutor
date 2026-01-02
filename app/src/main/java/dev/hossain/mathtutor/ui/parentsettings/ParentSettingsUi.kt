@@ -125,6 +125,14 @@ fun ParentSettingsUi(
                 },
             )
 
+            // Hint System Toggle Card
+            HintSystemCard(
+                isHintSystemEnabled = state.isHintSystemEnabled,
+                onToggleHintSystem = { enabled ->
+                    state.eventSink(ParentSettingsScreen.Event.HintSystemToggled(enabled))
+                },
+            )
+
             // Goals Management Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -439,6 +447,101 @@ private fun GradeLimitCard(
     }
 }
 
+/**
+ * Card for controlling hint system availability.
+ *
+ * Allows parents to enable or disable the hint system for the entire app.
+ * When disabled, children won't see hint buttons even after wrong attempts.
+ */
+@Composable
+private fun HintSystemCard(
+    isHintSystemEnabled: Boolean,
+    onToggleHintSystem: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Column {
+                        Text(
+                            text = "Hint System",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text =
+                                if (isHintSystemEnabled) "Enabled" else "Disabled",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
+            Text(
+                text =
+                    "When enabled, children see helpful hints after making mistakes. " +
+                        "When disabled, hints won't be available.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { onToggleHintSystem(false) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Disable")
+                }
+                Button(
+                    onClick = { onToggleHintSystem(true) },
+                    modifier = Modifier.weight(1f),
+                    colors =
+                        if (isHintSystemEnabled) {
+                            androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                            )
+                        } else {
+                            androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            )
+                        },
+                ) {
+                    Text("Enable")
+                }
+            }
+        }
+    }
+}
+
 // Preview composables
 @Preview(showBackground = true)
 @Composable
@@ -449,6 +552,7 @@ private fun ParentSettingsUiPreview() {
                 ParentSettingsScreen.State(
                     hasPinSet = false,
                     maxGradeLevel = null,
+                    isHintSystemEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -471,6 +575,7 @@ private fun ParentSettingsUiWithPinSetPreview() {
                 ParentSettingsScreen.State(
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_2,
+                    isHintSystemEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -493,6 +598,7 @@ private fun ParentSettingsUiWithOptionsExpandedPreview() {
                 ParentSettingsScreen.State(
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_1,
+                    isHintSystemEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -515,6 +621,7 @@ private fun ParentSettingsUiWithPinSetupDialogPreview() {
                 ParentSettingsScreen.State(
                     hasPinSet = false,
                     maxGradeLevel = null,
+                    isHintSystemEnabled = true,
                     showPinSetup = true,
                     showPinVerification = false,
                     showPinReset = false,
@@ -537,6 +644,7 @@ private fun ParentSettingsUiWithGradeLimitDialogPreview() {
                 ParentSettingsScreen.State(
                     hasPinSet = true,
                     maxGradeLevel = null,
+                    isHintSystemEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -559,6 +667,7 @@ private fun ParentSettingsUiWithPinVerificationDialogPreview() {
                 ParentSettingsScreen.State(
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_2,
+                    isHintSystemEnabled = true,
                     showPinSetup = false,
                     showPinVerification = true,
                     showPinReset = false,
@@ -581,6 +690,7 @@ private fun ParentSettingsUiWithForgotPinDialogPreview() {
                 ParentSettingsScreen.State(
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_1,
+                    isHintSystemEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,

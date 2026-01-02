@@ -40,6 +40,7 @@ data object ParentSettingsScreen : Screen {
     data class State(
         val hasPinSet: Boolean,
         val maxGradeLevel: GradeLevel?,
+        val isHintSystemEnabled: Boolean,
         val showPinSetup: Boolean,
         val showPinVerification: Boolean,
         val showPinReset: Boolean,
@@ -155,6 +156,15 @@ data object ParentSettingsScreen : Screen {
          * User cancelled grade limit dialog.
          */
         data object GradeLimitCancelled : Event
+
+        /**
+         * User toggled the hint system on/off.
+         *
+         * @property enabled Whether to enable or disable the hint system
+         */
+        data class HintSystemToggled(
+            val enabled: Boolean,
+        ) : Event
 
         /**
          * User submitted PIN for verification.

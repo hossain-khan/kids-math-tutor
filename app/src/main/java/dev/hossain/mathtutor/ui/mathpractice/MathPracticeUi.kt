@@ -61,7 +61,10 @@ import dev.hossain.mathtutor.ui.animation.SuccessAnimation
 import dev.hossain.mathtutor.ui.animation.shake
 import dev.hossain.mathtutor.ui.component.AnswerField
 import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
+import dev.hossain.mathtutor.ui.component.DotVisualizer
 import dev.hossain.mathtutor.ui.component.NumberPad
+import dev.hossain.mathtutor.ui.component.StepByStepBreakdown
+import dev.hossain.mathtutor.ui.component.VisualHintCard
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
@@ -154,6 +157,173 @@ internal fun MathPracticeUi(
             dismissButton = {
                 TextButton(onClick = { showExitDialog = false }) {
                     Text("Continue")
+                }
+            },
+        )
+    }
+
+    // Text hint dialog - shown as overlay to prevent layout push
+    if (state.currentHintText != null && state.currentProblem != null) {
+        AlertDialog(
+            onDismissRequest = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+            title = {
+                Text(
+                    text = "💡 Hint",
+                    modifier =
+                        Modifier.semantics {
+                            heading()
+                        },
+                )
+            },
+            text = {
+                Text(
+                    text = state.currentHintText,
+                    modifier =
+                        Modifier.semantics {
+                            contentDescription = "Hint to help solve the problem"
+                        },
+                )
+            },
+            confirmButton = {
+                // Only show "Show Visually" button if visual hint is feasible for this problem
+                if (state.isVisualHintFeasible) {
+                    TextButton(
+                        onClick = {
+                            // Ask if they want visual hint
+                            state.eventSink(MathPracticeScreen.Event.ShowVisualHint)
+                        },
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Show the hint visually with dots and pictures"
+                            },
+                    ) {
+                        Text("Show Visually")
+                    }
+                } else {
+                    TextButton(
+                        onClick = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Close this hint"
+                            },
+                    ) {
+                        Text("Got it")
+                    }
+                }
+            },
+            dismissButton = {
+                if (state.isVisualHintFeasible) {
+                    TextButton(
+                        onClick = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Close this hint"
+                            },
+                    ) {
+                        Text("Got it")
+                    }
+                } else {
+                    null
+                }
+            },
+        )
+    }
+
+    // Visual hint dialog - shown as overlay
+    if (state.showVisualHint && state.currentProblem != null) {
+        AlertDialog(
+            onDismissRequest = { state.eventSink(MathPracticeScreen.Event.DismissVisualHint) },
+            title = {
+                Text(
+                    text = "🎨 Visual Hint",
+                    modifier =
+                        Modifier.semantics {
+                            heading()
+                        },
+                )
+            },
+            text = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    DotVisualizer(
+                        operation = state.currentProblem.operation,
+                        firstNumber = state.currentProblem.num1,
+                        secondNumber = state.currentProblem.num2,
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription =
+                                    "Visual representation showing " +
+                                    "${state.currentProblem.num1} and ${state.currentProblem.num2} for ${state.currentProblem.operation.name.lowercase()}"
+                            },
+                    )
+                    Text(
+                        text = state.currentHintText ?: "See how the problem works!",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Explanation of the visual hint"
+                            },
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { state.eventSink(MathPracticeScreen.Event.DismissVisualHint) },
+                    modifier =
+                        Modifier.semantics {
+                            contentDescription = "Close this visual hint"
+                        },
+                ) {
+                    Text("Got it")
+                }
+            },
+        )
+    }
+
+    // Work breakdown dialog - shown as overlay
+    if (state.showWorkBreakdown && state.currentProblem != null) {
+        AlertDialog(
+            onDismissRequest = { state.eventSink(MathPracticeScreen.Event.DismissWork) },
+            title = {
+                Text(
+                    text = "📚 How to Solve",
+                    modifier =
+                        Modifier.semantics {
+                            heading()
+                        },
+                )
+            },
+            text = {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .semantics {
+                                contentDescription =
+                                    "Step-by-step breakdown showing how to solve " +
+                                    "${state.currentProblem.num1} ${state.currentProblem.operation.name.lowercase()} ${state.currentProblem.num2}"
+                            },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    StepByStepBreakdown(
+                        problem = state.currentProblem,
+                        steps = state.workBreakdownSteps,
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { state.eventSink(MathPracticeScreen.Event.DismissWork) },
+                    modifier =
+                        Modifier.semantics {
+                            contentDescription = "Close this step-by-step breakdown"
+                        },
+                ) {
+                    Text("Understand now!")
                 }
             },
         )
@@ -262,6 +432,8 @@ internal fun MathPracticeUi(
                                 FeedbackSection(
                                     isCorrect = state.isCorrect,
                                     userName = state.userName,
+                                    currentProblem = state.currentProblem,
+                                    userAnswer = state.currentAnswer.toIntOrNull(),
                                 )
                             }
 
@@ -310,6 +482,27 @@ internal fun MathPracticeUi(
                                     onNext = { state.eventSink(MathPracticeScreen.Event.NextProblem) },
                                     hapticService = hapticService,
                                 )
+
+                                // Work breakdown button (landscape only)
+                                if (state.showHintButton && !state.hintButtonClicked) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Button(
+                                        onClick = { state.eventSink(MathPracticeScreen.Event.ShowWork) },
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp),
+                                        colors =
+                                            ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                            ),
+                                    ) {
+                                        Text(
+                                            "📚 How to solve",
+                                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        )
+                                    }
+                                }
                             }
                         }
                     } else {
@@ -353,7 +546,30 @@ internal fun MathPracticeUi(
                             FeedbackSection(
                                 isCorrect = state.isCorrect,
                                 userName = state.userName,
+                                currentProblem = state.currentProblem,
+                                userAnswer = state.currentAnswer.toIntOrNull(),
                             )
+
+                            // Hint button (appears after feedback when wrong)
+                            if (state.showHintButton && !state.hintButtonClicked) {
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Button(
+                                    onClick = { state.eventSink(MathPracticeScreen.Event.RequestHint) },
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    colors =
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                        ),
+                                ) {
+                                    Text(
+                                        "💡 Need help?",
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    )
+                                }
+                            }
 
                             Spacer(modifier = Modifier.weight(1f))
 
@@ -516,6 +732,8 @@ private fun ProblemCard(
 private fun FeedbackSection(
     isCorrect: Boolean?,
     userName: String? = null,
+    currentProblem: MathProblem? = null,
+    userAnswer: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -556,8 +774,37 @@ private fun FeedbackSection(
             }
 
             false -> {
+                // Check if answer is close (off by 1)
+                val isClose =
+                    if (currentProblem != null && userAnswer != null) {
+                        val correctAnswer = currentProblem.correctAnswer
+                        kotlin.math.abs(correctAnswer - userAnswer) == 1
+                    } else {
+                        false
+                    }
+
+                // Varied encouragement messages based on closeness
+                val feedbackMessage =
+                    if (isClose) {
+                        // Messages for close answers - more encouraging
+                        listOf(
+                            "✗ Almost! Try again",
+                            "✗ Very close! Try again",
+                            "✗ You're getting there!",
+                            "✗ So close! Give it another try",
+                        ).random()
+                    } else {
+                        // General messages for incorrect answers
+                        listOf(
+                            "✗ Try again",
+                            "✗ Not quite. Try again",
+                            "✗ Keep going!",
+                            "✗ Give it another shot",
+                        ).random()
+                    }
+
                 Text(
-                    text = "✗ Try again",
+                    text = feedbackMessage,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.error,
                 )
@@ -800,5 +1047,55 @@ private fun MathPracticeUiIncorrectPreview() {
                     override fun setHapticsEnabled(enabled: Boolean) {}
                 },
         )
+    }
+}
+
+/**
+ * Displays a hint card with helpful guidance text.
+ * Kids can dismiss the hint to try solving on their own.
+ */
+@Composable
+private fun HintCard(
+    hintText: String,
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth().padding(16.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "💡",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    "Hint:",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+            }
+            Text(
+                text = hintText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.End),
+            ) {
+                Text("Got it!")
+            }
+        }
     }
 }
