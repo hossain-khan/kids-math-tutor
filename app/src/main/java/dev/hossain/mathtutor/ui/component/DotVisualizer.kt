@@ -211,7 +211,7 @@ private fun SubtractionAnimatedDot(
         // After dot appears, wait and then animate to dim if needed
         if (shouldDim) {
             alpha.animateTo(
-                targetValue = 0.3f,
+                targetValue = 0.15f,
                 animationSpec =
                     tween(
                         durationMillis = dimDurationMs,
