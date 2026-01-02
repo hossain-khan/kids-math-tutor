@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -130,6 +131,14 @@ fun ParentSettingsUi(
                 isHintSystemEnabled = state.isHintSystemEnabled,
                 onToggleHintSystem = { enabled ->
                     state.eventSink(ParentSettingsScreen.Event.HintSystemToggled(enabled))
+                },
+            )
+
+            // Adaptive Difficulty Card
+            AdaptiveDifficultyCard(
+                isAdaptiveDifficultyEnabled = state.adaptiveDifficultyEnabled,
+                onToggleAdaptiveDifficulty = { enabled ->
+                    state.eventSink(ParentSettingsScreen.Event.AdaptiveDifficultyToggled(enabled))
                 },
             )
 
@@ -511,6 +520,101 @@ private fun HintSystemCard(
     }
 }
 
+/**
+ * Card for controlling adaptive difficulty.
+ *
+ * Allows parents to enable or disable adaptive difficulty, which adjusts problem
+ * difficulty based on the child's performance.
+ */
+@Composable
+private fun AdaptiveDifficultyCard(
+    isAdaptiveDifficultyEnabled: Boolean,
+    onToggleAdaptiveDifficulty: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Tune,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Column {
+                        Text(
+                            text = \"Adaptive Difficulty\",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text =
+                                if (isAdaptiveDifficultyEnabled) \"Enabled\" else \"Disabled\",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
+            Text(
+                text =
+                    \"When enabled, problem difficulty adjusts automatically based on performance. \" +
+                        \"When disabled, problems remain at the selected grade level.\",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { onToggleAdaptiveDifficulty(false) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(\"Disable\")
+                }
+                Button(
+                    onClick = { onToggleAdaptiveDifficulty(true) },
+                    modifier = Modifier.weight(1f),
+                    colors =
+                        if (isAdaptiveDifficultyEnabled) {
+                            androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                            )
+                        } else {
+                            androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            )
+                        },
+                ) {
+                    Text(\"Enable\")
+                }
+            }
+        }
+    }
+}
+
 // Preview composables
 @Preview(showBackground = true)
 @Composable
@@ -522,6 +626,7 @@ private fun ParentSettingsUiPreview() {
                     hasPinSet = false,
                     maxGradeLevel = null,
                     isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -545,6 +650,7 @@ private fun ParentSettingsUiWithPinSetPreview() {
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_2,
                     isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -568,6 +674,7 @@ private fun ParentSettingsUiWithOptionsExpandedPreview() {
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_1,
                     isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = false,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -591,6 +698,7 @@ private fun ParentSettingsUiWithPinSetupDialogPreview() {
                     hasPinSet = false,
                     maxGradeLevel = null,
                     isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
                     showPinSetup = true,
                     showPinVerification = false,
                     showPinReset = false,
@@ -614,6 +722,7 @@ private fun ParentSettingsUiWithGradeLimitDialogPreview() {
                     hasPinSet = true,
                     maxGradeLevel = null,
                     isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,
@@ -637,6 +746,7 @@ private fun ParentSettingsUiWithPinVerificationDialogPreview() {
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_2,
                     isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = false,
                     showPinSetup = false,
                     showPinVerification = true,
                     showPinReset = false,
@@ -660,6 +770,7 @@ private fun ParentSettingsUiWithForgotPinDialogPreview() {
                     hasPinSet = true,
                     maxGradeLevel = GradeLevel.GRADE_1,
                     isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
                     showPinSetup = false,
                     showPinVerification = false,
                     showPinReset = false,

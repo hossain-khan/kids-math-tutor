@@ -169,14 +169,6 @@ fun SettingsUi(
                         onChangeGradeClick = { state.eventSink(SettingsScreen.Event.ChangeGradeClicked) },
                     )
 
-                    // Adaptive difficulty section
-                    AdaptiveDifficultySection(
-                        enabled = state.profile?.adaptiveDifficultyEnabled ?: true,
-                        onToggle = { enabled ->
-                            state.eventSink(SettingsScreen.Event.ToggleAdaptiveDifficulty(enabled))
-                        },
-                    )
-
                     // Divider
                     HorizontalDivider(
                         modifier = Modifier.padding(vertical = 8.dp),
@@ -367,70 +359,6 @@ private fun ProfileField(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-        }
-    }
-}
-
-/**
- * Adaptive difficulty section with toggle switch.
- */
-@Composable
-private fun AdaptiveDifficultySection(
-    enabled: Boolean,
-    onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-        elevation =
-            CardDefaults.cardElevation(
-                defaultElevation = 2.dp,
-            ),
-    ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Tune,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-                Text(
-                    text = "Adaptive Difficulty",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "Adjust difficulty based on performance",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    )
-                }
-                Switch(
-                    checked = enabled,
-                    onCheckedChange = onToggle,
-                )
-            }
         }
     }
 }
