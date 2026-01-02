@@ -2,6 +2,8 @@
 
 This document describes the database architecture and usage patterns in the Kids Math Pup Tutor app.
 
+**Last Updated**: January 2, 2026 (v1.21.0)
+
 ## Overview
 
 The app uses a **two-tier persistence strategy**:
@@ -13,12 +15,13 @@ Provides an abstraction layer over SQLite for type-safe, reactive database acces
 |----------|-------|
 | Database Name | `kids_math_tutor.db` |
 | Current Version | **1** |
+| App Version | **v1.21.0** |
 | ORM | Android Room |
 | Query Pattern | Flow-based reactive streams |
 | Schema Export | Enabled (`exportSchema = true`) |
 
 ### 2. DataStore Preferences - Key-Value Configuration
-Lightweight, type-safe key-value storage for user preferences and app settings using Kotlin Serialization and Protocol Buffers.
+Lightweight, type-safe key-value storage for user preferences, app settings, and user profile using DataStore Preferences API.
 
 | Property | Value |
 |----------|-------|
@@ -26,6 +29,7 @@ Lightweight, type-safe key-value storage for user preferences and app settings u
 | Technology | DataStore Preferences API |
 | Security | Hashed sensitive data (e.g., PIN stored as SHA-256) |
 | Async Pattern | Flow-based reactive streams |
+| Repositories | `UserPreferencesRepository`, `UserProfileRepository` |
 
 ## DataStore Preferences (Key-Value Configuration)
 
@@ -35,31 +39,52 @@ User preferences and app configuration are stored using Android DataStore Prefer
 
 | Key | Type | Description | Version Added |
 |-----|------|-------------|-----------------|
-| `isOnboardingCompleted` | Boolean | Whether onboarding flow is complete | v1.0.0 |
-| `isHapticsEnabled` | Boolean | Vibration/haptics feedback enabled | v1.0.0 |
-| `isSoundEffectsEnabled` | Boolean | Sound effects enabled | v1.0.0 |
-| `isBackgroundMusicEnabled` | Boolean | Background music enabled | v1.0.0 |
+| `onboarding_completed` | Boolean | Whether onboarding flow is complete | v1.0.0 |
+| `haptics_enabled` | Boolean | Vibration/haptics feedback enabled | v1.0.0 |
+| `sound_effects_enabled` | Boolean | Sound effects enabled | v1.0.0 |
+| `background_music_enabled` | Boolean | Background music enabled | v1.0.0 |
 | `volume` | Float | Sound volume level (0.0-1.0) | v1.0.0 |
-| `isHighContrastEnabled` | Boolean | High contrast accessibility mode | v1.0.0 |
-| `isLargeTextEnabled` | Boolean | Large text accessibility mode | v1.0.0 |
-| `isAnalyticsEnabled` | Boolean | Analytics/telemetry enabled | v1.0.0 |
-| `gameTrialAttempts_[gameId]` | Integer | Trial attempts for each locked game (0-3) | v1.13.0 |
-| `parentPinHash` | String | SHA-256 hashed parent PIN for protected settings | **v1.19.0** |
-| `maxGradeLevel` | String | Parent-enforced maximum grade level (KINDERGARTEN, FIRST_GRADE, SECOND_GRADE) | **v1.19.0** |
+| `high_contrast_enabled` | Boolean | High contrast accessibility mode | v1.0.0 |
+| `large_text_enabled` | Boolean | Large text accessibility mode | v1.0.0 |
+| `analytics_enabled` | Boolean | Analytics/telemetry enabled | v1.0.0 |
+| `hint_system_enabled` | Boolean | Math problem hints enabled | **v1.21.0** |
+| `game_trial_[gameId]` | Integer | Trial attempts for each locked game (0-3) | v1.13.0 |
+| `parent_pin_hash` | String | SHA-256 hashed parent PIN for protected settings | v1.19.0 |
+| `max_grade_level` | String | Parent-enforced maximum grade level (KINDERGARTEN, FIRST_GRADE, SECOND_GRADE) | v1.19.0 |
+| `import_guide_expanded` | Boolean | Import challenge quick start guide expanded state | **v1.21.0** |
 
-### Parent Controls (v1.19.0+)
+### User Profile (Stored in same DataStore)
 
-**PIN Security**:
+User profile information is also stored in the `user_preferences` DataStore:
+
+| Key | Type | Description | Version Added |
+|-----|------|-------------|-----------------|
+| `profile_name` | String | Child's name (optional, empty string if not set) | v1.0.0 |
+| `profile_grade` | String | Selected grade level (KINDERGARTEN, FIRST_GRADE, SECOND_GRADE) | v1.0.0 |
+| `profile_created_at` | Long | Profile creation timestamp (epoch milliseconds) | v1.0.0 |
+| `profile_adaptive_difficulty` | Boolean | Whether adaptive difficulty is enabled (default: true) | v1.0.0 |
+
+**Managed by**: `UserProfileRepository` and `UserProfileRepositoryImpl`
+
+### Parent Controls
+
+**PIN Security** (v1.19.0+):
 - Parent PIN stored as **SHA-256 hash** (not plaintext)
 - Used to protect grade limit changes and parental settings
 - Hash-based verification prevents brute-force attacks
 - Can be cleared/reset via forgot PIN recovery flow
 
-**Grade Limit Enforcement**:
-- `maxGradeLevel` restricts the maximum grade child can select
+**Grade Limit Enforcement** (v1.19.0+):
+- `max_grade_level` restricts the maximum grade child can select
 - When parent lowers limit, child's profile grade is automatically downgraded if needed
 - Grade selection UI filters available grades based on this limit
 - Shows parent lock message when limit is active
+
+**Hint System Control** (v1.21.0+):
+- `hint_system_enabled` allows parents to enable/disable hints app-wide
+- Default: hints enabled for educational benefit
+- Provides parental control over hint availability
+- UI card in Parent Settings with clear enable/disable buttons
 
 ---
 
@@ -455,12 +480,22 @@ interface DatabaseModule {
             .build()
     
     @Provides @SingleIn(AppScope::class)
-    fun provideSessionDao(database: MathDatabase): SessionDao
+    fun provideSessionDao(database: MathDatabase): SessionDao = database.sessionDao()
     
     @Provides @SingleIn(AppScope::class)
-    fun provideBadgeDao(database: MathDatabase): BadgeDao
+    fun provideBadgeDao(database: MathDatabase): BadgeDao = database.badgeDao()
     
-    // ... other DAOs
+    @Provides @SingleIn(AppScope::class)
+    fun provideStreakDao(database: MathDatabase): StreakDao = database.streakDao()
+    
+    @Provides @SingleIn(AppScope::class)
+    fun providePerformanceDao(database: MathDatabase): PerformanceDao = database.performanceDao()
+    
+    @Provides @SingleIn(AppScope::class)
+    fun provideGameSessionDao(database: MathDatabase): GameSessionDao = database.gameSessionDao()
+    
+    @Provides @SingleIn(AppScope::class)
+    fun provideCustomChallengeDao(database: MathDatabase): CustomChallengeDao = database.customChallengeDao()
 }
 ```
 
@@ -524,9 +559,9 @@ database = Room.inMemoryDatabaseBuilder(context, MathDatabase::class.java)
 app/src/main/java/dev/hossain/mathtutor/
 ├── data/
 │   ├── local/
-│   │   ├── MathDatabase.kt          # Room database definition
-│   │   ├── Converters.kt            # Type converters
-│   │   ├── UserPreferencesDataStore.kt  # DataStore singleton
+│   │   ├── MathDatabase.kt               # Room database definition
+│   │   ├── Converters.kt                 # Type converters
+│   │   ├── UserPreferencesDataStore.kt   # DataStore singleton extension
 │   │   ├── dao/
 │   │   │   ├── SessionDao.kt
 │   │   │   ├── BadgeDao.kt
@@ -544,26 +579,28 @@ app/src/main/java/dev/hossain/mathtutor/
 │   │       ├── ChallengeProblemsEntity.kt
 │   │       ├── ChallengePracticeSessionEntity.kt
 │   │       └── CustomChallengeWithDetails.kt
-│   ├── UserPreferencesRepository.kt  # DataStore-based preferences
-│   ├── repository/
-│   │   ├── SessionRepositoryImpl.kt
-│   │   ├── BadgeRepositoryImpl.kt
-│   │   ├── StreakRepositoryImpl.kt
-│   │   ├── PerformanceRepositoryImpl.kt
-│   │   ├── GameRepositoryImpl.kt
-│   │   └── CustomChallengeRepositoryImpl.kt
-│   └── mapper/
-│       └── ...                      # Entity ↔ Domain mappers
+│   ├── UserPreferencesRepository.kt      # DataStore-based preferences interface & impl
+│   └── repository/
+│       ├── SessionRepositoryImpl.kt
+│       ├── BadgeRepositoryImpl.kt
+│       ├── StreakRepositoryImpl.kt
+│       ├── PerformanceRepositoryImpl.kt
+│       ├── GameRepositoryImpl.kt
+│       ├── CustomChallengeRepositoryImpl.kt
+│       └── UserProfileRepositoryImpl.kt  # User profile storage (uses DataStore)
 ├── domain/
+│   ├── mapper/                           # Entity ↔ Domain mappers
+│   │   └── ...
 │   └── repository/
 │       ├── SessionRepository.kt
 │       ├── BadgeRepository.kt
 │       ├── StreakRepository.kt
 │       ├── PerformanceRepository.kt
 │       ├── GameRepository.kt
-│       └── CustomChallengeRepository.kt
+│       ├── CustomChallengeRepository.kt
+│       └── UserProfileRepository.kt      # User profile interface
 └── di/
-    └── DatabaseModule.kt            # Metro DI module
+    └── DatabaseModule.kt                 # Metro DI module
 ```
 
 ## References
