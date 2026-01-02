@@ -92,7 +92,7 @@ class DefaultHintProvider : HintProvider {
             }
 
             MathOperation.SUBTRACTION -> {
-                "Count backwards: ${problem.num1}... ${problem.num1 - 1}, ${problem.num1 - 2}... stop after ${problem.num2} steps! 💭"
+                "Start with ${problem.num1}, then take away ${problem.num2}. Count what's left! 💭"
             }
 
             MathOperation.MULTIPLICATION -> {

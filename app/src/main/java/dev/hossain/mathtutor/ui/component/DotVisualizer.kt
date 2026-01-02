@@ -125,7 +125,10 @@ private fun AdditionDotVisualizer(
 }
 
 /**
- * Subtraction visualization: shows num1 dots with num2 becoming faded
+ * Subtraction visualization: shows num1 dots with the last num2 dots dimmed.
+ *
+ * For example, 13 - 3 shows 13 dots where the last 3 are dimmed/faded,
+ * making it intuitive for kids to see "taking away" from the original number.
  */
 @Composable
 private fun SubtractionDotVisualizer(
@@ -134,35 +137,46 @@ private fun SubtractionDotVisualizer(
     durationMs: Int,
     delayMs: Int,
 ) {
+    val remainingCount = (firstNumber - secondNumber).coerceAtLeast(0)
+    val dotsPerRow = 6
+    val rows = (firstNumber + dotsPerRow - 1) / dotsPerRow
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // All dots initially
-        WrappedDotGrid(
-            count = firstNumber,
-            color = MaterialTheme.colorScheme.primary,
-            startDelayMs = 0,
-            durationMs = durationMs,
-            staggerMs = delayMs,
-        )
+        // Show all dots in a grid, with the last 'secondNumber' dots dimmed
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            repeat(rows) { rowIndex ->
+                val startDot = rowIndex * dotsPerRow
+                val endDot = (startDot + dotsPerRow).coerceAtMost(firstNumber)
+                val dotsInRow = endDot - startDot
 
-        // Minus sign
-        AnimatedText(
-            text = "-",
-            delayMs = durationMs,
-            durationMs = 300,
-        )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    repeat(dotsInRow) { dotIndex ->
+                        val globalDotIndex = startDot + dotIndex
+                        // Dim the last 'secondNumber' dots to show what's being taken away
+                        val isDimmed = globalDotIndex >= remainingCount
 
-        // Remaining dots (shown in a different style)
-        val remainingCount = (firstNumber - secondNumber).coerceAtLeast(0)
-        WrappedDotGrid(
-            count = remainingCount,
-            color = MaterialTheme.colorScheme.secondary,
-            startDelayMs = durationMs + 300,
-            durationMs = durationMs,
-            staggerMs = delayMs,
-        )
+                        AnimatedDot(
+                            color =
+                                if (isDimmed) {
+                                    MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
+                            delayMs = globalDotIndex * delayMs,
+                            durationMs = durationMs,
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

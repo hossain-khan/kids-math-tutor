@@ -137,7 +137,7 @@ fun VisualHintCard(
 private fun getEncouragementText(operation: MathOperation): String =
     when (operation) {
         MathOperation.ADDITION -> "Count all the dots together!"
-        MathOperation.SUBTRACTION -> "Count the dots that are left!"
+        MathOperation.SUBTRACTION -> "Count the bright dots! The dim ones are taken away!"
         MathOperation.MULTIPLICATION -> "Count the dots in all groups!"
         MathOperation.DIVISION -> "Count the dots in each group!"
         MathOperation.MIXED -> "Give it a try!"
