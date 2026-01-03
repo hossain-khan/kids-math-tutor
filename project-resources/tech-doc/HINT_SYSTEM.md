@@ -141,22 +141,24 @@ data class WorkBreakdownStep(
 
 **Example Breakdown (Addition: 8 + 5)**:
 ```
-Step 1: 🔢 Start with the first number: 8
-Step 2: ➕ Add the second number: 5
-Step 3: 🧮 Count up from 8: 9, 10, 11, 12, 13
+Step 1: 🎯 Start with 8
+Step 2: ➕ Add 5 more
+Step 3: 💡 Count on: 8... 9, 10, ...
+Step 4: ✅ We counted 5 more, so 8 + 5 = 13
 ✨ Answer: 13
 ```
 
 **Example Breakdown (Subtraction: 13 - 3)**:
 ```
-Step 1: 🔢 Start with: 13
-Step 2: ➖ Take away: 3
-Step 3: 🧮 Count backwards: 12, 11, 10
+Step 1: 🎯 Start with 13
+Step 2: ➖ Take away 3
+Step 3: 💭 Count back: 13... 12, 11, ...
+Step 4: ✅ We counted back 3, so 13 - 3 = 10
 ✨ Answer: 10
 ```
 
 **Characteristics**:
-- Operation-specific steps
+- Operation-specific steps (4 steps per operation)
 - Uses emoji for visual engagement
 - Shows thinking process, not just answer
 - Staggered animation (200ms delay per step)
