@@ -273,7 +273,7 @@ private fun formatCategoryName(category: BadgeCategory): String =
         BadgeCategory.GAMES -> "Games"
     }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Compact - Phone")
 @Composable
 private fun BadgesUiPreview() {
     KidsMathTutorAppTheme {
@@ -340,7 +340,257 @@ private fun BadgesUiPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 700, heightDp = 900, name = "Medium - Tablet")
+@Composable
+private fun BadgesUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 5,
+                            totalCount = 12,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = BadgeIcon.FIRST_STEPS,
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.VOLUME to
+                                listOf(
+                                    Badge(
+                                        id = "math_rookie",
+                                        name = "Math Rookie",
+                                        description = "Solved 25 problems",
+                                        icon = BadgeIcon.MATH_ROOKIE,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(25),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "math_champion",
+                                        name = "Math Champion",
+                                        description = "Solved 100 problems",
+                                        icon = BadgeIcon.MATH_CHAMPION,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(100),
+                                        unlockedAt = null,
+                                    ),
+                                    Badge(
+                                        id = "math_master",
+                                        name = "Math Master",
+                                        description = "Solved 500 problems",
+                                        icon = BadgeIcon.MATH_LEGEND,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(500),
+                                        unlockedAt = null,
+                                    ),
+                                ),
+                            BadgeCategory.STREAK to
+                                listOf(
+                                    Badge(
+                                        id = "streak_starter",
+                                        name = "Streak Starter",
+                                        description = "Practice 3 days in a row",
+                                        icon = BadgeIcon.STREAK_STARTER,
+                                        category = BadgeCategory.STREAK,
+                                        requirement = BadgeRequirement.DailyStreak(3),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.GAMES to
+                                listOf(
+                                    Badge(
+                                        id = "speed_demon",
+                                        name = "Speed Demon",
+                                        description = "Score 20+ in Math Race",
+                                        icon = BadgeIcon.SPEED_DEMON,
+                                        category = BadgeCategory.GAMES,
+                                        requirement = BadgeRequirement.MathRaceScore(20),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "perfect_race",
+                                        name = "Perfect Race",
+                                        description = "Complete Math Race with no mistakes",
+                                        icon = BadgeIcon.PERFECT_RACE,
+                                        category = BadgeCategory.GAMES,
+                                        requirement = BadgeRequirement.PerfectGameAccuracy,
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 1100, heightDp = 900, name = "Expanded - Large Tablet")
+@Composable
+private fun BadgesUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 8,
+                            totalCount = 18,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = BadgeIcon.FIRST_STEPS,
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.VOLUME to
+                                listOf(
+                                    Badge(
+                                        id = "math_rookie",
+                                        name = "Math Rookie",
+                                        description = "Solved 25 problems",
+                                        icon = BadgeIcon.MATH_ROOKIE,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(25),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "math_champion",
+                                        name = "Math Champion",
+                                        description = "Solved 100 problems",
+                                        icon = BadgeIcon.MATH_CHAMPION,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(100),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "math_master",
+                                        name = "Math Master",
+                                        description = "Solved 500 problems",
+                                        icon = BadgeIcon.MATH_LEGEND,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(500),
+                                        unlockedAt = null,
+                                    ),
+                                ),
+                            BadgeCategory.OPERATION_MASTERY to
+                                listOf(
+                                    Badge(
+                                        id = "addition_expert",
+                                        name = "Addition Expert",
+                                        description = "Master addition operations",
+                                        icon = BadgeIcon.ADDITION_EXPERT,
+                                        category = BadgeCategory.OPERATION_MASTERY,
+                                        requirement =
+                                            BadgeRequirement.OperationCount(
+                                                dev.hossain.mathtutor.domain.model.MathOperation.ADDITION,
+                                                50,
+                                            ),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "subtraction_star",
+                                        name = "Subtraction Star",
+                                        description = "Master subtraction operations",
+                                        icon = BadgeIcon.SUBTRACTION_STAR,
+                                        category = BadgeCategory.OPERATION_MASTERY,
+                                        requirement =
+                                            BadgeRequirement.OperationCount(
+                                                dev.hossain.mathtutor.domain.model.MathOperation.SUBTRACTION,
+                                                50,
+                                            ),
+                                        unlockedAt = null,
+                                    ),
+                                    Badge(
+                                        id = "mix_master",
+                                        name = "Mix Master",
+                                        description = "Complete mixed operation sessions",
+                                        icon = BadgeIcon.MIX_MASTER,
+                                        category = BadgeCategory.OPERATION_MASTERY,
+                                        requirement = BadgeRequirement.MixedSessions(10),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.STREAK to
+                                listOf(
+                                    Badge(
+                                        id = "streak_starter",
+                                        name = "Streak Starter",
+                                        description = "Practice 3 days in a row",
+                                        icon = BadgeIcon.STREAK_STARTER,
+                                        category = BadgeCategory.STREAK,
+                                        requirement = BadgeRequirement.DailyStreak(3),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "week_warrior",
+                                        name = "Week Warrior",
+                                        description = "Practice 7 days in a row",
+                                        icon = BadgeIcon.DEDICATION_AWARD,
+                                        category = BadgeCategory.STREAK,
+                                        requirement = BadgeRequirement.DailyStreak(7),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.GAMES to
+                                listOf(
+                                    Badge(
+                                        id = "speed_demon",
+                                        name = "Speed Demon",
+                                        description = "Score 20+ in Math Race",
+                                        icon = BadgeIcon.SPEED_DEMON,
+                                        category = BadgeCategory.GAMES,
+                                        requirement = BadgeRequirement.MathRaceScore(20),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                    Badge(
+                                        id = "perfect_race",
+                                        name = "Perfect Race",
+                                        description = "Complete Math Race with no mistakes",
+                                        icon = BadgeIcon.PERFECT_RACE,
+                                        category = BadgeCategory.GAMES,
+                                        requirement = BadgeRequirement.PerfectGameAccuracy,
+                                        unlockedAt = null,
+                                    ),
+                                    Badge(
+                                        id = "quick_thinker",
+                                        name = "Quick Thinker",
+                                        description = "Solve problem in under 3 seconds",
+                                        icon = BadgeIcon.QUICK_THINKER,
+                                        category = BadgeCategory.SPEED_ACCURACY,
+                                        requirement = BadgeRequirement.ProblemSpeed(3),
+                                        unlockedAt = null,
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme")
 @Composable
 private fun BadgesUiDarkPreview() {
     KidsMathTutorAppTheme(darkTheme = true) {

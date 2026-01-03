@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -67,6 +70,7 @@ import java.time.Instant
 
 // Width breakpoints for adaptive layouts
 private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 1100.dp
 private val MAX_CONTENT_WIDTH: Dp = 840.dp
 
 /**
@@ -118,6 +122,7 @@ fun StatsUi(
                     .padding(paddingValues),
         ) {
             val isWideScreen = maxWidth >= MEDIUM_WIDTH_BREAKPOINT
+            val isExpandedScreen = maxWidth >= EXPANDED_WIDTH_BREAKPOINT
 
             // Center content on wide screens
             Box(
@@ -158,6 +163,7 @@ fun StatsUi(
                             OverallProgressCards(
                                 stats = state.overallStats,
                                 onAccuracyClick = { state.eventSink(StatsScreen.Event.AccuracyClicked) },
+                                isExpandedScreen = isExpandedScreen,
                             )
                         }
 
@@ -172,32 +178,32 @@ fun StatsUi(
                                 )
                             }
 
-                            // Show operation stats in grid on wide screens
-                            if (isWideScreen && state.operationStats.size >= 2) {
-                                items(state.operationStats.entries.chunked(2)) { rowItems ->
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    ) {
-                                        rowItems.forEach { (operation, stats) ->
-                                            OperationStatsCard(
-                                                operation = operation,
-                                                stats = stats,
-                                                modifier = Modifier.weight(1f),
-                                            )
-                                        }
-                                        // Fill remaining space if odd number of items
-                                        if (rowItems.size == 1) {
-                                            Spacer(modifier = Modifier.weight(1f))
-                                        }
+                            // Adaptive grid layout for operation stats
+                            item {
+                                val itemsCount = state.operationStats.size
+                                val estimatedHeight =
+                                    when {
+                                        isExpandedScreen -> (itemsCount / 3 + if (itemsCount % 3 > 0) 1 else 0) * 100
+                                        isWideScreen -> (itemsCount / 2 + if (itemsCount % 2 > 0) 1 else 0) * 100
+                                        else -> itemsCount * 100
                                     }
-                                }
-                            } else {
-                                items(state.operationStats.entries.toList()) { (operation, stats) ->
-                                    OperationStatsCard(
-                                        operation = operation,
-                                        stats = stats,
-                                    )
+
+                                LazyVerticalGrid(
+                                    columns =
+                                        GridCells.Adaptive(minSize = 280.dp),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(estimatedHeight.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                                ) {
+                                    items(state.operationStats.entries.toList()) { (operation, stats) ->
+                                        OperationStatsCard(
+                                            operation = operation,
+                                            stats = stats,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -226,81 +232,192 @@ fun StatsUi(
 
 /**
  * Displays overall progress cards showing total problems and accuracy.
+ * Adaptive layout:
+ * - Compact/Medium: 2 columns (Total Problems, Accuracy)
+ * - Expanded: 3 columns (Total Problems, Sessions, Accuracy)
  */
 @Composable
 private fun OverallProgressCards(
     stats: SessionStats,
     onAccuracyClick: () -> Unit,
+    isExpandedScreen: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth().height(IntrinsicSize.Max),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        // Total Problems Card
-        Card(
-            modifier = Modifier.weight(1f),
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                ),
+    if (isExpandedScreen) {
+        // 3-column layout for expanded screens
+        Row(
+            modifier = modifier.fillMaxWidth().height(IntrinsicSize.Max),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Column(
+            // Total Problems Card
+            Card(
+                modifier = Modifier.weight(1f),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    ),
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "Total Problems",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stats.totalProblems.toString(),
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+
+            // Sessions Count Card
+            Card(
+                modifier = Modifier.weight(1f),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    ),
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "Sessions",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stats.sessionCount.toString(),
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    )
+                }
+            }
+
+            // Overall Accuracy Card
+            Card(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                        .weight(1f)
+                        .clickable { onAccuracyClick() },
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ),
             ) {
-                Text(
-                    text = "Total Problems",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stats.totalProblems.toString(),
-                    style = MaterialTheme.typography.displayMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "Accuracy",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "${stats.accuracy.toInt()}%",
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    StarRating(rating = stats.getStarRating())
+                }
             }
         }
-
-        // Overall Accuracy Card
-        Card(
-            modifier =
-                Modifier
-                    .weight(1f)
-                    .clickable { onAccuracyClick() },
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                ),
+    } else {
+        // 2-column layout for compact/medium screens
+        Row(
+            modifier = modifier.fillMaxWidth().height(IntrinsicSize.Max),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Column(
+            // Total Problems Card
+            Card(
+                modifier = Modifier.weight(1f),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    ),
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "Total Problems",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stats.totalProblems.toString(),
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+
+            // Overall Accuracy Card
+            Card(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                        .weight(1f)
+                        .clickable { onAccuracyClick() },
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ),
             ) {
-                Text(
-                    text = "Accuracy",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "${stats.accuracy.toInt()}%",
-                    style = MaterialTheme.typography.displayMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                StarRating(rating = stats.getStarRating())
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "Accuracy",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "${stats.accuracy.toInt()}%",
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    StarRating(rating = stats.getStarRating())
+                }
             }
         }
     }
@@ -943,6 +1060,230 @@ private fun StatsUiTabletLandscapePreview() {
                                 durationSeconds = 95,
                                 timestamp = Instant.now().minusSeconds(1800),
                                 gradeLevel = 1,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Adaptive layout previews for comprehensive testing
+
+@Preview(
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+    name = "Compact - Phone Portrait",
+)
+@Composable
+private fun StatsUiCompactPreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    userName = "Alex",
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 120,
+                            correctCount = 108,
+                            accuracy = 90f,
+                            sessionCount = 12,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 60,
+                                    correctCount = 54,
+                                    accuracy = 90f,
+                                    sessionCount = 6,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 60,
+                                    correctCount = 54,
+                                    accuracy = 90f,
+                                    sessionCount = 6,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 9,
+                                incorrectAnswers = 1,
+                                accuracy = 90f,
+                                durationSeconds = 120,
+                                timestamp = Instant.now(),
+                                gradeLevel = 1,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 8,
+                                incorrectAnswers = 2,
+                                accuracy = 80f,
+                                durationSeconds = 150,
+                                timestamp = Instant.now().minusSeconds(3600),
+                                gradeLevel = 0,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 700,
+    heightDp = 500,
+    name = "Medium - Small Tablet",
+)
+@Composable
+private fun StatsUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    userName = "Jordan",
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 180,
+                            correctCount = 162,
+                            accuracy = 90f,
+                            sessionCount = 18,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 90,
+                                    correctCount = 81,
+                                    accuracy = 90f,
+                                    sessionCount = 9,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 90,
+                                    correctCount = 81,
+                                    accuracy = 90f,
+                                    sessionCount = 9,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 9,
+                                incorrectAnswers = 1,
+                                accuracy = 90f,
+                                durationSeconds = 120,
+                                timestamp = Instant.now(),
+                                gradeLevel = 2,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 7,
+                                incorrectAnswers = 3,
+                                accuracy = 70f,
+                                durationSeconds = 95,
+                                timestamp = Instant.now().minusSeconds(1800),
+                                gradeLevel = 1,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1100,
+    heightDp = 600,
+    name = "Expanded - Large Tablet",
+)
+@Composable
+private fun StatsUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    userName = "Taylor",
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 250,
+                            correctCount = 225,
+                            accuracy = 90f,
+                            sessionCount = 25,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 100,
+                                    correctCount = 90,
+                                    accuracy = 90f,
+                                    sessionCount = 10,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 80,
+                                    correctCount = 72,
+                                    accuracy = 90f,
+                                    sessionCount = 8,
+                                ),
+                            MathOperation.MULTIPLICATION to
+                                SessionStats(
+                                    totalProblems = 70,
+                                    correctCount = 63,
+                                    accuracy = 90f,
+                                    sessionCount = 7,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 9,
+                                incorrectAnswers = 1,
+                                accuracy = 90f,
+                                durationSeconds = 120,
+                                timestamp = Instant.now(),
+                                gradeLevel = 2,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 7,
+                                incorrectAnswers = 3,
+                                accuracy = 70f,
+                                durationSeconds = 95,
+                                timestamp = Instant.now().minusSeconds(1800),
+                                gradeLevel = 1,
+                            ),
+                            PracticeSessionEntity(
+                                id = 3,
+                                operation = MathOperation.MULTIPLICATION,
+                                totalProblems = 10,
+                                correctAnswers = 8,
+                                incorrectAnswers = 2,
+                                accuracy = 80f,
+                                durationSeconds = 110,
+                                timestamp = Instant.now().minusSeconds(3600),
+                                gradeLevel = 2,
                             ),
                         ),
                     eventSink = {},

@@ -20,6 +20,92 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Improved Visual Hierarchy**: Better spacing and content centering on larger screens (max 900dp grid width)
   - **Responsive Previews**: Added preview functions for Compact (411x891dp), Medium (700x500dp), and Expanded (1100x600dp) screens
   - All layouts maintain Material 3 design principles with proper color-coded problem indicators (green for correct, red for incorrect)
+- **Game Screens Tablet Optimization - Phase 8**: Complete tablet optimization for game selection and game screens
+  - **GameSelectionScreen Responsive Grid (Phase 8a)**:
+    - Replaced LazyColumn with LazyVerticalGrid using GridCells.Adaptive(280.dp)
+    - Compact (<600dp): Single column layout
+    - Medium (600-840dp): 2 game cards per row
+    - Expanded (>840dp): 3+ game cards per row
+    - Increased MAX_CONTENT_WIDTH to 800dp for better tablet readability
+    - Added responsive preview functions (Compact 411dp, Medium 700dp, Expanded 1100dp)
+  - **Game Screens Content Centering (Phase 8b)**:
+    - MathRaceStartScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MathRaceGameScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MathRaceResultsScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - NumberSequenceStartScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - NumberSequenceGameScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MemoryMatchStartScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MemoryMatchGameScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MemoryMatchResultsScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+  - **Responsive Previews**: Added compact, medium, and expanded tablet previews to game screens
+  - All layouts maintain Material 3 design principles with proper touch targets and accessibility
+  - Content is centered on wider screens (tablets and landscape) for better readability and playability
+- **Settings Screens Adaptive Layout - Phase 9**: Tablet-optimized layouts for all settings screens
+  - **SettingsScreen (Phase 9a)**: Enhanced responsive layout with improved content width constraints
+    - Compact (<600dp): Max width 600dp
+    - Medium (600-840dp): Max width 700dp
+    - Expanded (>840dp): Max width 800dp
+    - Adaptive spacing increases from 24dp to 28dp on expanded screens
+    - Content centered on tablets and larger screens for better readability
+    - Added responsive preview functions for compact (411×891dp), medium (700×500dp), and expanded (1100×600dp) screen sizes
+  - **AudioHapticSettingsScreen (Phase 9b)**: Applied adaptive layout with responsive breakpoints
+    - Same responsive width constraints as SettingsScreen
+    - Content centered on tablets for optimal viewing experience
+    - Improved visual hierarchy with adaptive spacing (24-28dp based on screen width)
+    - Added responsive preview functions for all screen sizes
+  - **ParentSettingsScreen (Phase 9c)**: Tablet-friendly adaptive layout
+    - Responsive width constraints matching other settings screens
+    - Adaptive spacing (16-20dp) for better organization on larger screens
+    - Improved form layouts and button spacing for tablets
+    - Added responsive preview functions for all screen sizes
+  - All settings screens now use BoxWithConstraints for responsive layout calculations
+  - Maintains Material 3 design principles with proper spacing and touch targets (48dp minimum)
+  - Uses existing Material 3 adaptive libraries already in the project
+- **BadgesScreen Adaptive Layout - Phase 7**: Complete tablet-optimized badge grid with responsive columns
+  - **Responsive Badge Grid**: Adaptive column layout based on screen width using `LazyVerticalGrid`
+    - Compact (<600dp): 3 badges per row
+    - Medium (600-840dp): 4 badges per row
+    - Expanded (>840dp): 6 badges per row
+  - **Adaptive Badge Sizing**: Badge icons scale appropriately for larger screens
+    - Compact: 56dp badge icons
+    - Medium: 64dp badge icons
+    - Expanded: 72dp badge icons
+  - **Adaptive Spacing**: Grid spacing increases for better visual hierarchy on larger screens (12dp → 16dp → 20dp)
+  - **Enhanced Badge Cards**: Square aspect ratio for consistent badge display, scaled status icons (checkmark/lock)
+  - **Comprehensive Previews**: Added adaptive preview functions for Compact (411dp), Medium (700dp), and Expanded (1100dp) screen sizes
+  - All layouts maintain Material 3 design principles with proper touch targets (48dp minimum) and accessibility
+- **StatsScreen Responsive Layout - Phase 6**: Implemented adaptive layouts for statistics display
+  - **Responsive Overall Progress Cards**: Adaptive column layout based on screen size
+    - Compact/Medium (<1100dp): 2 columns (Total Problems, Accuracy)
+    - Expanded (≥1100dp): 3 columns (Total Problems, Sessions, Accuracy)
+  - **Responsive Operation Stats Grid**: Using `LazyVerticalGrid` with `GridCells.Adaptive(280.dp)`
+    - Automatically adjusts columns based on available width
+    - Compact: 1 column vertical layout
+    - Medium: 2-column grid
+    - Expanded: 3-column grid for multiple operations
+  - **Adaptive Preview Functions**: Added comprehensive device previews
+    - Compact preview (411dp x 891dp) - Phone portrait
+    - Medium preview (700dp x 500dp) - Small tablet
+    - Expanded preview (1100dp x 600dp) - Large tablet
+  - **Enhanced Width Breakpoints**: Added `EXPANDED_WIDTH_BREAKPOINT` constant (1100dp) for large tablet support
+  - All layouts maintain Material 3 design principles with proper spacing and visual hierarchy
+### Changed
+- **MathPracticeScreen Adaptive Layout - Phase 5**: Enhanced tablet support with larger touch targets and improved dual-pane layouts
+  - **Tablet-Sized NumberPad**: Adaptive button sizing based on screen width
+    - Compact screens (<840dp): 64dp buttons with 12dp spacing
+    - Expanded screens (≥840dp): 80dp buttons with 16dp spacing and larger typography (displaySmall)
+  - **Tablet-Sized AnswerField**: Adaptive text sizing for better readability
+    - Compact screens: displayLarge typography
+    - Expanded screens (≥840dp): displayMedium typography
+  - **Enhanced Landscape Layout**: Improved space distribution for tablets
+    - Better proportions with expanded screens getting 1.2x weight for problem area
+    - Increased horizontal spacing (32dp → 48dp on expanded)
+    - Right pane supports up to 600dp width on expanded screens
+  - **Improved Shake Animation**: Base amplitude scales better on larger displays
+  - **Tablet-Optimized Previews**: Added preview functions for different screen sizes
+    - Compact landscape (600dp x 400dp)
+    - Medium tablet (800dp x 600dp)
+    - Expanded tablet landscape (1100dp x 600dp)
 
 ## [1.22.1] - 2026-01-02
 
