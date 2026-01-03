@@ -47,8 +47,8 @@ private val EXPANDED_BREAKPOINT: Dp = 840.dp
  *
  * Displays badges in a responsive grid layout with Material 3 design:
  * - Compact (<600dp): 3 badges per row
- * - Medium (600-840dp): 4-5 badges per row
- * - Expanded (>840dp): 6+ badges per row
+ * - Medium (600-840dp): 4 badges per row
+ * - Expanded (>840dp): 6 badges per row
  *
  * Unlocked badges show full color with a checkmark, while locked badges are dimmed
  * (40% alpha) with a lock icon. Badge icon sizes scale appropriately for larger screens
