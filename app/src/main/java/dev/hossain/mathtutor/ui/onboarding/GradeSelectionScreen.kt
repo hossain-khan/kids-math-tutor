@@ -91,7 +91,7 @@ import java.time.Instant
 
 private val MIN_GRADE_CARD_WIDTH: Dp = 200.dp
 private val GRADE_CARD_HEIGHT: Dp = 150.dp
-private val GRADE_CARD_VERTICAL_PADDING: Dp = 4.dp
+private val GRADE_CARD_VERTICAL_PADDING: Dp = 8.dp
 
 /**
  * Circuit screen for grade selection during onboarding or from settings.
@@ -468,7 +468,7 @@ fun GradeSelectionUi(
                         // LazyVerticalGrid requires height constraint when inside scrollable parent
                         val numRows = (state.availableGrades.size + numColumns - 1) / numColumns // Ceiling division
                         val cardHeightWithPadding = GRADE_CARD_HEIGHT + (GRADE_CARD_VERTICAL_PADDING * 2)
-                        val verticalSpacing = 16.dp
+                        val verticalSpacing = 4.dp
                         val gridHeight = (cardHeightWithPadding * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0))
 
                         LazyVerticalGrid(
