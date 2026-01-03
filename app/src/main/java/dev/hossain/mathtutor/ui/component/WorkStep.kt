@@ -30,13 +30,34 @@ import kotlinx.coroutines.delay
 /**
  * A single step in a step-by-step solution breakdown.
  *
- * Shows a step number, emoji, and explanation with animated reveal.
+ * Used by [StepByStepBreakdown] to display individual steps in the **Tier 3 work breakdown**
+ * of the progressive hint system. Each step animates in with a staggered reveal to guide
+ * children through the solution process one step at a time.
  *
- * @param stepNumber The step number (1-indexed)
- * @param emoji Emoji representing the step
+ * **Visual Design**:
+ * - Step number badge with primary color background
+ * - Large emoji for visual engagement and quick recognition
+ * - Clear description text in body style
+ * - Rounded card with primaryContainer background
+ * - Smooth fade-in + expand animation
+ *
+ * **Animation Timing**:
+ * - Default stagger: 200ms between steps (set by [StepByStepBreakdown])
+ * - Uses `fadeIn()` + `expandVertically()` for smooth reveal
+ * - Helps children process each step before seeing the next
+ *
+ * **Usage Context**:
+ * Part of the "📚 How to solve" feature shown after 2 wrong attempts when child
+ * requests help and needs explicit step-by-step guidance.
+ *
+ * @param stepNumber The step number (1-indexed) displayed in the badge
+ * @param emoji Emoji representing the step (🔢, ➕, 🧮, etc.)
  * @param description Text description of what to do in this step
- * @param delayMillis Delay before this step animates in
- * @param modifier Optional modifier
+ * @param delayMillis Delay in milliseconds before this step animates in (for staggered reveal)
+ * @param modifier Optional modifier for additional styling
+ *
+ * @see dev.hossain.mathtutor.ui.component.StepByStepBreakdown for parent component
+ * @see dev.hossain.mathtutor.domain.work.WorkProvider for step generation logic
  */
 @Composable
 fun WorkStep(

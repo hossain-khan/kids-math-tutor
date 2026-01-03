@@ -10,9 +10,21 @@ import dev.zacsweers.metro.Inject
  * Provides operation-specific hints to guide children toward solving math problems
  * without directly giving away the answer.
  *
- * Hints are categorized by level:
- * - Level 1: Initial gentle nudge
- * - Level 2: More specific guidance
+ * **Integration in Hint System**:
+ * - Part of **Tier 1** in the progressive 3-tier hint system
+ * - Appears when child clicks "💡 Need help?" button after 2 wrong attempts
+ * - Displayed in AlertDialog with Math Pup teaching sticker
+ * - Text-based hints max 60 characters for readability
+ * - Never reveals the answer, only guides thinking process
+ *
+ * **Hint Levels**:
+ * - Level 1: Initial gentle nudge (currently used)
+ * - Level 2: More specific guidance (reserved for future enhancement)
+ *
+ * **Analytics**: Tracks `HINT_REQUESTED` event when hints are shown
+ *
+ * @see dev.hossain.mathtutor.ui.component.DotVisualizer for Tier 2 visual hints
+ * @see dev.hossain.mathtutor.domain.work.WorkProvider for Tier 3 work breakdown
  */
 interface HintProvider {
     /**
