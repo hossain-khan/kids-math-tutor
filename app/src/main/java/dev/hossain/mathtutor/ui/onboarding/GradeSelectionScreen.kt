@@ -454,16 +454,16 @@ fun GradeSelectionUi(
 
                         // Use LazyVerticalGrid for adaptive layout
                         // In landscape mode, limit to 2 columns to prevent text overflow
+                        val numColumns = if (isLandscape) 2 else 1
                         val gridColumns =
                             if (isLandscape) {
-                                GridCells.Fixed(2)
+                                GridCells.Fixed(numColumns)
                             } else {
                                 GridCells.Adaptive(minSize = MIN_GRADE_CARD_WIDTH)
                             }
 
                         // Calculate grid height based on number of rows needed
                         // LazyVerticalGrid requires height constraint when inside scrollable parent
-                        val numColumns = if (isLandscape) 2 else 1
                         val numRows = (state.availableGrades.size + numColumns - 1) / numColumns // Ceiling division
                         val cardHeight = 150.dp
                         val verticalSpacing = 16.dp
@@ -474,7 +474,6 @@ fun GradeSelectionUi(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 8.dp) // Extra space for card shadows on top/bottom
                                     .height(gridHeight),
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp),
