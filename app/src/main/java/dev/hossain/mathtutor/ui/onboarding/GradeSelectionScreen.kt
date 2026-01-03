@@ -90,6 +90,8 @@ import timber.log.Timber
 import java.time.Instant
 
 private val MIN_GRADE_CARD_WIDTH: Dp = 200.dp
+private val GRADE_CARD_HEIGHT: Dp = 150.dp
+private val GRADE_CARD_VERTICAL_PADDING: Dp = 4.dp
 
 /**
  * Circuit screen for grade selection during onboarding or from settings.
@@ -465,9 +467,9 @@ fun GradeSelectionUi(
                         // Calculate grid height based on number of rows needed
                         // LazyVerticalGrid requires height constraint when inside scrollable parent
                         val numRows = (state.availableGrades.size + numColumns - 1) / numColumns // Ceiling division
-                        val cardHeight = 158.dp // 150dp card + 8dp vertical padding (4dp top + 4dp bottom)
+                        val cardHeightWithPadding = GRADE_CARD_HEIGHT + (GRADE_CARD_VERTICAL_PADDING * 2)
                         val verticalSpacing = 16.dp
-                        val gridHeight = (cardHeight * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0))
+                        val gridHeight = (cardHeightWithPadding * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0))
 
                         LazyVerticalGrid(
                             columns = gridColumns,
@@ -516,8 +518,8 @@ private fun GradeCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp)
-                .height(150.dp),
+                .padding(vertical = GRADE_CARD_VERTICAL_PADDING)
+                .height(GRADE_CARD_HEIGHT),
         border =
             if (isSelected) {
                 BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
