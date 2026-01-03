@@ -15,12 +15,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -94,24 +94,27 @@ fun ColorPaletteViewerUi(
                     .padding(paddingValues),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
+            LazyColumn(
                 modifier =
                     Modifier
                         .widthIn(max = MAX_CONTENT_WIDTH)
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
                         .padding(16.dp),
             ) {
-                Text(
-                    text = "All colors used throughout the app",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                item {
+                    Text(
+                        text = "All colors used throughout the app",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 // Render each group (colors or widgets)
-                state.groups.forEach { group ->
+                items(state.groups) { group ->
                     when (group) {
                         is ColorPaletteViewerScreen.ColorGroup -> ColorGroupCard(group = group, state = state)
                         is ColorPaletteViewerScreen.WidgetDemoGroup -> WidgetDemoGroupCard(group = group)
@@ -119,7 +122,9 @@ fun ColorPaletteViewerUi(
                     Spacer(modifier = Modifier.height(12.dp))
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
@@ -172,12 +177,23 @@ private fun ColorGroupCard(
                         else -> 16.dp
                     }
 
+                // Calculate number of columns and grid height
+                val numColumns = (screenWidth / (MIN_COLOR_CARD_WIDTH + gridSpacing)).toInt().coerceAtLeast(1)
+                val numRows = (group.colors.size + numColumns - 1) / numColumns
+
+                // Each card is ~200dp tall (80dp swatch + 120dp text/padding)
+                val cardHeight = 200.dp
+                val gridHeight = (cardHeight * numRows) + (gridSpacing * (numRows - 1))
+
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = MIN_COLOR_CARD_WIDTH),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(gridHeight),
                     horizontalArrangement = Arrangement.spacedBy(gridSpacing),
                     verticalArrangement = Arrangement.spacedBy(gridSpacing),
-                    userScrollEnabled = false, // Parent Column with verticalScroll() handles scrolling
+                    userScrollEnabled = false, // Parent LazyColumn handles scrolling
                 ) {
                     items(group.colors) { colorEntry ->
                         ColorSwatchItem(colorEntry = colorEntry, state = state)
