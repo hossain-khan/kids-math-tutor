@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -117,6 +118,7 @@ fun BadgeGrid(
                     badge = badge,
                     onClick = { onBadgeClick(badge) },
                     badgeIconSize = badgeIconSize,
+                    screenWidth = screenWidth,
                 )
             }
         }
@@ -446,6 +448,7 @@ private fun BadgeGridMediumDarkPreview() {
  * @param badge Badge to display
  * @param onClick Callback when badge is clicked
  * @param badgeIconSize Size for the badge icon
+ * @param screenWidth Current screen width for responsive sizing
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -453,9 +456,33 @@ private fun BadgeCard(
     badge: Badge,
     onClick: () -> Unit,
     badgeIconSize: Dp,
+    screenWidth: Dp,
     modifier: Modifier = Modifier,
 ) {
     val isUnlocked = badge.isUnlocked()
+
+    // Adaptive padding and spacing based on screen width
+    val cardPadding =
+        when {
+            screenWidth < COMPACT_BREAKPOINT -> 8.dp
+            screenWidth < EXPANDED_BREAKPOINT -> 12.dp
+            else -> 16.dp
+        }
+
+    val contentSpacing =
+        when {
+            screenWidth < COMPACT_BREAKPOINT -> 4.dp
+            screenWidth < EXPANDED_BREAKPOINT -> 6.dp
+            else -> 8.dp
+        }
+
+    // Adaptive text style based on screen width
+    val textStyle =
+        when {
+            screenWidth < COMPACT_BREAKPOINT -> MaterialTheme.typography.labelSmall
+            screenWidth < EXPANDED_BREAKPOINT -> MaterialTheme.typography.labelMedium
+            else -> MaterialTheme.typography.labelLarge
+        }
 
     Card(
         onClick = onClick,
@@ -472,56 +499,65 @@ private fun BadgeCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Box(
-            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(cardPadding),
             contentAlignment = Alignment.Center,
         ) {
             Column(
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.Center,
             ) {
                 // Badge Icon with status indicator
-                Box(contentAlignment = Alignment.TopEnd) {
-                    BadgeIcon(
-                        badgeIcon = badge.icon,
-                        contentDescription = badge.name,
-                        size = badgeIconSize,
-                        colorFilter =
-                            if (isUnlocked) {
-                                null
-                            } else {
-                                ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
-                            },
-                    )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Box(contentAlignment = Alignment.TopEnd) {
+                        BadgeIcon(
+                            badgeIcon = badge.icon,
+                            contentDescription = badge.name,
+                            size = badgeIconSize,
+                            colorFilter =
+                                if (isUnlocked) {
+                                    null
+                                } else {
+                                    ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                                },
+                        )
 
-                    // Status icon (checkmark or lock) - scaled relative to badge icon
-                    val statusIconSize = (badgeIconSize.value * 0.28f).dp
-                    Icon(
-                        imageVector =
-                            if (isUnlocked) {
-                                Icons.Filled.CheckCircleOutline
-                            } else {
-                                Icons.Filled.Lock
-                            },
-                        contentDescription =
-                            if (isUnlocked) {
-                                "Unlocked"
-                            } else {
-                                "Locked"
-                            },
-                        modifier = Modifier.size(statusIconSize),
-                        tint =
-                            if (isUnlocked) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                    )
+                        // Status icon (checkmark or lock) - scaled relative to badge icon
+                        val statusIconSize = (badgeIconSize.value * 0.3f).dp
+                        Icon(
+                            imageVector =
+                                if (isUnlocked) {
+                                    Icons.Filled.CheckCircleOutline
+                                } else {
+                                    Icons.Filled.Lock
+                                },
+                            contentDescription =
+                                if (isUnlocked) {
+                                    "Unlocked"
+                                } else {
+                                    "Locked"
+                                },
+                            modifier = Modifier.size(statusIconSize),
+                            tint =
+                                if (isUnlocked) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                        )
+                    }
                 }
 
                 // Badge Name
                 Text(
                     text = badge.name,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = textStyle,
                     color =
                         if (isUnlocked) {
                             MaterialTheme.colorScheme.onPrimaryContainer
@@ -531,6 +567,7 @@ private fun BadgeCard(
                     textAlign = TextAlign.Center,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = contentSpacing),
                 )
             }
         }
