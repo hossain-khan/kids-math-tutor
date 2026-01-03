@@ -473,11 +473,11 @@ private fun getCongratsMessage(
     accuracyPercentage: Float,
     userName: String?,
 ): String {
-    val nameSuffix = if (userName != null) ", $userName" else ""
+    val nameSuffix = if (!userName.isNullOrBlank()) ", $userName" else ""
 
     return when {
         accuracyPercentage == 100f -> {
-            if (userName != null) {
+            if (!userName.isNullOrBlank()) {
                 "Perfect score, $userName! 🎉"
             } else {
                 "Perfect score! 🎉"
@@ -485,7 +485,7 @@ private fun getCongratsMessage(
         }
 
         accuracyPercentage >= 90f -> {
-            if (userName != null) {
+            if (!userName.isNullOrBlank()) {
                 "Excellent work, $userName! ⭐"
             } else {
                 "Excellent work! ⭐"
@@ -493,7 +493,7 @@ private fun getCongratsMessage(
         }
 
         accuracyPercentage >= 75f -> {
-            if (userName != null) {
+            if (!userName.isNullOrBlank()) {
                 "Great job, $userName! 👍"
             } else {
                 "Great job! 👍"
@@ -517,11 +517,11 @@ private fun getCustomChallengeCongratsMessage(
     accuracyPercentage: Float,
     userName: String?,
 ): String {
-    val nameSuffix = if (userName != null) ", $userName" else ""
+    val nameSuffix = if (!userName.isNullOrBlank()) ", $userName" else ""
 
     return when {
         accuracyPercentage == 100f -> {
-            if (userName != null) {
+            if (!userName.isNullOrBlank()) {
                 "Perfect, $userName! 🌟"
             } else {
                 "Perfect! 🌟"
@@ -529,7 +529,7 @@ private fun getCustomChallengeCongratsMessage(
         }
 
         accuracyPercentage >= 90f -> {
-            if (userName != null) {
+            if (!userName.isNullOrBlank()) {
                 "Awesome, $userName! 🎯"
             } else {
                 "Awesome! 🎯"
@@ -537,7 +537,7 @@ private fun getCustomChallengeCongratsMessage(
         }
 
         accuracyPercentage >= 75f -> {
-            if (userName != null) {
+            if (!userName.isNullOrBlank()) {
                 "Well done, $userName! 👏"
             } else {
                 "Well done! 👏"
