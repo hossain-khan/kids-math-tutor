@@ -369,7 +369,7 @@ private fun WelcomeSection(
             Column(horizontalAlignment = Alignment.Start) {
                 Text(
                     text =
-                        if (userName != null) {
+                        if (!(userName.isNullOrBlank())) {
                             "Hi $userName!"
                         } else {
                             "Welcome back!"

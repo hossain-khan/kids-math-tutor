@@ -125,11 +125,11 @@ fun StreakCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             // Encouraging message
-            val namePrefix = if (userName != null) "$userName, " else ""
+            val namePrefix = if (!userName.isNullOrBlank()) "$userName, " else ""
             val message =
                 when {
                     streakData == null || !streakData.isStreakAlive(today) -> {
-                        if (userName != null) {
+                        if (!userName.isNullOrBlank()) {
                             "$userName, start your streak today! 🎯"
                         } else {
                             "Start your streak today! 🎯"
@@ -137,11 +137,11 @@ fun StreakCard(
                     }
 
                     streakData.currentStreak == 1 -> {
-                        "Great start${if (userName != null) ", $userName" else ""}! Come back tomorrow! 🌟"
+                        "Great start${if (!userName.isNullOrBlank()) ", $userName" else ""}! Come back tomorrow! 🌟"
                     }
 
                     streakData.lastPracticeDate == today -> {
-                        "Amazing${if (userName != null) ", $userName" else ""}! You practiced today! 🎉"
+                        "Amazing${if (!userName.isNullOrBlank()) ", $userName" else ""}! You practiced today! 🎉"
                     }
 
                     streakData.lastPracticeDate == today.minusDays(1) -> {
@@ -149,7 +149,7 @@ fun StreakCard(
                     }
 
                     else -> {
-                        "Keep it up${if (userName != null) ", $userName" else ""}! You're doing great! 💪"
+                        "Keep it up${if (!userName.isNullOrBlank()) ", $userName" else ""}! You're doing great! 💪"
                     }
                 }
 
