@@ -99,7 +99,7 @@ fun NumberSequenceGameScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface,
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             // Center content on tablets
             Box(
                 modifier = Modifier.fillMaxSize(),

@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
@@ -89,62 +91,59 @@ fun GameSelectionUi(
                     .padding(paddingValues),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
+            LazyColumn(
                 modifier =
                     Modifier
                         .widthIn(max = MAX_CONTENT_WIDTH)
                         .fillMaxSize()
                         .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Header with mascot
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                ) {
-                    // Math Pup juggling number blocks
-                    Image(
-                        painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
-                        contentDescription = "Math Pup juggling numbers",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(100.dp),
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(
-                            text = "Play fun math games!",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    ) {
+                        // Math Pup juggling number blocks
+                        Image(
+                            painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
+                            contentDescription = "Math Pup juggling numbers",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(100.dp),
                         )
-                        Text(
-                            text = "Solve more problems to unlock new games",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "Play fun math games!",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Text(
+                                text = "Solve more problems to unlock new games",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
                 }
 
                 // Adaptive grid of game cards
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = MIN_CARD_WIDTH),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
-                        GameCard(
-                            gameInfo = gameInfo,
-                            totalProblemsSolved = state.totalProblemsSolved,
-                            onPlayClicked = {
-                                // If game is locked, it's a trial play
-                                state.eventSink(
-                                    GameSelectionScreen.Event.PlayGame(
-                                        game = gameInfo.game,
-                                        isTrial = !gameInfo.isUnlocked,
-                                    ),
-                                )
-                            },
-                        )
-                    }
+                items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
+                    GameCard(
+                        gameInfo = gameInfo,
+                        totalProblemsSolved = state.totalProblemsSolved,
+                        onPlayClicked = {
+                            // If game is locked, it's a trial play
+                            state.eventSink(
+                                GameSelectionScreen.Event.PlayGame(
+                                    game = gameInfo.game,
+                                    isTrial = !gameInfo.isUnlocked,
+                                ),
+                            )
+                        },
+                    )
                 }
             }
         }
