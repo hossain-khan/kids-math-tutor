@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Math Pup Stickers for Help Dialogs**: Added themed sticker illustrations to enhance help features
+  - "Need Help" dialog now displays friendly Math Pup teaching sticker
+  - "Show Visually" dialog now displays playful Math Pup juggling balls sticker
+  - Makes help features more engaging and encouraging for children
+  - Stickers match the Math Pup mascot theme with child-friendly design
+  - **Adaptive sizing**: Stickers scale larger on tablets and foldable phones (≥600dp width)
+    - Hint dialog: 120dp (phone) → 180dp (tablet)
+    - Visual hint dialog: 100dp (phone) → 150dp (tablet)
+
 ### Changed
 - **Adaptive Difficulty moved to Parent Settings**: Adaptive difficulty toggle has been relocated from the main Settings screen to the Parent Settings screen for better parental control
   - Parents can now manage adaptive difficulty alongside other educational controls like grade limits and hint system

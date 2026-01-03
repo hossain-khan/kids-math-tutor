@@ -1,6 +1,7 @@
 package dev.hossain.mathtutor.ui.mathpractice
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
@@ -40,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -53,6 +56,7 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
@@ -64,7 +68,6 @@ import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.component.DotVisualizer
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.component.StepByStepBreakdown
-import dev.hossain.mathtutor.ui.component.VisualHintCard
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
@@ -176,13 +179,28 @@ internal fun MathPracticeUi(
                 )
             },
             text = {
-                Text(
-                    text = state.currentHintText,
-                    modifier =
-                        Modifier.semantics {
-                            contentDescription = "Hint to help solve the problem"
-                        },
-                )
+                BoxWithConstraints {
+                    val stickerSize = if (maxWidth >= MEDIUM_WIDTH_BREAKPOINT) 180.dp else 120.dp
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        // Math Pup teaching sticker
+                        Image(
+                            painter = painterResource(R.drawable.pup_tutor_sticker_need_help_teaching),
+                            contentDescription = "Math Pup offering help",
+                            modifier = Modifier.size(stickerSize),
+                        )
+                        Text(
+                            text = state.currentHintText,
+                            modifier =
+                                Modifier.semantics {
+                                    contentDescription = "Hint to help solve the problem"
+                                },
+                        )
+                    }
+                }
             },
             confirmButton = {
                 // Only show "Show Visually" button if visual hint is feasible for this problem
@@ -243,31 +261,40 @@ internal fun MathPracticeUi(
                 )
             },
             text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    DotVisualizer(
-                        operation = state.currentProblem.operation,
-                        firstNumber = state.currentProblem.num1,
-                        secondNumber = state.currentProblem.num2,
-                        modifier =
-                            Modifier.semantics {
-                                contentDescription =
-                                    "Visual representation showing " +
-                                    "${state.currentProblem.num1} and ${state.currentProblem.num2} for ${state.currentProblem.operation.name.lowercase()}"
-                            },
-                    )
-                    Text(
-                        text = state.currentHintText ?: "See how the problem works!",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        modifier =
-                            Modifier.semantics {
-                                contentDescription = "Explanation of the visual hint"
-                            },
-                    )
+                BoxWithConstraints {
+                    val stickerSize = if (maxWidth >= MEDIUM_WIDTH_BREAKPOINT) 150.dp else 100.dp
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        // Math Pup juggling balls sticker
+                        Image(
+                            painter = painterResource(R.drawable.pup_tutor_sticker_juggling_balls),
+                            contentDescription = "Math Pup with visual dots",
+                            modifier = Modifier.size(stickerSize),
+                        )
+                        DotVisualizer(
+                            operation = state.currentProblem.operation,
+                            firstNumber = state.currentProblem.num1,
+                            secondNumber = state.currentProblem.num2,
+                            modifier =
+                                Modifier.semantics {
+                                    contentDescription =
+                                        "Visual representation showing " +
+                                        "${state.currentProblem.num1} and ${state.currentProblem.num2} for ${state.currentProblem.operation.name.lowercase()}"
+                                },
+                        )
+                        Text(
+                            text = state.currentHintText ?: "See how the problem works!",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            modifier =
+                                Modifier.semantics {
+                                    contentDescription = "Explanation of the visual hint"
+                                },
+                        )
+                    }
                 }
             },
             confirmButton = {
@@ -1071,6 +1098,15 @@ private fun HintCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // Math Pup teaching sticker
+            Image(
+                painter = painterResource(R.drawable.pup_tutor_sticker_need_help_teaching),
+                contentDescription = "Math Pup offering help",
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .align(Alignment.CenterHorizontally),
+            )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
