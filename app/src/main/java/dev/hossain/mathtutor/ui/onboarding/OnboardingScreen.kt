@@ -353,11 +353,6 @@ private fun OnboardingPageContent(
         val smallerDimension = if (screenWidth < screenHeight) screenWidth else screenHeight
         val isPhone = smallerDimension < MEDIUM_WIDTH_BREAKPOINT
 
-        // Debug logging
-        Timber.d(
-            "OnboardingPageContent: screenWidth=$screenWidth, screenHeight=$screenHeight, isLandscape=$isLandscape, smallerDimension=$smallerDimension, isPhone=$isPhone, MEDIUM_WIDTH_BREAKPOINT=$MEDIUM_WIDTH_BREAKPOINT",
-        )
-
         // Adaptive image scaling based on screen width
         val imageScale =
             when {
@@ -380,7 +375,6 @@ private fun OnboardingPageContent(
 
         // Use side-by-side layout for phone landscape mode
         if (isPhone && isLandscape) {
-            Timber.d("OnboardingPageContent: Using side-by-side layout (phone landscape)")
             Row(
                 modifier =
                     Modifier
@@ -436,7 +430,6 @@ private fun OnboardingPageContent(
             }
         } else {
             // Default vertical layout for portrait and tablets
-            Timber.d("OnboardingPageContent: Using vertical layout (portrait or tablet)")
             Column(
                 modifier =
                     Modifier
