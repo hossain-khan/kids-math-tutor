@@ -64,7 +64,15 @@ import dev.hossain.mathtutor.ui.component.BadgeIcon as BadgeIconImage
 // Width breakpoints for adaptive layouts
 private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
 private val MAX_CONTENT_WIDTH: Dp = 840.dp
+
+// Note: EXPANDED_WIDTH_BREAKPOINT equals MAX_CONTENT_WIDTH as expanded layouts
+// begin at the same point where content centering ends
 private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
+
+// Heights for adaptive grids
+private val STATS_GRID_HEIGHT_COMPACT: Dp = 180.dp // Single column needs more vertical space
+private val STATS_GRID_HEIGHT_MULTI_COLUMN: Dp = 90.dp // Multi-column layout is more compact
+private val BADGES_GRID_HEIGHT: Dp = 120.dp
 
 /**
  * UI for [HomeScreen].
@@ -79,8 +87,8 @@ private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
  *
  * Adaptive Layout:
  * - Compact (<600dp): Single column, full width, 3 badges per row
- * - Medium (600-840dp): 2-column stats grid, side-by-side action buttons, 4-5 badges per row
- * - Expanded (>840dp): 3-column stats grid, larger buttons, 6+ badges per row, centered with max width
+ * - Medium (600-840dp): 2-column stats grid, side-by-side action buttons, 5 badges per row
+ * - Expanded (>840dp): 3-column stats grid, larger buttons, 6 badges per row, centered with max width
  */
 @CircuitInject(HomeScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -463,7 +471,16 @@ private fun QuickStatsCard(
                     columns = GridCells.Fixed(columns),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth().height((if (columns == 1) 180 else 90).dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(
+                                if (columns == 1) {
+                                    STATS_GRID_HEIGHT_COMPACT
+                                } else {
+                                    STATS_GRID_HEIGHT_MULTI_COLUMN
+                                },
+                            ),
                 ) {
                     // Total problems
                     item {
@@ -534,7 +551,7 @@ private fun StatItem(
 
 /**
  * Latest badges section showing recently unlocked badges.
- * Uses adaptive grid: 3 per row (compact), 4-5 per row (medium), 6+ per row (expanded).
+ * Uses adaptive grid: 3 per row (compact), 5 per row (medium), 6 per row (expanded).
  */
 @Composable
 private fun LatestBadgesSection(
@@ -596,7 +613,7 @@ private fun LatestBadgesSection(
                 columns = GridCells.Fixed(badgesPerRow),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth().height(120.dp),
+                modifier = Modifier.fillMaxWidth().height(BADGES_GRID_HEIGHT),
             ) {
                 items(badges.take(badgesPerRow * 2)) { badge ->
                     BadgeItem(badge = badge)
