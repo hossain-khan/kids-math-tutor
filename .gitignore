@@ -37,3 +37,5 @@ google-services.json
 *.salive
 temp-
 temp*/*
+*.aab
+app/release/**
