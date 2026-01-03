@@ -180,13 +180,25 @@ internal fun MathPracticeUi(
                 )
             },
             text = {
-                Text(
-                    text = state.currentHintText,
-                    modifier =
-                        Modifier.semantics {
-                            contentDescription = "Hint to help solve the problem"
-                        },
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    // Math Pup teaching sticker
+                    Image(
+                        painter = painterResource(R.drawable.pup_tutor_sticker_need_help_teaching),
+                        contentDescription = "Math Pup offering help",
+                        modifier = Modifier.size(120.dp),
+                    )
+                    Text(
+                        text = state.currentHintText,
+                        modifier =
+                            Modifier.semantics {
+                                contentDescription = "Hint to help solve the problem"
+                            },
+                    )
+                }
             },
             confirmButton = {
                 // Only show "Show Visually" button if visual hint is feasible for this problem
@@ -252,6 +264,12 @@ internal fun MathPracticeUi(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
+                    // Math Pup juggling balls sticker
+                    Image(
+                        painter = painterResource(R.drawable.pup_tutor_sticker_juggling_balls),
+                        contentDescription = "Math Pup with visual dots",
+                        modifier = Modifier.size(100.dp),
+                    )
                     DotVisualizer(
                         operation = state.currentProblem.operation,
                         firstNumber = state.currentProblem.num1,
