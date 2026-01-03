@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.23.0] - 2026-01-03
+
 ### Added
 - **Preview Variants for All Remaining Screens**: Added comprehensive device-specific preview functions across 13 UI screens
   - **Main App + Practice Screens (4 screens)**: HomeUi, OperationSelectorUi, MathPracticeUi, ResultsUi
@@ -2449,7 +2451,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.1...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.23.0...HEAD
+[1.23.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.1...1.23.0
 [1.22.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.0...1.22.1
 [1.22.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...1.22.0
 [1.21.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...1.21.0
