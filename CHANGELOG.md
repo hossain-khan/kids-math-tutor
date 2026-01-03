@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Game Screens Tablet Optimization - Phase 8**: Complete tablet optimization for game selection and game screens
+  - **GameSelectionScreen Responsive Grid (Phase 8a)**:
+    - Replaced LazyColumn with LazyVerticalGrid using GridCells.Adaptive(280.dp)
+    - Compact (<600dp): Single column layout
+    - Medium (600-840dp): 2 game cards per row
+    - Expanded (>840dp): 3+ game cards per row
+    - Increased MAX_CONTENT_WIDTH to 800dp for better tablet readability
+    - Added responsive preview functions (Compact 411dp, Medium 700dp, Expanded 1100dp)
+  - **Game Screens Content Centering (Phase 8b)**:
+    - MathRaceStartScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MathRaceGameScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MathRaceResultsScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - NumberSequenceStartScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - NumberSequenceGameScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MemoryMatchStartScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MemoryMatchGameScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+    - MemoryMatchResultsScreen: Added BoxWithConstraints with MAX_CONTENT_WIDTH (700dp) centering
+  - **Responsive Previews**: Added compact, medium, and expanded tablet previews to game screens
+  - All layouts maintain Material 3 design principles with proper touch targets and accessibility
+  - Content is centered on wider screens (tablets and landscape) for better readability and playability
 - **Settings Screens Adaptive Layout - Phase 9**: Tablet-optimized layouts for all settings screens
   - **SettingsScreen (Phase 9a)**: Enhanced responsive layout with improved content width constraints
     - Compact (<600dp): Max width 600dp

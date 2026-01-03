@@ -15,8 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
@@ -52,14 +53,17 @@ import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.zacsweers.metro.AppScope
 
 // Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
+private val MAX_CONTENT_WIDTH: Dp = 800.dp
+private val MIN_CARD_WIDTH: Dp = 280.dp
 
 /**
  * Game selection screen with adaptive layout.
  *
  * Adaptive Layout:
- * - Compact: Full width game cards
- * - Medium/Expanded: Centered content with max width
+ * - Compact (<600dp): Single column layout
+ * - Medium (600-840dp): 2 game cards per row
+ * - Expanded (>840dp): 3+ game cards per row
+ * - Content centered with max width on larger screens
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @CircuitInject(GameSelectionScreen::class, AppScope::class)
@@ -85,58 +89,62 @@ fun GameSelectionUi(
                     .padding(paddingValues),
             contentAlignment = Alignment.TopCenter,
         ) {
-            LazyColumn(
+            Column(
                 modifier =
                     Modifier
                         .widthIn(max = MAX_CONTENT_WIDTH)
                         .fillMaxSize()
                         .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                item {
-                    // Header with mascot
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                    ) {
-                        // Math Pup juggling number blocks
-                        Image(
-                            painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
-                            contentDescription = "Math Pup juggling numbers",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier.size(100.dp),
+                // Header with mascot
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                ) {
+                    // Math Pup juggling number blocks
+                    Image(
+                        painter = painterResource(id = R.drawable.pup_tutor_sticker_juggling_number_blocks),
+                        contentDescription = "Math Pup juggling numbers",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.size(100.dp),
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Play fun math games!",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
-                            Text(
-                                text = "Play fun math games!",
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            Text(
-                                text = "Solve more problems to unlock new games",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
+                        Text(
+                            text = "Solve more problems to unlock new games",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
 
-                items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
-                    GameCard(
-                        gameInfo = gameInfo,
-                        totalProblemsSolved = state.totalProblemsSolved,
-                        onPlayClicked = {
-                            // If game is locked, it's a trial play
-                            state.eventSink(
-                                GameSelectionScreen.Event.PlayGame(
-                                    game = gameInfo.game,
-                                    isTrial = !gameInfo.isUnlocked,
-                                ),
-                            )
-                        },
-                    )
+                // Adaptive grid of game cards
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = MIN_CARD_WIDTH),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(state.gameInfoList, key = { it.game.name }) { gameInfo ->
+                        GameCard(
+                            gameInfo = gameInfo,
+                            totalProblemsSolved = state.totalProblemsSolved,
+                            onPlayClicked = {
+                                // If game is locked, it's a trial play
+                                state.eventSink(
+                                    GameSelectionScreen.Event.PlayGame(
+                                        game = gameInfo.game,
+                                        isTrial = !gameInfo.isUnlocked,
+                                    ),
+                                )
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -445,7 +453,7 @@ private fun StatItem(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Compact Phone", widthDp = 411, heightDp = 891)
 @Composable
 private fun GameSelectionUiPreview() {
     dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
@@ -483,7 +491,83 @@ private fun GameSelectionUiPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Medium Tablet", widthDp = 700, heightDp = 500)
+@Composable
+private fun GameSelectionUiMediumPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 15,
+                                totalPlays = 5,
+                                trialAttempts = 0,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                                trialAttempts = 1,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.NUMBER_SEQUENCE,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                                trialAttempts = 3,
+                            ),
+                        ),
+                    totalProblemsSolved = 75,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Expanded Tablet", widthDp = 1100, heightDp = 600)
+@Composable
+private fun GameSelectionUiExpandedPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 15,
+                                totalPlays = 5,
+                                trialAttempts = 0,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                                trialAttempts = 1,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.NUMBER_SEQUENCE,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                                trialAttempts = 3,
+                            ),
+                        ),
+                    totalProblemsSolved = 75,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Theme")
 @Composable
 private fun GameSelectionUiDarkPreview() {
     dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme(darkTheme = true) {

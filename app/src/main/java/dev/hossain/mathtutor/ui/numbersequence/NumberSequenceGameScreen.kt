@@ -11,6 +11,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
@@ -50,12 +52,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.generator.SequenceQuestion
 import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.component.AnswerField
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * Main game screen for Number Sequence.
@@ -93,63 +99,72 @@ fun NumberSequenceGameScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .systemBarsPadding()
-                    .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            // Header: Timer and Score
-            GameHeader(
-                timeRemaining = timeRemaining,
-                score = score,
-            )
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            // Center content on tablets
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .systemBarsPadding()
+                            .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    // Header: Timer and Score
+                    GameHeader(
+                        timeRemaining = timeRemaining,
+                        score = score,
+                    )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Sequence display
-            if (currentSequence != null) {
-                SequenceDisplay(
-                    sequence = currentSequence,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+                    // Sequence display
+                    if (currentSequence != null) {
+                        SequenceDisplay(
+                            sequence = currentSequence,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Answer field
-            AnswerField(
-                answer = currentAnswer,
-                modifier = Modifier.fillMaxWidth(),
-            )
+                    // Answer field
+                    AnswerField(
+                        answer = currentAnswer,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
 
-            Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
-            // Number pad
-            NumberPad(
-                onNumberClick = onNumberEntered,
-                modifier = Modifier.fillMaxWidth(),
-                hapticService = hapticService,
-            )
+                    // Number pad
+                    NumberPad(
+                        onNumberClick = onNumberEntered,
+                        modifier = Modifier.fillMaxWidth(),
+                        hapticService = hapticService,
+                    )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Action buttons row
-            ActionButtonsRow(
-                hasAnswer = currentAnswer.isNotEmpty(),
-                onBackspace = onBackspace,
-                onCheckAnswer = onCheckAnswer,
-                hapticService = hapticService,
-            )
+                    // Action buttons row
+                    ActionButtonsRow(
+                        hasAnswer = currentAnswer.isNotEmpty(),
+                        onBackspace = onBackspace,
+                        onCheckAnswer = onCheckAnswer,
+                        hapticService = hapticService,
+                    )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Personal best at bottom
-            if (personalBest > 0) {
-                PersonalBestFooter(personalBest = personalBest)
+                    // Personal best at bottom
+                    if (personalBest > 0) {
+                        PersonalBestFooter(personalBest = personalBest)
+                    }
+                }
             }
         }
     }

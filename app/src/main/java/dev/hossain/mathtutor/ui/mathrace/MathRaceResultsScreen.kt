@@ -10,6 +10,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -55,12 +58,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.ui.component.BadgeIcon
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import kotlinx.coroutines.delay
+
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * Results screen shown after a Math Race game ends.
@@ -120,96 +127,105 @@ fun MathRaceResultsScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .systemBarsPadding()
-                    .verticalScroll(rememberScrollState())
-                    .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            // Game Over title
-            AnimatedVisibility(
-                visible = showContent,
-                enter = fadeIn() + slideInVertically { -it },
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            // Center content on tablets
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                Text(
-                    text = "Game Over! 🎉",
-                    style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center,
+                Column(
                     modifier =
-                        Modifier.semantics {
-                            heading()
-                            contentDescription = "Game Over"
-                        },
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Final score display
-            AnimatedVisibility(
-                visible = showContent,
-                enter = fadeIn() + slideInVertically { -it / 2 },
-            ) {
-                ScoreSection(
-                    score = finalScore,
-                    isNewRecord = isNewRecord && showNewRecord,
-                    previousBest = if (isNewRecord) personalBest - finalScore + finalScore else personalBest,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // New record indicator
-            if (isNewRecord) {
-                AnimatedVisibility(
-                    visible = showNewRecord,
-                    enter = fadeIn() + slideInVertically { it },
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .systemBarsPadding()
+                            .verticalScroll(rememberScrollState())
+                            .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
-                    NewRecordBadge()
+                    // Game Over title
+                    AnimatedVisibility(
+                        visible = showContent,
+                        enter = fadeIn() + slideInVertically { -it },
+                    ) {
+                        Text(
+                            text = "Game Over! 🎉",
+                            style = MaterialTheme.typography.displaySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center,
+                            modifier =
+                                Modifier.semantics {
+                                    heading()
+                                    contentDescription = "Game Over"
+                                },
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Final score display
+                    AnimatedVisibility(
+                        visible = showContent,
+                        enter = fadeIn() + slideInVertically { -it / 2 },
+                    ) {
+                        ScoreSection(
+                            score = finalScore,
+                            isNewRecord = isNewRecord && showNewRecord,
+                            previousBest = if (isNewRecord) personalBest - finalScore + finalScore else personalBest,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // New record indicator
+                    if (isNewRecord) {
+                        AnimatedVisibility(
+                            visible = showNewRecord,
+                            enter = fadeIn() + slideInVertically { it },
+                        ) {
+                            NewRecordBadge()
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+
+                    // Stats card
+                    AnimatedVisibility(
+                        visible = showStats,
+                        enter = fadeIn() + slideInVertically { it / 2 },
+                    ) {
+                        StatsCard(
+                            correctAnswers = finalScore,
+                            totalAttempts = totalAttempts,
+                            accuracy = accuracy,
+                            averageTime = averageTimePerProblem,
+                        )
+                    }
+
+                    // Badge unlock section
+                    if (unlockedBadges.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        AnimatedVisibility(
+                            visible = showBadges,
+                            enter = fadeIn() + slideInVertically { it / 2 },
+                        ) {
+                            UnlockedBadgesCard(badges = unlockedBadges)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Action buttons
+                    AnimatedVisibility(
+                        visible = showButtons,
+                        enter = fadeIn(),
+                    ) {
+                        ActionButtons(
+                            onPlayAgain = onPlayAgain,
+                            onNavigateHome = onNavigateHome,
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-
-            // Stats card
-            AnimatedVisibility(
-                visible = showStats,
-                enter = fadeIn() + slideInVertically { it / 2 },
-            ) {
-                StatsCard(
-                    correctAnswers = finalScore,
-                    totalAttempts = totalAttempts,
-                    accuracy = accuracy,
-                    averageTime = averageTimePerProblem,
-                )
-            }
-
-            // Badge unlock section
-            if (unlockedBadges.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(24.dp))
-                AnimatedVisibility(
-                    visible = showBadges,
-                    enter = fadeIn() + slideInVertically { it / 2 },
-                ) {
-                    UnlockedBadgesCard(badges = unlockedBadges)
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Action buttons
-            AnimatedVisibility(
-                visible = showButtons,
-                enter = fadeIn(),
-            ) {
-                ActionButtons(
-                    onPlayAgain = onPlayAgain,
-                    onNavigateHome = onNavigateHome,
-                )
             }
         }
     }
