@@ -21,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Expanded Tablet Preview**: Added 1100dp wide preview for testing expanded layouts
   - All layouts maintain Material 3 design principles with proper touch targets and accessibility
   - Responsive grids use `LazyVerticalGrid` with adaptive columns based on screen width breakpoints
+### Fixed
+- **ProGuard Configuration Cleanup**: Removed overly aggressive ProGuard rules that were keeping unnecessary code
+  - Removed blanket `-keep class com.slack.circuit.** { *; }` rule (only keeping interfaces)
+  - Fixed Circuit package references to use correct runtime package names (e.g., `com.slack.circuit.runtime.CircuitUiState`)
+  - Removed unnecessary Firebase, Room, Compose, WorkManager, DataStore, and Media3 keep rules (R8 handles these automatically)
+  - Removed blanket `-keep class dev.hossain.mathtutor.** { *; }` rule (keeping only specific domain models and DI-related members)
+  - Removed unnecessary `-keep class dev.hossain.mathtutor.ui.** { *; }` rule (Compose handles UI code preservation)
+  - Added `.aab` and `app/release/**` to `.gitignore` to exclude release artifacts from version control
+  - Results in smaller APK/AAB size and improved build optimization
 
 ## [1.22.0] - 2026-01-02
 
