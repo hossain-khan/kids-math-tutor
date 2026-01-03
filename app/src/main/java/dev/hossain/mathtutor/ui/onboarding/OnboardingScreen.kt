@@ -347,6 +347,16 @@ private fun OnboardingPageContent(
 ) {
     BoxWithConstraints {
         val screenWidth = maxWidth
+        val screenHeight = maxHeight
+        val isLandscape = screenWidth > screenHeight
+        // Check the smaller dimension to determine device size (works in both orientations)
+        val smallerDimension = if (screenWidth < screenHeight) screenWidth else screenHeight
+        val isPhone = smallerDimension < MEDIUM_WIDTH_BREAKPOINT
+
+        // Debug logging
+        Timber.d(
+            "OnboardingPageContent: screenWidth=$screenWidth, screenHeight=$screenHeight, isLandscape=$isLandscape, smallerDimension=$smallerDimension, isPhone=$isPhone, MEDIUM_WIDTH_BREAKPOINT=$MEDIUM_WIDTH_BREAKPOINT",
+        )
 
         // Adaptive image scaling based on screen width
         val imageScale =
@@ -368,65 +378,125 @@ private fun OnboardingPageContent(
                 else -> 32.dp
             }
 
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Card(
+        // Use side-by-side layout for phone landscape mode
+        if (isPhone && isLandscape) {
+            Timber.d("OnboardingPageContent: Using side-by-side layout (phone landscape)")
+            Row(
                 modifier =
                     Modifier
-                        .wrapContentSize()
-                        .weight(1f),
-                shape = RoundedCornerShape(24.dp),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Image(
-                    painter = painterResource(id = page.imageRes),
-                    contentDescription = page.title,
+                Card(
+                    modifier =
+                        Modifier
+                            .weight(0.45f)
+                            .wrapContentSize(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                ) {
+                    Image(
+                        painter = painterResource(id = page.imageRes),
+                        contentDescription = page.title,
+                        modifier = Modifier.wrapContentSize(),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+
+                Column(
+                    modifier =
+                        Modifier
+                            .weight(0.55f)
+                            .wrapContentSize(),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+                ) {
+                    Text(
+                        text = page.title,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = contentColor,
+                        textAlign = TextAlign.Start,
+                        fontWeight = FontWeight.ExtraBold,
+                    )
+
+                    Text(
+                        text = page.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = contentColor.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Start,
+                        fontWeight = FontWeight.Medium,
+                    )
+                }
+            }
+        } else {
+            // Default vertical layout for portrait and tablets
+            Timber.d("OnboardingPageContent: Using vertical layout (portrait or tablet)")
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Card(
                     modifier =
                         Modifier
                             .wrapContentSize()
-                            .widthIn(max = 600.dp * imageScale),
-                    contentScale = ContentScale.Fit,
+                            .weight(1f),
+                    shape = RoundedCornerShape(24.dp),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                ) {
+                    Image(
+                        painter = painterResource(id = page.imageRes),
+                        contentDescription = page.title,
+                        modifier =
+                            Modifier
+                                .wrapContentSize()
+                                .widthIn(max = 600.dp * imageScale),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(verticalSpacing))
+
+                Text(
+                    text = page.title,
+                    style =
+                        when {
+                            screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> MaterialTheme.typography.displaySmall
+                            screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.headlineLarge
+                            else -> MaterialTheme.typography.headlineLarge
+                        },
+                    color = contentColor,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = page.description,
+                    style =
+                        when {
+                            screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.titleLarge
+                            else -> MaterialTheme.typography.bodyLarge
+                        },
+                    color = contentColor.copy(alpha = 0.8f),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Medium,
                 )
             }
-
-            Spacer(modifier = Modifier.height(verticalSpacing))
-
-            Text(
-                text = page.title,
-                style =
-                    when {
-                        screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> MaterialTheme.typography.displaySmall
-                        screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.headlineLarge
-                        else -> MaterialTheme.typography.headlineLarge
-                    },
-                color = contentColor,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.ExtraBold,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = page.description,
-                style =
-                    when {
-                        screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.titleLarge
-                        else -> MaterialTheme.typography.bodyLarge
-                    },
-                color = contentColor.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium,
-            )
         }
     }
 }
@@ -490,6 +560,44 @@ private fun OnboardingContentDarkPreview() {
             state =
                 OnboardingScreen.State(
                     currentPage = 2,
+                    totalPages = 4,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun OnboardingContentPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        OnboardingContent(
+            state =
+                OnboardingScreen.State(
+                    currentPage = 0,
+                    totalPages = 4,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun OnboardingContentTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        OnboardingContent(
+            state =
+                OnboardingScreen.State(
+                    currentPage = 1,
                     totalPages = 4,
                     eventSink = {},
                 ),
