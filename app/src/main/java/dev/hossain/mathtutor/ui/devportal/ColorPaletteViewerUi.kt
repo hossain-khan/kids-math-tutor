@@ -36,9 +36,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.COMPACT_WIDTH_BREAKPOINT
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_EXTRA_LARGE
@@ -556,4 +558,165 @@ private fun Color.toRgbString(): String {
     val green = (this.green * 255).toInt()
     val blue = (this.blue * 255).toInt()
     return "rgb($red, $green, $blue)"
+}
+
+// Helper function to create sample color groups for previews
+private fun createSampleColorGroups(): List<ColorPaletteViewerScreen.GroupContent> =
+    listOf(
+        ColorPaletteViewerScreen.ColorGroup(
+            title = "Primary Colors",
+            description = "Main brand and accent colors",
+            colors =
+                listOf(
+                    ColorPaletteViewerScreen.ColorEntry(
+                        name = "Primary",
+                        color = Color(0xFF6750A4),
+                        hexCode = "#6750A4",
+                        usage = "Buttons, highlights",
+                    ),
+                    ColorPaletteViewerScreen.ColorEntry(
+                        name = "On Primary",
+                        color = Color(0xFFFFFFFF),
+                        hexCode = "#FFFFFF",
+                        usage = "Text on primary",
+                    ),
+                    ColorPaletteViewerScreen.ColorEntry(
+                        name = "Primary Container",
+                        color = Color(0xFFEADDFF),
+                        hexCode = "#EADDFF",
+                        usage = "Card backgrounds",
+                    ),
+                ),
+        ),
+        ColorPaletteViewerScreen.ColorGroup(
+            title = "Surface Colors",
+            description = "Background and surface colors",
+            colors =
+                listOf(
+                    ColorPaletteViewerScreen.ColorEntry(
+                        name = "Surface",
+                        color = Color(0xFFFFFBFE),
+                        hexCode = "#FFFBFE",
+                        usage = "Main background",
+                    ),
+                    ColorPaletteViewerScreen.ColorEntry(
+                        name = "On Surface",
+                        color = Color(0xFF1C1B1F),
+                        hexCode = "#1C1B1F",
+                        usage = "Body text",
+                    ),
+                ),
+        ),
+        ColorPaletteViewerScreen.WidgetDemoGroup(
+            title = "Widget Demos",
+            description = "Material 3 component showcase",
+        ),
+    )
+
+// Preview composables
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun ColorPaletteViewerUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ColorPaletteViewerUi(
+            state =
+                ColorPaletteViewerScreen.State(
+                    groups = createSampleColorGroups(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun ColorPaletteViewerUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        ColorPaletteViewerUi(
+            state =
+                ColorPaletteViewerScreen.State(
+                    groups = createSampleColorGroups(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun ColorPaletteViewerUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ColorPaletteViewerUi(
+            state =
+                ColorPaletteViewerScreen.State(
+                    groups = createSampleColorGroups(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ColorPaletteViewerUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        ColorPaletteViewerUi(
+            state =
+                ColorPaletteViewerScreen.State(
+                    groups = createSampleColorGroups(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ColorPaletteViewerUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ColorPaletteViewerUi(
+            state =
+                ColorPaletteViewerScreen.State(
+                    groups = createSampleColorGroups(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    name = "Dark Theme",
+)
+@Composable
+private fun ColorPaletteViewerUiDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        ColorPaletteViewerUi(
+            state =
+                ColorPaletteViewerScreen.State(
+                    groups = createSampleColorGroups(),
+                    eventSink = {},
+                ),
+        )
+    }
 }

@@ -38,11 +38,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.domain.model.DailyStreak
+import dev.hossain.mathtutor.domain.model.GradeLevel
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_LARGE
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
+import java.time.LocalDate
 
 @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -958,5 +963,165 @@ fun DeveloperPortalUi(
                 },
             )
         }
+    }
+}
+
+// Preview composables
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun DeveloperPortalUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        DeveloperPortalUi(
+            state =
+                DeveloperPortalScreen.State(
+                    showSeedSection = true,
+                    showDataOpsSection = true,
+                    showDiagnosticsSection = true,
+                    totalSessionCount = 42,
+                    currentProfileName = "Alex",
+                    currentGradeLevel = GradeLevel.GRADE_1,
+                    currentAdaptiveDifficulty = true,
+                    currentStreakData =
+                        DailyStreak(
+                            currentStreak = 5,
+                            longestStreak = 12,
+                            totalDaysPracticed = 30,
+                            lastPracticeDate = LocalDate.now(),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun DeveloperPortalUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        DeveloperPortalUi(
+            state =
+                DeveloperPortalScreen.State(
+                    showSeedSection = true,
+                    showDataOpsSection = true,
+                    showDiagnosticsSection = true,
+                    totalSessionCount = 85,
+                    currentProfileName = "Jordan",
+                    currentGradeLevel = GradeLevel.GRADE_2,
+                    currentAdaptiveDifficulty = false,
+                    currentStreakData =
+                        DailyStreak(
+                            currentStreak = 3,
+                            longestStreak = 8,
+                            totalDaysPracticed = 20,
+                            lastPracticeDate = LocalDate.now().minusDays(1),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun DeveloperPortalUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        DeveloperPortalUi(
+            state =
+                DeveloperPortalScreen.State(
+                    showSeedSection = true,
+                    showDataOpsSection = true,
+                    showDiagnosticsSection = true,
+                    totalSessionCount = 120,
+                    currentProfileName = "Sam",
+                    currentGradeLevel = GradeLevel.KINDERGARTEN,
+                    currentAdaptiveDifficulty = true,
+                    soundsLoaded = true,
+                    isBackgroundMusicPlaying = true,
+                    currentStreakData =
+                        DailyStreak(
+                            currentStreak = 10,
+                            longestStreak = 15,
+                            totalDaysPracticed = 45,
+                            lastPracticeDate = LocalDate.now(),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun DeveloperPortalUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        DeveloperPortalUi(
+            state =
+                DeveloperPortalScreen.State(
+                    showSeedSection = true,
+                    showDataOpsSection = true,
+                    showDiagnosticsSection = true,
+                    totalSessionCount = 65,
+                    currentProfileName = "Chris",
+                    currentGradeLevel = GradeLevel.GRADE_1,
+                    currentAdaptiveDifficulty = true,
+                    currentStreakData =
+                        DailyStreak(
+                            currentStreak = 7,
+                            longestStreak = 10,
+                            totalDaysPracticed = 35,
+                            lastPracticeDate = LocalDate.now(),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun DeveloperPortalUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        DeveloperPortalUi(
+            state =
+                DeveloperPortalScreen.State(
+                    showSeedSection = true,
+                    showDataOpsSection = true,
+                    showDiagnosticsSection = true,
+                    totalSessionCount = 100,
+                    currentProfileName = "Taylor",
+                    currentGradeLevel = GradeLevel.GRADE_2,
+                    currentAdaptiveDifficulty = false,
+                    soundsLoaded = true,
+                    isAnalyticsEnabled = false,
+                    currentStreakData =
+                        DailyStreak(
+                            currentStreak = 2,
+                            longestStreak = 20,
+                            totalDaysPracticed = 60,
+                            lastPracticeDate = LocalDate.now(),
+                        ),
+                    eventSink = {},
+                ),
+        )
     }
 }
