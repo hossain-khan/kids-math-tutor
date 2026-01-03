@@ -46,6 +46,8 @@ import dev.zacsweers.metro.AppScope
 // Width breakpoints for adaptive layouts
 private val MAX_CONTENT_WIDTH: Dp = 1000.dp
 private val MIN_COLOR_CARD_WIDTH: Dp = 150.dp
+
+// Screen width breakpoints for adaptive spacing
 private val COMPACT_BREAKPOINT: Dp = 600.dp
 private val EXPANDED_BREAKPOINT: Dp = 840.dp
 
@@ -127,9 +129,12 @@ fun ColorPaletteViewerUi(
  * Card displaying a group of related colors with adaptive grid layout.
  *
  * Adaptive Layout:
- * - Compact (<600dp): Single column or 2 colors per row
- * - Medium (600-840dp): 2-3 colors per row
- * - Expanded (>840dp): Full grid showing all colors with details
+ * - Uses GridCells.Adaptive with minimum card width of 150dp
+ * - Grid automatically adjusts number of columns based on available width
+ * - Adaptive spacing: 8dp (compact) → 12dp (medium) → 16dp (expanded)
+ * - Compact (<600dp): Typically 2 colors per row
+ * - Medium (600-840dp): Typically 3-4 colors per row
+ * - Expanded (>840dp): Typically 5-6 colors per row
  */
 @Composable
 private fun ColorGroupCard(
@@ -172,7 +177,7 @@ private fun ColorGroupCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(gridSpacing),
                     verticalArrangement = Arrangement.spacedBy(gridSpacing),
-                    userScrollEnabled = false, // Disable scrolling since parent handles it
+                    userScrollEnabled = false, // Parent Column with verticalScroll() handles scrolling
                 ) {
                     items(group.colors) { colorEntry ->
                         ColorSwatchItem(colorEntry = colorEntry, state = state)
