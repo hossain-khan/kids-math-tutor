@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **BadgesScreen Adaptive Layout - Phase 7**: Complete tablet-optimized badge grid with responsive columns
+  - **Responsive Badge Grid**: Adaptive column layout based on screen width using `LazyVerticalGrid`
+    - Compact (<600dp): 3 badges per row
+    - Medium (600-840dp): 4 badges per row
+    - Expanded (>840dp): 6 badges per row
+  - **Adaptive Badge Sizing**: Badge icons scale appropriately for larger screens
+    - Compact: 56dp badge icons
+    - Medium: 64dp badge icons
+    - Expanded: 72dp badge icons
+  - **Adaptive Spacing**: Grid spacing increases for better visual hierarchy on larger screens (12dp → 16dp → 20dp)
+  - **Enhanced Badge Cards**: Square aspect ratio for consistent badge display, scaled status icons (checkmark/lock)
+  - **Comprehensive Previews**: Added adaptive preview functions for Compact (411dp), Medium (700dp), and Expanded (1100dp) screen sizes
+  - All layouts maintain Material 3 design principles with proper touch targets (48dp minimum) and accessibility
+
 ## [1.22.1] - 2026-01-02
 
 ### Added
