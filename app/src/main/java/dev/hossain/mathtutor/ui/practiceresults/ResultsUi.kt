@@ -153,38 +153,37 @@ fun ResultsUi(
                         )
                     }
 
-                    // Problem results - adaptive grid
-                    item {
-                        // Use grid for medium and expanded screens
-                        if (isWideScreen) {
-                            // Calculate number of columns based on available width
-                            val columns = (screenWidth / PROBLEM_CARD_MIN_WIDTH).toInt().coerceAtLeast(1)
-                            val rows = (state.problemResults.size + columns - 1) / columns
+                    // Problem results - adaptive grid using LazyColumn items
+                    if (isWideScreen) {
+                        // Calculate number of columns for grid layout
+                        val columns = (screenWidth / PROBLEM_CARD_MIN_WIDTH).toInt().coerceAtLeast(1)
+                        val rows = (state.problemResults.size + columns - 1) / columns
 
-                            LazyVerticalGrid(
-                                columns = GridCells.Adaptive(minSize = PROBLEM_CARD_MIN_WIDTH),
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .height((rows * PROBLEM_CARD_HEIGHT.value + (rows - 1) * 16).dp),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
-                                userScrollEnabled = false,
-                            ) {
-                                items(state.problemResults) { result ->
-                                    ProblemResultCard(result = result)
+                        // Add grid rows as separate items in LazyColumn
+                        for (rowIndex in 0 until rows) {
+                            item(key = "row_$rowIndex") {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                ) {
+                                    for (colIndex in 0 until columns) {
+                                        val itemIndex = rowIndex * columns + colIndex
+                                        if (itemIndex < state.problemResults.size) {
+                                            Box(modifier = Modifier.weight(1f)) {
+                                                ProblemResultCard(result = state.problemResults[itemIndex])
+                                            }
+                                        } else {
+                                            // Empty space for incomplete rows
+                                            Spacer(modifier = Modifier.weight(1f))
+                                        }
+                                    }
                                 }
                             }
-                        } else {
-                            // Single column for compact screens
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
-                            ) {
-                                state.problemResults.forEach { result ->
-                                    ProblemResultCard(result = result)
-                                }
-                            }
+                        }
+                    } else {
+                        // Single column for compact screens
+                        items(state.problemResults) { result ->
+                            ProblemResultCard(result = result)
                         }
                     }
 
