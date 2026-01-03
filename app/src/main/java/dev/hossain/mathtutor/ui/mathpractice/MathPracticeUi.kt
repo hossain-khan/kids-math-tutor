@@ -68,7 +68,6 @@ import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.component.DotVisualizer
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.component.StepByStepBreakdown
-import dev.hossain.mathtutor.ui.component.VisualHintCard
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet

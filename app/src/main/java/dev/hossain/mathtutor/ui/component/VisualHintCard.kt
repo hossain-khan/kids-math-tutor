@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.MathOperation
@@ -36,6 +37,9 @@ import dev.hossain.mathtutor.domain.model.MathProblem
  *
  * Shows operation-specific visual representations to help children understand
  * the math concept while providing text guidance.
+ *
+ * **NOTE**: This component is currently not used in the app. The app uses AlertDialog
+ * instead for displaying hints. This component is kept for potential future use.
  *
  * @param hintText The text hint to display
  * @param problem The math problem being hinted
@@ -156,3 +160,39 @@ private fun getEncouragementText(operation: MathOperation): String =
         MathOperation.DIVISION -> "Count the dots in each group!"
         MathOperation.MIXED -> "Give it a try!"
     }
+
+@Preview(showBackground = true)
+@Composable
+fun VisualHintCardPreview() {
+    MaterialTheme {
+        VisualHintCard(
+            hintText = "Start with 8, then add 5. Count all the dots together!",
+            problem =
+                MathProblem(
+                    num1 = 8,
+                    num2 = 5,
+                    operation = MathOperation.ADDITION,
+                    correctAnswer = 13,
+                ),
+            onDismiss = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun VisualHintCardSubtractionPreview() {
+    MaterialTheme {
+        VisualHintCard(
+            hintText = "Start with 13, then take away 3. Count what's left!",
+            problem =
+                MathProblem(
+                    num1 = 13,
+                    num2 = 3,
+                    operation = MathOperation.SUBTRACTION,
+                    correctAnswer = 10,
+                ),
+            onDismiss = {},
+        )
+    }
+}
