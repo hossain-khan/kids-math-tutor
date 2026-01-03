@@ -342,6 +342,8 @@ fun GradeSelectionUi(
                     .padding(paddingValues),
         ) {
             val screenWidth = maxWidth
+            val screenHeight = maxHeight
+            val isLandscape = screenWidth > screenHeight
 
             // Center content on wider screens
             Box(
@@ -451,8 +453,16 @@ fun GradeSelectionUi(
                             )
 
                         // Use LazyVerticalGrid for adaptive layout
+                        // In landscape mode, limit to 2 columns to prevent text overflow
+                        val gridColumns =
+                            if (isLandscape) {
+                                GridCells.Fixed(2)
+                            } else {
+                                GridCells.Adaptive(minSize = MIN_GRADE_CARD_WIDTH)
+                            }
+
                         LazyVerticalGrid(
-                            columns = GridCells.Adaptive(minSize = MIN_GRADE_CARD_WIDTH),
+                            columns = gridColumns,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
