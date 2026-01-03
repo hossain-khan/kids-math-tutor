@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Challenge Screens Adaptive Layout**: Added responsive layouts to custom challenge screens for tablet optimization
+  - **ImportChallengeScreen**: Content centered with max-width (800dp) for tablets
+    - Uses Box with widthIn(max = 800.dp) and Alignment.TopCenter for content centering
+    - JSON input area optimized for tablets with better readability on wider screens
+    - Form sections centered horizontally for optimal viewing on all screen sizes
+    - Added responsive preview functions: Compact (411×891dp), Medium (700×500dp), Expanded (1100×600dp)
+  - **ParentChallengesScreen**: Content centered with max-width (900dp) for tablets
+    - Challenge list centered on wider screens for better organization
+    - Challenge cards display optimally across all screen sizes
+    - Maintains single-column list layout with improved spacing on tablets
+    - Added responsive preview functions for all screen sizes
+  - All layouts maintain Material 3 design principles with proper touch targets and accessibility
+  - Follows established adaptive layout patterns from other screens (GameSelectionUi, OperationSelectorUi)
 - **Debug Screens Adaptive Layout**: Added responsive layouts to debug/admin screens for better tablet testing experience
   - **DeveloperPortalScreen**: Content centered with max-width (900dp) for tablets
     - Uses Box with widthIn(max = 900.dp) and Alignment.TopCenter for content centering
