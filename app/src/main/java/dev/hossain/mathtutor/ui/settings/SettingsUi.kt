@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -69,7 +70,13 @@ import timber.log.Timber
 import java.time.Instant
 
 // Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 600.dp
+private val MAX_CONTENT_WIDTH_COMPACT: Dp = 600.dp
+private val MAX_CONTENT_WIDTH_MEDIUM: Dp = 700.dp
+private val MAX_CONTENT_WIDTH_EXPANDED: Dp = 800.dp
+
+// Screen width breakpoints
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
 
 /**
  * UI for [SettingsScreen].
@@ -131,12 +138,28 @@ fun SettingsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Box(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
         ) {
+            val screenWidth = maxWidth
+            val contentMaxWidth =
+                when {
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_EXPANDED
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_MEDIUM
+                    else -> MAX_CONTENT_WIDTH_COMPACT
+                }
+
+            // Spacing based on screen width
+            val contentSpacing =
+                when {
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 28.dp
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 24.dp
+                    else -> 24.dp
+                }
+
             // Center content on wide screens
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -145,11 +168,11 @@ fun SettingsUi(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = contentMaxWidth)
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                             .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(contentSpacing),
                 ) {
                     // Hero image
                     Image(
@@ -596,6 +619,78 @@ private fun SettingsUiDarkPreview() {
                     profile =
                         UserProfile(
                             name = "Jordan",
+                            gradeLevel = GradeLevel.KINDERGARTEN,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = true,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = true,
+                    showDeveloperPortal = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Compact (Phone)")
+@Composable
+private fun SettingsUiCompactPreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Sarah",
+                            gradeLevel = GradeLevel.GRADE_1,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = true,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = true,
+                    showDeveloperPortal = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700, heightDp = 500, name = "Medium (Small Tablet)")
+@Composable
+private fun SettingsUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Jordan",
+                            gradeLevel = GradeLevel.GRADE_2,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = false,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = false,
+                    showDeveloperPortal = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 1100, heightDp = 600, name = "Expanded (Tablet)")
+@Composable
+private fun SettingsUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Alex",
                             gradeLevel = GradeLevel.KINDERGARTEN,
                             createdAt = Instant.now(),
                             adaptiveDifficultyEnabled = true,

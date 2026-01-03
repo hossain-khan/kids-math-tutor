@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -42,11 +45,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
+
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH_COMPACT: Dp = 600.dp
+private val MAX_CONTENT_WIDTH_MEDIUM: Dp = 700.dp
+private val MAX_CONTENT_WIDTH_EXPANDED: Dp = 800.dp
+
+// Screen width breakpoints
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
 
 /**
  * UI for [ParentSettingsScreen].
@@ -89,60 +102,89 @@ fun ParentSettingsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(paddingValues),
         ) {
-            // Header description
-            Text(
-                text = "Manage parental controls and child access restrictions",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            val screenWidth = maxWidth
+            val contentMaxWidth =
+                when {
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_EXPANDED
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_MEDIUM
+                    else -> MAX_CONTENT_WIDTH_COMPACT
+                }
 
-            // PIN Setup Card
-            PinSetupCard(
-                hasPinSet = state.hasPinSet,
-                showResetForgotOptions = state.showResetForgotOptions,
-                onSetupPinClick = { state.eventSink(ParentSettingsScreen.Event.SetupPinClicked) },
-                onToggleResetForgotOptions = {
-                    state.eventSink(ParentSettingsScreen.Event.ToggleResetForgotOptions)
-                },
-                onResetPinClick = { state.eventSink(ParentSettingsScreen.Event.ResetPinClicked) },
-                onForgotPinClick = { state.eventSink(ParentSettingsScreen.Event.ForgotPinClicked) },
-            )
+            // Spacing based on screen width
+            val contentSpacing =
+                when {
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 20.dp
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 18.dp
+                    else -> 16.dp
+                }
 
-            // Grade Limit Card
-            GradeLimitCard(
-                maxGradeLevel = state.maxGradeLevel,
-                isPinProtected = state.hasPinSet,
-                onChangeGradeLimitClick = {
-                    state.eventSink(ParentSettingsScreen.Event.ChangeGradeLimitClicked)
-                },
-            )
+            // Center content on wide screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = contentMaxWidth)
+                            .fillMaxSize()
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(contentSpacing),
+                ) {
+                    // Header description
+                    Text(
+                        text = "Manage parental controls and child access restrictions",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
 
-            // Hint System Toggle Card
-            HintSystemCard(
-                isHintSystemEnabled = state.isHintSystemEnabled,
-                onToggleHintSystem = { enabled ->
-                    state.eventSink(ParentSettingsScreen.Event.HintSystemToggled(enabled))
-                },
-            )
+                    // PIN Setup Card
+                    PinSetupCard(
+                        hasPinSet = state.hasPinSet,
+                        showResetForgotOptions = state.showResetForgotOptions,
+                        onSetupPinClick = { state.eventSink(ParentSettingsScreen.Event.SetupPinClicked) },
+                        onToggleResetForgotOptions = {
+                            state.eventSink(ParentSettingsScreen.Event.ToggleResetForgotOptions)
+                        },
+                        onResetPinClick = { state.eventSink(ParentSettingsScreen.Event.ResetPinClicked) },
+                        onForgotPinClick = { state.eventSink(ParentSettingsScreen.Event.ForgotPinClicked) },
+                    )
 
-            // Adaptive Difficulty Card
-            AdaptiveDifficultyCard(
-                isAdaptiveDifficultyEnabled = state.adaptiveDifficultyEnabled,
-                onToggleAdaptiveDifficulty = { enabled ->
-                    state.eventSink(ParentSettingsScreen.Event.AdaptiveDifficultyToggled(enabled))
-                },
-            )
+                    // Grade Limit Card
+                    GradeLimitCard(
+                        maxGradeLevel = state.maxGradeLevel,
+                        isPinProtected = state.hasPinSet,
+                        onChangeGradeLimitClick = {
+                            state.eventSink(ParentSettingsScreen.Event.ChangeGradeLimitClicked)
+                        },
+                    )
 
-            // TODO: Add dialogs for PIN setup, verification, reset, forgot PIN, and grade limit
+                    // Hint System Toggle Card
+                    HintSystemCard(
+                        isHintSystemEnabled = state.isHintSystemEnabled,
+                        onToggleHintSystem = { enabled ->
+                            state.eventSink(ParentSettingsScreen.Event.HintSystemToggled(enabled))
+                        },
+                    )
+
+                    // Adaptive Difficulty Card
+                    AdaptiveDifficultyCard(
+                        isAdaptiveDifficultyEnabled = state.adaptiveDifficultyEnabled,
+                        onToggleAdaptiveDifficulty = { enabled ->
+                            state.eventSink(ParentSettingsScreen.Event.AdaptiveDifficultyToggled(enabled))
+                        },
+                    )
+
+                    // TODO: Add dialogs for PIN setup, verification, reset, forgot PIN, and grade limit
+                }
+            }
         }
 
         // PIN Setup Dialog
@@ -775,6 +817,78 @@ private fun ParentSettingsUiWithForgotPinDialogPreview() {
                     showPinVerification = false,
                     showPinReset = false,
                     showForgotPin = true,
+                    showGradeLimit = false,
+                    showResetForgotOptions = true,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Compact (Phone)")
+@Composable
+private fun ParentSettingsUiCompactPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = false,
+                    maxGradeLevel = null,
+                    isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = false,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700, heightDp = 500, name = "Medium (Small Tablet)")
+@Composable
+private fun ParentSettingsUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = GradeLevel.GRADE_2,
+                    isHintSystemEnabled = false,
+                    adaptiveDifficultyEnabled = true,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = false,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 1100, heightDp = 600, name = "Expanded (Tablet)")
+@Composable
+private fun ParentSettingsUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = GradeLevel.GRADE_1,
+                    isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = false,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
                     showGradeLimit = false,
                     showResetForgotOptions = true,
                     pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
