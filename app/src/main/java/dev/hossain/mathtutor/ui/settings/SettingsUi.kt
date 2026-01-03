@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -174,10 +175,12 @@ fun SettingsUi(
                     Image(
                         painter = painterResource(id = R.drawable.pup_tutor_sticker_teaching_math_and_painting),
                         contentDescription = "Math Pup teaching",
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.Fit,
                         modifier =
                             Modifier
-                                .fillMaxWidth()
+                                .wrapContentSize()
+                                .align(Alignment.CenterHorizontally)
+                                .height(200.dp)
                                 .aspectRatio(1560f / 970f),
                     )
 
