@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,9 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -165,7 +163,7 @@ private fun ColorGroupCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Adaptive grid layout for color swatches
+            // Adaptive grid layout for color swatches using FlowRow
             BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                 val screenWidth = maxWidth
 
@@ -177,26 +175,17 @@ private fun ColorGroupCard(
                         else -> 16.dp
                     }
 
-                // Calculate number of columns and grid height
-                val numColumns = (screenWidth / (MIN_COLOR_CARD_WIDTH + gridSpacing)).toInt().coerceAtLeast(1)
-                val numRows = (group.colors.size + numColumns - 1) / numColumns
-
-                // Each card is ~200dp tall (80dp swatch + 120dp text/padding)
-                val cardHeight = 200.dp
-                val gridHeight = (cardHeight * numRows) + (gridSpacing * (numRows - 1))
-
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = MIN_COLOR_CARD_WIDTH),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(gridHeight),
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(gridSpacing),
                     verticalArrangement = Arrangement.spacedBy(gridSpacing),
-                    userScrollEnabled = false, // Parent LazyColumn handles scrolling
                 ) {
-                    items(group.colors) { colorEntry ->
-                        ColorSwatchItem(colorEntry = colorEntry, state = state)
+                    group.colors.forEach { colorEntry ->
+                        Box(
+                            modifier = Modifier.widthIn(min = MIN_COLOR_CARD_WIDTH, max = MIN_COLOR_CARD_WIDTH),
+                        ) {
+                            ColorSwatchItem(colorEntry = colorEntry, state = state)
+                        }
                     }
                 }
             }
