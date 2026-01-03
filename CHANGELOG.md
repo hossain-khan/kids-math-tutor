@@ -23,6 +23,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Expanded preview (1100dp x 600dp) - Large tablet
   - **Enhanced Width Breakpoints**: Added `EXPANDED_WIDTH_BREAKPOINT` constant (1100dp) for large tablet support
   - All layouts maintain Material 3 design principles with proper spacing and visual hierarchy
+### Changed
+- **MathPracticeScreen Adaptive Layout - Phase 5**: Enhanced tablet support with larger touch targets and improved dual-pane layouts
+  - **Tablet-Sized NumberPad**: Adaptive button sizing based on screen width
+    - Compact screens (<840dp): 64dp buttons with 12dp spacing
+    - Expanded screens (≥840dp): 80dp buttons with 16dp spacing and larger typography (displaySmall)
+  - **Tablet-Sized AnswerField**: Adaptive text sizing for better readability
+    - Compact screens: displayLarge typography
+    - Expanded screens (≥840dp): displayMedium typography
+  - **Enhanced Landscape Layout**: Improved space distribution for tablets
+    - Better proportions with expanded screens getting 1.2x weight for problem area
+    - Increased horizontal spacing (32dp → 48dp on expanded)
+    - Right pane supports up to 600dp width on expanded screens
+  - **Improved Shake Animation**: Base amplitude scales better on larger displays
+  - **Tablet-Optimized Previews**: Added preview functions for different screen sizes
+    - Compact landscape (600dp x 400dp)
+    - Medium tablet (800dp x 600dp)
+    - Expanded tablet landscape (1100dp x 600dp)
 
 ## [1.22.1] - 2026-01-02
 
