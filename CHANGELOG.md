@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Comprehensive Preview Variants for Game Screens**: Added device-specific preview functions for all game UI screens
+  - **MathRaceUi**: 15 preview functions covering Start, Playing, and Results states
+    - Phone Landscape (891×411dp), Tablet Portrait (800×1280dp), Tablet Landscape (1280×800dp)
+    - Foldable Portrait (673×841dp) and Foldable Landscape (841×673dp) for Pixel Fold
+  - **NumberSequenceUi**: 15 preview functions covering all game states
+    - Same device coverage as MathRaceUi for consistent preview testing
+  - **MemoryMatchUi**: 15 preview functions covering Start, Playing, and Results states
+    - Includes helper function `createSampleCards()` for generating realistic card state
+- **Developer Portal Preview Variants**: Added 5 device-specific previews for DeveloperPortalUi
+  - Covers Phone Landscape, Tablet Portrait/Landscape, Foldable Portrait/Landscape
+- **Color Palette Viewer Preview Variants**: Added 6 preview functions for ColorPaletteViewerUi
+  - Includes Dark Theme preview in addition to device variants
+  - Helper function `createSampleColorGroups()` for generating sample color data
 - **Onboarding Screens Adaptive Layout - Phase 10**: Optimized onboarding flow for tablets with responsive images, layouts, and typography
   - **OnboardingScreen**: Responsive carousel with adaptive image sizing and typography
     - Content centered with max-width (900dp) for tablets using Box + widthIn

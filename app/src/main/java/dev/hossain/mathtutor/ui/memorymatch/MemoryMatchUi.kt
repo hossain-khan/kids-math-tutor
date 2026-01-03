@@ -56,12 +56,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.ui.component.BadgeIcon
 import dev.hossain.mathtutor.ui.mathrace.CountdownScreen
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 import dev.zacsweers.metro.AppScope
 
@@ -748,4 +750,433 @@ private fun formatTime(seconds: Int): String {
     val minutes = seconds / 60
     val secs = seconds % 60
     return String.format("%d:%02d", minutes, secs)
+}
+
+// Preview composables - Start Screen state
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape - Start",
+)
+@Composable
+private fun MemoryMatchUiPhoneLandscapeStartPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.NotStarted,
+                    cards = emptyList(),
+                    moves = 0,
+                    timeElapsed = 0,
+                    matchesFound = 0,
+                    totalPairs = 8,
+                    personalBestTime = 45,
+                    userName = "Alex",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait - Start",
+)
+@Composable
+private fun MemoryMatchUiTabletPortraitStartPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.NotStarted,
+                    cards = emptyList(),
+                    moves = 0,
+                    timeElapsed = 0,
+                    matchesFound = 0,
+                    totalPairs = 8,
+                    personalBestTime = 38,
+                    userName = "Jordan",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape - Start",
+)
+@Composable
+private fun MemoryMatchUiTabletLandscapeStartPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.NotStarted,
+                    cards = emptyList(),
+                    moves = 0,
+                    timeElapsed = 0,
+                    matchesFound = 0,
+                    totalPairs = 8,
+                    personalBestTime = 32,
+                    userName = "Sam",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded) - Start",
+)
+@Composable
+private fun MemoryMatchUiFoldablePortraitStartPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.NotStarted,
+                    cards = emptyList(),
+                    moves = 0,
+                    timeElapsed = 0,
+                    matchesFound = 0,
+                    totalPairs = 8,
+                    personalBestTime = 40,
+                    userName = "Chris",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded) - Start",
+)
+@Composable
+private fun MemoryMatchUiFoldableLandscapeStartPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.NotStarted,
+                    cards = emptyList(),
+                    moves = 0,
+                    timeElapsed = 0,
+                    matchesFound = 0,
+                    totalPairs = 8,
+                    personalBestTime = 35,
+                    userName = "Taylor",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Helper function to create sample cards for previews
+private fun createSampleCards(): List<MemoryMatchScreen.Card> =
+    listOf(
+        MemoryMatchScreen.Card(id = 0, content = "3+5", pairId = 0),
+        MemoryMatchScreen.Card(id = 1, content = "8", pairId = 0, isFlipped = true),
+        MemoryMatchScreen.Card(id = 2, content = "4+2", pairId = 1),
+        MemoryMatchScreen.Card(id = 3, content = "6", pairId = 1, isMatched = true, isFlipped = true),
+        MemoryMatchScreen.Card(id = 4, content = "7-3", pairId = 2),
+        MemoryMatchScreen.Card(id = 5, content = "4", pairId = 2, isMatched = true, isFlipped = true),
+        MemoryMatchScreen.Card(id = 6, content = "9-5", pairId = 3),
+        MemoryMatchScreen.Card(id = 7, content = "4", pairId = 3),
+        MemoryMatchScreen.Card(id = 8, content = "2+6", pairId = 4),
+        MemoryMatchScreen.Card(id = 9, content = "8", pairId = 4),
+        MemoryMatchScreen.Card(id = 10, content = "5+4", pairId = 5),
+        MemoryMatchScreen.Card(id = 11, content = "9", pairId = 5),
+        MemoryMatchScreen.Card(id = 12, content = "6-2", pairId = 6),
+        MemoryMatchScreen.Card(id = 13, content = "4", pairId = 6),
+        MemoryMatchScreen.Card(id = 14, content = "3+4", pairId = 7),
+        MemoryMatchScreen.Card(id = 15, content = "7", pairId = 7),
+    )
+
+// Preview composables - Playing state
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape - Playing",
+)
+@Composable
+private fun MemoryMatchUiPhoneLandscapePlayingPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.Playing,
+                    cards = createSampleCards(),
+                    moves = 12,
+                    timeElapsed = 28,
+                    matchesFound = 2,
+                    totalPairs = 8,
+                    personalBestTime = 45,
+                    userName = "Alex",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait - Playing",
+)
+@Composable
+private fun MemoryMatchUiTabletPortraitPlayingPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.Playing,
+                    cards = createSampleCards(),
+                    moves = 8,
+                    timeElapsed = 18,
+                    matchesFound = 3,
+                    totalPairs = 8,
+                    personalBestTime = 38,
+                    userName = "Jordan",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape - Playing",
+)
+@Composable
+private fun MemoryMatchUiTabletLandscapePlayingPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.Playing,
+                    cards = createSampleCards(),
+                    moves = 15,
+                    timeElapsed = 35,
+                    matchesFound = 5,
+                    totalPairs = 8,
+                    personalBestTime = 32,
+                    userName = "Sam",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded) - Playing",
+)
+@Composable
+private fun MemoryMatchUiFoldablePortraitPlayingPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.Playing,
+                    cards = createSampleCards(),
+                    moves = 10,
+                    timeElapsed = 22,
+                    matchesFound = 4,
+                    totalPairs = 8,
+                    personalBestTime = 40,
+                    userName = "Chris",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded) - Playing",
+)
+@Composable
+private fun MemoryMatchUiFoldableLandscapePlayingPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState = MemoryMatchScreen.GameState.Playing,
+                    cards = createSampleCards(),
+                    moves = 18,
+                    timeElapsed = 42,
+                    matchesFound = 6,
+                    totalPairs = 8,
+                    personalBestTime = 35,
+                    userName = "Taylor",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Preview composables - Results state
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape - Results",
+)
+@Composable
+private fun MemoryMatchUiPhoneLandscapeResultsPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState =
+                        MemoryMatchScreen.GameState.Finished(
+                            moves = 20,
+                            timeElapsed = 42,
+                            isNewRecord = true,
+                            accuracy = 80f,
+                        ),
+                    cards = emptyList(),
+                    moves = 20,
+                    timeElapsed = 42,
+                    matchesFound = 8,
+                    totalPairs = 8,
+                    personalBestTime = 42,
+                    userName = "Alex",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait - Results",
+)
+@Composable
+private fun MemoryMatchUiTabletPortraitResultsPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState =
+                        MemoryMatchScreen.GameState.Finished(
+                            moves = 16,
+                            timeElapsed = 35,
+                            isNewRecord = true,
+                            accuracy = 87.5f,
+                        ),
+                    cards = emptyList(),
+                    moves = 16,
+                    timeElapsed = 35,
+                    matchesFound = 8,
+                    totalPairs = 8,
+                    personalBestTime = 35,
+                    userName = "Jordan",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape - Results",
+)
+@Composable
+private fun MemoryMatchUiTabletLandscapeResultsPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState =
+                        MemoryMatchScreen.GameState.Finished(
+                            moves = 24,
+                            timeElapsed = 55,
+                            isNewRecord = false,
+                            accuracy = 66.7f,
+                        ),
+                    cards = emptyList(),
+                    moves = 24,
+                    timeElapsed = 55,
+                    matchesFound = 8,
+                    totalPairs = 8,
+                    personalBestTime = 32,
+                    userName = "Sam",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded) - Results",
+)
+@Composable
+private fun MemoryMatchUiFoldablePortraitResultsPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState =
+                        MemoryMatchScreen.GameState.Finished(
+                            moves = 18,
+                            timeElapsed = 38,
+                            isNewRecord = true,
+                            accuracy = 83.3f,
+                        ),
+                    cards = emptyList(),
+                    moves = 18,
+                    timeElapsed = 38,
+                    matchesFound = 8,
+                    totalPairs = 8,
+                    personalBestTime = 38,
+                    userName = "Chris",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded) - Results",
+)
+@Composable
+private fun MemoryMatchUiFoldableLandscapeResultsPreview() {
+    KidsMathTutorAppTheme {
+        MemoryMatchUi(
+            state =
+                MemoryMatchScreen.State(
+                    gameState =
+                        MemoryMatchScreen.GameState.Finished(
+                            moves = 14,
+                            timeElapsed = 30,
+                            isNewRecord = true,
+                            accuracy = 92.9f,
+                        ),
+                    cards = emptyList(),
+                    moves = 14,
+                    timeElapsed = 30,
+                    matchesFound = 8,
+                    totalPairs = 8,
+                    personalBestTime = 30,
+                    userName = "Taylor",
+                    eventSink = {},
+                ),
+        )
+    }
 }
