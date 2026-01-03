@@ -90,6 +90,8 @@ import timber.log.Timber
 import java.time.Instant
 
 private val MIN_GRADE_CARD_WIDTH: Dp = 200.dp
+private val GRADE_CARD_HEIGHT: Dp = 150.dp
+private val GRADE_CARD_VERTICAL_PADDING: Dp = 8.dp
 
 /**
  * Circuit screen for grade selection during onboarding or from settings.
@@ -342,6 +344,8 @@ fun GradeSelectionUi(
                     .padding(paddingValues),
         ) {
             val screenWidth = maxWidth
+            val screenHeight = maxHeight
+            val isLandscape = screenWidth > screenHeight
 
             // Center content on wider screens
             Box(
@@ -440,8 +444,6 @@ fun GradeSelectionUi(
                             textAlign = TextAlign.Center,
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-
                         // Display grade cards using adaptive grid based on availability (respecting parent limits)
                         val gradeDescriptions =
                             mapOf(
@@ -451,14 +453,31 @@ fun GradeSelectionUi(
                             )
 
                         // Use LazyVerticalGrid for adaptive layout
+                        // In landscape mode, limit to 2 columns to prevent text overflow
+                        val numColumns = if (isLandscape) 2 else 1
+                        val gridColumns =
+                            if (isLandscape) {
+                                GridCells.Fixed(numColumns)
+                            } else {
+                                GridCells.Adaptive(minSize = MIN_GRADE_CARD_WIDTH)
+                            }
+
+                        // Calculate grid height based on number of rows needed
+                        // LazyVerticalGrid requires height constraint when inside scrollable parent
+                        val numRows = (state.availableGrades.size + numColumns - 1) / numColumns // Ceiling division
+                        val cardHeightWithPadding = GRADE_CARD_HEIGHT + (GRADE_CARD_VERTICAL_PADDING * 2)
+                        val verticalSpacing = 4.dp
+                        val gridHeight = (cardHeightWithPadding * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0))
+
                         LazyVerticalGrid(
-                            columns = GridCells.Adaptive(minSize = MIN_GRADE_CARD_WIDTH),
+                            columns = gridColumns,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .height((state.availableGrades.size * 170).dp), // Approximate height for all cards
+                                    .height(gridHeight),
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(verticalSpacing),
+                            userScrollEnabled = false, // Parent Column handles scrolling
                         ) {
                             items(state.availableGrades) { gradeLevel ->
                                 GradeCard(
@@ -497,7 +516,8 @@ private fun GradeCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(150.dp),
+                .padding(vertical = GRADE_CARD_VERTICAL_PADDING)
+                .height(GRADE_CARD_HEIGHT),
         border =
             if (isSelected) {
                 BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
