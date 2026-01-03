@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **OperationSelector & AccuracyDetails Adaptive Layout - Phase 10**: Enhanced tablet optimization for operation selection and stats screens
+  - **OperationSelectorScreen**: Responsive grid layout with adaptive operation cards
+    - Added MAX_CONTENT_WIDTH (700dp) with BoxWithConstraints for tablet readability
+    - Replaced linear layout with LazyVerticalGrid using GridCells.Adaptive(280.dp)
+    - Compact (<600dp): Single column or 1-2 cards per row
+    - Medium (600-840dp): 2 operation cards per row side-by-side
+    - Expanded (>840dp): 2+ operation cards per row with optimal spacing
+    - Content centered horizontally on wider screens for better usability
+    - Stats button maintains proper positioning at bottom
+    - Added responsive preview functions: Compact (411×891dp), Medium (700×500dp), Expanded (1100×600dp)
+  - **AccuracyDetailsScreen**: Centered content layout for tablets
+    - Added MAX_CONTENT_WIDTH (700dp) with Box-based centering
+    - Daily accuracy cards display with optimal width on tablets
+    - Improved spacing and visual hierarchy on larger screens
+    - Added responsive preview functions for all screen sizes
+  - All layouts maintain Material 3 design principles with proper touch targets (48dp minimum) and accessibility
+  - Operation cards scale appropriately with consistent aspect ratio across screen sizes
 - **ResultsScreen Adaptive Dual-Pane Layout - Phase 11**: Enhanced tablet support with responsive problem review grid
   - **Responsive Problem Review Grid**: Adaptive column layout based on screen size
     - Compact (<600dp): Single-column problem review (full width cards)

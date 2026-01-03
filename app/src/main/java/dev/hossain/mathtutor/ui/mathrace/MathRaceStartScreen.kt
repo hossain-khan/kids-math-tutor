@@ -85,7 +85,7 @@ fun MathRaceStartScreen(
         },
         modifier = modifier,
     ) { paddingValues ->
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
