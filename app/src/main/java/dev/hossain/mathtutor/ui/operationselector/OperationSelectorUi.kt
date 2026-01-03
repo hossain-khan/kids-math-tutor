@@ -139,37 +139,37 @@ fun OperationSelectorUi(
                 // Header with mascot
                 item {
                     Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 24.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    // Mascot image
-                    Image(
-                        painter = painterResource(id = R.drawable.pup_tutor_sticker_teaching),
-                        contentDescription = "Math Pup Tutor",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(100.dp),
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    // Text column
-                    Column(
-                        horizontalAlignment = Alignment.Start,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 24.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            text = "Choose Your Practice",
-                            style = MaterialTheme.typography.displaySmall,
-                            color = MaterialTheme.colorScheme.onSurface,
+                        // Mascot image
+                        Image(
+                            painter = painterResource(id = R.drawable.pup_tutor_sticker_teaching),
+                            contentDescription = "Math Pup Tutor",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(100.dp),
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "What would you like to work on?",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        // Text column
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                        ) {
+                            Text(
+                                text = "Choose Your Practice",
+                                style = MaterialTheme.typography.displaySmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "What would you like to work on?",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
                 }
 
@@ -267,24 +267,24 @@ fun OperationSelectorUi(
                 // Stats Button
                 item {
                     Button(
-                    onClick = {
-                        state.eventSink(OperationSelectorScreen.Event.ViewStatsClicked)
-                    },
-                    enabled = state.hasSessionHistory,
-                    modifier =
-                        Modifier
-                            .width(250.dp)
-                            .height(48.dp),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        ),
-                ) {
-                    Text(
-                        text = "View My Stats",
-                        style = MaterialTheme.typography.labelLarge,
-                    )
+                        onClick = {
+                            state.eventSink(OperationSelectorScreen.Event.ViewStatsClicked)
+                        },
+                        enabled = state.hasSessionHistory,
+                        modifier =
+                            Modifier
+                                .width(250.dp)
+                                .height(48.dp),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            ),
+                    ) {
+                        Text(
+                            text = "View My Stats",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
                     }
                 }
 
