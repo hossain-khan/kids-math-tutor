@@ -1626,3 +1626,203 @@ private fun RecentSessionItemDarkLowPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun StatsUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    userName = "Alex",
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 100,
+                            correctCount = 85,
+                            accuracy = 85f,
+                            sessionCount = 10,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 50,
+                                    correctCount = 45,
+                                    accuracy = 90f,
+                                    sessionCount = 5,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 50,
+                                    correctCount = 40,
+                                    accuracy = 80f,
+                                    sessionCount = 5,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 9,
+                                incorrectAnswers = 1,
+                                accuracy = 90f,
+                                durationSeconds = 120,
+                                timestamp = Instant.now(),
+                                gradeLevel = 1,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun StatsUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    userName = "Jordan",
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 200,
+                            correctCount = 180,
+                            accuracy = 90f,
+                            sessionCount = 20,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 100,
+                                    correctCount = 90,
+                                    accuracy = 90f,
+                                    sessionCount = 10,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 100,
+                                    correctCount = 90,
+                                    accuracy = 90f,
+                                    sessionCount = 10,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.ADDITION,
+                                totalProblems = 10,
+                                correctAnswers = 10,
+                                incorrectAnswers = 0,
+                                accuracy = 100f,
+                                durationSeconds = 90,
+                                timestamp = Instant.now(),
+                                gradeLevel = 2,
+                            ),
+                            PracticeSessionEntity(
+                                id = 2,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 10,
+                                correctAnswers = 8,
+                                incorrectAnswers = 2,
+                                accuracy = 80f,
+                                durationSeconds = 150,
+                                timestamp = Instant.now().minusSeconds(3600),
+                                gradeLevel = 2,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun StatsUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    userName = null,
+                    overallStats = SessionStats.EMPTY,
+                    operationStats = emptyMap(),
+                    recentSessions = emptyList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun StatsUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        StatsUi(
+            state =
+                StatsScreen.State(
+                    userName = "Taylor",
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 50,
+                            correctCount = 40,
+                            accuracy = 80f,
+                            sessionCount = 5,
+                        ),
+                    operationStats =
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 25,
+                                    correctCount = 20,
+                                    accuracy = 80f,
+                                    sessionCount = 3,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 25,
+                                    correctCount = 20,
+                                    accuracy = 80f,
+                                    sessionCount = 2,
+                                ),
+                        ),
+                    recentSessions =
+                        listOf(
+                            PracticeSessionEntity(
+                                id = 1,
+                                operation = MathOperation.SUBTRACTION,
+                                totalProblems = 5,
+                                correctAnswers = 4,
+                                incorrectAnswers = 1,
+                                accuracy = 80f,
+                                durationSeconds = 90,
+                                timestamp = Instant.now(),
+                                gradeLevel = 0,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}

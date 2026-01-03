@@ -602,3 +602,171 @@ private fun GameSelectionUiDarkPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun GameSelectionUiPhoneLandscapePreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 18,
+                                totalPlays = 6,
+                                trialAttempts = 0,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                                trialAttempts = 1,
+                            ),
+                        ),
+                    totalProblemsSolved = 90,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun GameSelectionUiTabletPortraitPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 25,
+                                totalPlays = 12,
+                                trialAttempts = 0,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = true,
+                                personalBest = 18,
+                                totalPlays = 7,
+                                trialAttempts = 0,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.NUMBER_SEQUENCE,
+                                isUnlocked = true,
+                                personalBest = 10,
+                                totalPlays = 2,
+                                trialAttempts = 0,
+                            ),
+                        ),
+                    totalProblemsSolved = 200,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun GameSelectionUiTabletLandscapePreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = false,
+                                personalBest = 0,
+                                totalPlays = 0,
+                                trialAttempts = 2,
+                            ),
+                        ),
+                    totalProblemsSolved = 25,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun GameSelectionUiFoldablePortraitPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 30,
+                                totalPlays = 15,
+                                trialAttempts = 0,
+                            ),
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MEMORY_MATCH,
+                                isUnlocked = true,
+                                personalBest = 20,
+                                totalPlays = 10,
+                                trialAttempts = 0,
+                            ),
+                        ),
+                    totalProblemsSolved = 250,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun GameSelectionUiFoldableLandscapePreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        GameSelectionUi(
+            state =
+                GameSelectionScreen.State(
+                    gameInfoList =
+                        listOf(
+                            GameSelectionScreen.GameInfo(
+                                game = Game.MATH_RACE,
+                                isUnlocked = true,
+                                personalBest = 22,
+                                totalPlays = 9,
+                                trialAttempts = 0,
+                            ),
+                        ),
+                    totalProblemsSolved = 120,
+                    eventSink = {},
+                ),
+        )
+    }
+}

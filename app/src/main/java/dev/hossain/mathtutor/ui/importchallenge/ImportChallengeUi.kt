@@ -56,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -63,6 +64,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PreviewData
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_STANDARD
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
@@ -1324,6 +1326,123 @@ private fun ImportChallengeUiExpandedPreview() {
                                 ),
                             estimatedDuration = Duration.parse("PT5M"),
                         ),
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun ImportChallengeUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun ImportChallengeUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        "{\"title\":\"Sample Challenge\",\"problems\":" +
+                            "[{\"num1\":5,\"num2\":3,\"operation\":\"ADDITION\",\"correctAnswer\":8}]}",
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun ImportChallengeUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = true,
+                    isGuideExpanded = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ImportChallengeUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = true,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ImportChallengeUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "{\"title\":\"Test\"}",
+                    validationState = ValidationState.Idle,
+                    previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = false,
                     isGuideExpanded = false,

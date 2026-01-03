@@ -455,3 +455,162 @@ private fun AccuracyDetailsUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun AccuracyDetailsUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList =
+                        listOf(
+                            DailyAccuracy(
+                                date = LocalDate.now(),
+                                sessionCount = 2,
+                                totalProblems = 20,
+                                correctAnswers = 18,
+                                accuracy = 90f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(1),
+                                sessionCount = 1,
+                                totalProblems = 10,
+                                correctAnswers = 7,
+                                accuracy = 70f,
+                            ),
+                        ),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun AccuracyDetailsUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList =
+                        listOf(
+                            DailyAccuracy(
+                                date = LocalDate.now(),
+                                sessionCount = 5,
+                                totalProblems = 50,
+                                correctAnswers = 48,
+                                accuracy = 96f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(1),
+                                sessionCount = 3,
+                                totalProblems = 30,
+                                correctAnswers = 28,
+                                accuracy = 93f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(2),
+                                sessionCount = 4,
+                                totalProblems = 40,
+                                correctAnswers = 36,
+                                accuracy = 90f,
+                            ),
+                        ),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun AccuracyDetailsUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList =
+                        listOf(
+                            DailyAccuracy(
+                                date = LocalDate.now(),
+                                sessionCount = 2,
+                                totalProblems = 20,
+                                correctAnswers = 12,
+                                accuracy = 60f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(1),
+                                sessionCount = 1,
+                                totalProblems = 10,
+                                correctAnswers = 5,
+                                accuracy = 50f,
+                            ),
+                        ),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun AccuracyDetailsUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList = emptyList(),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun AccuracyDetailsUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList =
+                        listOf(
+                            DailyAccuracy(
+                                date = LocalDate.now(),
+                                sessionCount = 3,
+                                totalProblems = 30,
+                                correctAnswers = 24,
+                                accuracy = 80f,
+                            ),
+                        ),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}

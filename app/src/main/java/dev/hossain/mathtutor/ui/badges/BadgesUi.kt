@@ -633,3 +633,215 @@ private fun BadgesUiDarkPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun BadgesUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 1,
+                            totalCount = 5,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = BadgeIcon.FIRST_STEPS,
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun BadgesUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 3,
+                            totalCount = 8,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = BadgeIcon.FIRST_STEPS,
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.VOLUME to
+                                listOf(
+                                    Badge(
+                                        id = "math_rookie",
+                                        name = "Math Rookie",
+                                        description = "Solved 25 problems",
+                                        icon = BadgeIcon.MATH_ROOKIE,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(25),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.STREAK to
+                                listOf(
+                                    Badge(
+                                        id = "streak_starter",
+                                        name = "Streak Starter",
+                                        description = "Practice 3 days in a row",
+                                        icon = BadgeIcon.STREAK_STARTER,
+                                        category = BadgeCategory.STREAK,
+                                        requirement = BadgeRequirement.DailyStreak(3),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun BadgesUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 0,
+                            totalCount = 3,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = BadgeIcon.FIRST_STEPS,
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = null,
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun BadgesUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 0,
+                            totalCount = 0,
+                        ),
+                    badgesByCategory = emptyMap(),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun BadgesUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        BadgesUi(
+            state =
+                BadgesScreen.State(
+                    progressSummary =
+                        BadgeProgress(
+                            unlockedCount = 2,
+                            totalCount = 5,
+                        ),
+                    badgesByCategory =
+                        mapOf(
+                            BadgeCategory.GETTING_STARTED to
+                                listOf(
+                                    Badge(
+                                        id = "first_steps",
+                                        name = "First Steps",
+                                        description = "Solved first problem",
+                                        icon = BadgeIcon.FIRST_STEPS,
+                                        category = BadgeCategory.GETTING_STARTED,
+                                        requirement = BadgeRequirement.ProblemCount(1),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                            BadgeCategory.VOLUME to
+                                listOf(
+                                    Badge(
+                                        id = "math_rookie",
+                                        name = "Math Rookie",
+                                        description = "Solved 25 problems",
+                                        icon = BadgeIcon.MATH_ROOKIE,
+                                        category = BadgeCategory.VOLUME,
+                                        requirement = BadgeRequirement.ProblemCount(25),
+                                        unlockedAt = Instant.now(),
+                                    ),
+                                ),
+                        ),
+                    selectedBadge = null,
+                    eventSink = {},
+                ),
+        )
+    }
+}

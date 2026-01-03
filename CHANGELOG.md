@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Preview Variants for All Remaining Screens**: Added comprehensive device-specific preview functions across 13 UI screens
+  - **Main App + Practice Screens (4 screens)**: HomeUi, OperationSelectorUi, MathPracticeUi, ResultsUi
+  - **Statistics & Achievements (3 screens)**: StatsUi, AccuracyDetailsUi, BadgesUi
+  - **Settings Screens (3 screens)**: SettingsUi, AudioHapticSettingsUi, ParentSettingsUi
+  - **Game & Custom Screens (3 screens)**: GameSelectionUi, ImportChallengeUi, ParentChallengesUi
+  - Each screen now includes 5 preview variants:
+    - Phone Landscape (891×411dp)
+    - Tablet Portrait (800×1280dp)
+    - Tablet Landscape (1280×800dp)
+    - Foldable Portrait (673×841dp) for Pixel Fold
+    - Foldable Landscape (841×673dp) for Pixel Fold
+  - Total: 65 new preview functions added for quick visual verification across different form factors
 - **Comprehensive Preview Variants for Game Screens**: Added device-specific preview functions for all game UI screens
   - **MathRaceUi**: 15 preview functions covering Start, Playing, and Results states
     - Phone Landscape (891×411dp), Tablet Portrait (800×1280dp), Tablet Landscape (1280×800dp)

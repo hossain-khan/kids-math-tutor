@@ -429,3 +429,98 @@ private fun OperationSelectorUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun OperationSelectorUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_1,
+                    hasSessionHistory = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun OperationSelectorUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.KINDERGARTEN,
+                    hasSessionHistory = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun OperationSelectorUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
+                    hasSessionHistory = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun OperationSelectorUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_1,
+                    hasSessionHistory = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun OperationSelectorUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
+                    hasSessionHistory = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}

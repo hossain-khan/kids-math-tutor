@@ -1222,3 +1222,168 @@ private fun ParentChallengesUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun ParentChallengesUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges =
+                        listOf(
+                            CustomChallenge(
+                                id = "1",
+                                title = "Quick Addition",
+                                subtitle = null,
+                                type = ChallengeType.EXPLICIT,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 3, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 5),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                        ),
+                    isLoading = false,
+                    showArchived = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun ParentChallengesUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges =
+                        listOf(
+                            CustomChallenge(
+                                id = "1",
+                                title = "Addition Practice",
+                                subtitle = "Basic addition problems",
+                                type = ChallengeType.EXPLICIT,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 5, num2 = 3, operation = MathOperation.ADDITION, correctAnswer = 8),
+                                        MathProblem(num1 = 7, num2 = 2, operation = MathOperation.ADDITION, correctAnswer = 9),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                            CustomChallenge(
+                                id = "2",
+                                title = "Subtraction Skills",
+                                subtitle = null,
+                                type = ChallengeType.GENERATED,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 10, num2 = 4, operation = MathOperation.SUBTRACTION, correctAnswer = 6),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                        ),
+                    isLoading = false,
+                    showArchived = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun ParentChallengesUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges = emptyList(),
+                    isLoading = false,
+                    showArchived = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ParentChallengesUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges =
+                        listOf(
+                            CustomChallenge(
+                                id = "1",
+                                title = "Multiplication Madness",
+                                subtitle = "Times tables practice",
+                                type = ChallengeType.EXPLICIT,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 3, num2 = 4, operation = MathOperation.MULTIPLICATION, correctAnswer = 12),
+                                        MathProblem(num1 = 5, num2 = 2, operation = MathOperation.MULTIPLICATION, correctAnswer = 10),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                        ),
+                    isLoading = false,
+                    showArchived = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ParentChallengesUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges =
+                        listOf(
+                            CustomChallenge(
+                                id = "1",
+                                title = "Division Practice",
+                                subtitle = null,
+                                type = ChallengeType.GENERATED,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 12, num2 = 3, operation = MathOperation.DIVISION, correctAnswer = 4),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                        ),
+                    isLoading = false,
+                    showArchived = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
