@@ -461,12 +461,19 @@ fun GradeSelectionUi(
                                 GridCells.Adaptive(minSize = MIN_GRADE_CARD_WIDTH)
                             }
 
+                        // Calculate grid height based on number of rows needed
+                        val numColumns = if (isLandscape) 2 else 1 // Simplified assumption
+                        val numRows = (state.availableGrades.size + numColumns - 1) / numColumns // Ceiling division
+                        val cardHeight = 150.dp
+                        val verticalSpacing = 16.dp
+                        val gridHeight = (cardHeight * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0))
+
                         LazyVerticalGrid(
                             columns = gridColumns,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .height((state.availableGrades.size * 170).dp), // Approximate height for all cards
+                                    .height(gridHeight),
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
