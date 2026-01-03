@@ -34,11 +34,28 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 /**
  * Visual representation using animated dots to represent grouped quantities.
  *
- * For example:
- * - Addition: Shows dots grouped by first number, then added dots
- * - Subtraction: Shows initial dots, then crossed-out removed dots
- * - Multiplication: Shows groups of dots
- * - Division: Shows dots being shared into groups
+ * This component is shown as **Tier 2 of the progressive hint system**:
+ * - Appears when child clicks "🎨 Show visually" button after requesting text hint
+ * - Only shown if visual hint is feasible for the problem (see [VisualHintFeasibilityChecker])
+ * - Displayed in an AlertDialog with Math Pup juggling balls sticker
+ * - Available after 2 wrong attempts on a problem (if hint system is enabled)
+ *
+ * **Animation Details**:
+ * - Each dot scales from 0f to 1f with staggered timing (100ms delay between dots)
+ * - Total animation duration: ~800ms for smooth reveal
+ * - Uses `LinearEasing` for consistent timing
+ *
+ * **Operation-Specific Visualizations**:
+ * - **Addition**: Shows first group of dots (blue) + second group (purple) with plus sign
+ * - **Subtraction**: Shows all starting dots, then dims last N dots to visualize "taking away"
+ * - **Multiplication**: Shows groups of dots to represent repeated addition concept
+ * - **Division**: Shows dots distributed into equal groups for fair sharing concept
+ *
+ * **Feasibility Constraints** (problems suitable for visual hints):
+ * - Addition: Both operands ≤ 20
+ * - Subtraction: Minuend ≤ 20
+ * - Multiplication: Both operands ≤ 9
+ * - Division: Dividend ≤ 100 AND divisor ≤ 10
  *
  * @param operation The math operation to visualize
  * @param firstNumber The first number in the operation
@@ -513,6 +530,81 @@ private fun DivisionVisualizerPreview() {
                 operation = MathOperation.DIVISION,
                 firstNumber = 12,
                 secondNumber = 3,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of simple addition with small numbers (feasibility edge case).
+ */
+@Preview(showBackground = true, name = "Addition 3 + 2 (Small)")
+@Composable
+private fun SimpleAdditionVisualizerPreview() {
+    KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "3 + 2 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.ADDITION,
+                firstNumber = 3,
+                secondNumber = 2,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of feasibility threshold for addition (20 + 20 = 40 dots total, at limit).
+ */
+@Preview(showBackground = true, name = "Addition 20 + 20 (Max Feasible)")
+@Composable
+private fun MaxFeasibleAdditionVisualizerPreview() {
+    KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "20 + 20 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.ADDITION,
+                firstNumber = 20,
+                secondNumber = 20,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of multiplication with maximum feasible numbers (9 × 9 = 81 dots).
+ */
+@Preview(showBackground = true, name = "Multiplication 9 × 9 (Max Feasible)")
+@Composable
+private fun MaxFeasibleMultiplicationVisualizerPreview() {
+    KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "9 × 9 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.MULTIPLICATION,
+                firstNumber = 9,
+                secondNumber = 9,
             )
         }
     }
