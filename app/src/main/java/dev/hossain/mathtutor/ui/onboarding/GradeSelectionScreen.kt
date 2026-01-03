@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,10 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -54,6 +59,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -79,6 +85,12 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.time.Instant
+
+// Width breakpoints for adaptive layouts
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
+private val MAX_CONTENT_WIDTH: Dp = 800.dp
+private val MIN_GRADE_CARD_WIDTH: Dp = 200.dp
 
 /**
  * Circuit screen for grade selection during onboarding or from settings.
@@ -324,123 +336,153 @@ fun GradeSelectionUi(
         },
         contentWindowInsets = WindowInsets(0.dp),
     ) { paddingValues ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(paddingValues),
         ) {
-            // Hero image with gradient overlays
+            val screenWidth = maxWidth
+
+            // Center content on wider screens
             Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
-                        .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.hero_onboarding_select_grade),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit,
-                )
-
-                // Gradient overlay at top (20%)
-                Box(
+                Column(
                     modifier =
                         Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.2f)
-                            .align(Alignment.TopCenter)
-                            .background(
-                                brush =
-                                    Brush.verticalGradient(
-                                        colors =
-                                            listOf(
-                                                MaterialTheme.colorScheme.surface,
-                                                MaterialTheme.colorScheme.surface.copy(alpha = 0f),
-                                            ),
-                                    ),
-                            ),
-                )
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    // Hero image with gradient overlays
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+                                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.hero_onboarding_select_grade),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit,
+                        )
 
-                // Gradient overlay at bottom (20%)
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.2f)
-                            .align(Alignment.BottomCenter)
-                            .background(
-                                brush =
-                                    Brush.verticalGradient(
-                                        colors =
-                                            listOf(
-                                                MaterialTheme.colorScheme.surface.copy(alpha = 0f),
-                                                MaterialTheme.colorScheme.surface,
-                                            ),
-                                    ),
-                            ),
-                )
-            }
-
-            Column(
-                modifier =
-                    Modifier
-                        .then(
-                            if (!state.isFromSettings) {
-                                // Onboarding: apply top status bar padding (no TopAppBar)
-                                Modifier.padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
-                            } else {
+                        // Gradient overlay at top (20%)
+                        Box(
+                            modifier =
                                 Modifier
-                            },
-                        ).padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Spacer(modifier = Modifier.height(8.dp))
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.2f)
+                                    .align(Alignment.TopCenter)
+                                    .background(
+                                        brush =
+                                            Brush.verticalGradient(
+                                                colors =
+                                                    listOf(
+                                                        MaterialTheme.colorScheme.surface,
+                                                        MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                                    ),
+                                            ),
+                                    ),
+                        )
 
-                Text(
-                    text = if (state.isFromSettings) "Select your grade level 🐶" else "Which grade are you in? 🐶",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                )
+                        // Gradient overlay at bottom (20%)
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.2f)
+                                    .align(Alignment.BottomCenter)
+                                    .background(
+                                        brush =
+                                            Brush.verticalGradient(
+                                                colors =
+                                                    listOf(
+                                                        MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                                        MaterialTheme.colorScheme.surface,
+                                                    ),
+                                            ),
+                                    ),
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Column(
+                        modifier =
+                            Modifier
+                                .then(
+                                    if (!state.isFromSettings) {
+                                        // Onboarding: apply top status bar padding (no TopAppBar)
+                                        Modifier.padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+                                    } else {
+                                        Modifier
+                                    },
+                                ).padding(horizontal = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                // Display grade cards based on availability (respecting parent limits)
-                val gradeDescriptions =
-                    mapOf(
-                        GradeLevel.KINDERGARTEN to "Numbers 1-5, Simple addition",
-                        GradeLevel.GRADE_1 to "Numbers 1-10, Add, subtract",
-                        GradeLevel.GRADE_2 to "Numbers 1-20, All operations",
-                    )
+                        Text(
+                            text = if (state.isFromSettings) "Select your grade level 🐶" else "Which grade are you in? 🐶",
+                            style =
+                                when {
+                                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.headlineLarge
+                                    else -> MaterialTheme.typography.headlineMedium
+                                },
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                        )
 
-                state.availableGrades.forEach { gradeLevel ->
-                    GradeCard(
-                        gradeLevel = gradeLevel,
-                        description = gradeDescriptions[gradeLevel] ?: "",
-                        isSelected = state.selectedGrade == gradeLevel,
-                        onClick = {
-                            state.eventSink(GradeSelectionScreen.Event.GradeSelected(gradeLevel))
-                        },
-                    )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Display grade cards using adaptive grid based on availability (respecting parent limits)
+                        val gradeDescriptions =
+                            mapOf(
+                                GradeLevel.KINDERGARTEN to "Numbers 1-5, Simple addition",
+                                GradeLevel.GRADE_1 to "Numbers 1-10, Add, subtract",
+                                GradeLevel.GRADE_2 to "Numbers 1-20, All operations",
+                            )
+
+                        // Use LazyVerticalGrid for adaptive layout
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(minSize = MIN_GRADE_CARD_WIDTH),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height((state.availableGrades.size * 170).dp), // Approximate height for all cards
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            items(state.availableGrades) { gradeLevel ->
+                                GradeCard(
+                                    gradeLevel = gradeLevel,
+                                    description = gradeDescriptions[gradeLevel] ?: "",
+                                    isSelected = state.selectedGrade == gradeLevel,
+                                    onClick = {
+                                        state.eventSink(GradeSelectionScreen.Event.GradeSelected(gradeLevel))
+                                    },
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 }
 
 /**
- * Individual grade card component.
+ * Individual grade card component with adaptive sizing.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

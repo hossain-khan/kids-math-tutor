@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -63,6 +66,11 @@ import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
+
+// Width breakpoints for adaptive layouts
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
+private val MAX_CONTENT_WIDTH: Dp = 900.dp
 
 @Parcelize
 data object OnboardingScreen : Screen {
@@ -187,128 +195,147 @@ fun OnboardingContent(
                 .fillMaxSize()
                 .background(pageColors.backgroundColor),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(systemBarsPadding)
-                    .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+        // Center content on wider screens
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            Row(
+            Column(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
+                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .fillMaxSize()
+                        .padding(systemBarsPadding)
+                        .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                if (pagerState.currentPage < onboardingPages.size - 1) {
-                    TextButton(
-                        onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) },
-                        colors =
-                            ButtonDefaults.textButtonColors(
-                                contentColor = pageColors.contentColor,
-                            ),
-                    ) {
-                        Text(
-                            text = "Skip",
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold,
-                        )
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (pagerState.currentPage < onboardingPages.size - 1) {
+                        TextButton(
+                            onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) },
+                            colors =
+                                ButtonDefaults.textButtonColors(
+                                    contentColor = pageColors.contentColor,
+                                ),
+                        ) {
+                            Text(
+                                text = "Skip",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
-            }
 
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.weight(1f),
-            ) { page ->
-                OnboardingPageContent(
-                    page = onboardingPages[page],
-                    contentColor = pageColors.contentColor,
-                )
-            }
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.weight(1f),
+                ) { page ->
+                    OnboardingPageContent(
+                        page = onboardingPages[page],
+                        contentColor = pageColors.contentColor,
+                    )
+                }
 
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                repeat(onboardingPages.size) { index ->
-                    val isSelected = pagerState.currentPage == index
-                    Box(
+                // Adaptive page indicator spacing
+                BoxWithConstraints(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                ) {
+                    val indicatorSpacing =
+                        when {
+                            maxWidth >= EXPANDED_WIDTH_BREAKPOINT -> 10.dp
+                            maxWidth >= MEDIUM_WIDTH_BREAKPOINT -> 8.dp
+                            else -> 6.dp
+                        }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        repeat(onboardingPages.size) { index ->
+                            val isSelected = pagerState.currentPage == index
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .padding(horizontal = indicatorSpacing)
+                                        .size(if (isSelected) 14.dp else 10.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            if (isSelected) {
+                                                pageColors.contentColor
+                                            } else {
+                                                pageColors.contentColor.copy(alpha = 0.3f)
+                                            },
+                                        ),
+                            )
+                        }
+                    }
+                }
+
+                if (pagerState.currentPage < onboardingPages.size - 1) {
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                            }
+                        },
                         modifier =
                             Modifier
-                                .padding(horizontal = 6.dp)
-                                .size(if (isSelected) 14.dp else 10.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (isSelected) {
-                                        pageColors.contentColor
-                                    } else {
-                                        pageColors.contentColor.copy(alpha = 0.3f)
-                                    },
-                                ),
-                    )
-                }
-            }
-
-            if (pagerState.currentPage < onboardingPages.size - 1) {
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                        }
-                    },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = pageColors.buttonColor,
-                            contentColor = pageColors.contentColor,
-                        ),
-                    shape = RoundedCornerShape(28.dp),
-                ) {
-                    Text(
-                        text = "Next",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.inverseOnSurface,
-                    )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        modifier = Modifier.padding(start = 8.dp),
-                        tint = MaterialTheme.colorScheme.inverseOnSurface,
-                    )
-                }
-            } else {
-                Button(
-                    onClick = { state.eventSink(OnboardingScreen.Event.GetStartedClicked) },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = pageColors.buttonColor,
-                            contentColor = pageColors.contentColor,
-                        ),
-                    shape = RoundedCornerShape(28.dp),
-                ) {
-                    Text(
-                        text = "Get Started! 🎉",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.inverseOnSurface,
-                    )
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = pageColors.buttonColor,
+                                contentColor = pageColors.contentColor,
+                            ),
+                        shape = RoundedCornerShape(28.dp),
+                    ) {
+                        Text(
+                            text = "Next",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            modifier = Modifier.padding(start = 8.dp),
+                            tint = MaterialTheme.colorScheme.inverseOnSurface,
+                        )
+                    }
+                } else {
+                    Button(
+                        onClick = { state.eventSink(OnboardingScreen.Event.GetStartedClicked) },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = pageColors.buttonColor,
+                                contentColor = pageColors.contentColor,
+                            ),
+                        shape = RoundedCornerShape(28.dp),
+                    ) {
+                        Text(
+                            text = "Get Started! 🎉",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                        )
+                    }
                 }
             }
         }
@@ -320,54 +347,89 @@ private fun OnboardingPageContent(
     page: OnboardingPage,
     contentColor: Color,
 ) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Card(
+    BoxWithConstraints {
+        val screenWidth = maxWidth
+
+        // Adaptive image scaling based on screen width
+        val imageScale =
+            when {
+                screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 1.5f
+
+                // Large tablets: 1.5x scale
+                screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 1.3f
+
+                // Tablets: 1.3x scale
+                else -> 1.0f // Phones: 1x scale
+            }
+
+        // Adaptive spacing based on screen width
+        val verticalSpacing =
+            when {
+                screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 48.dp
+                screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 40.dp
+                else -> 32.dp
+            }
+
+        Column(
             modifier =
                 Modifier
-                    .wrapContentSize()
-                    .weight(1f),
-            shape = RoundedCornerShape(24.dp),
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
-            Image(
-                painter = painterResource(id = page.imageRes),
-                contentDescription = page.title,
+            Card(
                 modifier =
-                    Modifier.wrapContentSize(),
-                contentScale = ContentScale.Fit,
+                    Modifier
+                        .wrapContentSize()
+                        .weight(1f),
+                shape = RoundedCornerShape(24.dp),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+            ) {
+                Image(
+                    painter = painterResource(id = page.imageRes),
+                    contentDescription = page.title,
+                    modifier =
+                        Modifier
+                            .wrapContentSize()
+                            .widthIn(max = 600.dp * imageScale),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(verticalSpacing))
+
+            Text(
+                text = page.title,
+                style =
+                    when {
+                        screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> MaterialTheme.typography.displaySmall
+                        screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.headlineLarge
+                        else -> MaterialTheme.typography.headlineLarge
+                    },
+                color = contentColor,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = page.description,
+                style =
+                    when {
+                        screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.titleLarge
+                        else -> MaterialTheme.typography.bodyLarge
+                    },
+                color = contentColor.copy(alpha = 0.8f),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
             )
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Text(
-            text = page.title,
-            style = MaterialTheme.typography.headlineLarge,
-            color = contentColor,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.ExtraBold,
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = page.description,
-            style = MaterialTheme.typography.bodyLarge,
-            color = contentColor.copy(alpha = 0.8f),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Medium,
-        )
     }
 }
 
