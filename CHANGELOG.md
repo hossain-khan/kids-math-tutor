@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **StatsScreen Responsive Layout - Phase 6**: Implemented adaptive layouts for statistics display
+  - **Responsive Overall Progress Cards**: Adaptive column layout based on screen size
+    - Compact/Medium (<1100dp): 2 columns (Total Problems, Accuracy)
+    - Expanded (≥1100dp): 3 columns (Total Problems, Sessions, Accuracy)
+  - **Responsive Operation Stats Grid**: Using `LazyVerticalGrid` with `GridCells.Adaptive(280.dp)`
+    - Automatically adjusts columns based on available width
+    - Compact: 1 column vertical layout
+    - Medium: 2-column grid
+    - Expanded: 3-column grid for multiple operations
+  - **Adaptive Preview Functions**: Added comprehensive device previews
+    - Compact preview (411dp x 891dp) - Phone portrait
+    - Medium preview (700dp x 500dp) - Small tablet
+    - Expanded preview (1100dp x 600dp) - Large tablet
+  - **Enhanced Width Breakpoints**: Added `EXPANDED_WIDTH_BREAKPOINT` constant (1100dp) for large tablet support
+  - All layouts maintain Material 3 design principles with proper spacing and visual hierarchy
 ### Changed
 - **MathPracticeScreen Adaptive Layout - Phase 5**: Enhanced tablet support with larger touch targets and improved dual-pane layouts
   - **Tablet-Sized NumberPad**: Adaptive button sizing based on screen width
