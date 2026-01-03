@@ -931,3 +931,143 @@ private fun ParentSettingsUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun ParentSettingsUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = false,
+                    maxGradeLevel = null,
+                    isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = false,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun ParentSettingsUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = GradeLevel.GRADE_2,
+                    isHintSystemEnabled = false,
+                    adaptiveDifficultyEnabled = true,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = true,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun ParentSettingsUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = GradeLevel.KINDERGARTEN,
+                    isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = false,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = true,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ParentSettingsUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = false,
+                    maxGradeLevel = null,
+                    isHintSystemEnabled = false,
+                    adaptiveDifficultyEnabled = false,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = false,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ParentSettingsUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ParentSettingsUi(
+            state =
+                ParentSettingsScreen.State(
+                    hasPinSet = true,
+                    maxGradeLevel = GradeLevel.GRADE_1,
+                    isHintSystemEnabled = true,
+                    adaptiveDifficultyEnabled = true,
+                    showPinSetup = false,
+                    showPinVerification = false,
+                    showPinReset = false,
+                    showForgotPin = false,
+                    showGradeLimit = false,
+                    showResetForgotOptions = true,
+                    pinVerificationMode = ParentSettingsScreen.PinVerificationMode.NONE,
+                    eventSink = {},
+                ),
+        )
+    }
+}

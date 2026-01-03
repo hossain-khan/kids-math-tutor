@@ -1332,3 +1332,115 @@ private fun ImportChallengeUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun ImportChallengeUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationResult = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun ImportChallengeUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        "{\"title\":\"Sample Challenge\",\"problems\":" +
+                            "[{\"num1\":5,\"num2\":3,\"operation\":\"ADDITION\",\"correctAnswer\":8}]}",
+                    validationResult = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun ImportChallengeUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationResult = null,
+                    isLoading = false,
+                    detectedJsonFromShare = true,
+                    isGuideExpanded = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ImportChallengeUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationResult = null,
+                    isLoading = true,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ImportChallengeUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "{\"title\":\"Test\"}",
+                    validationResult = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}

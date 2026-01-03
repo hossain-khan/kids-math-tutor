@@ -673,3 +673,123 @@ private fun AudioHapticSettingsUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun AudioHapticSettingsUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = false,
+                    hapticsEnabled = true,
+                    volume = 0.5f,
+                    highContrastEnabled = false,
+                    largeTextEnabled = false,
+                    isDeviceAudioSuppressed = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun AudioHapticSettingsUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = false,
+                    backgroundMusicEnabled = false,
+                    hapticsEnabled = false,
+                    volume = 0.3f,
+                    highContrastEnabled = true,
+                    largeTextEnabled = true,
+                    isDeviceAudioSuppressed = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun AudioHapticSettingsUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = true,
+                    hapticsEnabled = false,
+                    volume = 0.7f,
+                    highContrastEnabled = false,
+                    largeTextEnabled = false,
+                    isDeviceAudioSuppressed = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun AudioHapticSettingsUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = true,
+                    hapticsEnabled = true,
+                    volume = 1.0f,
+                    highContrastEnabled = false,
+                    largeTextEnabled = false,
+                    isDeviceAudioSuppressed = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun AudioHapticSettingsUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = false,
+                    backgroundMusicEnabled = true,
+                    hapticsEnabled = true,
+                    volume = 0.4f,
+                    highContrastEnabled = true,
+                    largeTextEnabled = false,
+                    isDeviceAudioSuppressed = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}

@@ -700,3 +700,143 @@ private fun SettingsUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun SettingsUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Emma",
+                            gradeLevel = GradeLevel.GRADE_1,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = true,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = true,
+                    showDeveloperPortal = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun SettingsUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Oliver",
+                            gradeLevel = GradeLevel.GRADE_2,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = false,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = false,
+                    showDeveloperPortal = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun SettingsUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = null,
+                            gradeLevel = GradeLevel.KINDERGARTEN,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = true,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = true,
+                    showDeveloperPortal = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun SettingsUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Sophia",
+                            gradeLevel = GradeLevel.GRADE_1,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = true,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = true,
+                    showDeveloperPortal = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun SettingsUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        SettingsUi(
+            state =
+                SettingsScreen.State(
+                    profile =
+                        UserProfile(
+                            name = "Liam",
+                            gradeLevel = GradeLevel.GRADE_2,
+                            createdAt = Instant.now(),
+                            adaptiveDifficultyEnabled = false,
+                        ),
+                    showNameDialog = false,
+                    showGradeDialog = false,
+                    analyticsEnabled = false,
+                    showDeveloperPortal = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
