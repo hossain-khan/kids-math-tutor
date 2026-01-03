@@ -64,10 +64,8 @@ import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.ui.component.BadgeIcon
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 import kotlinx.coroutines.delay
-
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * Results screen shown after a Math Race game ends.
@@ -136,7 +134,7 @@ fun MathRaceResultsScreen(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                             .fillMaxSize()
                             .systemBarsPadding()
                             .verticalScroll(rememberScrollState())

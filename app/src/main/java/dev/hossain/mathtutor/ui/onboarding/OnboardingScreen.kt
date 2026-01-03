@@ -59,6 +59,9 @@ import dev.hossain.mathtutor.analytics.AnalyticsEvent
 import dev.hossain.mathtutor.analytics.AnalyticsService
 import dev.hossain.mathtutor.data.UserPreferencesRepository
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_LARGE
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -66,11 +69,6 @@ import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
-
-// Width breakpoints for adaptive layouts
-private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
-private val MAX_CONTENT_WIDTH: Dp = 900.dp
 
 @Parcelize
 data object OnboardingScreen : Screen {
@@ -203,7 +201,7 @@ fun OnboardingContent(
             Column(
                 modifier =
                     Modifier
-                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .widthIn(max = MAX_CONTENT_WIDTH_LARGE)
                         .fillMaxSize()
                         .padding(systemBarsPadding)
                         .padding(24.dp),

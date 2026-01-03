@@ -51,10 +51,8 @@ import dev.hossain.mathtutor.ui.component.OperationCard
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.icons.CustomIcons
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 import dev.zacsweers.metro.AppScope
-
-// Max width for content centering on larger screens
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 // Minimum card width for adaptive grid
 private val MIN_CARD_WIDTH: Dp = 280.dp
@@ -130,7 +128,7 @@ fun OperationSelectorUi(
             LazyColumn(
                 modifier =
                     Modifier
-                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                         .fillMaxSize()
                         .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -50,14 +50,12 @@ import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.component.BadgeDetailDialog
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.RESULTS_GRID_MAX_WIDTH
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.RESULTS_SUMMARY_WIDTH_COMPACT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.RESULTS_SUMMARY_WIDTH_EXPANDED
 import dev.zacsweers.metro.AppScope
-
-// Width breakpoints for adaptive layouts
-private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
-private val MAX_SUMMARY_WIDTH_COMPACT: Dp = 700.dp
-private val MAX_SUMMARY_WIDTH_EXPANDED: Dp = 800.dp
-private val MAX_GRID_WIDTH: Dp = 900.dp
 
 // Problem card dimensions
 private val PROBLEM_CARD_HEIGHT: Dp = 140.dp
@@ -111,7 +109,7 @@ fun ResultsUi(
 
             // Determine max width for summary card
             val summaryMaxWidth =
-                if (isExpandedScreen) MAX_SUMMARY_WIDTH_EXPANDED else MAX_SUMMARY_WIDTH_COMPACT
+                if (isExpandedScreen) RESULTS_SUMMARY_WIDTH_EXPANDED else RESULTS_SUMMARY_WIDTH_COMPACT
 
             // Center content on wide screens
             Box(
@@ -121,7 +119,7 @@ fun ResultsUi(
                 LazyColumn(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_GRID_WIDTH)
+                            .widthIn(max = RESULTS_GRID_MAX_WIDTH)
                             .fillMaxSize()
                             .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),

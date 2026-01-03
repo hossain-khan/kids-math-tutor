@@ -39,15 +39,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.COMPACT_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_EXTRA_LARGE
 import dev.zacsweers.metro.AppScope
 
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 1000.dp
 private val MIN_COLOR_CARD_WIDTH: Dp = 150.dp
-
-// Screen width breakpoints for adaptive spacing
-private val COMPACT_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_BREAKPOINT: Dp = 840.dp
 
 /**
  * UI for the Color Palette Viewer developer tool.
@@ -95,7 +92,7 @@ fun ColorPaletteViewerUi(
             LazyColumn(
                 modifier =
                     Modifier
-                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .widthIn(max = MAX_CONTENT_WIDTH_EXTRA_LARGE)
                         .fillMaxSize()
                         .padding(16.dp),
             ) {
@@ -170,8 +167,8 @@ private fun ColorGroupCard(
                 // Determine adaptive spacing based on screen width
                 val gridSpacing =
                     when {
-                        screenWidth < COMPACT_BREAKPOINT -> 8.dp
-                        screenWidth < EXPANDED_BREAKPOINT -> 12.dp
+                        screenWidth < COMPACT_WIDTH_BREAKPOINT -> 8.dp
+                        screenWidth < EXPANDED_WIDTH_BREAKPOINT -> 12.dp
                         else -> 16.dp
                     }
 

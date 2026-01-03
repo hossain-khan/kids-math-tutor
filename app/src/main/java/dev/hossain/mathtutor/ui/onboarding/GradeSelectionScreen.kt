@@ -77,6 +77,9 @@ import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.domain.repository.UserProfileRepository
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_STANDARD
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -86,10 +89,6 @@ import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.time.Instant
 
-// Width breakpoints for adaptive layouts
-private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
-private val MAX_CONTENT_WIDTH: Dp = 800.dp
 private val MIN_GRADE_CARD_WIDTH: Dp = 200.dp
 
 /**
@@ -352,7 +351,7 @@ fun GradeSelectionUi(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_STANDARD)
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,

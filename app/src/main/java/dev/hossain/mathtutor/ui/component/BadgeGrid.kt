@@ -37,11 +37,9 @@ import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.model.BadgeIcon
 import dev.hossain.mathtutor.domain.model.BadgeRequirement
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.COMPACT_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
 import java.time.Instant
-
-// Width breakpoints for adaptive badge layouts
-private val COMPACT_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_BREAKPOINT: Dp = 840.dp
 
 /**
  * A grid component for displaying a list of badges with adaptive column layout.
@@ -71,10 +69,10 @@ fun BadgeGrid(
         // Calculate adaptive column count and badge size based on screen width
         val columnCount =
             when {
-                screenWidth < COMPACT_BREAKPOINT -> 3
+                screenWidth < COMPACT_WIDTH_BREAKPOINT -> 3
 
                 // Compact: phones
-                screenWidth < EXPANDED_BREAKPOINT -> 4
+                screenWidth < EXPANDED_WIDTH_BREAKPOINT -> 4
 
                 // Medium: small tablets
                 else -> 6 // Expanded: large tablets
@@ -83,16 +81,16 @@ fun BadgeGrid(
         // Scale badge icon size based on screen width
         val badgeIconSize =
             when {
-                screenWidth < COMPACT_BREAKPOINT -> 56.dp
-                screenWidth < EXPANDED_BREAKPOINT -> 110.dp
+                screenWidth < COMPACT_WIDTH_BREAKPOINT -> 56.dp
+                screenWidth < EXPANDED_WIDTH_BREAKPOINT -> 110.dp
                 else -> 130.dp
             }
 
         // Adaptive spacing based on screen width
         val gridSpacing =
             when {
-                screenWidth < COMPACT_BREAKPOINT -> 12.dp
-                screenWidth < EXPANDED_BREAKPOINT -> 16.dp
+                screenWidth < COMPACT_WIDTH_BREAKPOINT -> 12.dp
+                screenWidth < EXPANDED_WIDTH_BREAKPOINT -> 16.dp
                 else -> 20.dp
             }
 
@@ -466,23 +464,23 @@ private fun BadgeCard(
     // Adaptive padding and spacing based on screen width
     val cardPadding =
         when {
-            screenWidth < COMPACT_BREAKPOINT -> 8.dp
-            screenWidth < EXPANDED_BREAKPOINT -> 16.dp
+            screenWidth < COMPACT_WIDTH_BREAKPOINT -> 8.dp
+            screenWidth < EXPANDED_WIDTH_BREAKPOINT -> 16.dp
             else -> 20.dp
         }
 
     val contentSpacing =
         when {
-            screenWidth < COMPACT_BREAKPOINT -> 4.dp
-            screenWidth < EXPANDED_BREAKPOINT -> 8.dp
+            screenWidth < COMPACT_WIDTH_BREAKPOINT -> 4.dp
+            screenWidth < EXPANDED_WIDTH_BREAKPOINT -> 8.dp
             else -> 12.dp
         }
 
     // Adaptive text style based on screen width
     val textStyle =
         when {
-            screenWidth < COMPACT_BREAKPOINT -> MaterialTheme.typography.labelSmall
-            screenWidth < EXPANDED_BREAKPOINT -> MaterialTheme.typography.titleSmall
+            screenWidth < COMPACT_WIDTH_BREAKPOINT -> MaterialTheme.typography.labelSmall
+            screenWidth < EXPANDED_WIDTH_BREAKPOINT -> MaterialTheme.typography.titleSmall
             else -> MaterialTheme.typography.titleMedium
         }
 

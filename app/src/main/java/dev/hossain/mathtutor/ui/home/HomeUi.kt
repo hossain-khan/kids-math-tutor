@@ -56,18 +56,13 @@ import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.StreakCard
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_MEDIUM
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
 import java.time.LocalDate
 import dev.hossain.mathtutor.ui.component.BadgeIcon as BadgeIconImage
-
-// Width breakpoints for adaptive layouts
-private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
-private val MAX_CONTENT_WIDTH: Dp = 840.dp
-
-// Note: EXPANDED_WIDTH_BREAKPOINT equals MAX_CONTENT_WIDTH as expanded layouts
-// begin at the same point where content centering ends
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
 
 // Heights for adaptive grids
 private val STATS_GRID_HEIGHT_COMPACT: Dp = 180.dp // Single column needs more vertical space
@@ -150,7 +145,7 @@ fun HomeUi(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_MEDIUM)
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                             .padding(16.dp),

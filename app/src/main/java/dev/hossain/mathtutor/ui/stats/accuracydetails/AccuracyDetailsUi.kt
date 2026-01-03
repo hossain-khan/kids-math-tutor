@@ -43,12 +43,10 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.DailyAccuracy
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 import dev.zacsweers.metro.AppScope
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-// Max width for content centering on larger screens
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * UI for [AccuracyDetailsScreen].
@@ -101,7 +99,7 @@ fun AccuracyDetailsUi(
                     LazyColumn(
                         modifier =
                             Modifier
-                                .widthIn(max = MAX_CONTENT_WIDTH)
+                                .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                                 .fillMaxSize()
                                 .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),

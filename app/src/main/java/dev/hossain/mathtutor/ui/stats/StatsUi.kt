@@ -64,14 +64,12 @@ import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXTENDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_MEDIUM
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT
 import dev.hossain.mathtutor.util.TimeFormatter
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
-
-// Width breakpoints for adaptive layouts
-private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 1100.dp
-private val MAX_CONTENT_WIDTH: Dp = 840.dp
 
 /**
  * UI for [StatsScreen].
@@ -122,7 +120,7 @@ fun StatsUi(
                     .padding(paddingValues),
         ) {
             val isWideScreen = maxWidth >= MEDIUM_WIDTH_BREAKPOINT
-            val isExpandedScreen = maxWidth >= EXPANDED_WIDTH_BREAKPOINT
+            val isExpandedScreen = maxWidth >= EXTENDED_WIDTH_BREAKPOINT
 
             // Center content on wide screens
             Box(
@@ -133,14 +131,14 @@ fun StatsUi(
                     // Empty state
                     EmptyStatsView(
                         onStartPractice = { state.eventSink(StatsScreen.Event.BackPressed) },
-                        modifier = Modifier.widthIn(max = MAX_CONTENT_WIDTH),
+                        modifier = Modifier.widthIn(max = MAX_CONTENT_WIDTH_MEDIUM),
                     )
                 } else {
                     // Stats content
                     LazyColumn(
                         modifier =
                             Modifier
-                                .widthIn(max = MAX_CONTENT_WIDTH)
+                                .widthIn(max = MAX_CONTENT_WIDTH_MEDIUM)
                                 .fillMaxSize()
                                 .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
