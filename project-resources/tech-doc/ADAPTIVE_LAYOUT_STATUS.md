@@ -159,12 +159,9 @@ All adaptive layout breakpoints and max-width constants are now defined in:
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
 | 14 | `GameSelectionScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_STANDARD (800dp), responsive game card grid | Phase 8 |
-| 15 | `MathRaceStartScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp), centered content | Phase 8 |
-| 16 | `MathRaceGameScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp), adaptive number pad | Phase 8 |
-| 17 | `MathRaceResultsScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp), centered results | Phase 8 |
-| 18 | `NumberSequenceStartScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp) | Phase 8 |
-| 19 | `NumberSequenceGameScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp) | Phase 8 |
-| 20 | `MemoryMatchScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp), game grid centered | Phase 8 |
+| 15 | `MathRaceScreen` (Start, Game, Results) | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp), adaptive number pad | Phase 8 |
+| 16 | `NumberSequenceScreen` (Start, Game) | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp) | Phase 8 |
+| 17 | `MemoryMatchScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_SMALL (700dp), game grid centered | Phase 8 |
 
 ---
 
@@ -172,8 +169,8 @@ All adaptive layout breakpoints and max-width constants are now defined in:
 
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
-| 21 | `ImportChallengeScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_STANDARD (800dp), centered JSON input | Phase 2-3 |
-| 22 | `ParentChallengesScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_LARGE (900dp), centered challenge list | Phase 2-3 |
+| 18 | `ImportChallengeScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_STANDARD (800dp), centered JSON input | Phase 2-3 |
+| 19 | `ParentChallengesScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_LARGE (900dp), centered challenge list | Phase 2-3 |
 
 ---
 
@@ -181,8 +178,8 @@ All adaptive layout breakpoints and max-width constants are now defined in:
 
 | # | Screen | Status | Notes | Phase |
 |---|--------|--------|-------|-------|
-| 23 | `DeveloperPortalScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_LARGE (900dp), debug controls centered | Phase 2-3 |
-| 24 | `ColorPaletteViewerScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_EXTRA_LARGE (1000dp), FlowRow adaptive grid | Phase 2-3 |
+| 20 | `DeveloperPortalScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_LARGE (900dp), debug controls centered | Phase 2-3 |
+| 21 | `ColorPaletteViewerScreen` | 🟩 Implemented | MAX_CONTENT_WIDTH_EXTRA_LARGE (1000dp), FlowRow adaptive grid | Phase 2-3 |
 
 ---
 
