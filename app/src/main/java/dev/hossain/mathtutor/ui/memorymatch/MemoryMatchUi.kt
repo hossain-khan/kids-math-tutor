@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.memorymatch
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -13,6 +14,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -53,12 +56,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.ui.component.BadgeIcon
 import dev.hossain.mathtutor.ui.mathrace.CountdownScreen
 import dev.zacsweers.metro.AppScope
+
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * Main UI for [MemoryMatchScreen].
@@ -154,112 +161,125 @@ fun MemoryMatchStartScreen(
         },
         modifier = modifier,
     ) { padding ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(padding)
-                    .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+                    .padding(padding),
         ) {
-            // Game icon
-            Text(
-                text = "🧩",
-                style = MaterialTheme.typography.displayLarge,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-
-            // Welcome message
-            if (!userName.isNullOrBlank()) {
-                Text(
-                    text = "Ready, $userName?",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
-            }
-
-            Text(
-                text = "Memory Match",
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 24.dp),
-            )
-
-            // Game instructions
-            Card(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    ),
+            // Center content on tablets
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp),
-                ) {
-                    Text(
-                        text = "How to Play:",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 12.dp),
-                    )
-
-                    InstructionItem("🃏 Flip two cards to find pairs")
-                    InstructionItem("🧮 Match math problems with answers")
-                    InstructionItem("🎯 Find all 8 pairs to win")
-                    InstructionItem("⚡ Complete as fast as you can!")
-                }
-            }
-
-            // Personal best
-            if (personalBestTime > 0) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
                     modifier =
                         Modifier
-                            .padding(bottom = 32.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.tertiaryContainer)
-                            .padding(horizontal = 20.dp, vertical = 12.dp),
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.EmojiEvents,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
-                        modifier = Modifier.size(28.dp),
+                    // Game icon
+                    Text(
+                        text = "🧩",
+                        style = MaterialTheme.typography.displayLarge,
+                        modifier = Modifier.padding(bottom = 16.dp),
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
+
+                    // Welcome message
+                    if (!userName.isNullOrBlank()) {
                         Text(
-                            text = "Personal Best",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            text = "Ready, $userName?",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 8.dp),
                         )
+                    }
+
+                    Text(
+                        text = "Memory Match",
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 24.dp),
+                    )
+
+                    // Game instructions
+                    Card(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 24.dp),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            ),
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                        ) {
+                            Text(
+                                text = "How to Play:",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(bottom = 12.dp),
+                            )
+
+                            InstructionItem("🃏 Flip two cards to find pairs")
+                            InstructionItem("🧮 Match math problems with answers")
+                            InstructionItem("🎯 Find all 8 pairs to win")
+                            InstructionItem("⚡ Complete as fast as you can!")
+                        }
+                    }
+
+                    // Personal best
+                    if (personalBestTime > 0) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier =
+                                Modifier
+                                    .padding(bottom = 32.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.EmojiEvents,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                                modifier = Modifier.size(28.dp),
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(
+                                    text = "Personal Best",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                )
+                                Text(
+                                    text = formatTime(personalBestTime),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                )
+                            }
+                        }
+                    }
+
+                    // Start button
+                    Button(
+                        onClick = onStartGame,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                    ) {
                         Text(
-                            text = formatTime(personalBestTime),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            text = "Start Game",
+                            style = MaterialTheme.typography.titleMedium,
                         )
                     }
                 }
-            }
-
-            // Start button
-            Button(
-                onClick = onStartGame,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-            ) {
-                Text(
-                    text = "Start Game",
-                    style = MaterialTheme.typography.titleMedium,
-                )
             }
         }
     }
@@ -347,35 +367,48 @@ fun MemoryMatchGameScreen(
         },
         modifier = modifier,
     ) { padding ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(padding)
-                    .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+                    .padding(padding),
         ) {
-            // Moves counter
-            Text(
-                text = "Moves: $moves",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-
-            // 4×4 card grid
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(4),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(bottom = 16.dp),
+            // Center content on tablets
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                items(cards, key = { it.id }) { card ->
-                    FlippableCard(
-                        card = card,
-                        onClick = { onCardFlipped(card.id) },
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    // Moves counter
+                    Text(
+                        text = "Moves: $moves",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 16.dp),
                     )
+
+                    // 4×4 card grid
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(4),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    ) {
+                        items(cards, key = { it.id }) { card ->
+                            FlippableCard(
+                                card = card,
+                                onClick = { onCardFlipped(card.id) },
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -508,162 +541,175 @@ fun MemoryMatchResultsScreen(
         },
         modifier = modifier,
     ) { padding ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .systemBarsPadding()
-                    .padding(padding)
-                    .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+                    .padding(padding),
         ) {
-            // Celebration emoji
-            Text(
-                text = if (isNewRecord) "🏆" else "🎉",
-                style = MaterialTheme.typography.displayLarge,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-
-            // Congratulations message
-            if (!userName.isNullOrBlank()) {
-                Text(
-                    text = "Great job, $userName!",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                )
-            }
-
-            if (isNewRecord) {
-                Text(
-                    text = "New Record!",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.padding(bottom = 24.dp),
-                )
-            }
-
-            // Stats card
-            Card(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    ),
+            // Center content on tablets
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp),
+                    modifier =
+                        Modifier
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .systemBarsPadding()
+                            .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
+                    // Celebration emoji
                     Text(
-                        text = "Your Time",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                    )
-
-                    Text(
-                        text = formatTime(timeElapsed),
-                        style = MaterialTheme.typography.displayMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        text = if (isNewRecord) "🏆" else "🎉",
+                        style = MaterialTheme.typography.displayLarge,
                         modifier = Modifier.padding(bottom = 16.dp),
                     )
 
-                    // Previous best
-                    if (personalBestTime > 0 && personalBestTime != timeElapsed) {
+                    // Congratulations message
+                    if (!userName.isNullOrBlank()) {
                         Text(
-                            text = "Previous: ${formatTime(personalBestTime)}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(bottom = 16.dp),
+                            text = "Great job, $userName!",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 8.dp),
                         )
                     }
 
-                    // Move count
-                    StatRow("Moves", moves.toString())
-                    StatRow("Accuracy", String.format("%.1f%%", accuracy))
-                }
-            }
-
-            // Unlocked badges
-            AnimatedVisibility(
-                visible = unlockedBadges.isNotEmpty(),
-                enter = fadeIn() + scaleIn(),
-                exit = fadeOut() + scaleOut(),
-            ) {
-                Card(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 24.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
+                    if (isNewRecord) {
                         Text(
-                            text = "🌟 Badge${if (unlockedBadges.size > 1) "s" else ""} Unlocked!",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
-                            modifier = Modifier.padding(bottom = 12.dp),
+                            text = "New Record!",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.padding(bottom = 24.dp),
                         )
+                    }
 
-                        unlockedBadges.forEach { badge ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(vertical = 4.dp),
-                            ) {
-                                BadgeIcon(
-                                    badgeIcon = badge.icon,
-                                    contentDescription = badge.name,
-                                    size = 32.dp,
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
+                    // Stats card
+                    Card(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 24.dp),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            ),
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = "Your Time",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(bottom = 8.dp),
+                            )
+
+                            Text(
+                                text = formatTime(timeElapsed),
+                                style = MaterialTheme.typography.displayMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(bottom = 16.dp),
+                            )
+
+                            // Previous best
+                            if (personalBestTime > 0 && personalBestTime != timeElapsed) {
                                 Text(
-                                    text = badge.name,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    text = "Previous: ${formatTime(personalBestTime)}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(bottom = 16.dp),
                                 )
+                            }
+
+                            // Move count
+                            StatRow("Moves", moves.toString())
+                            StatRow("Accuracy", String.format("%.1f%%", accuracy))
+                        }
+                    }
+
+                    // Unlocked badges
+                    AnimatedVisibility(
+                        visible = unlockedBadges.isNotEmpty(),
+                        enter = fadeIn() + scaleIn(),
+                        exit = fadeOut() + scaleOut(),
+                    ) {
+                        Card(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 24.dp),
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                ),
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(20.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Text(
+                                    text = "🌟 Badge${if (unlockedBadges.size > 1) "s" else ""} Unlocked!",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    modifier = Modifier.padding(bottom = 12.dp),
+                                )
+
+                                unlockedBadges.forEach { badge ->
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(vertical = 4.dp),
+                                    ) {
+                                        BadgeIcon(
+                                            badgeIcon = badge.icon,
+                                            contentDescription = badge.name,
+                                            size = 32.dp,
+                                        )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text(
+                                            text = badge.name,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
+
+                    // Action buttons
+                    Button(
+                        onClick = onPlayAgain,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .padding(bottom = 12.dp),
+                    ) {
+                        Text(
+                            text = "Play Again",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+
+                    FilledTonalButton(
+                        onClick = onNavigateHome,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                    ) {
+                        Text(
+                            text = "Home",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
                 }
-            }
-
-            // Action buttons
-            Button(
-                onClick = onPlayAgain,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .padding(bottom = 12.dp),
-            ) {
-                Text(
-                    text = "Play Again",
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-
-            FilledTonalButton(
-                onClick = onNavigateHome,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-            ) {
-                Text(
-                    text = "Home",
-                    style = MaterialTheme.typography.titleMedium,
-                )
             }
         }
     }
