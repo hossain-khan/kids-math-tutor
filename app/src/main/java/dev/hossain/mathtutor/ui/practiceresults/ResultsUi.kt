@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.practiceresults
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -49,7 +53,11 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 
 // Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
+private val MAX_SUMMARY_WIDTH_COMPACT: Dp = 700.dp
+private val MAX_SUMMARY_WIDTH_EXPANDED: Dp = 800.dp
+private val MAX_GRID_WIDTH: Dp = 900.dp
 
 /**
  * UI for [ResultsScreen].
@@ -57,8 +65,9 @@ private val MAX_CONTENT_WIDTH: Dp = 700.dp
  * Displays practice session results including summary statistics and problem list.
  *
  * Adaptive Layout:
- * - Compact: Full width results
- * - Medium/Expanded: Centered content with max width
+ * - Compact (<600dp): Single-column problem review, centered summary (max 700dp)
+ * - Medium (600-840dp): 2-column problem review grid, wider summary (max 800dp)
+ * - Expanded (>840dp): 2-3 column problem review grid, widest summary (max 800dp)
  */
 @CircuitInject(ResultsScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,12 +95,20 @@ fun ResultsUi(
         },
         modifier = modifier.fillMaxSize().systemBarsPadding(),
     ) { paddingValues ->
-        Box(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
         ) {
+            val screenWidth = maxWidth
+            val isWideScreen = screenWidth >= MEDIUM_WIDTH_BREAKPOINT
+            val isExpandedScreen = screenWidth >= EXPANDED_WIDTH_BREAKPOINT
+
+            // Determine max width for summary card
+            val summaryMaxWidth =
+                if (isExpandedScreen) MAX_SUMMARY_WIDTH_EXPANDED else MAX_SUMMARY_WIDTH_COMPACT
+
             // Center content on wide screens
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -100,23 +117,29 @@ fun ResultsUi(
                 LazyColumn(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_GRID_WIDTH)
                             .fillMaxSize()
                             .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     // Summary statistics
                     item {
-                        SummaryCard(
-                            totalProblems = state.totalProblems,
-                            correctCount = state.correctCount,
-                            accuracyPercentage = state.accuracyPercentage,
-                            userName = state.userName,
-                            customChallengeTitle = state.customChallengeTitle,
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.TopCenter,
+                        ) {
+                            SummaryCard(
+                                totalProblems = state.totalProblems,
+                                correctCount = state.correctCount,
+                                accuracyPercentage = state.accuracyPercentage,
+                                userName = state.userName,
+                                customChallengeTitle = state.customChallengeTitle,
+                                modifier = Modifier.widthIn(max = summaryMaxWidth),
+                            )
+                        }
                     }
 
-                    // Problem results list
+                    // Problem review header
                     item {
                         Text(
                             text = "Problem Review",
@@ -126,8 +149,35 @@ fun ResultsUi(
                         )
                     }
 
-                    items(state.problemResults) { result ->
-                        ProblemResultCard(result = result)
+                    // Problem results - adaptive grid
+                    item {
+                        // Use grid for medium and expanded screens
+                        if (isWideScreen) {
+                            LazyVerticalGrid(
+                                columns = GridCells.Adaptive(minSize = 300.dp),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(((state.problemResults.size / 2 + state.problemResults.size % 2) * 140).dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                                userScrollEnabled = false,
+                            ) {
+                                items(state.problemResults) { result ->
+                                    ProblemResultCard(result = result)
+                                }
+                            }
+                        } else {
+                            // Single column for compact screens
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                            ) {
+                                state.problemResults.forEach { result ->
+                                    ProblemResultCard(result = result)
+                                }
+                            }
+                        }
                     }
 
                     // Action buttons
@@ -499,7 +549,7 @@ private fun getCustomChallengeCongratsMessage(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Compact Phone", showBackground = true, widthDp = 411, heightDp = 891)
 @Composable
 private fun ResultsUiPreview() {
     KidsMathTutorAppTheme {
@@ -551,16 +601,16 @@ private fun ResultsUiPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Medium Tablet", showBackground = true, widthDp = 700, heightDp = 500)
 @Composable
-private fun ResultsUiDarkPreview() {
-    KidsMathTutorAppTheme(darkTheme = true) {
+private fun ResultsUiMediumPreview() {
+    KidsMathTutorAppTheme {
         ResultsUi(
             state =
                 ResultsScreen.State(
-                    totalProblems = 5,
-                    correctCount = 4,
-                    accuracyPercentage = 80f,
+                    totalProblems = 6,
+                    correctCount = 5,
+                    accuracyPercentage = 83.33f,
                     problemResults =
                         listOf(
                             ResultsScreen.ProblemResult(
@@ -579,10 +629,10 @@ private fun ResultsUiDarkPreview() {
                                     MathProblem(
                                         num1 = 7,
                                         num2 = 2,
-                                        operation = MathOperation.ADDITION,
-                                        correctAnswer = 9,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 5,
                                     ),
-                                userAnswer = 10,
+                                userAnswer = 4,
                                 isCorrect = false,
                             ),
                             ResultsScreen.ProblemResult(
@@ -590,6 +640,124 @@ private fun ResultsUiDarkPreview() {
                                     MathProblem(
                                         num1 = 4,
                                         num2 = 6,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 9,
+                                        num2 = 3,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 6,
+                                    ),
+                                userAnswer = 6,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 8,
+                                        num2 = 2,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 5,
+                                        num2 = 5,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(name = "Expanded Tablet", showBackground = true, widthDp = 1100, heightDp = 600)
+@Composable
+private fun ResultsUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        ResultsUi(
+            state =
+                ResultsScreen.State(
+                    totalProblems = 6,
+                    correctCount = 5,
+                    accuracyPercentage = 83.33f,
+                    problemResults =
+                        listOf(
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 5,
+                                        num2 = 3,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 8,
+                                    ),
+                                userAnswer = 8,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 7,
+                                        num2 = 2,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 5,
+                                    ),
+                                userAnswer = 4,
+                                isCorrect = false,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 4,
+                                        num2 = 6,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 9,
+                                        num2 = 3,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 6,
+                                    ),
+                                userAnswer = 6,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 8,
+                                        num2 = 2,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 5,
+                                        num2 = 5,
                                         operation = MathOperation.ADDITION,
                                         correctAnswer = 10,
                                     ),

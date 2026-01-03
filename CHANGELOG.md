@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **ResultsScreen Adaptive Dual-Pane Layout - Phase 11**: Enhanced tablet support with responsive problem review grid
+  - **Responsive Problem Review Grid**: Adaptive column layout based on screen size
+    - Compact (<600dp): Single-column problem review (full width cards)
+    - Medium (600-840dp): 2-column grid for problem cards with adaptive sizing
+    - Expanded (>840dp): 2-3 column grid with more horizontal space utilization
+  - **Responsive Summary Card**: Adaptive width for better tablet display
+    - Compact: Max 700dp width, centered
+    - Expanded: Max 800dp width for more spacious layout
+  - **Enhanced Grid Layout**: Uses `LazyVerticalGrid` with `GridCells.Adaptive(minSize = 300.dp)` for optimal card distribution
+  - **Improved Visual Hierarchy**: Better spacing and content centering on larger screens (max 900dp grid width)
+  - **Responsive Previews**: Added preview functions for Compact (411x891dp), Medium (700x500dp), and Expanded (1100x600dp) screens
+  - All layouts maintain Material 3 design principles with proper color-coded problem indicators (green for correct, red for incorrect)
+
 ## [1.22.1] - 2026-01-02
 
 ### Added
