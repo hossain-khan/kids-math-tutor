@@ -84,8 +84,8 @@ fun BadgeGrid(
         val badgeIconSize =
             when {
                 screenWidth < COMPACT_BREAKPOINT -> 56.dp
-                screenWidth < EXPANDED_BREAKPOINT -> 64.dp
-                else -> 72.dp
+                screenWidth < EXPANDED_BREAKPOINT -> 80.dp
+                else -> 96.dp
             }
 
         // Adaptive spacing based on screen width
@@ -465,15 +465,15 @@ private fun BadgeCard(
     val cardPadding =
         when {
             screenWidth < COMPACT_BREAKPOINT -> 8.dp
-            screenWidth < EXPANDED_BREAKPOINT -> 12.dp
-            else -> 16.dp
+            screenWidth < EXPANDED_BREAKPOINT -> 16.dp
+            else -> 20.dp
         }
 
     val contentSpacing =
         when {
             screenWidth < COMPACT_BREAKPOINT -> 4.dp
-            screenWidth < EXPANDED_BREAKPOINT -> 6.dp
-            else -> 8.dp
+            screenWidth < EXPANDED_BREAKPOINT -> 8.dp
+            else -> 12.dp
         }
 
     // Adaptive text style based on screen width
