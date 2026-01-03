@@ -465,7 +465,7 @@ fun GradeSelectionUi(
                         // Calculate grid height based on number of rows needed
                         // LazyVerticalGrid requires height constraint when inside scrollable parent
                         val numRows = (state.availableGrades.size + numColumns - 1) / numColumns // Ceiling division
-                        val cardHeight = 150.dp
+                        val cardHeight = 158.dp // 150dp card + 8dp vertical padding (4dp top + 4dp bottom)
                         val verticalSpacing = 16.dp
                         val gridHeight = (cardHeight * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0))
 
@@ -516,6 +516,7 @@ private fun GradeCard(
         modifier =
             modifier
                 .fillMaxWidth()
+                .padding(vertical = 4.dp)
                 .height(150.dp),
         border =
             if (isSelected) {
