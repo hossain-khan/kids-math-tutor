@@ -262,8 +262,8 @@ fun NameEntryUi(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
-                                .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+                                .height(220.dp)
+                                .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding() + 32.dp)
                                 .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
                     ) {
                         Image(
@@ -273,12 +273,12 @@ fun NameEntryUi(
                             contentScale = ContentScale.Fit,
                         )
 
-                        // Gradient overlay at top (20%)
+                        // Gradient overlay at top (10%)
                         Box(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .fillMaxHeight(0.2f)
+                                    .fillMaxHeight(0.1f)
                                     .align(Alignment.TopCenter)
                                     .background(
                                         brush =
@@ -292,12 +292,12 @@ fun NameEntryUi(
                                     ),
                         )
 
-                        // Gradient overlay at bottom (20%)
+                        // Gradient overlay at bottom (1%)
                         Box(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .fillMaxHeight(0.2f)
+                                    .fillMaxHeight(0.01f)
                                     .align(Alignment.BottomCenter)
                                     .background(
                                         brush =
