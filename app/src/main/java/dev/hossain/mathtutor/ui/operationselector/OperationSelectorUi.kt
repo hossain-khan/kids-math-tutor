@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
@@ -126,18 +127,18 @@ fun OperationSelectorUi(
                     .padding(paddingValues),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
+            LazyColumn(
                 modifier =
                     Modifier
                         .widthIn(max = MAX_CONTENT_WIDTH)
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
                         .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Header with mascot
-                Row(
+                item {
+                    Row(
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -168,6 +169,7 @@ fun OperationSelectorUi(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                    }
                     }
                 }
 
@@ -235,39 +237,36 @@ fun OperationSelectorUi(
                     }
 
                 // Adaptive grid of operation cards
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = MIN_CARD_WIDTH),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    items(operationsList.size) { index ->
-                        val opInfo = operationsList[index]
-                        OperationCard(
-                            title = opInfo.title,
-                            icon = opInfo.icon,
-                            examples = opInfo.examples,
-                            operation = opInfo.operation,
-                            onClick = {
-                                // Handle Mix It Up special case
-                                val selectedOperation =
-                                    if (opInfo.operation == MathOperation.MIXED) {
-                                        // Temporary: Using ADDITION until MathOperation.MIXED is implemented
-                                        MathOperation.ADDITION
-                                    } else {
-                                        opInfo.operation
-                                    }
-                                state.eventSink(
-                                    OperationSelectorScreen.Event.OperationSelected(selectedOperation),
-                                )
-                            },
-                        )
-                    }
+                items(operationsList.size) { index ->
+                    val opInfo = operationsList[index]
+                    OperationCard(
+                        title = opInfo.title,
+                        icon = opInfo.icon,
+                        examples = opInfo.examples,
+                        operation = opInfo.operation,
+                        onClick = {
+                            // Handle Mix It Up special case
+                            val selectedOperation =
+                                if (opInfo.operation == MathOperation.MIXED) {
+                                    // Temporary: Using ADDITION until MathOperation.MIXED is implemented
+                                    MathOperation.ADDITION
+                                } else {
+                                    opInfo.operation
+                                }
+                            state.eventSink(
+                                OperationSelectorScreen.Event.OperationSelected(selectedOperation),
+                            )
+                        },
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 // Stats Button
-                Button(
+                item {
+                    Button(
                     onClick = {
                         state.eventSink(OperationSelectorScreen.Event.ViewStatsClicked)
                     },
@@ -286,9 +285,12 @@ fun OperationSelectorUi(
                         text = "View My Stats",
                         style = MaterialTheme.typography.labelLarge,
                     )
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
