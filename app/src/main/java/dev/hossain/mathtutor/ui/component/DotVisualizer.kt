@@ -19,7 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -129,10 +132,10 @@ private fun AdditionDotVisualizer(
 }
 
 /**
- * Subtraction visualization: shows num1 dots with the last num2 dots dimmed with animation.
+ * Subtraction visualization: shows num1 dots with the last num2 dots dimmed.
  *
- * For example, 13 - 3 shows 13 dots initially bright, then after 1 second,
- * the last 3 dots animate to dimmed state over 1 second, making it intuitive
+ * For example, 13 - 3 shows 13 dots initially bright, then after all dots appear + 1 second,
+ * the last 3 dots change to dimmed color (30% alpha), making it intuitive
  * for kids to see "taking away" from the original number.
  */
 @Composable
@@ -149,13 +152,22 @@ private fun SubtractionDotVisualizer(
     // Calculate when all dots finish appearing
     val lastDotStartTime = (firstNumber - 1) * delayMs
     val allDotsAppearTime = lastDotStartTime + durationMs
-    val dimStartDelay = allDotsAppearTime + 1000 // Wait 1 second after all dots appear
+    val dimChangeTime = allDotsAppearTime + 1000 // Wait 1 second after all dots appear
+
+    // State to track whether we should show dimmed colors
+    var showDimmed by remember { mutableStateOf(false) }
+
+    // Timer to trigger dimming
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(dimChangeTime.toLong())
+        showDimmed = true
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // Show all dots in a grid, with the last 'secondNumber' dots animating to dim
+        // Show all dots in a grid
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -170,80 +182,23 @@ private fun SubtractionDotVisualizer(
                 ) {
                     repeat(dotsInRow) { dotIndex ->
                         val globalDotIndex = startDot + dotIndex
-                        // Determine if this dot should be dimmed
                         val shouldDim = globalDotIndex >= remainingCount
 
-                        SubtractionAnimatedDot(
-                            color = MaterialTheme.colorScheme.primary,
-                            dimColor = MaterialTheme.colorScheme.secondary,
-                            shouldDim = shouldDim,
-                            appearDelayMs = globalDotIndex * delayMs,
-                            appearDurationMs = durationMs,
-                            dimDelayMs = dimStartDelay,
-                            dimDurationMs = 1000, // Dim animation takes 1 second
+                        AnimatedDot(
+                            color =
+                                if (shouldDim && showDimmed) {
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
+                            delayMs = globalDotIndex * delayMs,
+                            durationMs = durationMs,
                         )
                     }
                 }
             }
         }
     }
-}
-
-/**
- * A single dot for subtraction that appears first, then optionally dims with animation.
- */
-@Composable
-private fun SubtractionAnimatedDot(
-    color: androidx.compose.ui.graphics.Color,
-    dimColor: androidx.compose.ui.graphics.Color,
-    shouldDim: Boolean,
-    appearDelayMs: Int,
-    appearDurationMs: Int,
-    dimDelayMs: Int,
-    dimDurationMs: Int,
-) {
-    val scale = remember { Animatable(0f) }
-    val alpha = remember { Animatable(1f) }
-
-    // Animate dot appearance
-    LaunchedEffect(Unit) {
-        scale.animateTo(
-            targetValue = 1f,
-            animationSpec =
-                tween(
-                    durationMillis = appearDurationMs,
-                    delayMillis = appearDelayMs,
-                    easing = LinearEasing,
-                ),
-        )
-
-        // After dot appears, wait and then animate to dim if needed
-        if (shouldDim) {
-            alpha.animateTo(
-                targetValue = 0.15f,
-                animationSpec =
-                    tween(
-                        durationMillis = dimDurationMs,
-                        delayMillis = dimDelayMs,
-                        easing = LinearEasing,
-                    ),
-            )
-        }
-    }
-
-    Box(
-        modifier =
-            Modifier
-                .size(20.dp)
-                .background(
-                    color = color,
-                    shape = CircleShape,
-                ).graphicsLayer {
-                    scaleX = scale.value
-                    scaleY = scale.value
-                    this.alpha = alpha.value
-                },
-    )
 }
 
 /**
