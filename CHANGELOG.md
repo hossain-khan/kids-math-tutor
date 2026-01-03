@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.22.0] - 2026-01-02
+
 ### Added
 - **Math Pup Stickers for Help Dialogs**: Added themed sticker illustrations to enhance help features
   - "Need Help" dialog now displays friendly Math Pup teaching sticker
@@ -2213,7 +2215,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.0...HEAD
+[1.22.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...1.22.0
 [1.21.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.20.0...1.21.0
 [1.20.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.19.0...1.20.0
 [1.19.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.18.0...1.19.0
