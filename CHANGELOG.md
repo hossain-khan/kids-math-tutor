@@ -8,6 +8,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Onboarding Screens Adaptive Layout - Phase 10**: Optimized onboarding flow for tablets with responsive images, layouts, and typography
+  - **OnboardingScreen**: Responsive carousel with adaptive image sizing and typography
+    - Content centered with max-width (900dp) for tablets using Box + widthIn
+    - Adaptive image scaling: 1x (phones), 1.3x (tablets), 1.5x (large tablets)
+    - Page indicator spacing: 6dp (phones), 8dp (tablets), 10dp (large tablets)
+    - Typography scales from headlineLarge to displaySmall on expanded screens
+    - Description text scales from bodyLarge to titleLarge on tablets
+    - Vertical spacing adapts: 32dp → 40dp → 48dp based on screen width
+  - **GradeSelectionScreen**: Adaptive grid layout for grade buttons
+    - Replaced vertical column with LazyVerticalGrid using GridCells.Adaptive(200dp)
+    - Compact (<600dp): 1 column (single grade per row)
+    - Medium (600-840dp): 2 grade cards per row
+    - Expanded (>840dp): 3-4 grade cards per row
+    - Content centered with max-width (800dp) for better tablet readability
+    - Title typography scales from headlineMedium to headlineLarge on tablets
+    - Minimum touch target size of 150dp height maintained for accessibility
+  - **NameEntryScreen**: Centered form layout optimized for tablets
+    - Content centered with max-width (700dp) using Box + widthIn
+    - Title typography scales from headlineLarge to displaySmall on tablets
+    - Subtitle text scales from bodyLarge to titleLarge on tablets
+    - Text field properly sized with responsive layout
+    - Hero image display optimized for tablets
+    - Improved button positioning and spacing
+  - All screens use BoxWithConstraints for responsive layout calculations
+  - Breakpoints: 600dp (medium), 840dp (expanded) consistent with Material 3 guidelines
+  - Maintains Material 3 design principles with proper touch targets (56dp buttons) and accessibility
 - **Debug Screens Adaptive Layout**: Added responsive layouts to debug/admin screens for better tablet testing experience
   - **DeveloperPortalScreen**: Content centered with max-width (900dp) for tablets
     - Uses Box with widthIn(max = 900.dp) and Alignment.TopCenter for content centering

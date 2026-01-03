@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -44,6 +46,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -69,6 +72,11 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.time.Instant
+
+// Width breakpoints for adaptive layouts
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * Circuit screen for optional name entry during onboarding.
@@ -212,7 +220,7 @@ class NameEntryPresenter
     }
 
 /**
- * UI for [NameEntryScreen].
+ * UI for [NameEntryScreen] with adaptive layout for tablets.
  *
  * Displays a text field for name entry with skip and continue buttons.
  */
@@ -229,153 +237,187 @@ fun NameEntryUi(
         modifier = modifier,
         contentWindowInsets = WindowInsets(0.dp),
     ) { paddingValues ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(paddingValues),
         ) {
-            // Hero image with gradient overlays
+            val screenWidth = maxWidth
+
+            // Center content on wider screens
             Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
-                        .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.hero_onboarding_name_entry),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit,
-                )
-
-                // Gradient overlay at top (20%)
-                Box(
+                Column(
                     modifier =
                         Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.2f)
-                            .align(Alignment.TopCenter)
-                            .background(
-                                brush =
-                                    Brush.verticalGradient(
-                                        colors =
-                                            listOf(
-                                                MaterialTheme.colorScheme.surface,
-                                                MaterialTheme.colorScheme.surface.copy(alpha = 0f),
-                                            ),
-                                    ),
-                            ),
-                )
-
-                // Gradient overlay at bottom (20%)
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.2f)
-                            .align(Alignment.BottomCenter)
-                            .background(
-                                brush =
-                                    Brush.verticalGradient(
-                                        colors =
-                                            listOf(
-                                                MaterialTheme.colorScheme.surface.copy(alpha = 0f),
-                                                MaterialTheme.colorScheme.surface,
-                                            ),
-                                    ),
-                            ),
-                )
-            }
-
-            Column(
-                modifier =
-                    Modifier
-                        .padding(systemBarsPadding)
-                        .padding(24.dp)
-                        .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Text(
-                    text = "What's your name? 🐶",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center,
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "(Optional - we'll cheer for you!)",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                OutlinedTextField(
-                    value = state.name,
-                    onValueChange = { state.eventSink(NameEntryScreen.Event.NameChanged(it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Your Name", style = MaterialTheme.typography.titleMedium) },
-                    placeholder = { Text("Enter your name", style = MaterialTheme.typography.titleMedium) },
-                    textStyle = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                    singleLine = false,
-                    shape = RoundedCornerShape(16.dp),
-                    keyboardOptions =
-                        KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Words,
-                            imeAction = ImeAction.Done,
-                        ),
-                    keyboardActions =
-                        KeyboardActions(
-                            onDone = {
-                                focusManager.clearFocus()
-                            },
-                        ),
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                // Buttons Row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    TextButton(
-                        onClick = { state.eventSink(NameEntryScreen.Event.SkipClicked) },
+                    // Hero image with gradient overlays
+                    Box(
                         modifier =
                             Modifier
-                                .weight(1f)
-                                .height(56.dp),
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+                                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
                     ) {
-                        Text(
-                            text = "Skip",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
+                        Image(
+                            painter = painterResource(id = R.drawable.hero_onboarding_name_entry),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit,
+                        )
+
+                        // Gradient overlay at top (20%)
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.2f)
+                                    .align(Alignment.TopCenter)
+                                    .background(
+                                        brush =
+                                            Brush.verticalGradient(
+                                                colors =
+                                                    listOf(
+                                                        MaterialTheme.colorScheme.surface,
+                                                        MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                                    ),
+                                            ),
+                                    ),
+                        )
+
+                        // Gradient overlay at bottom (20%)
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.2f)
+                                    .align(Alignment.BottomCenter)
+                                    .background(
+                                        brush =
+                                            Brush.verticalGradient(
+                                                colors =
+                                                    listOf(
+                                                        MaterialTheme.colorScheme.surface.copy(alpha = 0f),
+                                                        MaterialTheme.colorScheme.surface,
+                                                    ),
+                                            ),
+                                    ),
                         )
                     }
 
-                    Button(
-                        onClick = { state.eventSink(NameEntryScreen.Event.ContinueClicked) },
+                    Column(
                         modifier =
                             Modifier
-                                .weight(1f)
-                                .height(56.dp),
+                                .padding(systemBarsPadding)
+                                .padding(24.dp)
+                                .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Text(
-                            text = "Continue",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
+                            text = "What's your name? 🐶",
+                            style =
+                                when {
+                                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.displaySmall
+                                    else -> MaterialTheme.typography.headlineLarge
+                                },
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.ExtraBold,
+                            textAlign = TextAlign.Center,
                         )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "(Optional - we'll cheer for you!)",
+                            style =
+                                when {
+                                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MaterialTheme.typography.titleLarge
+                                    else -> MaterialTheme.typography.bodyLarge
+                                },
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        OutlinedTextField(
+                            value = state.name,
+                            onValueChange = { state.eventSink(NameEntryScreen.Event.NameChanged(it)) },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = { Text("Your Name", style = MaterialTheme.typography.titleMedium) },
+                            placeholder = { Text("Enter your name", style = MaterialTheme.typography.titleMedium) },
+                            textStyle =
+                                when {
+                                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> {
+                                        MaterialTheme.typography.displaySmall.copy(
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                    }
+
+                                    else -> {
+                                        MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold)
+                                    }
+                                },
+                            singleLine = false,
+                            shape = RoundedCornerShape(16.dp),
+                            keyboardOptions =
+                                KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
+                                    imeAction = ImeAction.Done,
+                                ),
+                            keyboardActions =
+                                KeyboardActions(
+                                    onDone = {
+                                        focusManager.clearFocus()
+                                    },
+                                ),
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        // Buttons Row
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            TextButton(
+                                onClick = { state.eventSink(NameEntryScreen.Event.SkipClicked) },
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .height(56.dp),
+                            ) {
+                                Text(
+                                    text = "Skip",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+
+                            Button(
+                                onClick = { state.eventSink(NameEntryScreen.Event.ContinueClicked) },
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .height(56.dp),
+                            ) {
+                                Text(
+                                    text = "Continue",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
                     }
                 }
             }
