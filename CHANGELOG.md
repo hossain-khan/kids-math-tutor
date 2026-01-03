@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Adaptive Difficulty moved to Parent Settings**: Adaptive difficulty toggle has been relocated from the main Settings screen to the Parent Settings screen for better parental control
   - Parents can now manage adaptive difficulty alongside other educational controls like grade limits and hint system
   - Maintains the same functionality with improved organization of parent-controlled vs child-accessible settings
+- **Improved Subtraction Visual Hint**: Subtraction visual hints now show intuitive "taking away" visualization with animation
+  - Displays all starting dots (e.g., 13 dots for 13 - 3) appearing first
+  - After 1 second, the dots being subtracted animate to dimmed state (last 3 dots fade over 1 second)
+  - Remaining bright dots clearly show the answer (10 bright dots)
+  - Smooth animation helps kids understand the concept of "taking away"
+  - More intuitive than previous approach of showing two separate groups
+  - Updated hint text: "Start with X, then take away Y. Count what's left!"
+  - Updated encouragement text: "Count the bright dots! The dim ones are taken away!"
 
 ## [1.21.0] - 2026-01-01
 

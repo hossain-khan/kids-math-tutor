@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -17,12 +19,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 
 /**
  * Visual representation using animated dots to represent grouped quantities.
@@ -125,7 +132,11 @@ private fun AdditionDotVisualizer(
 }
 
 /**
- * Subtraction visualization: shows num1 dots with num2 becoming faded
+ * Subtraction visualization: shows num1 dots with the last num2 dots dimmed.
+ *
+ * For example, 13 - 3 shows 13 dots initially bright, then after all dots appear + 1 second,
+ * the last 3 dots change to dimmed color (30% alpha), making it intuitive
+ * for kids to see "taking away" from the original number.
  */
 @Composable
 private fun SubtractionDotVisualizer(
@@ -134,35 +145,74 @@ private fun SubtractionDotVisualizer(
     durationMs: Int,
     delayMs: Int,
 ) {
+    val remainingCount = (firstNumber - secondNumber).coerceAtLeast(0)
+    val dotsPerRow = 6
+    val rows = (firstNumber + dotsPerRow - 1) / dotsPerRow
+
+    // Calculate when all dots finish appearing
+    val lastDotStartTime = (firstNumber - 1) * delayMs
+    val allDotsAppearTime = lastDotStartTime + durationMs
+    val dimChangeTime = allDotsAppearTime + 1000 // Wait 1 second after all dots appear
+
+    // State to track whether we should show dimmed colors
+    var showDimmed by remember { mutableStateOf(false) }
+
+    // Animated alpha that transitions smoothly
+    val targetAlpha = if (showDimmed) 0.3f else 1f
+    val animatedAlpha = remember { Animatable(1f) }
+
+    LaunchedEffect(showDimmed) {
+        animatedAlpha.animateTo(
+            targetValue = targetAlpha,
+            animationSpec =
+                tween(
+                    durationMillis = 1000,
+                    easing = LinearEasing,
+                ),
+        )
+    }
+
+    // Timer to trigger dimming
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(dimChangeTime.toLong())
+        showDimmed = true
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // All dots initially
-        WrappedDotGrid(
-            count = firstNumber,
-            color = MaterialTheme.colorScheme.primary,
-            startDelayMs = 0,
-            durationMs = durationMs,
-            staggerMs = delayMs,
-        )
+        // Show all dots in a grid
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            repeat(rows) { rowIndex ->
+                val startDot = rowIndex * dotsPerRow
+                val endDot = (startDot + dotsPerRow).coerceAtMost(firstNumber)
+                val dotsInRow = endDot - startDot
 
-        // Minus sign
-        AnimatedText(
-            text = "-",
-            delayMs = durationMs,
-            durationMs = 300,
-        )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    repeat(dotsInRow) { dotIndex ->
+                        val globalDotIndex = startDot + dotIndex
+                        val shouldDim = globalDotIndex >= remainingCount
 
-        // Remaining dots (shown in a different style)
-        val remainingCount = (firstNumber - secondNumber).coerceAtLeast(0)
-        WrappedDotGrid(
-            count = remainingCount,
-            color = MaterialTheme.colorScheme.secondary,
-            startDelayMs = durationMs + 300,
-            durationMs = durationMs,
-            staggerMs = delayMs,
-        )
+                        AnimatedDot(
+                            color =
+                                if (shouldDim) {
+                                    MaterialTheme.colorScheme.primary.copy(alpha = animatedAlpha.value)
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                },
+                            delayMs = globalDotIndex * delayMs,
+                            durationMs = durationMs,
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -366,4 +416,104 @@ private fun AnimatedText(
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.graphicsLayer { this.alpha = alpha.value },
     )
+}
+
+/**
+ * Preview of addition visualization showing 8 + 5 with animated dots.
+ */
+@Preview(showBackground = true, name = "Addition 8 + 5")
+@Composable
+private fun AdditionVisualizerPreview() {
+    KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "8 + 5 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.ADDITION,
+                firstNumber = 8,
+                secondNumber = 5,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of subtraction visualization showing 13 - 3 with dimming animation.
+ */
+@Preview(showBackground = true, name = "Subtraction 13 - 3")
+@Composable
+private fun SubtractionVisualizerPreview() {
+    KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "13 - 3 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.SUBTRACTION,
+                firstNumber = 13,
+                secondNumber = 3,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of multiplication visualization showing 4 × 6 with groups.
+ */
+@Preview(showBackground = true, name = "Multiplication 4 × 6")
+@Composable
+private fun MultiplicationVisualizerPreview() {
+    KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "4 × 6 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.MULTIPLICATION,
+                firstNumber = 4,
+                secondNumber = 6,
+            )
+        }
+    }
+}
+
+/**
+ * Preview of division visualization showing 12 ÷ 3 with equal groups.
+ */
+@Preview(showBackground = true, name = "Division 12 ÷ 3")
+@Composable
+private fun DivisionVisualizerPreview() {
+    KidsMathTutorAppTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "12 ÷ 3 = ?",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DotVisualizer(
+                operation = MathOperation.DIVISION,
+                firstNumber = 12,
+                secondNumber = 3,
+            )
+        }
+    }
 }
