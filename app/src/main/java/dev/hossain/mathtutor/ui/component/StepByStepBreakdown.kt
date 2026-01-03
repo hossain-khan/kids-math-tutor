@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -99,7 +100,11 @@ private fun getProblemSymbol(operation: MathOperation): String =
 // Preview Functions
 // ============================================
 
-@Preview(showBackground = true, name = "Addition Breakdown")
+@Preview(
+    showBackground = true,
+    name = "Addition Breakdown",
+    device = "spec:width=412dp,height=732dp,dpi=420",
+)
 @Composable
 private fun StepByStepBreakdownAdditionPreview() {
     KidsMathTutorAppTheme {
@@ -131,7 +136,11 @@ private fun StepByStepBreakdownAdditionPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Subtraction Breakdown")
+@Preview(
+    showBackground = true,
+    name = "Subtraction Breakdown",
+    device = "spec:width=412dp,height=732dp,dpi=420",
+)
 @Composable
 private fun StepByStepBreakdownSubtractionPreview() {
     KidsMathTutorAppTheme {
@@ -163,7 +172,11 @@ private fun StepByStepBreakdownSubtractionPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Multiplication Breakdown")
+@Preview(
+    showBackground = true,
+    name = "Multiplication Breakdown",
+    device = "spec:width=412dp,height=732dp,dpi=420",
+)
 @Composable
 private fun StepByStepBreakdownMultiplicationPreview() {
     KidsMathTutorAppTheme {
@@ -195,7 +208,11 @@ private fun StepByStepBreakdownMultiplicationPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Division Breakdown")
+@Preview(
+    showBackground = true,
+    name = "Division Breakdown",
+    device = "spec:width=412dp,height=732dp,dpi=420",
+)
 @Composable
 private fun StepByStepBreakdownDivisionPreview() {
     KidsMathTutorAppTheme {
@@ -227,9 +244,13 @@ private fun StepByStepBreakdownDivisionPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Simple 2-Step Breakdown", widthDp = 400)
+@Preview(
+    showBackground = true,
+    name = "Phone Landscape",
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+)
 @Composable
-private fun StepByStepBreakdownSimplePreview() {
+private fun StepByStepBreakdownPhoneLandscapePreview() {
     KidsMathTutorAppTheme {
         StepByStepBreakdown(
             problem =
@@ -249,6 +270,43 @@ private fun StepByStepBreakdownSimplePreview() {
                     WorkBreakdownStep(
                         emoji = "➕",
                         description = "Add 2 more to get 7",
+                    ),
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    name = "Tablet Portrait",
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+)
+@Composable
+private fun StepByStepBreakdownTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        StepByStepBreakdown(
+            modifier = Modifier.height(400.dp),
+            problem =
+                MathProblem(
+                    id = "preview-6",
+                    num1 = 9,
+                    num2 = 6,
+                    operation = MathOperation.ADDITION,
+                    correctAnswer = 15,
+                ),
+            steps =
+                listOf(
+                    WorkBreakdownStep(
+                        emoji = "🔢",
+                        description = "Start with the first number: 9",
+                    ),
+                    WorkBreakdownStep(
+                        emoji = "➕",
+                        description = "Add the second number: 6",
+                    ),
+                    WorkBreakdownStep(
+                        emoji = "🧮",
+                        description = "Count up from 9: 10, 11, 12, 13, 14, 15",
                     ),
                 ),
         )
