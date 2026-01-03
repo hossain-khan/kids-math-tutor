@@ -444,8 +444,6 @@ fun GradeSelectionUi(
                             textAlign = TextAlign.Center,
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-
                         // Display grade cards using adaptive grid based on availability (respecting parent limits)
                         val gradeDescriptions =
                             mapOf(
