@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -62,6 +65,15 @@ import dev.hossain.mathtutor.ui.component.BadgeIcon as BadgeIconImage
 private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
 private val MAX_CONTENT_WIDTH: Dp = 840.dp
 
+// Note: EXPANDED_WIDTH_BREAKPOINT equals MAX_CONTENT_WIDTH as expanded layouts
+// begin at the same point where content centering ends
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
+
+// Heights for adaptive grids
+private val STATS_GRID_HEIGHT_COMPACT: Dp = 180.dp // Single column needs more vertical space
+private val STATS_GRID_HEIGHT_MULTI_COLUMN: Dp = 90.dp // Multi-column layout is more compact
+private val BADGES_GRID_HEIGHT: Dp = 120.dp
+
 /**
  * UI for [HomeScreen].
  *
@@ -74,8 +86,9 @@ private val MAX_CONTENT_WIDTH: Dp = 840.dp
  * - View Full Stats and View All Badges links
  *
  * Adaptive Layout:
- * - Compact: Single column, full width
- * - Medium/Expanded: Centered content with max width, side-by-side action buttons
+ * - Compact (<600dp): Single column, full width, 3 badges per row
+ * - Medium (600-840dp): 2-column stats grid, side-by-side action buttons, 5 badges per row
+ * - Expanded (>840dp): 3-column stats grid, larger buttons, 6 badges per row, centered with max width
  */
 @CircuitInject(HomeScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +138,9 @@ fun HomeUi(
                     .fillMaxSize()
                     .padding(paddingValues),
         ) {
-            val isWideScreen = maxWidth >= MEDIUM_WIDTH_BREAKPOINT
+            val screenWidth = maxWidth
+            val isWideScreen = screenWidth >= MEDIUM_WIDTH_BREAKPOINT
+            val isExpandedScreen = screenWidth >= EXPANDED_WIDTH_BREAKPOINT
 
             // Center content with max width on larger screens
             Box(
@@ -270,7 +285,10 @@ fun HomeUi(
 
                             // Quick stats card
                             Box(modifier = Modifier.weight(1f)) {
-                                QuickStatsCard(stats = state.overallStats)
+                                QuickStatsCard(
+                                    stats = state.overallStats,
+                                    screenWidth = screenWidth,
+                                )
                             }
                         }
                     } else {
@@ -281,7 +299,10 @@ fun HomeUi(
                         )
 
                         if (state.overallStats.sessionCount > 0) {
-                            QuickStatsCard(stats = state.overallStats)
+                            QuickStatsCard(
+                                stats = state.overallStats,
+                                screenWidth = screenWidth,
+                            )
                         }
                     }
 
@@ -290,6 +311,7 @@ fun HomeUi(
                         LatestBadgesSection(
                             badges = state.recentBadges,
                             onViewAllClicked = { state.eventSink(HomeScreen.Event.ViewBadgesClicked) },
+                            screenWidth = screenWidth,
                         )
                     }
 
@@ -390,11 +412,13 @@ private fun WelcomeSection(
 /**
  * Quick stats card showing total problems solved and accuracy.
  * If no problems have been solved yet, shows an encouraging message instead.
+ * Uses adaptive grid layout: 1 column (compact), 2 columns (medium), 3 columns (expanded).
  */
 @Composable
 private fun QuickStatsCard(
     stats: SessionStats,
     modifier: Modifier = Modifier,
+    screenWidth: Dp = 400.dp,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -430,24 +454,62 @@ private fun QuickStatsCard(
                     textAlign = TextAlign.Center,
                 )
             } else {
-                // Show stats when problems have been solved
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                // Determine grid columns based on screen width
+                val columns =
+                    when {
+                        screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 3
+
+                        // expanded: 3 columns
+                        screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 2
+
+                        // medium: 2 columns
+                        else -> 1 // compact: 1 column
+                    }
+
+                // Show stats in adaptive grid
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(
+                                if (columns == 1) {
+                                    STATS_GRID_HEIGHT_COMPACT
+                                } else {
+                                    STATS_GRID_HEIGHT_MULTI_COLUMN
+                                },
+                            ),
                 ) {
                     // Total problems
-                    StatItem(
-                        label = "Problems Solved",
-                        value = "${stats.totalProblems}",
-                        emoji = "📝",
-                    )
+                    item {
+                        StatItem(
+                            label = "Problems Solved",
+                            value = "${stats.totalProblems}",
+                            emoji = "📝",
+                        )
+                    }
 
                     // Accuracy
-                    StatItem(
-                        label = "Accuracy",
-                        value = "${stats.accuracy.toInt()}%",
-                        emoji = "🎯",
-                    )
+                    item {
+                        StatItem(
+                            label = "Accuracy",
+                            value = "${stats.accuracy.toInt()}%",
+                            emoji = "🎯",
+                        )
+                    }
+
+                    // Session count (third stat for expanded screens)
+                    if (columns >= 3) {
+                        item {
+                            StatItem(
+                                label = "Sessions",
+                                value = "${stats.sessionCount}",
+                                emoji = "📊",
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -488,13 +550,15 @@ private fun StatItem(
 }
 
 /**
- * Latest badges section showing 3 most recently unlocked badges.
+ * Latest badges section showing recently unlocked badges.
+ * Uses adaptive grid: 3 per row (compact), 5 per row (medium), 6 per row (expanded).
  */
 @Composable
 private fun LatestBadgesSection(
     badges: List<Badge>,
     onViewAllClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    screenWidth: Dp = 400.dp,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -532,12 +596,26 @@ private fun LatestBadgesSection(
                 }
             }
 
-            // Display badges in a row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+            // Determine badges per row based on screen width
+            val badgesPerRow =
+                when {
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 6
+
+                    // expanded: 6 per row
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 5
+
+                    // medium: 5 per row
+                    else -> 3 // compact: 3 per row
+                }
+
+            // Display badges in adaptive grid
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(badgesPerRow),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth().height(BADGES_GRID_HEIGHT),
             ) {
-                badges.take(3).forEach { badge ->
+                items(badges.take(badgesPerRow * 2)) { badge ->
                     BadgeItem(badge = badge)
                 }
             }
@@ -748,6 +826,70 @@ private fun HomeUiTabletPortraitPreview() {
                             sessionCount = 15,
                         ),
                     recentBadges = emptyList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1100,
+    heightDp = 600,
+    name = "Expanded Tablet Landscape",
+)
+@Composable
+private fun HomeUiExpandedTabletPreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Alex",
+                    gradeLevel = GradeLevel.GRADE_1,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 5,
+                            longestStreak = 7,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 10,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 250,
+                            correctCount = 230,
+                            accuracy = 92f,
+                            sessionCount = 25,
+                        ),
+                    recentBadges =
+                        listOf(
+                            Badge(
+                                id = "first_steps",
+                                name = "First Steps",
+                                description = "Solved first problem",
+                                icon = BadgeIcon.FIRST_STEPS,
+                                category = BadgeCategory.GETTING_STARTED,
+                                requirement = BadgeRequirement.ProblemCount(1),
+                                unlockedAt = Instant.now(),
+                            ),
+                            Badge(
+                                id = "streak_starter",
+                                name = "Streak Starter",
+                                description = "Practice 3 days in a row",
+                                icon = BadgeIcon.STREAK_STARTER,
+                                category = BadgeCategory.STREAK,
+                                requirement = BadgeRequirement.DailyStreak(3),
+                                unlockedAt = Instant.now(),
+                            ),
+                            Badge(
+                                id = "quick_thinker",
+                                name = "Quick Thinker",
+                                description = "Answer quickly",
+                                icon = BadgeIcon.QUICK_THINKER,
+                                category = BadgeCategory.SPEED_ACCURACY,
+                                requirement = BadgeRequirement.ProblemSpeed(3),
+                                unlockedAt = Instant.now(),
+                            ),
+                        ),
                     eventSink = {},
                 ),
         )
