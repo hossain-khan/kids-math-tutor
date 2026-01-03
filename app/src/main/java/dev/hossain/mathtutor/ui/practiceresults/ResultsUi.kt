@@ -59,6 +59,10 @@ private val MAX_SUMMARY_WIDTH_COMPACT: Dp = 700.dp
 private val MAX_SUMMARY_WIDTH_EXPANDED: Dp = 800.dp
 private val MAX_GRID_WIDTH: Dp = 900.dp
 
+// Problem card dimensions
+private val PROBLEM_CARD_HEIGHT: Dp = 140.dp
+private val PROBLEM_CARD_MIN_WIDTH: Dp = 300.dp
+
 /**
  * UI for [ResultsScreen].
  *
@@ -153,12 +157,16 @@ fun ResultsUi(
                     item {
                         // Use grid for medium and expanded screens
                         if (isWideScreen) {
+                            // Calculate number of columns based on available width
+                            val columns = (screenWidth / PROBLEM_CARD_MIN_WIDTH).toInt().coerceAtLeast(1)
+                            val rows = (state.problemResults.size + columns - 1) / columns
+
                             LazyVerticalGrid(
-                                columns = GridCells.Adaptive(minSize = 300.dp),
+                                columns = GridCells.Adaptive(minSize = PROBLEM_CARD_MIN_WIDTH),
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .height(((state.problemResults.size / 2 + state.problemResults.size % 2) * 140).dp),
+                                        .height((rows * PROBLEM_CARD_HEIGHT.value + (rows - 1) * 16).dp),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(16.dp),
                                 userScrollEnabled = false,
