@@ -10,8 +10,29 @@ import dev.zacsweers.metro.Inject
 /**
  * Provides step-by-step work breakdown for math problems.
  *
- * Generates operation-specific solution steps to teach children
- * the process of solving each type of problem.
+ * **Integration in Hint System**:
+ * - Part of **Tier 3** in the progressive 3-tier hint system (most explicit help)
+ * - Appears when child clicks "📚 How to solve" button
+ * - Displayed in AlertDialog with animated step reveals (200ms stagger)
+ * - Available after text hint and visual hint (if feasible)
+ * - Shows complete solution process with emoji and detailed steps
+ *
+ * **When Shown**:
+ * - Portrait mode: Via "💡 Need help?" → "Show Visually" flow
+ * - Landscape mode (tablet/expanded): Dedicated "📚 How to solve" button
+ *
+ * **Output Format**:
+ * - Returns list of [WorkBreakdownStep] with emoji and description
+ * - Each step represents one logical part of the solution
+ * - Final answer displayed separately after all steps
+ *
+ * **Educational Purpose**:
+ * Teaches the thinking process and problem-solving strategies, not just the answer.
+ * Helps children understand "how" to solve similar problems independently.
+ *
+ * @see dev.hossain.mathtutor.ui.component.StepByStepBreakdown for UI rendering
+ * @see dev.hossain.mathtutor.domain.hint.HintProvider for Tier 1 text hints
+ * @see dev.hossain.mathtutor.ui.component.DotVisualizer for Tier 2 visual hints
  */
 interface WorkProvider {
     /**
