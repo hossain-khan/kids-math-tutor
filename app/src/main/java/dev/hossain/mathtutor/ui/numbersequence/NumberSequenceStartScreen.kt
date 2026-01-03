@@ -85,7 +85,7 @@ fun NumberSequenceStartScreen(
         },
         modifier = modifier,
     ) { paddingValues ->
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()

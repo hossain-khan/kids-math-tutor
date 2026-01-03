@@ -161,7 +161,7 @@ fun MemoryMatchStartScreen(
         },
         modifier = modifier,
     ) { padding ->
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
@@ -367,7 +367,7 @@ fun MemoryMatchGameScreen(
         },
         modifier = modifier,
     ) { padding ->
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
@@ -541,7 +541,7 @@ fun MemoryMatchResultsScreen(
         },
         modifier = modifier,
     ) { padding ->
-        BoxWithConstraints(
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
