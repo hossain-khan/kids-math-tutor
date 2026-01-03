@@ -63,12 +63,10 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PreviewData
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_STANDARD
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
 import kotlin.time.Duration
-
-// Max content width for adaptive layout on tablets
-private val MAX_CONTENT_WIDTH: Dp = 800.dp
 
 /**
  * UI for [ImportChallengeScreen].
@@ -116,7 +114,7 @@ fun ImportChallengeUi(
                 state = lazyListState,
                 modifier =
                     Modifier
-                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .widthIn(max = MAX_CONTENT_WIDTH_STANDARD)
                         .fillMaxSize(),
             ) {
                 // Share detection banner

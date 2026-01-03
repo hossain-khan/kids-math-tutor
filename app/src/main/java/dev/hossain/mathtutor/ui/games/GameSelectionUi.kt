@@ -52,10 +52,9 @@ import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.Game
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_STANDARD
 import dev.zacsweers.metro.AppScope
 
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 800.dp
 private val MIN_CARD_WIDTH: Dp = 280.dp
 
 /**
@@ -94,7 +93,7 @@ fun GameSelectionUi(
             LazyColumn(
                 modifier =
                     Modifier
-                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .widthIn(max = MAX_CONTENT_WIDTH_STANDARD)
                         .fillMaxSize()
                         .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),

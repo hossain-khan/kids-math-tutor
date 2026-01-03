@@ -82,11 +82,9 @@ import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_LARGE
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
-
-// Max content width for adaptive layout on tablets
-private val MAX_CONTENT_WIDTH: Dp = 900.dp
 
 /**
  * UI for [ParentChallengesScreen].
@@ -162,7 +160,7 @@ fun ParentChallengesUi(
             Column(
                 modifier =
                     Modifier
-                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .widthIn(max = MAX_CONTENT_WIDTH_LARGE)
                         .fillMaxSize(),
             ) {
                 // Stats and filter header

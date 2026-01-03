@@ -163,6 +163,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Enhanced Width Breakpoints**: Added `EXPANDED_WIDTH_BREAKPOINT` constant (1100dp) for large tablet support
   - All layouts maintain Material 3 design principles with proper spacing and visual hierarchy
 ### Changed
+- **Centralized Adaptive Layout Constants**: Refactored all scattered breakpoint constants into a single location
+  - Created `AdaptiveLayoutConstants.kt` in `ui/utils/` with comprehensive documentation
+  - Screen width breakpoints: `MEDIUM_WIDTH_BREAKPOINT` (600dp), `EXPANDED_WIDTH_BREAKPOINT` (840dp), `EXTENDED_WIDTH_BREAKPOINT` (1100dp)
+  - Integer breakpoints for `WindowSizeClass.isWidthAtLeastBreakpoint()`: `MEDIUM_WIDTH_BREAKPOINT_INT`, `EXPANDED_WIDTH_BREAKPOINT_INT`
+  - Maximum content widths organized by size: `MAX_CONTENT_WIDTH_NARROW` (500dp), `MAX_CONTENT_WIDTH_SMALL` (700dp), `MAX_CONTENT_WIDTH_STANDARD` (800dp), `MAX_CONTENT_WIDTH_MEDIUM` (840dp), `MAX_CONTENT_WIDTH_LARGE` (900dp), `MAX_CONTENT_WIDTH_EXTRA_LARGE` (1000dp)
+  - Settings-specific widths: `SETTINGS_MAX_WIDTH_COMPACT`, `SETTINGS_MAX_WIDTH_MEDIUM`, `SETTINGS_MAX_WIDTH_EXPANDED`
+  - Results screen widths: `RESULTS_SUMMARY_WIDTH_COMPACT`, `RESULTS_SUMMARY_WIDTH_EXPANDED`, `RESULTS_GRID_MAX_WIDTH`
+  - Updated all 28 UI files to use centralized constants instead of local definitions
+  - Improves maintainability and consistency across all adaptive layouts
+- **Updated ADAPTIVE_LAYOUT_STATUS.md**: Reflects completed adaptive layout implementation for all 21 screens with documentation of centralized constants
 - **MathPracticeScreen Adaptive Layout - Phase 5**: Enhanced tablet support with larger touch targets and improved dual-pane layouts
   - **Tablet-Sized NumberPad**: Adaptive button sizing based on screen width
     - Compact screens (<840dp): 64dp buttons with 12dp spacing

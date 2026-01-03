@@ -18,10 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
 import timber.log.Timber
-
-// Width breakpoints for adaptive sizing
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
 
 /**
  * A read-only text field component for displaying the user's answer input.

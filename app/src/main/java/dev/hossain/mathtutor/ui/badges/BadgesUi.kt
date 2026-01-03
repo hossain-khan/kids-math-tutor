@@ -44,11 +44,9 @@ import dev.hossain.mathtutor.ui.component.BadgeGrid
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_MEDIUM
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
-
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 840.dp
 
 /**
  * UI for [BadgesScreen].
@@ -114,7 +112,7 @@ fun BadgesUi(
                 LazyColumn(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_MEDIUM)
                             .fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     contentPadding = PaddingValues(bottom = 16.dp),

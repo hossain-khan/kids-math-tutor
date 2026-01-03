@@ -31,11 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT_INT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT_INT
 import dev.hossain.mathtutor.ui.utils.NavigationType
-
-// Width breakpoints for responsive layouts (in dp)
-private const val MEDIUM_WIDTH_BREAKPOINT = 600
-private const val EXPANDED_WIDTH_BREAKPOINT = 840
 
 /**
  * Adaptive navigation wrapper that switches between different navigation components
@@ -62,11 +60,11 @@ fun AdaptiveNavigationWrapper(
     // Use breakpoint checks instead of deprecated WindowWidthSizeClass
     val navigationType =
         when {
-            windowSizeClass.isWidthAtLeastBreakpoint(EXPANDED_WIDTH_BREAKPOINT) -> {
+            windowSizeClass.isWidthAtLeastBreakpoint(EXPANDED_WIDTH_BREAKPOINT_INT) -> {
                 NavigationType.PERMANENT_NAVIGATION_DRAWER
             }
 
-            windowSizeClass.isWidthAtLeastBreakpoint(MEDIUM_WIDTH_BREAKPOINT) -> {
+            windowSizeClass.isWidthAtLeastBreakpoint(MEDIUM_WIDTH_BREAKPOINT_INT) -> {
                 NavigationType.NAVIGATION_RAIL
             }
 

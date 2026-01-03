@@ -69,15 +69,13 @@ import dev.hossain.mathtutor.ui.component.DotVisualizer
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.component.StepByStepBreakdown
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_NARROW
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metro.Inject
 import timber.log.Timber
-
-// Width breakpoints for adaptive layouts
-private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
-private val MAX_CONTENT_WIDTH: Dp = 500.dp
 
 /**
  * Custom Ui.Factory for MathPracticeScreen that injects HapticService.
@@ -474,7 +472,7 @@ internal fun MathPracticeUi(
                                 modifier =
                                     Modifier
                                         .weight(1f)
-                                        .widthIn(max = if (isExpandedScreen) 600.dp else MAX_CONTENT_WIDTH)
+                                        .widthIn(max = if (isExpandedScreen) 600.dp else MAX_CONTENT_WIDTH_NARROW)
                                         .fillMaxHeight(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center,
@@ -543,7 +541,7 @@ internal fun MathPracticeUi(
                         Column(
                             modifier =
                                 Modifier
-                                    .widthIn(max = MAX_CONTENT_WIDTH)
+                                    .widthIn(max = MAX_CONTENT_WIDTH_NARROW)
                                     .fillMaxSize()
                                     .padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,

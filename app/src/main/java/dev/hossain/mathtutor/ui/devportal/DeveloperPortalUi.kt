@@ -40,11 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_LARGE
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
-
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH = 900.dp
 
 @CircuitInject(DeveloperPortalScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +87,7 @@ fun DeveloperPortalUi(
             Column(
                 modifier =
                     Modifier
-                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .widthIn(max = MAX_CONTENT_WIDTH_LARGE)
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp),

@@ -65,18 +65,14 @@ import dev.hossain.mathtutor.domain.model.UserProfile
 import dev.hossain.mathtutor.ui.component.FeatureTopAppBar
 import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.EXPANDED_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MEDIUM_WIDTH_BREAKPOINT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.SETTINGS_MAX_WIDTH_COMPACT
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.SETTINGS_MAX_WIDTH_EXPANDED
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.SETTINGS_MAX_WIDTH_MEDIUM
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
 import java.time.Instant
-
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH_COMPACT: Dp = 600.dp
-private val MAX_CONTENT_WIDTH_MEDIUM: Dp = 700.dp
-private val MAX_CONTENT_WIDTH_EXPANDED: Dp = 800.dp
-
-// Screen width breakpoints
-private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
-private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
 
 /**
  * UI for [SettingsScreen].
@@ -147,9 +143,9 @@ fun SettingsUi(
             val screenWidth = maxWidth
             val contentMaxWidth =
                 when {
-                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_EXPANDED
-                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_MEDIUM
-                    else -> MAX_CONTENT_WIDTH_COMPACT
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> SETTINGS_MAX_WIDTH_EXPANDED
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> SETTINGS_MAX_WIDTH_MEDIUM
+                    else -> SETTINGS_MAX_WIDTH_COMPACT
                 }
 
             // Spacing based on screen width

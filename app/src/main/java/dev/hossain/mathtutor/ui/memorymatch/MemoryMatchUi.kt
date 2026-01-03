@@ -62,10 +62,8 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.ui.component.BadgeIcon
 import dev.hossain.mathtutor.ui.mathrace.CountdownScreen
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 import dev.zacsweers.metro.AppScope
-
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * Main UI for [MemoryMatchScreen].
@@ -175,7 +173,7 @@ fun MemoryMatchStartScreen(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                             .fillMaxSize()
                             .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -381,7 +379,7 @@ fun MemoryMatchGameScreen(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                             .fillMaxSize()
                             .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -555,7 +553,7 @@ fun MemoryMatchResultsScreen(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                             .fillMaxSize()
                             .systemBarsPadding()
                             .padding(24.dp),

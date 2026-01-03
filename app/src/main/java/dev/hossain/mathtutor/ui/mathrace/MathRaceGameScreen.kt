@@ -56,9 +56,7 @@ import dev.hossain.mathtutor.haptic.HapticService
 import dev.hossain.mathtutor.ui.component.AnswerField
 import dev.hossain.mathtutor.ui.component.NumberPad
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
-
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 
 /**
  * Main game screen for Math Race.
@@ -105,7 +103,7 @@ fun MathRaceGameScreen(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                             .fillMaxSize()
                             .systemBarsPadding()
                             .padding(16.dp),

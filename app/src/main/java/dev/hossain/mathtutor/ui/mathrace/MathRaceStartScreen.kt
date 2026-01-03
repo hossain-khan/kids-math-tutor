@@ -37,9 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
-
-// Width breakpoints for adaptive layouts
-private val MAX_CONTENT_WIDTH: Dp = 700.dp
+import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 
 /**
  * Start screen for Math Race game.
@@ -99,7 +97,7 @@ fun MathRaceStartScreen(
                 Column(
                     modifier =
                         Modifier
-                            .widthIn(max = MAX_CONTENT_WIDTH)
+                            .widthIn(max = MAX_CONTENT_WIDTH_SMALL)
                             .fillMaxSize()
                             .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
