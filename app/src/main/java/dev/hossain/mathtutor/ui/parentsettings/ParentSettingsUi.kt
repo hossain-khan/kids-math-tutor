@@ -24,6 +24,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.CheckBox
+import androidx.compose.material.icons.outlined.DisabledByDefault
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Tune
@@ -500,7 +504,7 @@ private fun HintSystemCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Info,
+                        imageVector = Icons.Outlined.Book,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                     )
@@ -518,6 +522,23 @@ private fun HintSystemCard(
                         )
                     }
                 }
+
+                Icon(
+                    imageVector =
+                        if (isHintSystemEnabled) {
+                            Icons.Outlined.CheckBox
+                        } else {
+                            Icons.Outlined.DisabledByDefault
+                        },
+                    contentDescription =
+                        if (isHintSystemEnabled) "Enabled" else "Disabled",
+                    tint =
+                        if (isHintSystemEnabled) {
+                            MaterialTheme.colorScheme.tertiary
+                        } else {
+                            MaterialTheme.colorScheme.error
+                        },
+                )
             }
 
             Text(
@@ -613,6 +634,23 @@ private fun AdaptiveDifficultyCard(
                         )
                     }
                 }
+
+                Icon(
+                    imageVector =
+                        if (isAdaptiveDifficultyEnabled) {
+                            Icons.Outlined.CheckBox
+                        } else {
+                            Icons.Outlined.DisabledByDefault
+                        },
+                    contentDescription =
+                        if (isAdaptiveDifficultyEnabled) "Enabled" else "Disabled",
+                    tint =
+                        if (isAdaptiveDifficultyEnabled) {
+                            MaterialTheme.colorScheme.tertiary
+                        } else {
+                            MaterialTheme.colorScheme.error
+                        },
+                )
             }
 
             Text(
