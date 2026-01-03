@@ -179,24 +179,27 @@ internal fun MathPracticeUi(
                 )
             },
             text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    // Math Pup teaching sticker
-                    Image(
-                        painter = painterResource(R.drawable.pup_tutor_sticker_need_help_teaching),
-                        contentDescription = "Math Pup offering help",
-                        modifier = Modifier.size(120.dp),
-                    )
-                    Text(
-                        text = state.currentHintText,
-                        modifier =
-                            Modifier.semantics {
-                                contentDescription = "Hint to help solve the problem"
-                            },
-                    )
+                BoxWithConstraints {
+                    val stickerSize = if (maxWidth >= MEDIUM_WIDTH_BREAKPOINT) 180.dp else 120.dp
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        // Math Pup teaching sticker
+                        Image(
+                            painter = painterResource(R.drawable.pup_tutor_sticker_need_help_teaching),
+                            contentDescription = "Math Pup offering help",
+                            modifier = Modifier.size(stickerSize),
+                        )
+                        Text(
+                            text = state.currentHintText,
+                            modifier =
+                                Modifier.semantics {
+                                    contentDescription = "Hint to help solve the problem"
+                                },
+                        )
+                    }
                 }
             },
             confirmButton = {
@@ -258,37 +261,40 @@ internal fun MathPracticeUi(
                 )
             },
             text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    // Math Pup juggling balls sticker
-                    Image(
-                        painter = painterResource(R.drawable.pup_tutor_sticker_juggling_balls),
-                        contentDescription = "Math Pup with visual dots",
-                        modifier = Modifier.size(100.dp),
-                    )
-                    DotVisualizer(
-                        operation = state.currentProblem.operation,
-                        firstNumber = state.currentProblem.num1,
-                        secondNumber = state.currentProblem.num2,
-                        modifier =
-                            Modifier.semantics {
-                                contentDescription =
-                                    "Visual representation showing " +
-                                    "${state.currentProblem.num1} and ${state.currentProblem.num2} for ${state.currentProblem.operation.name.lowercase()}"
-                            },
-                    )
-                    Text(
-                        text = state.currentHintText ?: "See how the problem works!",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        modifier =
-                            Modifier.semantics {
-                                contentDescription = "Explanation of the visual hint"
-                            },
-                    )
+                BoxWithConstraints {
+                    val stickerSize = if (maxWidth >= MEDIUM_WIDTH_BREAKPOINT) 150.dp else 100.dp
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        // Math Pup juggling balls sticker
+                        Image(
+                            painter = painterResource(R.drawable.pup_tutor_sticker_juggling_balls),
+                            contentDescription = "Math Pup with visual dots",
+                            modifier = Modifier.size(stickerSize),
+                        )
+                        DotVisualizer(
+                            operation = state.currentProblem.operation,
+                            firstNumber = state.currentProblem.num1,
+                            secondNumber = state.currentProblem.num2,
+                            modifier =
+                                Modifier.semantics {
+                                    contentDescription =
+                                        "Visual representation showing " +
+                                        "${state.currentProblem.num1} and ${state.currentProblem.num2} for ${state.currentProblem.operation.name.lowercase()}"
+                                },
+                        )
+                        Text(
+                            text = state.currentHintText ?: "See how the problem works!",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            modifier =
+                                Modifier.semantics {
+                                    contentDescription = "Explanation of the visual hint"
+                                },
+                        )
+                    }
                 }
             },
             confirmButton = {
