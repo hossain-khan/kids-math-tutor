@@ -1192,6 +1192,186 @@ private fun MathPracticeUiExpandedTabletPreview() {
     }
 }
 
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun MathPracticeUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 6, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 10),
+                    currentAnswer = "",
+                    currentProblemIndex = 1,
+                    totalProblems = 10,
+                    isCorrect = null,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun MathPracticeUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 8, num2 = 3, operation = MathOperation.SUBTRACTION, correctAnswer = 5),
+                    currentAnswer = "5",
+                    currentProblemIndex = 3,
+                    totalProblems = 10,
+                    isCorrect = true,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun MathPracticeUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 9, num2 = 4, operation = MathOperation.SUBTRACTION, correctAnswer = 5),
+                    currentAnswer = "6",
+                    currentProblemIndex = 4,
+                    totalProblems = 10,
+                    isCorrect = false,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun MathPracticeUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 7, num2 = 5, operation = MathOperation.ADDITION, correctAnswer = 12),
+                    currentAnswer = "",
+                    currentProblemIndex = 2,
+                    totalProblems = 10,
+                    isCorrect = null,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun MathPracticeUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 10, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 16),
+                    currentAnswer = "16",
+                    currentProblemIndex = 6,
+                    totalProblems = 10,
+                    isCorrect = true,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
 /**
  * Displays a hint card with helpful guidance text.
  * Kids can dismiss the hint to try solving on their own.

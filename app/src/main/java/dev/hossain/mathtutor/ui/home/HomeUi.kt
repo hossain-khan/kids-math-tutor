@@ -890,3 +890,232 @@ private fun HomeUiExpandedTabletPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun HomeUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Alex",
+                    gradeLevel = GradeLevel.GRADE_1,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 3,
+                            longestStreak = 5,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 8,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 100,
+                            correctCount = 85,
+                            accuracy = 85f,
+                            sessionCount = 10,
+                        ),
+                    recentBadges =
+                        listOf(
+                            Badge(
+                                id = "first_steps",
+                                name = "First Steps",
+                                description = "Solved first problem",
+                                icon = BadgeIcon.FIRST_STEPS,
+                                category = BadgeCategory.GETTING_STARTED,
+                                requirement = BadgeRequirement.ProblemCount(1),
+                                unlockedAt = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun HomeUiStandardTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Emma",
+                    gradeLevel = GradeLevel.GRADE_2,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 7,
+                            longestStreak = 10,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 15,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 200,
+                            correctCount = 180,
+                            accuracy = 90f,
+                            sessionCount = 20,
+                        ),
+                    recentBadges =
+                        listOf(
+                            Badge(
+                                id = "first_steps",
+                                name = "First Steps",
+                                description = "Solved first problem",
+                                icon = BadgeIcon.FIRST_STEPS,
+                                category = BadgeCategory.GETTING_STARTED,
+                                requirement = BadgeRequirement.ProblemCount(1),
+                                unlockedAt = Instant.now(),
+                            ),
+                            Badge(
+                                id = "streak_starter",
+                                name = "Streak Starter",
+                                description = "Practice 3 days in a row",
+                                icon = BadgeIcon.STREAK_STARTER,
+                                category = BadgeCategory.STREAK,
+                                requirement = BadgeRequirement.DailyStreak(3),
+                                unlockedAt = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun HomeUiStandardTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Sofia",
+                    gradeLevel = GradeLevel.KINDERGARTEN,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 2,
+                            longestStreak = 4,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 6,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 50,
+                            correctCount = 45,
+                            accuracy = 90f,
+                            sessionCount = 5,
+                        ),
+                    recentBadges =
+                        listOf(
+                            Badge(
+                                id = "first_steps",
+                                name = "First Steps",
+                                description = "Solved first problem",
+                                icon = BadgeIcon.FIRST_STEPS,
+                                category = BadgeCategory.GETTING_STARTED,
+                                requirement = BadgeRequirement.ProblemCount(1),
+                                unlockedAt = Instant.now(),
+                            ),
+                            Badge(
+                                id = "quick_thinker",
+                                name = "Quick Thinker",
+                                description = "Answer quickly",
+                                icon = BadgeIcon.QUICK_THINKER,
+                                category = BadgeCategory.SPEED_ACCURACY,
+                                requirement = BadgeRequirement.ProblemSpeed(3),
+                                unlockedAt = Instant.now(),
+                            ),
+                            Badge(
+                                id = "streak_starter",
+                                name = "Streak Starter",
+                                description = "Practice 3 days in a row",
+                                icon = BadgeIcon.STREAK_STARTER,
+                                category = BadgeCategory.STREAK,
+                                requirement = BadgeRequirement.DailyStreak(3),
+                                unlockedAt = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun HomeUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = null,
+                    gradeLevel = GradeLevel.GRADE_1,
+                    streakData = null,
+                    overallStats = SessionStats.EMPTY,
+                    recentBadges = emptyList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun HomeUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        HomeUi(
+            state =
+                HomeScreen.State(
+                    userName = "Max",
+                    gradeLevel = GradeLevel.GRADE_2,
+                    streakData =
+                        DailyStreak(
+                            currentStreak = 5,
+                            longestStreak = 7,
+                            lastPracticeDate = LocalDate.now(),
+                            totalDaysPracticed = 12,
+                        ),
+                    overallStats =
+                        SessionStats(
+                            totalProblems = 150,
+                            correctCount = 135,
+                            accuracy = 90f,
+                            sessionCount = 15,
+                        ),
+                    recentBadges =
+                        listOf(
+                            Badge(
+                                id = "first_steps",
+                                name = "First Steps",
+                                description = "Solved first problem",
+                                icon = BadgeIcon.FIRST_STEPS,
+                                category = BadgeCategory.GETTING_STARTED,
+                                requirement = BadgeRequirement.ProblemCount(1),
+                                unlockedAt = Instant.now(),
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}

@@ -775,3 +775,283 @@ private fun ResultsUiExpandedPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun ResultsUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ResultsUi(
+            state =
+                ResultsScreen.State(
+                    totalProblems = 5,
+                    correctCount = 3,
+                    accuracyPercentage = 60f,
+                    problemResults =
+                        listOf(
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 6,
+                                        num2 = 3,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 9,
+                                    ),
+                                userAnswer = 9,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 8,
+                                        num2 = 4,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 4,
+                                    ),
+                                userAnswer = 3,
+                                isCorrect = false,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 5,
+                                        num2 = 5,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun ResultsUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        ResultsUi(
+            state =
+                ResultsScreen.State(
+                    totalProblems = 10,
+                    correctCount = 10,
+                    accuracyPercentage = 100f,
+                    problemResults =
+                        listOf(
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 3,
+                                        num2 = 2,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 5,
+                                    ),
+                                userAnswer = 5,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 7,
+                                        num2 = 3,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 4,
+                                    ),
+                                userAnswer = 4,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 6,
+                                        num2 = 4,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun ResultsUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ResultsUi(
+            state =
+                ResultsScreen.State(
+                    totalProblems = 10,
+                    correctCount = 7,
+                    accuracyPercentage = 70f,
+                    problemResults =
+                        listOf(
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 4,
+                                        num2 = 3,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 7,
+                                    ),
+                                userAnswer = 7,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 9,
+                                        num2 = 5,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 4,
+                                    ),
+                                userAnswer = 5,
+                                isCorrect = false,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 2,
+                                        num2 = 8,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ResultsUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        ResultsUi(
+            state =
+                ResultsScreen.State(
+                    totalProblems = 5,
+                    correctCount = 2,
+                    accuracyPercentage = 40f,
+                    problemResults =
+                        listOf(
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 5,
+                                        num2 = 3,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 8,
+                                    ),
+                                userAnswer = 8,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 7,
+                                        num2 = 4,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 3,
+                                    ),
+                                userAnswer = 4,
+                                isCorrect = false,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 6,
+                                        num2 = 3,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 9,
+                                    ),
+                                userAnswer = 9,
+                                isCorrect = true,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun ResultsUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        ResultsUi(
+            state =
+                ResultsScreen.State(
+                    totalProblems = 10,
+                    correctCount = 8,
+                    accuracyPercentage = 80f,
+                    problemResults =
+                        listOf(
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 4,
+                                        num2 = 2,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 6,
+                                    ),
+                                userAnswer = 6,
+                                isCorrect = true,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 8,
+                                        num2 = 3,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 5,
+                                    ),
+                                userAnswer = 4,
+                                isCorrect = false,
+                            ),
+                            ResultsScreen.ProblemResult(
+                                problem =
+                                    MathProblem(
+                                        num1 = 5,
+                                        num2 = 5,
+                                        operation = MathOperation.ADDITION,
+                                        correctAnswer = 10,
+                                    ),
+                                userAnswer = 10,
+                                isCorrect = true,
+                            ),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
