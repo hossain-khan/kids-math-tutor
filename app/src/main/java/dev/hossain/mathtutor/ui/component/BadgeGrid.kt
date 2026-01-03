@@ -95,12 +95,22 @@ fun BadgeGrid(
                 else -> 20.dp
             }
 
+        // Calculate height needed for the grid
+        // Each badge card maintains 1:1 aspect ratio, plus spacing
+        val badgeCardSize = (screenWidth - (gridSpacing * (columnCount - 1))) / columnCount
+        val rows = (badges.size + columnCount - 1) / columnCount // Ceiling division
+        val gridHeight = (badgeCardSize * rows) + (gridSpacing * (rows - 1).coerceAtLeast(0))
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(columnCount),
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .size(width = screenWidth, height = gridHeight),
             horizontalArrangement = Arrangement.spacedBy(gridSpacing),
             verticalArrangement = Arrangement.spacedBy(gridSpacing),
             contentPadding = PaddingValues(0.dp),
+            userScrollEnabled = false, // Disable scrolling since parent LazyColumn handles it
         ) {
             items(badges, key = { it.id }) { badge ->
                 BadgeCard(
