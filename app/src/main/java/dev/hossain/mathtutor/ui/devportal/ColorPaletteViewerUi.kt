@@ -4,7 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -32,9 +36,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
+
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH: Dp = 1000.dp
+private val MIN_COLOR_CARD_WIDTH: Dp = 150.dp
+
+// Screen width breakpoints for adaptive spacing
+private val COMPACT_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_BREAKPOINT: Dp = 840.dp
 
 /**
  * UI for the Color Palette Viewer developer tool.
@@ -71,38 +84,60 @@ fun ColorPaletteViewerUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
+        // Center content on wide screens
+        Box(
             modifier =
                 Modifier
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
-                    .fillMaxWidth(),
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            Text(
-                text = "All colors used throughout the app",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Render each group (colors or widgets)
-            state.groups.forEach { group ->
-                when (group) {
-                    is ColorPaletteViewerScreen.ColorGroup -> ColorGroupCard(group = group, state = state)
-                    is ColorPaletteViewerScreen.WidgetDemoGroup -> WidgetDemoGroupCard(group = group)
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .fillMaxSize()
+                        .padding(16.dp),
+            ) {
+                item {
+                    Text(
+                        text = "All colors used throughout the app",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
-                Spacer(modifier = Modifier.height(12.dp))
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                // Render each group (colors or widgets)
+                items(state.groups) { group ->
+                    when (group) {
+                        is ColorPaletteViewerScreen.ColorGroup -> ColorGroupCard(group = group, state = state)
+                        is ColorPaletteViewerScreen.WidgetDemoGroup -> WidgetDemoGroupCard(group = group)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
         }
     }
 }
 
 /**
- * Card displaying a group of related colors.
+ * Card displaying a group of related colors with adaptive grid layout.
+ *
+ * Adaptive Layout:
+ * - Uses GridCells.Adaptive with minimum card width of 150dp
+ * - Grid automatically adjusts number of columns based on available width
+ * - Adaptive spacing: 8dp (compact) → 12dp (medium) → 16dp (expanded)
+ * - Compact (<600dp): Typically 2 colors per row
+ * - Medium (600-840dp): Typically 3-4 colors per row
+ * - Expanded (>840dp): Typically 5-6 colors per row
  */
 @Composable
 private fun ColorGroupCard(
@@ -128,78 +163,99 @@ private fun ColorGroupCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Render each color in the group
-            group.colors.forEach { colorEntry ->
-                ColorSwatchItem(colorEntry = colorEntry, state = state)
-                Spacer(modifier = Modifier.height(12.dp))
+            // Adaptive grid layout for color swatches using FlowRow
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                val screenWidth = maxWidth
+
+                // Determine adaptive spacing based on screen width
+                val gridSpacing =
+                    when {
+                        screenWidth < COMPACT_BREAKPOINT -> 8.dp
+                        screenWidth < EXPANDED_BREAKPOINT -> 12.dp
+                        else -> 16.dp
+                    }
+
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(gridSpacing),
+                    verticalArrangement = Arrangement.spacedBy(gridSpacing),
+                ) {
+                    group.colors.forEach { colorEntry ->
+                        Box(
+                            modifier = Modifier.widthIn(min = MIN_COLOR_CARD_WIDTH, max = MIN_COLOR_CARD_WIDTH),
+                        ) {
+                            ColorSwatchItem(colorEntry = colorEntry, state = state)
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 /**
- * A single color swatch with details (name, hex, RGB, usage).
+ * A single color swatch card with details (name, hex, RGB, usage).
+ *
+ * Optimized for grid layout with a compact card design.
  */
 @Composable
 private fun ColorSwatchItem(
     colorEntry: ColorPaletteViewerScreen.ColorEntry,
     state: ColorPaletteViewerScreen.State,
 ) {
-    Row(
+    Card(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    shape = RoundedCornerShape(8.dp),
-                ).padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                .clickable { state.eventSink(ColorPaletteViewerScreen.Event.CopyColorToClipboard) },
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+            ),
     ) {
-        // Color swatch
-        Row(
-            modifier =
-                Modifier
-                    .size(80.dp)
-                    .background(
-                        color = colorEntry.color,
-                        shape = RoundedCornerShape(8.dp),
-                    ).border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                        shape = RoundedCornerShape(8.dp),
-                    ).clickable { state.eventSink(ColorPaletteViewerScreen.Event.CopyColorToClipboard) },
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (colorEntry.isDarkModeVariant) {
-                Text(
-                    text = "🌒",
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            } else {
-                Text(
-                    text = "🌔",
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-        }
-
-        // Color details
         Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = colorEntry.name,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            // Color swatch
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .background(
+                            color = colorEntry.color,
+                            shape = RoundedCornerShape(8.dp),
+                        ).border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                            shape = RoundedCornerShape(8.dp),
+                        ),
+                contentAlignment = Alignment.Center,
             ) {
+                if (colorEntry.isDarkModeVariant) {
+                    Text(
+                        text = "🌒",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                } else {
+                    Text(
+                        text = "🌔",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
+
+            // Color details
+            Column(
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text(
+                    text = colorEntry.name,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
                 // Hex
                 Column {
                     Text(
@@ -227,14 +283,14 @@ private fun ColorSwatchItem(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
-            }
 
-            if (colorEntry.usage.isNotEmpty()) {
-                Text(
-                    text = "Usage: ${colorEntry.usage}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (colorEntry.usage.isNotEmpty()) {
+                    Text(
+                        text = "Usage: ${colorEntry.usage}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }

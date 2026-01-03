@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Debug Screens Adaptive Layout**: Added responsive layouts to debug/admin screens for better tablet testing experience
+  - **DeveloperPortalScreen**: Content centered with max-width (900dp) for tablets
+    - Uses Box with widthIn(max = 900.dp) and Alignment.TopCenter for content centering
+    - All debug controls and sections remain fully functional with improved readability on larger screens
+    - Better organization of development tools and test data management on tablets
+  - **ColorPaletteViewerScreen**: Adaptive grid layout for color swatches
+    - Content centered with max-width (1000dp) for tablets
+    - Converted ColorGroupCard to use LazyVerticalGrid with GridCells.Adaptive(minSize = 150dp)
+    - Adaptive grid spacing (8dp → 12dp → 16dp) based on screen width breakpoints
+    - Compact (<600dp): 2-3 colors per row
+    - Medium (600-840dp): 3-4 colors per row
+    - Expanded (>840dp): Full grid showing multiple colors with details
+    - Redesigned ColorSwatchItem as compact card layout optimized for grid display
+    - Larger color swatches (80dp height) with clear hex/RGB values in monospace font
+    - Maintains Material 3 design with theme colors and proper spacing
+  - Debug screens now follow same adaptive patterns as user-facing screens (GameSelectionUi, BadgeGrid)
+  - All layouts maintain Material 3 design principles with proper touch targets and accessibility
 - **OperationSelector & AccuracyDetails Adaptive Layout - Phase 10**: Enhanced tablet optimization for operation selection and stats screens
   - **OperationSelectorScreen**: Responsive grid layout with adaptive operation cards
     - Added MAX_CONTENT_WIDTH (700dp) with BoxWithConstraints for tablet readability
