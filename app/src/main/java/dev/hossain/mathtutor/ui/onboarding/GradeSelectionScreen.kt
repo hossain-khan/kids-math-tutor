@@ -478,7 +478,7 @@ fun GradeSelectionUi(
                                     .fillMaxWidth()
                                     .height(gridHeight),
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(verticalSpacing),
                             userScrollEnabled = false, // Parent Column handles scrolling
                         ) {
                             items(state.availableGrades) { gradeLevel ->
