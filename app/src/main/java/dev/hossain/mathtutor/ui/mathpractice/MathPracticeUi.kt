@@ -349,7 +349,7 @@ internal fun MathPracticeUi(
                             contentDescription = "Close this step-by-step breakdown"
                         },
                 ) {
-                    Text("Understand now!")
+                    Text("I understand now!")
                 }
             },
         )

@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,16 +44,10 @@ fun StepByStepBreakdown(
         modifier =
             modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // Title
-        Text(
-            text = "📚 How to Solve",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-
         // Problem statement
         Text(
             text = "${problem.num1} ${getProblemSymbol(problem.operation)} ${problem.num2} = ?",
@@ -85,18 +81,18 @@ fun StepByStepBreakdown(
 /**
  * Represents a single step in a work breakdown.
  */
-public data class WorkBreakdownStep(
+data class WorkBreakdownStep(
     val emoji: String,
     val description: String,
 )
 
-private fun getProblemSymbol(operation: dev.hossain.mathtutor.domain.model.MathOperation): String =
+private fun getProblemSymbol(operation: MathOperation): String =
     when (operation) {
-        dev.hossain.mathtutor.domain.model.MathOperation.ADDITION -> "+"
-        dev.hossain.mathtutor.domain.model.MathOperation.SUBTRACTION -> "-"
-        dev.hossain.mathtutor.domain.model.MathOperation.MULTIPLICATION -> "×"
-        dev.hossain.mathtutor.domain.model.MathOperation.DIVISION -> "÷"
-        dev.hossain.mathtutor.domain.model.MathOperation.MIXED -> "?"
+        MathOperation.ADDITION -> "+"
+        MathOperation.SUBTRACTION -> "-"
+        MathOperation.MULTIPLICATION -> "×"
+        MathOperation.DIVISION -> "÷"
+        MathOperation.MIXED -> "?"
     }
 
 // ============================================
