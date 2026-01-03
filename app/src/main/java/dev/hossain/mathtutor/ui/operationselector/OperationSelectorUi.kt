@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.operationselector
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,9 +35,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
@@ -45,6 +51,22 @@ import dev.hossain.mathtutor.ui.component.TopBarFeature
 import dev.hossain.mathtutor.ui.icons.CustomIcons
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
+
+// Max width for content centering on larger screens
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
+
+// Minimum card width for adaptive grid
+private val MIN_CARD_WIDTH: Dp = 280.dp
+
+/**
+ * Data class to hold operation card information.
+ */
+private data class OperationInfo(
+    val title: String,
+    val icon: ImageVector,
+    val examples: List<String>,
+    val operation: MathOperation,
+)
 
 /**
  * UI for [OperationSelectorScreen].
@@ -96,163 +118,178 @@ fun OperationSelectorUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
+        // Center content on wide screens
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            // Header with mascot
-            Row(
+            Column(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 24.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Mascot image
-                Image(
-                    painter = painterResource(id = R.drawable.pup_tutor_sticker_teaching),
-                    contentDescription = "Math Pup Tutor",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(100.dp),
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                // Text column
-                Column(
-                    horizontalAlignment = Alignment.Start,
+                // Header with mascot
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 24.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Mascot image
+                    Image(
+                        painter = painterResource(id = R.drawable.pup_tutor_sticker_teaching),
+                        contentDescription = "Math Pup Tutor",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.size(100.dp),
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    // Text column
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                    ) {
+                        Text(
+                            text = "Choose Your Practice",
+                            style = MaterialTheme.typography.displaySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "What would you like to work on?",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+
+                // Build list of operations dynamically based on grade level
+                val operationsList =
+                    buildList {
+                        // Addition - always available
+                        add(
+                            OperationInfo(
+                                title = "Addition",
+                                icon = Icons.Default.Add,
+                                examples = listOf("1 + 1 = ?", "5 + 3 = ?"),
+                                operation = MathOperation.ADDITION,
+                            ),
+                        )
+
+                        // Subtraction - always available
+                        add(
+                            OperationInfo(
+                                title = "Subtraction",
+                                icon = Icons.Default.Remove,
+                                examples = listOf("10 - 5 = ?", "7 - 2 = ?"),
+                                operation = MathOperation.SUBTRACTION,
+                            ),
+                        )
+
+                        // Multiplication - only for Grade 1 and Grade 2
+                        if (state.gradeLevel in listOf(GradeLevel.GRADE_1, GradeLevel.GRADE_2)) {
+                            add(
+                                OperationInfo(
+                                    title = "Multiplication",
+                                    icon = Icons.Default.Close,
+                                    examples =
+                                        when (state.gradeLevel) {
+                                            GradeLevel.GRADE_1 -> listOf("2 × 5 = ?", "5 × 10 = ?")
+                                            GradeLevel.GRADE_2 -> listOf("3 × 7 = ?", "8 × 6 = ?")
+                                            else -> listOf()
+                                        },
+                                    operation = MathOperation.MULTIPLICATION,
+                                ),
+                            )
+                        }
+
+                        // Division - only for Grade 2
+                        if (state.gradeLevel == GradeLevel.GRADE_2) {
+                            add(
+                                OperationInfo(
+                                    title = "Division",
+                                    icon = CustomIcons.Division,
+                                    examples = listOf("20 ÷ 5 = ?", "15 ÷ 3 = ?"),
+                                    operation = MathOperation.DIVISION,
+                                ),
+                            )
+                        }
+
+                        // Mix It Up - always available
+                        add(
+                            OperationInfo(
+                                title = "Mix It Up!",
+                                icon = Icons.Default.Shuffle,
+                                examples = listOf("Random problems"),
+                                operation = MathOperation.MIXED,
+                            ),
+                        )
+                    }
+
+                // Adaptive grid of operation cards
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = MIN_CARD_WIDTH),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(operationsList.size) { index ->
+                        val opInfo = operationsList[index]
+                        OperationCard(
+                            title = opInfo.title,
+                            icon = opInfo.icon,
+                            examples = opInfo.examples,
+                            operation = opInfo.operation,
+                            onClick = {
+                                // Handle Mix It Up special case
+                                val selectedOperation =
+                                    if (opInfo.operation == MathOperation.MIXED) {
+                                        // Temporary: Using ADDITION until MathOperation.MIXED is implemented
+                                        MathOperation.ADDITION
+                                    } else {
+                                        opInfo.operation
+                                    }
+                                state.eventSink(
+                                    OperationSelectorScreen.Event.OperationSelected(selectedOperation),
+                                )
+                            },
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Stats Button
+                Button(
+                    onClick = {
+                        state.eventSink(OperationSelectorScreen.Event.ViewStatsClicked)
+                    },
+                    enabled = state.hasSessionHistory,
+                    modifier =
+                        Modifier
+                            .width(250.dp)
+                            .height(48.dp),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
                 ) {
                     Text(
-                        text = "Choose Your Practice",
-                        style = MaterialTheme.typography.displaySmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "What would you like to work on?",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        text = "View My Stats",
+                        style = MaterialTheme.typography.labelLarge,
                     )
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
-
-            // Addition Card
-            OperationCard(
-                title = "Addition",
-                icon = Icons.Default.Add,
-                examples = listOf("1 + 1 = ?", "5 + 3 = ?"),
-                operation = MathOperation.ADDITION,
-                onClick = {
-                    state.eventSink(
-                        OperationSelectorScreen.Event.OperationSelected(
-                            MathOperation.ADDITION,
-                        ),
-                    )
-                },
-            )
-
-            // Subtraction Card
-            OperationCard(
-                title = "Subtraction",
-                icon = Icons.Default.Remove,
-                examples = listOf("10 - 5 = ?", "7 - 2 = ?"),
-                operation = MathOperation.SUBTRACTION,
-                onClick = {
-                    state.eventSink(
-                        OperationSelectorScreen.Event.OperationSelected(
-                            MathOperation.SUBTRACTION,
-                        ),
-                    )
-                },
-            )
-
-            // Multiplication Card - Only shown for Grade 1 and Grade 2
-            if (state.gradeLevel in listOf(GradeLevel.GRADE_1, GradeLevel.GRADE_2)) {
-                OperationCard(
-                    title = "Multiplication",
-                    icon = Icons.Default.Close,
-                    examples =
-                        when (state.gradeLevel) {
-                            GradeLevel.GRADE_1 -> listOf("2 × 5 = ?", "5 × 10 = ?")
-                            GradeLevel.GRADE_2 -> listOf("3 × 7 = ?", "8 × 6 = ?")
-                            else -> listOf()
-                        },
-                    operation = MathOperation.MULTIPLICATION,
-                    onClick = {
-                        state.eventSink(
-                            OperationSelectorScreen.Event.OperationSelected(
-                                MathOperation.MULTIPLICATION,
-                            ),
-                        )
-                    },
-                )
-            }
-
-            // Division Card - Only shown for Grade 2
-            if (state.gradeLevel == GradeLevel.GRADE_2) {
-                OperationCard(
-                    title = "Division",
-                    icon = CustomIcons.Division,
-                    examples = listOf("20 ÷ 5 = ?", "15 ÷ 3 = ?"),
-                    operation = MathOperation.DIVISION,
-                    onClick = {
-                        state.eventSink(
-                            OperationSelectorScreen.Event.OperationSelected(
-                                MathOperation.DIVISION,
-                            ),
-                        )
-                    },
-                )
-            }
-
-            // Mix It Up Card
-            // TODO: Implement MathOperation.MIXED type and mixed problem generation
-            // For now, using ADDITION as placeholder until mixed operation mode is implemented
-            OperationCard(
-                title = "Mix It Up!",
-                icon = Icons.Default.Shuffle,
-                examples = listOf("Random problems"),
-                operation = MathOperation.MIXED,
-                onClick = {
-                    // Temporary: Using ADDITION until MathOperation.MIXED is implemented
-                    state.eventSink(
-                        OperationSelectorScreen.Event.OperationSelected(
-                            MathOperation.ADDITION,
-                        ),
-                    )
-                },
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Stats Button
-            Button(
-                onClick = {
-                    state.eventSink(OperationSelectorScreen.Event.ViewStatsClicked)
-                },
-                enabled = state.hasSessionHistory,
-                modifier =
-                    Modifier
-                        .width(250.dp)
-                        .height(48.dp),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    ),
-            ) {
-                Text(
-                    text = "View My Stats",
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -321,6 +358,67 @@ private fun OperationSelectorUiWithHistoryPreview() {
 @Composable
 private fun OperationSelectorUiDarkPreview() {
     KidsMathTutorAppTheme(darkTheme = true) {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
+                    hasSessionHistory = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Adaptive layout previews
+@Preview(
+    name = "Compact (411dp × 891dp)",
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+)
+@Composable
+private fun OperationSelectorUiCompactPreview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
+                    hasSessionHistory = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Medium (700dp × 500dp)",
+    showBackground = true,
+    widthDp = 700,
+    heightDp = 500,
+)
+@Composable
+private fun OperationSelectorUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        OperationSelectorUi(
+            state =
+                OperationSelectorScreen.State(
+                    gradeLevel = GradeLevel.GRADE_2,
+                    hasSessionHistory = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Expanded (1100dp × 600dp)",
+    showBackground = true,
+    widthDp = 1100,
+    heightDp = 600,
+)
+@Composable
+private fun OperationSelectorUiExpandedPreview() {
+    KidsMathTutorAppTheme {
         OperationSelectorUi(
             state =
                 OperationSelectorScreen.State(

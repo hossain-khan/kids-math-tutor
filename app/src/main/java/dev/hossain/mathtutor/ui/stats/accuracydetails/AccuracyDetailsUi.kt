@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -36,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
@@ -44,6 +46,9 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+// Max width for content centering on larger screens
+private val MAX_CONTENT_WIDTH: Dp = 700.dp
 
 /**
  * UI for [AccuracyDetailsScreen].
@@ -75,26 +80,35 @@ fun AccuracyDetailsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        when {
-            state.isLoading -> {
-                LoadingState(modifier = Modifier.padding(paddingValues))
-            }
+        // Center content on wide screens
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            when {
+                state.isLoading -> {
+                    LoadingState()
+                }
 
-            state.dailyAccuracyList.isEmpty() -> {
-                EmptyState(modifier = Modifier.padding(paddingValues))
-            }
+                state.dailyAccuracyList.isEmpty() -> {
+                    EmptyState()
+                }
 
-            else -> {
-                LazyColumn(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues)
-                            .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(state.dailyAccuracyList, key = { it.date.toString() }) { dailyData ->
-                        DailyAccuracyCard(dailyData = dailyData)
+                else -> {
+                    LazyColumn(
+                        modifier =
+                            Modifier
+                                .widthIn(max = MAX_CONTENT_WIDTH)
+                                .fillMaxSize()
+                                .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        items(state.dailyAccuracyList, key = { it.date.toString() }) { dailyData ->
+                            DailyAccuracyCard(dailyData = dailyData)
+                        }
                     }
                 }
             }
@@ -321,6 +335,122 @@ private fun EmptyStatePreview() {
             state =
                 AccuracyDetailsScreen.State(
                     dailyAccuracyList = emptyList(),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Adaptive layout previews
+@Preview(
+    name = "Compact (411dp × 891dp)",
+    showBackground = true,
+    widthDp = 411,
+    heightDp = 891,
+)
+@Composable
+private fun AccuracyDetailsUiCompactPreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList =
+                        listOf(
+                            DailyAccuracy(
+                                date = LocalDate.now(),
+                                sessionCount = 3,
+                                totalProblems = 30,
+                                correctAnswers = 27,
+                                accuracy = 90f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(1),
+                                sessionCount = 2,
+                                totalProblems = 20,
+                                correctAnswers = 18,
+                                accuracy = 90f,
+                            ),
+                        ),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Medium (700dp × 500dp)",
+    showBackground = true,
+    widthDp = 700,
+    heightDp = 500,
+)
+@Composable
+private fun AccuracyDetailsUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList =
+                        listOf(
+                            DailyAccuracy(
+                                date = LocalDate.now(),
+                                sessionCount = 3,
+                                totalProblems = 30,
+                                correctAnswers = 27,
+                                accuracy = 90f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(1),
+                                sessionCount = 2,
+                                totalProblems = 20,
+                                correctAnswers = 18,
+                                accuracy = 90f,
+                            ),
+                        ),
+                    isLoading = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Expanded (1100dp × 600dp)",
+    showBackground = true,
+    widthDp = 1100,
+    heightDp = 600,
+)
+@Composable
+private fun AccuracyDetailsUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        AccuracyDetailsUi(
+            state =
+                AccuracyDetailsScreen.State(
+                    dailyAccuracyList =
+                        listOf(
+                            DailyAccuracy(
+                                date = LocalDate.now(),
+                                sessionCount = 3,
+                                totalProblems = 30,
+                                correctAnswers = 27,
+                                accuracy = 90f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(1),
+                                sessionCount = 2,
+                                totalProblems = 20,
+                                correctAnswers = 18,
+                                accuracy = 90f,
+                            ),
+                            DailyAccuracy(
+                                date = LocalDate.now().minusDays(2),
+                                sessionCount = 1,
+                                totalProblems = 10,
+                                correctAnswers = 8,
+                                accuracy = 80f,
+                            ),
+                        ),
                     isLoading = false,
                     eventSink = {},
                 ),
