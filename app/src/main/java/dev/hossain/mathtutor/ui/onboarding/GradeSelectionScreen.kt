@@ -474,11 +474,11 @@ fun GradeSelectionUi(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
+                                    .padding(vertical = 8.dp) // Extra space for card shadows on top/bottom
                                     .height(gridHeight),
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                             userScrollEnabled = false, // Parent Column handles scrolling
-                            contentPadding = PaddingValues(bottom = 8.dp), // Extra space for card shadow
                         ) {
                             items(state.availableGrades) { gradeLevel ->
                                 GradeCard(
