@@ -93,7 +93,7 @@ fun StatsUi(
             FeatureTopAppBar(
                 title = {
                     Text(
-                        if (state.userName != null) {
+                        if (!state.userName.isNullOrBlank()) {
                             "${state.userName}'s Progress"
                         } else {
                             "My Progress"

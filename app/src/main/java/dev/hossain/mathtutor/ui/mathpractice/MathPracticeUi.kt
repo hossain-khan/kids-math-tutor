@@ -775,7 +775,7 @@ private fun FeedbackSection(
             true -> {
                 // Random personalized success messages
                 val successMessages =
-                    if (userName != null) {
+                    if (!userName.isNullOrBlank()) {
                         listOf(
                             "✓ Great job, $userName!",
                             "✓ Excellent work, $userName!",

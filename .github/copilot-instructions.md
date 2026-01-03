@@ -178,9 +178,18 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 ```bash
 # Run all quality checks (formatting, linting, tests, and builds for both Android and webapp)
 ./scripts/pre-commit-check.sh
+
+# Or run checks for only the modified part:
+./scripts/pre-commit-check.sh --android-only  # or -a (if only Android files changed)
+./scripts/pre-commit-check.sh --web-only      # or -w (if only webapp files changed)
 ```
 
-This script will:
+**When to use selective checks:**
+- **Android only** (`-a` or `--android-only`): Use when changes are only in `app/`, `gradle/`, or root Android files
+- **Web only** (`-w` or `--web-only`): Use when changes are only in `webapp/` directory
+- **Both** (no args): Use when changes span both Android and Web, or when unsure
+
+This script will run:
 1. Format Android code with `./gradlew formatKotlin`
 2. Lint Android code with `./gradlew lintKotlin`
 3. Run Android unit tests with `./gradlew testDebugUnitTest`
