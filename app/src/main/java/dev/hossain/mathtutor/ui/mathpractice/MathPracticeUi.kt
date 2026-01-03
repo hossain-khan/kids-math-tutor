@@ -76,6 +76,7 @@ import timber.log.Timber
 
 // Width breakpoints for adaptive layouts
 private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
 private val MAX_CONTENT_WIDTH: Dp = 500.dp
 
 /**
@@ -413,6 +414,7 @@ internal fun MathPracticeUi(
                         .padding(paddingValues),
             ) {
                 val isWideScreen = maxWidth >= MEDIUM_WIDTH_BREAKPOINT
+                val isExpandedScreen = maxWidth >= EXPANDED_WIDTH_BREAKPOINT
                 val isLandscape = maxWidth > maxHeight
 
                 // Center content on wide screens
@@ -421,20 +423,23 @@ internal fun MathPracticeUi(
                     contentAlignment = Alignment.TopCenter,
                 ) {
                     if (isWideScreen && isLandscape) {
-                        // Landscape tablet: side-by-side layout
+                        // Landscape tablet: side-by-side layout with better proportions
+                        val horizontalSpacing = if (isExpandedScreen) 48.dp else 32.dp
+                        val verticalPadding = if (isExpandedScreen) 24.dp else 16.dp
+
                         Row(
                             modifier =
                                 Modifier
                                     .fillMaxSize()
-                                    .padding(16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(32.dp),
+                                    .padding(horizontal = verticalPadding, vertical = verticalPadding),
+                            horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            // Left side: Problem and feedback
+                            // Left side: Problem and feedback (larger proportion on expanded)
                             Column(
                                 modifier =
                                     Modifier
-                                        .weight(1f)
+                                        .weight(if (isExpandedScreen) 1.2f else 1f)
                                         .fillMaxHeight(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center,
@@ -468,7 +473,8 @@ internal fun MathPracticeUi(
                             Column(
                                 modifier =
                                     Modifier
-                                        .widthIn(max = MAX_CONTENT_WIDTH)
+                                        .weight(1f)
+                                        .widthIn(max = if (isExpandedScreen) 600.dp else MAX_CONTENT_WIDTH)
                                         .fillMaxHeight(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center,
@@ -1055,6 +1061,117 @@ private fun MathPracticeUiIncorrectPreview() {
                     currentProblem = MathProblem(num1 = 7, num2 = 4, operation = MathOperation.ADDITION, correctAnswer = 11),
                     currentAnswer = "10",
                     currentProblemIndex = 5,
+                    totalProblems = 10,
+                    isCorrect = false,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 600,
+    heightDp = 400,
+    name = "MathPractice - Compact Landscape",
+)
+@Composable
+private fun MathPracticeUiCompactLandscapePreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 8, num2 = 6, operation = MathOperation.ADDITION, correctAnswer = 14),
+                    currentAnswer = "",
+                    currentProblemIndex = 3,
+                    totalProblems = 10,
+                    isCorrect = null,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 600,
+    name = "MathPractice - Medium Tablet",
+)
+@Composable
+private fun MathPracticeUiMediumTabletPreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 9, num2 = 7, operation = MathOperation.SUBTRACTION, correctAnswer = 2),
+                    currentAnswer = "2",
+                    currentProblemIndex = 5,
+                    totalProblems = 10,
+                    isCorrect = true,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1100,
+    heightDp = 600,
+    name = "MathPractice - Expanded Tablet Landscape",
+)
+@Composable
+private fun MathPracticeUiExpandedTabletPreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 12, num2 = 8, operation = MathOperation.ADDITION, correctAnswer = 20),
+                    currentAnswer = "15",
+                    currentProblemIndex = 7,
                     totalProblems = 10,
                     isCorrect = false,
                     eventSink = {},

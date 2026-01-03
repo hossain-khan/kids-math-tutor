@@ -21,6 +21,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Enhanced Badge Cards**: Square aspect ratio for consistent badge display, scaled status icons (checkmark/lock)
   - **Comprehensive Previews**: Added adaptive preview functions for Compact (411dp), Medium (700dp), and Expanded (1100dp) screen sizes
   - All layouts maintain Material 3 design principles with proper touch targets (48dp minimum) and accessibility
+- **StatsScreen Responsive Layout - Phase 6**: Implemented adaptive layouts for statistics display
+  - **Responsive Overall Progress Cards**: Adaptive column layout based on screen size
+    - Compact/Medium (<1100dp): 2 columns (Total Problems, Accuracy)
+    - Expanded (≥1100dp): 3 columns (Total Problems, Sessions, Accuracy)
+  - **Responsive Operation Stats Grid**: Using `LazyVerticalGrid` with `GridCells.Adaptive(280.dp)`
+    - Automatically adjusts columns based on available width
+    - Compact: 1 column vertical layout
+    - Medium: 2-column grid
+    - Expanded: 3-column grid for multiple operations
+  - **Adaptive Preview Functions**: Added comprehensive device previews
+    - Compact preview (411dp x 891dp) - Phone portrait
+    - Medium preview (700dp x 500dp) - Small tablet
+    - Expanded preview (1100dp x 600dp) - Large tablet
+  - **Enhanced Width Breakpoints**: Added `EXPANDED_WIDTH_BREAKPOINT` constant (1100dp) for large tablet support
+  - All layouts maintain Material 3 design principles with proper spacing and visual hierarchy
+### Changed
+- **MathPracticeScreen Adaptive Layout - Phase 5**: Enhanced tablet support with larger touch targets and improved dual-pane layouts
+  - **Tablet-Sized NumberPad**: Adaptive button sizing based on screen width
+    - Compact screens (<840dp): 64dp buttons with 12dp spacing
+    - Expanded screens (≥840dp): 80dp buttons with 16dp spacing and larger typography (displaySmall)
+  - **Tablet-Sized AnswerField**: Adaptive text sizing for better readability
+    - Compact screens: displayLarge typography
+    - Expanded screens (≥840dp): displayMedium typography
+  - **Enhanced Landscape Layout**: Improved space distribution for tablets
+    - Better proportions with expanded screens getting 1.2x weight for problem area
+    - Increased horizontal spacing (32dp → 48dp on expanded)
+    - Right pane supports up to 600dp width on expanded screens
+  - **Improved Shake Animation**: Base amplitude scales better on larger displays
+  - **Tablet-Optimized Previews**: Added preview functions for different screen sizes
+    - Compact landscape (600dp x 400dp)
+    - Medium tablet (800dp x 600dp)
+    - Expanded tablet landscape (1100dp x 600dp)
 
 ## [1.22.1] - 2026-01-02
 
