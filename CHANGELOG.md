@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Settings Screens Adaptive Layout - Phase 9**: Tablet-optimized layouts for all settings screens
+  - **SettingsScreen (Phase 9a)**: Enhanced responsive layout with improved content width constraints
+    - Compact (<600dp): Max width 600dp
+    - Medium (600-840dp): Max width 700dp
+    - Expanded (>840dp): Max width 800dp
+    - Adaptive spacing increases from 24dp to 28dp on expanded screens
+    - Content centered on tablets and larger screens for better readability
+    - Added responsive preview functions for compact (411×891dp), medium (700×500dp), and expanded (1100×600dp) screen sizes
+  - **AudioHapticSettingsScreen (Phase 9b)**: Applied adaptive layout with responsive breakpoints
+    - Same responsive width constraints as SettingsScreen
+    - Content centered on tablets for optimal viewing experience
+    - Improved visual hierarchy with adaptive spacing (24-28dp based on screen width)
+    - Added responsive preview functions for all screen sizes
+  - **ParentSettingsScreen (Phase 9c)**: Tablet-friendly adaptive layout
+    - Responsive width constraints matching other settings screens
+    - Adaptive spacing (16-20dp) for better organization on larger screens
+    - Improved form layouts and button spacing for tablets
+    - Added responsive preview functions for all screen sizes
+  - All settings screens now use BoxWithConstraints for responsive layout calculations
+  - Maintains Material 3 design principles with proper spacing and touch targets (48dp minimum)
+  - Uses existing Material 3 adaptive libraries already in the project
 - **BadgesScreen Adaptive Layout - Phase 7**: Complete tablet-optimized badge grid with responsive columns
   - **Responsive Badge Grid**: Adaptive column layout based on screen width using `LazyVerticalGrid`
     - Compact (<600dp): 3 badges per row

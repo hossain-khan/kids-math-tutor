@@ -1,11 +1,14 @@
 package dev.hossain.mathtutor.ui.settings
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -29,11 +32,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.zacsweers.metro.AppScope
 import kotlin.math.roundToInt
+
+// Width breakpoints for adaptive layouts
+private val MAX_CONTENT_WIDTH_COMPACT: Dp = 600.dp
+private val MAX_CONTENT_WIDTH_MEDIUM: Dp = 700.dp
+private val MAX_CONTENT_WIDTH_EXPANDED: Dp = 800.dp
+
+// Screen width breakpoints
+private val MEDIUM_WIDTH_BREAKPOINT: Dp = 600.dp
+private val EXPANDED_WIDTH_BREAKPOINT: Dp = 840.dp
 
 /**
  * UI for [AudioHapticSettingsScreen].
@@ -71,79 +84,108 @@ fun AudioHapticSettingsUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
+        BoxWithConstraints(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+                    .padding(paddingValues),
         ) {
-            // Device audio suppression warning (only show if device is in silent/vibrate mode)
-            if (state.isDeviceAudioSuppressed) {
-                DeviceAudioSuppressionWarning()
+            val screenWidth = maxWidth
+            val contentMaxWidth =
+                when {
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_EXPANDED
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> MAX_CONTENT_WIDTH_MEDIUM
+                    else -> MAX_CONTENT_WIDTH_COMPACT
+                }
+
+            // Spacing based on screen width
+            val contentSpacing =
+                when {
+                    screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 28.dp
+                    screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 24.dp
+                    else -> 24.dp
+                }
+
+            // Center content on wide screens
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = contentMaxWidth)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(contentSpacing),
+                ) {
+                    // Device audio suppression warning (only show if device is in silent/vibrate mode)
+                    if (state.isDeviceAudioSuppressed) {
+                        DeviceAudioSuppressionWarning()
+                    }
+
+                    // Sound Effects section
+                    SoundEffectsSection(
+                        enabled = state.soundEffectsEnabled,
+                        onToggle = { enabled ->
+                            state.eventSink(AudioHapticSettingsScreen.Event.ToggleSoundEffects(enabled))
+                        },
+                    )
+
+                    // Volume slider
+                    VolumeSection(
+                        volume = state.volume,
+                        enabled = state.soundEffectsEnabled || state.backgroundMusicEnabled,
+                        onVolumeChange = { volume ->
+                            state.eventSink(AudioHapticSettingsScreen.Event.SetVolume(volume))
+                        },
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+
+                    // Background Music section
+                    BackgroundMusicSection(
+                        enabled = state.backgroundMusicEnabled,
+                        onToggle = { enabled ->
+                            state.eventSink(AudioHapticSettingsScreen.Event.ToggleBackgroundMusic(enabled))
+                        },
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+
+                    // Haptic Feedback section
+                    HapticFeedbackSection(
+                        enabled = state.hapticsEnabled,
+                        onToggle = { enabled ->
+                            state.eventSink(AudioHapticSettingsScreen.Event.ToggleHaptics(enabled))
+                        },
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+
+                    // Accessibility section
+                    AccessibilitySection(
+                        highContrastEnabled = state.highContrastEnabled,
+                        largeTextEnabled = state.largeTextEnabled,
+                        onToggleHighContrast = { enabled ->
+                            state.eventSink(AudioHapticSettingsScreen.Event.ToggleHighContrast(enabled))
+                        },
+                        onToggleLargeText = { enabled ->
+                            state.eventSink(AudioHapticSettingsScreen.Event.ToggleLargeText(enabled))
+                        },
+                    )
+                }
             }
-
-            // Sound Effects section
-            SoundEffectsSection(
-                enabled = state.soundEffectsEnabled,
-                onToggle = { enabled ->
-                    state.eventSink(AudioHapticSettingsScreen.Event.ToggleSoundEffects(enabled))
-                },
-            )
-
-            // Volume slider
-            VolumeSection(
-                volume = state.volume,
-                enabled = state.soundEffectsEnabled || state.backgroundMusicEnabled,
-                onVolumeChange = { volume ->
-                    state.eventSink(AudioHapticSettingsScreen.Event.SetVolume(volume))
-                },
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.outlineVariant,
-            )
-
-            // Background Music section
-            BackgroundMusicSection(
-                enabled = state.backgroundMusicEnabled,
-                onToggle = { enabled ->
-                    state.eventSink(AudioHapticSettingsScreen.Event.ToggleBackgroundMusic(enabled))
-                },
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.outlineVariant,
-            )
-
-            // Haptic Feedback section
-            HapticFeedbackSection(
-                enabled = state.hapticsEnabled,
-                onToggle = { enabled ->
-                    state.eventSink(AudioHapticSettingsScreen.Event.ToggleHaptics(enabled))
-                },
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.outlineVariant,
-            )
-
-            // Accessibility section
-            AccessibilitySection(
-                highContrastEnabled = state.highContrastEnabled,
-                largeTextEnabled = state.largeTextEnabled,
-                onToggleHighContrast = { enabled ->
-                    state.eventSink(AudioHapticSettingsScreen.Event.ToggleHighContrast(enabled))
-                },
-                onToggleLargeText = { enabled ->
-                    state.eventSink(AudioHapticSettingsScreen.Event.ToggleLargeText(enabled))
-                },
-            )
         }
     }
 }
@@ -570,6 +612,66 @@ private fun AudioHapticSettingsUiWithSuppressionWarningPreview() {
                     highContrastEnabled = false,
                     largeTextEnabled = false,
                     isDeviceAudioSuppressed = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 411, heightDp = 891, name = "Compact (Phone)")
+@Composable
+private fun AudioHapticSettingsUiCompactPreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = false,
+                    hapticsEnabled = true,
+                    volume = 0.7f,
+                    highContrastEnabled = false,
+                    largeTextEnabled = false,
+                    isDeviceAudioSuppressed = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 700, heightDp = 500, name = "Medium (Small Tablet)")
+@Composable
+private fun AudioHapticSettingsUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = true,
+                    hapticsEnabled = false,
+                    volume = 0.6f,
+                    highContrastEnabled = true,
+                    largeTextEnabled = false,
+                    isDeviceAudioSuppressed = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 1100, heightDp = 600, name = "Expanded (Tablet)")
+@Composable
+private fun AudioHapticSettingsUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        AudioHapticSettingsUi(
+            state =
+                AudioHapticSettingsScreen.State(
+                    soundEffectsEnabled = true,
+                    backgroundMusicEnabled = true,
+                    hapticsEnabled = true,
+                    volume = 0.8f,
+                    highContrastEnabled = false,
+                    largeTextEnabled = true,
+                    isDeviceAudioSuppressed = false,
                     eventSink = {},
                 ),
         )
