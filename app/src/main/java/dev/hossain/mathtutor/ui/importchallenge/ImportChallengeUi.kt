@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -55,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -64,6 +66,9 @@ import dev.hossain.mathtutor.domain.model.PreviewData
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
 import kotlin.time.Duration
+
+// Max content width for adaptive layout on tablets
+private val MAX_CONTENT_WIDTH: Dp = 800.dp
 
 /**
  * UI for [ImportChallengeScreen].
@@ -99,60 +104,69 @@ fun ImportChallengeUi(
             }
         }
 
-        LazyColumn(
-            state = lazyListState,
+        // Center content on wide screens with max width constraint
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            // Share detection banner
-            if (state.detectedJsonFromShare && state.jsonInput.isNotBlank()) {
+            LazyColumn(
+                state = lazyListState,
+                modifier =
+                    Modifier
+                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .fillMaxSize(),
+            ) {
+                // Share detection banner
+                if (state.detectedJsonFromShare && state.jsonInput.isNotBlank()) {
+                    item {
+                        ShareDetectionBanner(
+                            detectedFromShare = true,
+                            hasValidationErrors = state.validationState is ValidationState.Invalid,
+                        )
+                    }
+                }
+
+                // Parent information section
                 item {
-                    ShareDetectionBanner(
-                        detectedFromShare = true,
-                        hasValidationErrors = state.validationState is ValidationState.Invalid,
+                    ParentInfoSection(
+                        isExpanded = state.isGuideExpanded,
+                        onToggleExpand = { state.eventSink(ImportChallengeScreen.Event.ToggleGuideExpanded) },
                     )
                 }
-            }
 
-            // Parent information section
-            item {
-                ParentInfoSection(
-                    isExpanded = state.isGuideExpanded,
-                    onToggleExpand = { state.eventSink(ImportChallengeScreen.Event.ToggleGuideExpanded) },
-                )
-            }
-
-            // Validation messages (shown above input field)
-            if (state.validationState is ValidationState.Invalid) {
-                item {
-                    ValidationErrorsSection(errors = state.validationState.fieldErrors)
+                // Validation messages (shown above input field)
+                if (state.validationState is ValidationState.Invalid) {
+                    item {
+                        ValidationErrorsSection(errors = state.validationState.fieldErrors)
+                    }
                 }
-            }
 
-            if (state.validationState is ValidationState.Valid && state.previewData != null) {
-                item {
-                    ValidationSuccessSection()
+                if (state.validationState is ValidationState.Valid && state.previewData != null) {
+                    item {
+                        ValidationSuccessSection()
+                    }
                 }
-            }
 
-            item {
-                JsonInputSection(
-                    jsonInput = state.jsonInput,
-                    onJsonChanged = { state.eventSink(ImportChallengeScreen.Event.JsonInputChanged(it)) },
-                    onValidate = { state.eventSink(ImportChallengeScreen.Event.ValidateAndPreview) },
-                    onClear = { state.eventSink(ImportChallengeScreen.Event.ClearInput) },
-                )
-            }
-
-            if (state.previewData != null) {
                 item {
-                    PreviewSection(
-                        previewData = state.previewData,
-                        onSave = { state.eventSink(ImportChallengeScreen.Event.SaveChallenge) },
-                        isLoading = state.isLoading,
+                    JsonInputSection(
+                        jsonInput = state.jsonInput,
+                        onJsonChanged = { state.eventSink(ImportChallengeScreen.Event.JsonInputChanged(it)) },
+                        onValidate = { state.eventSink(ImportChallengeScreen.Event.ValidateAndPreview) },
+                        onClear = { state.eventSink(ImportChallengeScreen.Event.ClearInput) },
                     )
+                }
+
+                if (state.previewData != null) {
+                    item {
+                        PreviewSection(
+                            previewData = state.previewData,
+                            onSave = { state.eventSink(ImportChallengeScreen.Event.SaveChallenge) },
+                            isLoading = state.isLoading,
+                        )
+                    }
                 }
             }
         }
@@ -1202,6 +1216,119 @@ private fun ImportChallengeUiWithShareDetectionAndErrorsPreview() {
                     isLoading = false,
                     detectedJsonFromShare = true,
                     isGuideExpanded = true,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+// Responsive previews for adaptive layout testing
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Compact - Import Challenge",
+    showBackground = true,
+    device = "spec:width=411dp,height=891dp",
+)
+@Composable
+private fun ImportChallengeUiCompactPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput = "",
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Medium - Import Challenge",
+    showBackground = true,
+    device = "spec:width=700dp,height=500dp",
+)
+@Composable
+private fun ImportChallengeUiMediumPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "Addition Practice",
+                          "operation": "addition",
+                          "problemCount": 10,
+                          "numberRange": {"min": 1, "max": 20}
+                        }
+                        """.trimIndent(),
+                    validationState = ValidationState.Idle,
+                    previewData = null,
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Expanded - Import Challenge with Preview",
+    showBackground = true,
+    device = "spec:width=1100dp,height=600dp",
+)
+@Composable
+private fun ImportChallengeUiExpandedPreview() {
+    dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme {
+        ImportChallengeUi(
+            state =
+                ImportChallengeScreen.State(
+                    jsonInput =
+                        """
+                        {
+                          "type": "generated",
+                          "title": "Subtraction Challenge",
+                          "operation": "subtraction",
+                          "problemCount": 5,
+                          "numberRange": {"min": 0, "max": 10}
+                        }
+                        """.trimIndent(),
+                    validationState = ValidationState.Valid,
+                    previewData =
+                        PreviewData(
+                            title = "Subtraction Challenge",
+                            subtitle = null,
+                            problemCount = 5,
+                            operationsSummary = mapOf(MathOperation.SUBTRACTION to 5),
+                            sampleProblems =
+                                listOf(
+                                    MathProblem(
+                                        id = "1",
+                                        num1 = 10,
+                                        num2 = 3,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 7,
+                                    ),
+                                    MathProblem(
+                                        id = "2",
+                                        num1 = 7,
+                                        num2 = 2,
+                                        operation = MathOperation.SUBTRACTION,
+                                        correctAnswer = 5,
+                                    ),
+                                ),
+                            estimatedDuration = Duration.parse("PT5M"),
+                        ),
+                    isLoading = false,
+                    detectedJsonFromShare = false,
+                    isGuideExpanded = false,
                     eventSink = {},
                 ),
         )

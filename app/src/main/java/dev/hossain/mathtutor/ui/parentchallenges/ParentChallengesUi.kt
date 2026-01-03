@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -69,6 +70,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
@@ -82,6 +84,9 @@ import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
 import dev.zacsweers.metro.AppScope
 import java.time.Instant
+
+// Max content width for adaptive layout on tablets
+private val MAX_CONTENT_WIDTH: Dp = 900.dp
 
 /**
  * UI for [ParentChallengesScreen].
@@ -146,133 +151,142 @@ fun ParentChallengesUi(
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        Column(
+        // Center content on wide screens with max width constraint
+        Box(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            // Stats and filter header
-            Row(
+            Column(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .fillMaxSize(),
             ) {
-                // Stats on the left
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text =
-                            if (state.showArchived) {
-                                "Archived Challenges"
-                            } else {
-                                "Active Challenges"
-                            },
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        text = "${state.challenges.size} challenge${if (state.challenges.size != 1) "s" else ""}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    val totalSessions =
-                        state.challenges.sumOf { it.practiceHistory.size }
-                    if (totalSessions > 0) {
+                // Stats and filter header
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    // Stats on the left
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text =
-                                "$totalSessions practice session${if (totalSessions != 1) "s" else ""}",
+                                if (state.showArchived) {
+                                    "Archived Challenges"
+                                } else {
+                                    "Active Challenges"
+                                },
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = "${state.challenges.size} challenge${if (state.challenges.size != 1) "s" else ""}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        val totalSessions =
+                            state.challenges.sumOf { it.practiceHistory.size }
+                        if (totalSessions > 0) {
+                            Text(
+                                text =
+                                    "$totalSessions practice session${if (totalSessions != 1) "s" else ""}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+
+                    // Toggle button on the right
+                    FilterChip(
+                        selected = state.showArchived,
+                        onClick = {
+                            state.eventSink(
+                                ParentChallengesScreen.Event.ToggleArchived(!state.showArchived),
+                            )
+                        },
+                        label = {
+                            Text(
+                                if (state.showArchived) "Show Active Only" else "Show Archived",
+                            )
+                        },
+                    )
+                }
+
+                // Content based on state
+                when {
+                    state.isLoading -> {
+                        LoadingState()
+                    }
+
+                    state.challenges.isEmpty() -> {
+                        EmptyState(
+                            showArchived = state.showArchived,
+                            onImportClick = {
+                                state.eventSink(ParentChallengesScreen.Event.ImportNewChallenge)
+                            },
+                        )
+                    }
+
+                    else -> {
+                        ChallengesList(
+                            challenges = state.challenges,
+                            onChallengeClick = {
+                                state.eventSink(ParentChallengesScreen.Event.ChallengeSelected(it))
+                            },
+                            onArchiveClick = {
+                                state.eventSink(ParentChallengesScreen.Event.ArchiveChallenge(it))
+                            },
+                            onClearSessionsClick = {
+                                state.eventSink(
+                                    ParentChallengesScreen.Event.ClearSessionsRequested(it),
+                                )
+                            },
+                            onDeleteClick = {
+                                state.eventSink(
+                                    ParentChallengesScreen.Event.DeleteChallengeRequested(it),
+                                )
+                            },
                         )
                     }
                 }
+            }
 
-                // Toggle button on the right
-                FilterChip(
-                    selected = state.showArchived,
-                    onClick = {
+            // Delete confirmation dialog
+            if (state.showDeleteConfirmation && state.challengeToDelete != null) {
+                DeleteConfirmationDialog(
+                    challenge = state.challengeToDelete,
+                    onConfirm = {
                         state.eventSink(
-                            ParentChallengesScreen.Event.ToggleArchived(!state.showArchived),
+                            ParentChallengesScreen.Event.ConfirmDelete(state.challengeToDelete.id),
                         )
                     },
-                    label = {
-                        Text(
-                            if (state.showArchived) "Show Active Only" else "Show Archived",
-                        )
+                    onDismiss = {
+                        state.eventSink(ParentChallengesScreen.Event.CancelDelete)
                     },
                 )
             }
 
-            // Content based on state
-            when {
-                state.isLoading -> {
-                    LoadingState()
-                }
-
-                state.challenges.isEmpty() -> {
-                    EmptyState(
-                        showArchived = state.showArchived,
-                        onImportClick = {
-                            state.eventSink(ParentChallengesScreen.Event.ImportNewChallenge)
-                        },
-                    )
-                }
-
-                else -> {
-                    ChallengesList(
-                        challenges = state.challenges,
-                        onChallengeClick = {
-                            state.eventSink(ParentChallengesScreen.Event.ChallengeSelected(it))
-                        },
-                        onArchiveClick = {
-                            state.eventSink(ParentChallengesScreen.Event.ArchiveChallenge(it))
-                        },
-                        onClearSessionsClick = {
-                            state.eventSink(
-                                ParentChallengesScreen.Event.ClearSessionsRequested(it),
-                            )
-                        },
-                        onDeleteClick = {
-                            state.eventSink(
-                                ParentChallengesScreen.Event.DeleteChallengeRequested(it),
-                            )
-                        },
-                    )
-                }
+            // Clear sessions confirmation dialog
+            if (state.showClearSessionsConfirmation && state.challengeToClearSessions != null) {
+                ClearSessionsConfirmationDialog(
+                    challenge = state.challengeToClearSessions,
+                    onConfirm = {
+                        state.eventSink(
+                            ParentChallengesScreen.Event.ConfirmClearSessions(state.challengeToClearSessions.id),
+                        )
+                    },
+                    onDismiss = {
+                        state.eventSink(ParentChallengesScreen.Event.CancelClearSessions)
+                    },
+                )
             }
-        }
-
-        // Delete confirmation dialog
-        if (state.showDeleteConfirmation && state.challengeToDelete != null) {
-            DeleteConfirmationDialog(
-                challenge = state.challengeToDelete,
-                onConfirm = {
-                    state.eventSink(
-                        ParentChallengesScreen.Event.ConfirmDelete(state.challengeToDelete.id),
-                    )
-                },
-                onDismiss = {
-                    state.eventSink(ParentChallengesScreen.Event.CancelDelete)
-                },
-            )
-        }
-
-        // Clear sessions confirmation dialog
-        if (state.showClearSessionsConfirmation && state.challengeToClearSessions != null) {
-            ClearSessionsConfirmationDialog(
-                challenge = state.challengeToClearSessions,
-                onConfirm = {
-                    state.eventSink(
-                        ParentChallengesScreen.Event.ConfirmClearSessions(state.challengeToClearSessions.id),
-                    )
-                },
-                onDismiss = {
-                    state.eventSink(ParentChallengesScreen.Event.CancelClearSessions)
-                },
-            )
         }
     }
 }
@@ -1063,6 +1077,150 @@ private fun ChallengeListItemDarkPreview() {
             onArchiveClick = {},
             onClearSessionsClick = {},
             onDeleteClick = {},
+        )
+    }
+}
+
+// Responsive previews for adaptive layout testing
+
+@Preview(
+    name = "Compact - Parent Challenges",
+    showBackground = true,
+    device = "spec:width=411dp,height=891dp",
+)
+@Composable
+private fun ParentChallengesUiCompactPreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges =
+                        listOf(
+                            CustomChallenge(
+                                id = "1",
+                                title = "Addition Practice",
+                                subtitle = "Focus on carrying over",
+                                type = ChallengeType.GENERATED,
+                                problems =
+                                    listOf(
+                                        MathProblem(
+                                            num1 = 15,
+                                            num2 = 27,
+                                            operation = MathOperation.ADDITION,
+                                            correctAnswer = 42,
+                                        ),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                        ),
+                    isLoading = false,
+                    showArchived = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Medium - Parent Challenges",
+    showBackground = true,
+    device = "spec:width=700dp,height=500dp",
+)
+@Composable
+private fun ParentChallengesUiMediumPreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges =
+                        listOf(
+                            CustomChallenge(
+                                id = "1",
+                                title = "Addition Practice",
+                                subtitle = "Focus on carrying over",
+                                type = ChallengeType.GENERATED,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 15, num2 = 27, operation = MathOperation.ADDITION, correctAnswer = 42),
+                                        MathProblem(num1 = 43, num2 = 29, operation = MathOperation.ADDITION, correctAnswer = 72),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                            CustomChallenge(
+                                id = "2",
+                                title = "Subtraction Challenge",
+                                subtitle = null,
+                                type = ChallengeType.EXPLICIT,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 10, num2 = 5, operation = MathOperation.SUBTRACTION, correctAnswer = 5),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                        ),
+                    isLoading = false,
+                    showArchived = false,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Expanded - Parent Challenges",
+    showBackground = true,
+    device = "spec:width=1100dp,height=600dp",
+)
+@Composable
+private fun ParentChallengesUiExpandedPreview() {
+    KidsMathTutorAppTheme {
+        ParentChallengesUi(
+            state =
+                ParentChallengesScreen.State(
+                    challenges =
+                        listOf(
+                            CustomChallenge(
+                                id = "1",
+                                title = "Addition Practice",
+                                subtitle = "Focus on carrying over",
+                                type = ChallengeType.GENERATED,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 15, num2 = 27, operation = MathOperation.ADDITION, correctAnswer = 42),
+                                        MathProblem(num1 = 43, num2 = 29, operation = MathOperation.ADDITION, correctAnswer = 72),
+                                        MathProblem(num1 = 56, num2 = 38, operation = MathOperation.ADDITION, correctAnswer = 94),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                            CustomChallenge(
+                                id = "2",
+                                title = "Mixed Operations",
+                                subtitle = null,
+                                type = ChallengeType.EXPLICIT,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 10, num2 = 5, operation = MathOperation.SUBTRACTION, correctAnswer = 5),
+                                        MathProblem(num1 = 3, num2 = 4, operation = MathOperation.MULTIPLICATION, correctAnswer = 12),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                            CustomChallenge(
+                                id = "3",
+                                title = "Division Drills",
+                                subtitle = "Divide with confidence",
+                                type = ChallengeType.GENERATED,
+                                problems =
+                                    listOf(
+                                        MathProblem(num1 = 12, num2 = 3, operation = MathOperation.DIVISION, correctAnswer = 4),
+                                        MathProblem(num1 = 20, num2 = 4, operation = MathOperation.DIVISION, correctAnswer = 5),
+                                    ),
+                                createdAt = Instant.now(),
+                            ),
+                        ),
+                    isLoading = false,
+                    showArchived = false,
+                    eventSink = {},
+                ),
         )
     }
 }
