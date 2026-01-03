@@ -604,3 +604,98 @@ private fun GradeSelectionUiDarkPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun GradeSelectionUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        GradeSelectionUi(
+            state =
+                GradeSelectionScreen.State(
+                    selectedGrade = GradeLevel.KINDERGARTEN,
+                    availableGrades = GradeLevel.entries.toList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun GradeSelectionUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        GradeSelectionUi(
+            state =
+                GradeSelectionScreen.State(
+                    selectedGrade = null,
+                    availableGrades = GradeLevel.entries.toList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun GradeSelectionUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        GradeSelectionUi(
+            state =
+                GradeSelectionScreen.State(
+                    selectedGrade = GradeLevel.GRADE_1,
+                    availableGrades = GradeLevel.entries.toList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun GradeSelectionUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        GradeSelectionUi(
+            state =
+                GradeSelectionScreen.State(
+                    selectedGrade = GradeLevel.GRADE_2,
+                    availableGrades = GradeLevel.entries.toList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun GradeSelectionUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        GradeSelectionUi(
+            state =
+                GradeSelectionScreen.State(
+                    selectedGrade = null,
+                    availableGrades = GradeLevel.entries.toList(),
+                    eventSink = {},
+                ),
+        )
+    }
+}

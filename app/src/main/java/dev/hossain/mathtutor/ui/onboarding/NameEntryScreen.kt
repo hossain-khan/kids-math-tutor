@@ -464,3 +464,93 @@ private fun NameEntryUiDarkPreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=891dp,height=411dp,dpi=420,isRound=false,orientation=landscape",
+    name = "Phone Landscape",
+)
+@Composable
+private fun NameEntryUiPhoneLandscapePreview() {
+    KidsMathTutorAppTheme {
+        NameEntryUi(
+            state =
+                NameEntryScreen.State(
+                    name = "Sam",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun NameEntryUiTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        NameEntryUi(
+            state =
+                NameEntryScreen.State(
+                    name = "",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
+    name = "Tablet Landscape",
+)
+@Composable
+private fun NameEntryUiTabletLandscapePreview() {
+    KidsMathTutorAppTheme {
+        NameEntryUi(
+            state =
+                NameEntryScreen.State(
+                    name = "Casey",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun NameEntryUiFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        NameEntryUi(
+            state =
+                NameEntryScreen.State(
+                    name = "Taylor",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun NameEntryUiFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        NameEntryUi(
+            state =
+                NameEntryScreen.State(
+                    name = "",
+                    eventSink = {},
+                ),
+        )
+    }
+}
