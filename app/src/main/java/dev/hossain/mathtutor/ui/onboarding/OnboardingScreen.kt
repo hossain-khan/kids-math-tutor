@@ -597,3 +597,60 @@ private fun OnboardingContentTabletLandscapePreview() {
         )
     }
 }
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=800dp,height=1280dp,dpi=240,isRound=false,orientation=portrait",
+    name = "Tablet Portrait",
+)
+@Composable
+private fun OnboardingContentTabletPortraitPreview() {
+    KidsMathTutorAppTheme {
+        OnboardingContent(
+            state =
+                OnboardingScreen.State(
+                    currentPage = 2,
+                    totalPages = 4,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
+    name = "Foldable Portrait (Pixel Fold Unfolded)",
+)
+@Composable
+private fun OnboardingContentFoldablePortraitPreview() {
+    KidsMathTutorAppTheme {
+        OnboardingContent(
+            state =
+                OnboardingScreen.State(
+                    currentPage = 0,
+                    totalPages = 4,
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "spec:width=841dp,height=673dp,dpi=373,isRound=false,orientation=landscape",
+    name = "Foldable Landscape (Pixel Fold Unfolded)",
+)
+@Composable
+private fun OnboardingContentFoldableLandscapePreview() {
+    KidsMathTutorAppTheme {
+        OnboardingContent(
+            state =
+                OnboardingScreen.State(
+                    currentPage = 3,
+                    totalPages = 4,
+                    eventSink = {},
+                ),
+        )
+    }
+}
