@@ -1638,6 +1638,7 @@ private fun StatsUiPhoneLandscapePreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = "Alex",
                     overallStats =
                         SessionStats(
                             totalProblems = 100,
@@ -1645,27 +1646,22 @@ private fun StatsUiPhoneLandscapePreview() {
                             accuracy = 85f,
                             sessionCount = 10,
                         ),
-                    streakData =
-                        DailyStreak(
-                            currentStreak = 5,
-                            longestStreak = 8,
-                            lastPracticeDate = LocalDate.now(),
-                            totalDaysPracticed = 15,
-                        ),
                     operationStats =
-                        listOf(
-                            SessionStats(
-                                totalProblems = 50,
-                                correctCount = 45,
-                                accuracy = 90f,
-                                sessionCount = 5,
-                            ),
-                            SessionStats(
-                                totalProblems = 50,
-                                correctCount = 40,
-                                accuracy = 80f,
-                                sessionCount = 5,
-                            ),
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 50,
+                                    correctCount = 45,
+                                    accuracy = 90f,
+                                    sessionCount = 5,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 50,
+                                    correctCount = 40,
+                                    accuracy = 80f,
+                                    sessionCount = 5,
+                                ),
                         ),
                     recentSessions =
                         listOf(
@@ -1698,6 +1694,7 @@ private fun StatsUiTabletPortraitPreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = "Jordan",
                     overallStats =
                         SessionStats(
                             totalProblems = 200,
@@ -1705,27 +1702,22 @@ private fun StatsUiTabletPortraitPreview() {
                             accuracy = 90f,
                             sessionCount = 20,
                         ),
-                    streakData =
-                        DailyStreak(
-                            currentStreak = 10,
-                            longestStreak = 15,
-                            lastPracticeDate = LocalDate.now(),
-                            totalDaysPracticed = 25,
-                        ),
                     operationStats =
-                        listOf(
-                            SessionStats(
-                                totalProblems = 100,
-                                correctCount = 90,
-                                accuracy = 90f,
-                                sessionCount = 10,
-                            ),
-                            SessionStats(
-                                totalProblems = 100,
-                                correctCount = 90,
-                                accuracy = 90f,
-                                sessionCount = 10,
-                            ),
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 100,
+                                    correctCount = 90,
+                                    accuracy = 90f,
+                                    sessionCount = 10,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 100,
+                                    correctCount = 90,
+                                    accuracy = 90f,
+                                    sessionCount = 10,
+                                ),
                         ),
                     recentSessions =
                         listOf(
@@ -1760,66 +1752,6 @@ private fun StatsUiTabletPortraitPreview() {
 
 @Preview(
     showBackground = true,
-    device = "spec:width=1280dp,height=800dp,dpi=240,isRound=false,orientation=landscape",
-    name = "Tablet Landscape",
-)
-@Composable
-private fun StatsUiTabletLandscapePreview() {
-    KidsMathTutorAppTheme {
-        StatsUi(
-            state =
-                StatsScreen.State(
-                    overallStats =
-                        SessionStats(
-                            totalProblems = 150,
-                            correctCount = 120,
-                            accuracy = 80f,
-                            sessionCount = 15,
-                        ),
-                    streakData =
-                        DailyStreak(
-                            currentStreak = 3,
-                            longestStreak = 10,
-                            lastPracticeDate = LocalDate.now(),
-                            totalDaysPracticed = 20,
-                        ),
-                    operationStats =
-                        listOf(
-                            SessionStats(
-                                totalProblems = 75,
-                                correctCount = 60,
-                                accuracy = 80f,
-                                sessionCount = 8,
-                            ),
-                            SessionStats(
-                                totalProblems = 75,
-                                correctCount = 60,
-                                accuracy = 80f,
-                                sessionCount = 7,
-                            ),
-                        ),
-                    recentSessions =
-                        listOf(
-                            PracticeSessionEntity(
-                                id = 1,
-                                operation = MathOperation.ADDITION,
-                                totalProblems = 10,
-                                correctAnswers = 8,
-                                incorrectAnswers = 2,
-                                accuracy = 80f,
-                                durationSeconds = 120,
-                                timestamp = Instant.now(),
-                                gradeLevel = 1,
-                            ),
-                        ),
-                    eventSink = {},
-                ),
-        )
-    }
-}
-
-@Preview(
-    showBackground = true,
     device = "spec:width=673dp,height=841dp,dpi=373,isRound=false,orientation=portrait",
     name = "Foldable Portrait (Pixel Fold Unfolded)",
 )
@@ -1829,9 +1761,9 @@ private fun StatsUiFoldablePortraitPreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = null,
                     overallStats = SessionStats.EMPTY,
-                    streakData = null,
-                    operationStats = emptyList(),
+                    operationStats = emptyMap(),
                     recentSessions = emptyList(),
                     eventSink = {},
                 ),
@@ -1850,6 +1782,7 @@ private fun StatsUiFoldableLandscapePreview() {
         StatsUi(
             state =
                 StatsScreen.State(
+                    userName = "Taylor",
                     overallStats =
                         SessionStats(
                             totalProblems = 50,
@@ -1857,27 +1790,22 @@ private fun StatsUiFoldableLandscapePreview() {
                             accuracy = 80f,
                             sessionCount = 5,
                         ),
-                    streakData =
-                        DailyStreak(
-                            currentStreak = 2,
-                            longestStreak = 5,
-                            lastPracticeDate = LocalDate.now(),
-                            totalDaysPracticed = 8,
-                        ),
                     operationStats =
-                        listOf(
-                            SessionStats(
-                                totalProblems = 25,
-                                correctCount = 20,
-                                accuracy = 80f,
-                                sessionCount = 3,
-                            ),
-                            SessionStats(
-                                totalProblems = 25,
-                                correctCount = 20,
-                                accuracy = 80f,
-                                sessionCount = 2,
-                            ),
+                        mapOf(
+                            MathOperation.ADDITION to
+                                SessionStats(
+                                    totalProblems = 25,
+                                    correctCount = 20,
+                                    accuracy = 80f,
+                                    sessionCount = 3,
+                                ),
+                            MathOperation.SUBTRACTION to
+                                SessionStats(
+                                    totalProblems = 25,
+                                    correctCount = 20,
+                                    accuracy = 80f,
+                                    sessionCount = 2,
+                                ),
                         ),
                     recentSessions =
                         listOf(

@@ -56,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -63,6 +64,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PreviewData
+import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_STANDARD
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
@@ -1345,7 +1347,8 @@ private fun ImportChallengeUiPhoneLandscapePreview() {
             state =
                 ImportChallengeScreen.State(
                     jsonInput = "",
-                    validationResult = null,
+                    validationState = ValidationState.Idle,
+                    previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = false,
                     isGuideExpanded = false,
@@ -1369,7 +1372,8 @@ private fun ImportChallengeUiTabletPortraitPreview() {
                     jsonInput =
                         "{\"title\":\"Sample Challenge\",\"problems\":" +
                             "[{\"num1\":5,\"num2\":3,\"operation\":\"ADDITION\",\"correctAnswer\":8}]}",
-                    validationResult = null,
+                    validationState = ValidationState.Idle,
+                    previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = false,
                     isGuideExpanded = false,
@@ -1391,7 +1395,8 @@ private fun ImportChallengeUiTabletLandscapePreview() {
             state =
                 ImportChallengeScreen.State(
                     jsonInput = "",
-                    validationResult = null,
+                    validationState = ValidationState.Idle,
+                    previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = true,
                     isGuideExpanded = true,
@@ -1413,7 +1418,8 @@ private fun ImportChallengeUiFoldablePortraitPreview() {
             state =
                 ImportChallengeScreen.State(
                     jsonInput = "",
-                    validationResult = null,
+                    validationState = ValidationState.Idle,
+                    previewData = null,
                     isLoading = true,
                     detectedJsonFromShare = false,
                     isGuideExpanded = false,
@@ -1435,7 +1441,8 @@ private fun ImportChallengeUiFoldableLandscapePreview() {
             state =
                 ImportChallengeScreen.State(
                     jsonInput = "{\"title\":\"Test\"}",
-                    validationResult = null,
+                    validationState = ValidationState.Idle,
+                    previewData = null,
                     isLoading = false,
                     detectedJsonFromShare = false,
                     isGuideExpanded = false,
