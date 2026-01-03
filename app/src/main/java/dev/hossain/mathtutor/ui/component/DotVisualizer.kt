@@ -157,6 +157,21 @@ private fun SubtractionDotVisualizer(
     // State to track whether we should show dimmed colors
     var showDimmed by remember { mutableStateOf(false) }
 
+    // Animated alpha that transitions smoothly
+    val targetAlpha = if (showDimmed) 0.3f else 1f
+    val animatedAlpha = remember { Animatable(1f) }
+
+    LaunchedEffect(showDimmed) {
+        animatedAlpha.animateTo(
+            targetValue = targetAlpha,
+            animationSpec =
+                tween(
+                    durationMillis = 1000,
+                    easing = LinearEasing,
+                ),
+        )
+    }
+
     // Timer to trigger dimming
     LaunchedEffect(Unit) {
         kotlinx.coroutines.delay(dimChangeTime.toLong())
@@ -186,8 +201,8 @@ private fun SubtractionDotVisualizer(
 
                         AnimatedDot(
                             color =
-                                if (shouldDim && showDimmed) {
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                                if (shouldDim) {
+                                    MaterialTheme.colorScheme.primary.copy(alpha = animatedAlpha.value)
                                 } else {
                                     MaterialTheme.colorScheme.primary
                                 },
