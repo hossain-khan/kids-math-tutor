@@ -8,11 +8,11 @@ import java.time.Instant
  * @property name Optional user name
  * @property gradeLevel The user's current grade level
  * @property createdAt Timestamp when the profile was created
- * @property adaptiveDifficultyEnabled Whether adaptive difficulty is enabled (defaults to true)
+ * @property adaptiveDifficultyEnabled Whether adaptive difficulty is enabled (defaults to false)
  */
 data class UserProfile(
     val name: String? = null,
     val gradeLevel: GradeLevel,
     val createdAt: Instant,
-    val adaptiveDifficultyEnabled: Boolean = true,
+    val adaptiveDifficultyEnabled: Boolean = false,
 )

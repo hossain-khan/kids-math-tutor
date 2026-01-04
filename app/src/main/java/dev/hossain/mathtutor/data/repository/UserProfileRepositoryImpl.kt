@@ -54,7 +54,7 @@ class UserProfileRepositoryImpl
                             name = preferences[PreferencesKeys.NAME_KEY],
                             gradeLevel = GradeLevel.valueOf(gradeString),
                             createdAt = Instant.ofEpochMilli(createdAtMillis),
-                            adaptiveDifficultyEnabled = preferences[PreferencesKeys.ADAPTIVE_KEY] ?: true,
+                            adaptiveDifficultyEnabled = preferences[PreferencesKeys.ADAPTIVE_KEY] ?: false,
                         )
                     } catch (e: IllegalArgumentException) {
                         // If grade level string is invalid, return null

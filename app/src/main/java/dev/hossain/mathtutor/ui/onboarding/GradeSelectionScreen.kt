@@ -249,7 +249,7 @@ class GradeSelectionPresenter
                                                     name = null,
                                                     gradeLevel = grade,
                                                     createdAt = Instant.now(),
-                                                    adaptiveDifficultyEnabled = true,
+                                                    adaptiveDifficultyEnabled = false,
                                                 ),
                                             )
                                         }

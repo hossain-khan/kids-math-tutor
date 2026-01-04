@@ -178,7 +178,7 @@ class NameEntryPresenter
                                     name = null,
                                     gradeLevel = screen.gradeLevel,
                                     createdAt = Instant.now(),
-                                    adaptiveDifficultyEnabled = true,
+                                    adaptiveDifficultyEnabled = false,
                                 ),
                             )
                             // Mark onboarding as completed
@@ -203,7 +203,7 @@ class NameEntryPresenter
                                     name = name.trim().ifBlank { null },
                                     gradeLevel = screen.gradeLevel,
                                     createdAt = Instant.now(),
-                                    adaptiveDifficultyEnabled = true,
+                                    adaptiveDifficultyEnabled = false,
                                 ),
                             )
                             // Mark onboarding as completed

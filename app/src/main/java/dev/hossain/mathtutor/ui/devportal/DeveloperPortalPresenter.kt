@@ -134,7 +134,7 @@ class DeveloperPortalPresenter
                     userProfileRepository.getProfile().collect { profile ->
                         currentProfileName = profile?.name
                         currentGradeLevel = profile?.gradeLevel
-                        currentAdaptiveDifficulty = profile?.adaptiveDifficultyEnabled ?: true
+                        currentAdaptiveDifficulty = profile?.adaptiveDifficultyEnabled ?: false
                     }
                 }
 

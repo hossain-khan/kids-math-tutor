@@ -70,7 +70,7 @@ class ParentSettingsPresenter
 
             // Observe user profile for adaptive difficulty setting
             val userProfile by userProfileRepository.getProfile().collectAsState(initial = null)
-            val adaptiveDifficultyEnabled = userProfile?.adaptiveDifficultyEnabled ?: true
+            val adaptiveDifficultyEnabled = userProfile?.adaptiveDifficultyEnabled ?: false
 
             // Dialog states
             var showPinSetup by remember { mutableStateOf(false) }
