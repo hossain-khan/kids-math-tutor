@@ -7,12 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.0] - 2026-01-04
+
 ### Added
 - **Developer Portal - Results Screen Navigation**: Added quick navigation to Practice Results screen from Developer Portal
   - New "📊 Practice Results" button in Quick Navigation section
   - Displays mock data with 5 math problems (addition/subtraction mix)
   - Shows 80% accuracy (4 correct, 1 incorrect) for testing Results UI
   - Allows testing Results screen without completing a practice session
+- **Day-of-Week Watermark for Daily Accuracy Cards**: Enhanced Daily Accuracy screen with playful day-of-week watermarks
+  - Added adaptive day names: abbreviated on phones (MON, TUE, WED), full on tablets (MONDAY, TUESDAY, WEDNESDAY)
+  - Uses playful Barrio font with 15% opacity for subtle background effect
+  - Matches visual treatment from Recent Sessions list in Stats screen
+  - Responsive layout adjusts at 600dp breakpoint for optimal readability
+- **Home Screen Interactive Enhancements**: Added preview functions and made Latest Badges card fully clickable
+  - Latest Badges card now navigates to Badges screen when tapped anywhere (not just "View All" button)
+  - Added 4 QuickStatsCard preview functions for comprehensive testing
+  - Added 4 LatestBadgesSection preview functions covering different badge scenarios
 
 ### Changed
 - **Adaptive Difficulty Default**: Changed default from enabled to disabled for new app installations
@@ -2472,7 +2483,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.23.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.0...HEAD
+[1.24.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.23.0...1.24.0
 [1.23.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.1...1.23.0
 [1.22.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.0...1.22.1
 [1.22.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.21.0...1.22.0
