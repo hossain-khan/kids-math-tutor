@@ -628,6 +628,7 @@ private fun LatestBadgesSection(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
+        onClick = onViewAllClicked,
         elevation =
             CardDefaults.elevatedCardElevation(
                 defaultElevation = 4.dp,
@@ -713,6 +714,254 @@ private fun BadgeItem(
             color = MaterialTheme.colorScheme.onTertiaryContainer,
             textAlign = TextAlign.Center,
             maxLines = 2,
+        )
+    }
+}
+
+/**
+ * Preview for LatestBadgesSection with 3 badges per row (compact/phone layout)
+ */
+@Preview(showBackground = true, widthDp = 400, name = "Latest Badges - 3 Columns (Phone)")
+@Composable
+private fun LatestBadgesThreeColumnPreview() {
+    KidsMathTutorAppTheme {
+        LatestBadgesSection(
+            badges =
+                listOf(
+                    Badge(
+                        id = "first_steps",
+                        name = "First Steps",
+                        description = "Solved first problem",
+                        icon = BadgeIcon.FIRST_STEPS,
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.ProblemCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "streak_starter",
+                        name = "Streak Starter",
+                        description = "Practice 3 days in a row",
+                        icon = BadgeIcon.STREAK_STARTER,
+                        category = BadgeCategory.STREAK,
+                        requirement = BadgeRequirement.DailyStreak(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "quick_thinker",
+                        name = "Quick Thinker",
+                        description = "Answer quickly",
+                        icon = BadgeIcon.QUICK_THINKER,
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ProblemSpeed(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "perfect_10",
+                        name = "Perfect 10",
+                        description = "Get 10 correct in a row",
+                        icon = BadgeIcon.PERFECT_10,
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ConsecutiveCorrect(10),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "math_rookie",
+                        name = "Math Rookie",
+                        description = "Complete first session",
+                        icon = BadgeIcon.MATH_ROOKIE,
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.SessionCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "addition_expert",
+                        name = "Addition Expert",
+                        description = "Master addition",
+                        icon = BadgeIcon.ADDITION_EXPERT,
+                        category = BadgeCategory.OPERATION_MASTERY,
+                        requirement = BadgeRequirement.OperationMastery(dev.hossain.mathtutor.domain.model.MathOperation.ADDITION),
+                        unlockedAt = Instant.now(),
+                    ),
+                ),
+            onViewAllClicked = {},
+            screenWidth = 400.dp,
+        )
+    }
+}
+
+/**
+ * Preview for LatestBadgesSection with 5 badges per row (medium/tablet layout)
+ */
+@Preview(showBackground = true, widthDp = 700, name = "Latest Badges - 5 Columns (Tablet)")
+@Composable
+private fun LatestBadgesFiveColumnPreview() {
+    KidsMathTutorAppTheme {
+        LatestBadgesSection(
+            badges =
+                listOf(
+                    Badge(
+                        id = "first_steps",
+                        name = "First Steps",
+                        description = "Solved first problem",
+                        icon = BadgeIcon.FIRST_STEPS,
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.ProblemCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "streak_starter",
+                        name = "Streak Starter",
+                        description = "Practice 3 days in a row",
+                        icon = BadgeIcon.STREAK_STARTER,
+                        category = BadgeCategory.STREAK,
+                        requirement = BadgeRequirement.DailyStreak(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "quick_thinker",
+                        name = "Quick Thinker",
+                        description = "Answer quickly",
+                        icon = BadgeIcon.QUICK_THINKER,
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ProblemSpeed(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "perfect_10",
+                        name = "Perfect 10",
+                        description = "Get 10 correct in a row",
+                        icon = BadgeIcon.PERFECT_10,
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ConsecutiveCorrect(10),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "math_rookie",
+                        name = "Math Rookie",
+                        description = "Complete first session",
+                        icon = BadgeIcon.MATH_ROOKIE,
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.SessionCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                ),
+            onViewAllClicked = {},
+            screenWidth = 700.dp,
+        )
+    }
+}
+
+/**
+ * Preview for LatestBadgesSection with 6 badges per row (expanded layout)
+ */
+@Preview(showBackground = true, widthDp = 900, name = "Latest Badges - 6 Columns (Expanded)")
+@Composable
+private fun LatestBadgesSixColumnPreview() {
+    KidsMathTutorAppTheme {
+        LatestBadgesSection(
+            badges =
+                listOf(
+                    Badge(
+                        id = "first_steps",
+                        name = "First Steps",
+                        description = "Solved first problem",
+                        icon = BadgeIcon.FIRST_STEPS,
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.ProblemCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "streak_starter",
+                        name = "Streak Starter",
+                        description = "Practice 3 days in a row",
+                        icon = BadgeIcon.STREAK_STARTER,
+                        category = BadgeCategory.STREAK,
+                        requirement = BadgeRequirement.DailyStreak(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "quick_thinker",
+                        name = "Quick Thinker",
+                        description = "Answer quickly",
+                        icon = BadgeIcon.QUICK_THINKER,
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ProblemSpeed(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "perfect_10",
+                        name = "Perfect 10",
+                        description = "Get 10 correct in a row",
+                        icon = BadgeIcon.PERFECT_10,
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ConsecutiveCorrect(10),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "math_rookie",
+                        name = "Math Rookie",
+                        description = "Complete first session",
+                        icon = BadgeIcon.MATH_ROOKIE,
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.SessionCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "addition_expert",
+                        name = "Addition Expert",
+                        description = "Master addition",
+                        icon = BadgeIcon.ADDITION_EXPERT,
+                        category = BadgeCategory.OPERATION_MASTERY,
+                        requirement = BadgeRequirement.OperationMastery(dev.hossain.mathtutor.domain.model.MathOperation.ADDITION),
+                        unlockedAt = Instant.now(),
+                    ),
+                ),
+            onViewAllClicked = {},
+            screenWidth = 900.dp,
+        )
+    }
+}
+
+/**
+ * Preview for LatestBadgesSection in dark theme
+ */
+@Preview(showBackground = true, widthDp = 400, name = "Latest Badges - Dark Theme")
+@Composable
+private fun LatestBadgesDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        LatestBadgesSection(
+            badges =
+                listOf(
+                    Badge(
+                        id = "first_steps",
+                        name = "First Steps",
+                        description = "Solved first problem",
+                        icon = BadgeIcon.FIRST_STEPS,
+                        category = BadgeCategory.GETTING_STARTED,
+                        requirement = BadgeRequirement.ProblemCount(1),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "streak_starter",
+                        name = "Streak Starter",
+                        description = "Practice 3 days in a row",
+                        icon = BadgeIcon.STREAK_STARTER,
+                        category = BadgeCategory.STREAK,
+                        requirement = BadgeRequirement.DailyStreak(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                    Badge(
+                        id = "quick_thinker",
+                        name = "Quick Thinker",
+                        description = "Answer quickly",
+                        icon = BadgeIcon.QUICK_THINKER,
+                        category = BadgeCategory.SPEED_ACCURACY,
+                        requirement = BadgeRequirement.ProblemSpeed(3),
+                        unlockedAt = Instant.now(),
+                    ),
+                ),
+            onViewAllClicked = {},
+            screenWidth = 400.dp,
         )
     }
 }
