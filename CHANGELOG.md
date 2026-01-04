@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Users can still enable adaptive difficulty in Parent Settings
   - Existing users unaffected (setting preserved in DataStore)
 
+### Fixed
+- **Home Screen Quick Stats Layout**: Fixed stats card layout on phone devices
+  - Changed from 1-column stacked layout to 2-column side-by-side layout
+  - "Problems Solved" and "Accuracy" now display horizontally on phones
+  - Increased height from 90dp to 120dp to prevent content cutoff
+  - Expanded screens (>840dp) continue to show 3 columns with Sessions count
+
 ## [1.23.0] - 2026-01-03
 
 ### Added
