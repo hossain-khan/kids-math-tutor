@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.stats.accuracydetails
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -43,6 +45,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.domain.model.DailyAccuracy
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
+import dev.hossain.mathtutor.ui.theme.watermarkFontFamily
 import dev.hossain.mathtutor.ui.utils.AdaptiveLayoutConstants.MAX_CONTENT_WIDTH_SMALL
 import dev.zacsweers.metro.AppScope
 import java.time.LocalDate
@@ -165,7 +168,13 @@ private fun EmptyState(modifier: Modifier = Modifier) {
 }
 
 /**
- * Displays a single day's accuracy data card.
+ * Displays a single day's accuracy data card with day-of-week watermark.
+ * Features:
+ * - Adaptive day name: abbreviated on phone (MON, TUE), full name on tablet/landscape (MONDAY, TUESDAY)
+ * - Day-of-week watermark in background using playful Barrio font
+ * - Date header with formatted date string
+ * - Session count and accuracy statistics
+ * - Star rating visualization
  */
 @Composable
 private fun DailyAccuracyCard(
@@ -179,52 +188,79 @@ private fun DailyAccuracyCard(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-        ) {
-            // Date header
-            Text(
-                text = formatDate(dailyData.date),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Stats row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column {
-                    // Sessions and problems info
-                    Text(
-                        text = "${dailyData.sessionCount} ${if (dailyData.sessionCount == 1) "session" else "sessions"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        text = "${dailyData.correctAnswers}/${dailyData.totalProblems} correct",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            // Detect available width and choose between abbreviated and full day name
+            val dayOfWeek =
+                remember {
+                    if (maxWidth >= 600.dp) {
+                        getDayOfWeekFull(dailyData.date) // MONDAY, TUESDAY, etc.
+                    } else {
+                        getDayOfWeek(dailyData.date) // MON, TUE, etc.
+                    }
                 }
 
-                // Accuracy and stars
-                Column(
-                    horizontalAlignment = Alignment.End,
+            // Day watermark background - using playful Barrio font
+            Text(
+                text = dayOfWeek,
+                style = MaterialTheme.typography.displayLarge.copy(fontFamily = watermarkFontFamily),
+                color =
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                textAlign = TextAlign.Center,
+            )
+
+            // Main content
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+            ) {
+                // Date header
+                Text(
+                    text = formatDate(dailyData.date),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Stats row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = "${dailyData.accuracy.toInt()}%",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    StarRating(rating = dailyData.getStarRating())
+                    Column {
+                        // Sessions and problems info
+                        Text(
+                            text = "${dailyData.sessionCount} ${if (dailyData.sessionCount == 1) "session" else "sessions"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = "${dailyData.correctAnswers}/${dailyData.totalProblems} correct",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    // Accuracy and stars
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                    ) {
+                        Text(
+                            text = "${dailyData.accuracy.toInt()}%",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        StarRating(rating = dailyData.getStarRating())
+                    }
                 }
             }
         }
@@ -263,6 +299,18 @@ private fun StarRating(
         }
     }
 }
+
+/**
+ * Extracts the day of week from a LocalDate.
+ * Returns: MON, TUE, WED, THU, FRI, SAT, SUN
+ */
+private fun getDayOfWeek(date: LocalDate): String = date.dayOfWeek.toString().take(3)
+
+/**
+ * Extracts the full day of week name from a LocalDate.
+ * Returns: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+ */
+private fun getDayOfWeekFull(date: LocalDate): String = date.dayOfWeek.toString()
 
 /**
  * Formats a LocalDate to a human-readable string.
