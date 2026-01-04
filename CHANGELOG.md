@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Developer Portal - Results Screen Navigation**: Added quick navigation to Practice Results screen from Developer Portal
+  - New "📊 Practice Results" button in Quick Navigation section
+  - Displays mock data with 5 math problems (addition/subtraction mix)
+  - Shows 80% accuracy (4 correct, 1 incorrect) for testing Results UI
+  - Allows testing Results screen without completing a practice session
+
+### Changed
+- **Adaptive Difficulty Default**: Changed default from enabled to disabled for new app installations
+  - UserProfile model now defaults `adaptiveDifficultyEnabled` to `false`
+  - All onboarding flows create profiles with adaptive difficulty disabled
+  - Users can still enable adaptive difficulty in Parent Settings
+  - Existing users unaffected (setting preserved in DataStore)
+
 ## [1.23.0] - 2026-01-03
 
 ### Added
