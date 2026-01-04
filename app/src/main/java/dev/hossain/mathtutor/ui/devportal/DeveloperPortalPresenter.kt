@@ -661,6 +661,52 @@ class DeveloperPortalPresenter
                         )
                     }
 
+                    is DeveloperPortalScreen.Event.NavigateToResults -> {
+                        Timber.d("[DevPortal] Navigating to Results screen")
+                        // Create mock problems and answers for testing
+                        val mockProblems =
+                            listOf(
+                                dev.hossain.mathtutor.domain.model.MathProblem(
+                                    num1 = 5,
+                                    num2 = 3,
+                                    operation = dev.hossain.mathtutor.domain.model.MathOperation.ADDITION,
+                                    correctAnswer = 8,
+                                ),
+                                dev.hossain.mathtutor.domain.model.MathProblem(
+                                    num1 = 7,
+                                    num2 = 2,
+                                    operation = dev.hossain.mathtutor.domain.model.MathOperation.SUBTRACTION,
+                                    correctAnswer = 5,
+                                ),
+                                dev.hossain.mathtutor.domain.model.MathProblem(
+                                    num1 = 4,
+                                    num2 = 6,
+                                    operation = dev.hossain.mathtutor.domain.model.MathOperation.ADDITION,
+                                    correctAnswer = 10,
+                                ),
+                                dev.hossain.mathtutor.domain.model.MathProblem(
+                                    num1 = 9,
+                                    num2 = 3,
+                                    operation = dev.hossain.mathtutor.domain.model.MathOperation.SUBTRACTION,
+                                    correctAnswer = 6,
+                                ),
+                                dev.hossain.mathtutor.domain.model.MathProblem(
+                                    num1 = 8,
+                                    num2 = 2,
+                                    operation = dev.hossain.mathtutor.domain.model.MathOperation.ADDITION,
+                                    correctAnswer = 10,
+                                ),
+                            )
+                        // Mock answers: 4 correct, 1 incorrect (80% accuracy)
+                        val mockAnswers = listOf(8, 4, 10, 6, 10) // Second answer (4) is wrong
+                        navigator.goTo(
+                            dev.hossain.mathtutor.ui.practiceresults.ResultsScreen(
+                                problems = mockProblems,
+                                userAnswers = mockAnswers,
+                            ),
+                        )
+                    }
+
                     is DeveloperPortalScreen.Event.ViewColorPalette -> {
                         Timber.d("[DevPortal] Navigating to Color Palette Viewer")
                         navigator.goTo(ColorPaletteViewerScreen)
