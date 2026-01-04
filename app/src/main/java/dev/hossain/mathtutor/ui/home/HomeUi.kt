@@ -542,6 +542,80 @@ private fun StatItem(
 }
 
 /**
+ * Preview for QuickStatsCard with 2 columns (compact/phone layout)
+ */
+@Preview(showBackground = true, widthDp = 400, name = "Stats Card - 2 Columns (Phone)")
+@Composable
+private fun QuickStatsCardTwoColumnPreview() {
+    KidsMathTutorAppTheme {
+        QuickStatsCard(
+            stats =
+                SessionStats(
+                    totalProblems = 150,
+                    correctCount = 135,
+                    accuracy = 90f,
+                    sessionCount = 15,
+                ),
+            screenWidth = 400.dp,
+        )
+    }
+}
+
+/**
+ * Preview for QuickStatsCard with 3 columns (expanded/tablet layout)
+ */
+@Preview(showBackground = true, widthDp = 900, name = "Stats Card - 3 Columns (Tablet)")
+@Composable
+private fun QuickStatsCardThreeColumnPreview() {
+    KidsMathTutorAppTheme {
+        QuickStatsCard(
+            stats =
+                SessionStats(
+                    totalProblems = 250,
+                    correctCount = 230,
+                    accuracy = 92f,
+                    sessionCount = 25,
+                ),
+            screenWidth = 900.dp,
+        )
+    }
+}
+
+/**
+ * Preview for QuickStatsCard with no data
+ */
+@Preview(showBackground = true, widthDp = 400, name = "Stats Card - No Data")
+@Composable
+private fun QuickStatsCardNoDataPreview() {
+    KidsMathTutorAppTheme {
+        QuickStatsCard(
+            stats = SessionStats.EMPTY,
+            screenWidth = 400.dp,
+        )
+    }
+}
+
+/**
+ * Preview for QuickStatsCard in dark theme
+ */
+@Preview(showBackground = true, widthDp = 400, name = "Stats Card - Dark Theme")
+@Composable
+private fun QuickStatsCardDarkPreview() {
+    KidsMathTutorAppTheme(darkTheme = true) {
+        QuickStatsCard(
+            stats =
+                SessionStats(
+                    totalProblems = 100,
+                    correctCount = 85,
+                    accuracy = 85f,
+                    sessionCount = 10,
+                ),
+            screenWidth = 400.dp,
+        )
+    }
+}
+
+/**
  * Latest badges section showing recently unlocked badges.
  * Uses adaptive grid: 3 per row (compact), 5 per row (medium), 6 per row (expanded).
  */
