@@ -950,7 +950,7 @@ private fun StatsUiDarkPreview() {
                     userName = "Jamie",
                     overallStats =
                         SessionStats(
-                            totalProblems = 50,
+                            totalProblems = 500,
                             correctCount = 45,
                             accuracy = 90f,
                             sessionCount = 5,
@@ -1013,7 +1013,7 @@ private fun StatsUiTabletLandscapePreview() {
                     userName = "Sam",
                     overallStats =
                         SessionStats(
-                            totalProblems = 150,
+                            totalProblems = 2150,
                             correctCount = 135,
                             accuracy = 90f,
                             sessionCount = 15,
@@ -1083,7 +1083,7 @@ private fun StatsUiCompactPreview() {
                     userName = "Alex",
                     overallStats =
                         SessionStats(
-                            totalProblems = 120,
+                            totalProblems = 941120,
                             correctCount = 108,
                             accuracy = 90f,
                             sessionCount = 12,
