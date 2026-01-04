@@ -65,8 +65,8 @@ import java.time.LocalDate
 import dev.hossain.mathtutor.ui.component.BadgeIcon as BadgeIconImage
 
 // Heights for adaptive grids
-private val STATS_GRID_HEIGHT_COMPACT: Dp = 180.dp // Single column needs more vertical space
-private val STATS_GRID_HEIGHT_MULTI_COLUMN: Dp = 90.dp // Multi-column layout is more compact
+private val STATS_GRID_HEIGHT_TWO_COLUMN: Dp = 120.dp // 2 columns (phones/tablets)
+private val STATS_GRID_HEIGHT_THREE_COLUMN: Dp = 90.dp // 3 columns (expanded screens)
 private val BADGES_GRID_HEIGHT: Dp = 120.dp
 
 /**
@@ -454,11 +454,8 @@ private fun QuickStatsCard(
                     when {
                         screenWidth >= EXPANDED_WIDTH_BREAKPOINT -> 3
 
-                        // expanded: 3 columns
-                        screenWidth >= MEDIUM_WIDTH_BREAKPOINT -> 2
-
-                        // medium: 2 columns
-                        else -> 1 // compact: 1 column
+                        // expanded: 3 columns (shows Sessions count)
+                        else -> 2 // compact & medium: 2 columns (Problems + Accuracy)
                     }
 
                 // Show stats in adaptive grid
@@ -470,10 +467,10 @@ private fun QuickStatsCard(
                         Modifier
                             .fillMaxWidth()
                             .height(
-                                if (columns == 1) {
-                                    STATS_GRID_HEIGHT_COMPACT
+                                if (columns == 3) {
+                                    STATS_GRID_HEIGHT_THREE_COLUMN
                                 } else {
-                                    STATS_GRID_HEIGHT_MULTI_COLUMN
+                                    STATS_GRID_HEIGHT_TWO_COLUMN
                                 },
                             ),
                 ) {
