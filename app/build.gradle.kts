@@ -119,7 +119,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     // Firebase libraries (versions managed by BoM)
     implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics)
 
     implementation(libs.circuit.codegen.annotations)

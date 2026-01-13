@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Firebase Auth Crash**: Removed unused `firebase-auth` dependency that was causing app crashes
+  - Removed `com.google.firebase:firebase-auth` from app dependencies
+  - App does not use authentication functionality, so this dependency was unnecessary
+  - Fixes `NullPointerException` in `SignInHubActivity.onCreate` that occurred on app launch
+
 ## [1.24.0] - 2026-01-04
 
 ### Added
