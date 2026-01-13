@@ -95,20 +95,22 @@ jobs:
           cp app/build/outputs/bundle/release/app-release.aab artifact/app-v${{ steps.version.outputs.VERSION }}.aab
 
       - name: Upload Release APK
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v6
         with:
           name: app-apk
           path: artifact/app-v${{ steps.version.outputs.VERSION }}.apk
-          # Use maximum allowed retention period
-          # https://github.com/actions/upload-artifact?tab=readme-ov-file#retention-period
-          retention-days: 90
+          # Keep artifacts for 7 days only (short-term storage for snapshots)
+          # Release builds attach files directly to GitHub Release instead
+          retention-days: 7
 
       - name: Upload Release AAB
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v6
         with:
           name: app-aab
           path: artifact/app-v${{ steps.version.outputs.VERSION }}.aab
-          retention-days: 90
+          retention-days: 7
 
       # If this is running due to a GitHub release, attach the APK and AAB to the release
       - name: Attach APK and AAB to GitHub Release
