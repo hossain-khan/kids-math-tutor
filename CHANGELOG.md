@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Dark Mode System Bar Background**: Fixed white background appearing in system status bar and bottom navigation area on Practice Results screen in dark mode
+  - Removed `systemBarsPadding()` modifier from ResultsUi Scaffold to properly respect edge-to-edge layout
+  - Results screen now matches behavior of other screens like MathPracticeUi
+  - System bars now correctly adapt to dark/light theme
 - **Visual Hint Dialog Transition**: Fixed issue where text hint dialog wasn't dismissed when showing visual hint
   - Text hint now properly closes when "Show Visually" button is pressed
   - Only the visual hint dialog is displayed, improving user experience
