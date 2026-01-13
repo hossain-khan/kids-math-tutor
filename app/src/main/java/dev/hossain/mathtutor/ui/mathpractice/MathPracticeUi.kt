@@ -1377,6 +1377,42 @@ private fun MathPracticeUiFoldableLandscapePreview() {
     }
 }
 
+@Preview(
+    showBackground = true,
+    device = "spec:width=360dp,height=592dp,dpi=420,isRound=false,orientation=portrait",
+    name = "Small Phone Portrait (4.65in)",
+)
+@Composable
+private fun MathPracticeUiSmallPhonePreview() {
+    KidsMathTutorAppTheme {
+        MathPracticeUi(
+            state =
+                MathPracticeScreen.State(
+                    currentProblem = MathProblem(num1 = 2, num2 = 1, operation = MathOperation.SUBTRACTION, correctAnswer = 1),
+                    currentAnswer = "55232",
+                    currentProblemIndex = 0,
+                    totalProblems = 10,
+                    isCorrect = false,
+                    eventSink = {},
+                ),
+            hapticService =
+                object : HapticService {
+                    override fun triggerSuccess() {}
+
+                    override fun triggerError() {}
+
+                    override fun triggerBadgeUnlock() {}
+
+                    override fun triggerButtonClick() {}
+
+                    override fun triggerLongPress() {}
+
+                    override fun setHapticsEnabled(enabled: Boolean) {}
+                },
+        )
+    }
+}
+
 /**
  * Displays a hint card with helpful guidance text.
  * Kids can dismiss the hint to try solving on their own.
