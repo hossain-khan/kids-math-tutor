@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
@@ -538,14 +540,17 @@ internal fun MathPracticeUi(
                         }
                     } else {
                         // Portrait or compact: stacked layout (centered on wide screens)
+                        // Make it scrollable to support small devices
+                        val scrollState = rememberScrollState()
                         Column(
                             modifier =
                                 Modifier
                                     .widthIn(max = MAX_CONTENT_WIDTH_NARROW)
                                     .fillMaxSize()
+                                    .verticalScroll(scrollState)
                                     .padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             // Progress indicator
                             ProgressSection(
@@ -583,7 +588,6 @@ internal fun MathPracticeUi(
 
                             // Hint button (appears after feedback when wrong)
                             if (state.showHintButton && !state.hintButtonClicked) {
-                                Spacer(modifier = Modifier.height(12.dp))
                                 Button(
                                     onClick = { state.eventSink(MathPracticeScreen.Event.RequestHint) },
                                     modifier =
@@ -602,7 +606,8 @@ internal fun MathPracticeUi(
                                 }
                             }
 
-                            Spacer(modifier = Modifier.weight(1f))
+                            // Add spacing to push number pad and buttons down, but not off-screen
+                            Spacer(modifier = Modifier.height(24.dp))
 
                             // Number pad
                             NumberPad(

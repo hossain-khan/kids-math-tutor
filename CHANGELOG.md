@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Practice Screen Layout on Small Devices**: Fixed number pad being hidden on small screen devices (4.65" phones)
+  - Made portrait layout scrollable using `verticalScroll` modifier
+  - Removed `weight(1f)` spacer that pushed content off-screen
+  - Reduced spacing from 24dp to 16dp for better content density
+  - Number pad and action buttons are now always visible and accessible on all device sizes
+
 ## [1.24.1] - 2026-01-12
 
 ### Fixed
