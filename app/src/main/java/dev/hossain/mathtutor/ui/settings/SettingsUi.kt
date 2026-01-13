@@ -488,7 +488,7 @@ private fun SettingsLinks(modifier: Modifier = Modifier) {
                 )
             }
             Text(
-                text = "v${BuildConfig.VERSION_NAME}",
+                text = "v${BuildConfig.VERSION_NAME}" + if (BuildConfig.DEBUG) " (debug)" else "",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(end = 8.dp),
