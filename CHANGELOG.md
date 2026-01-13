@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.1] - 2026-01-12
+
 ### Fixed
 - **Dark Mode System Bar Background**: Fixed white background appearing in system status bar and bottom navigation area on Practice Results screen in dark mode
   - Removed `systemBarsPadding()` modifier from ResultsUi Scaffold to properly respect edge-to-edge layout
@@ -19,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Removed `com.google.firebase:firebase-auth` from app dependencies
   - App does not use authentication functionality, so this dependency was unnecessary
   - Fixes `NullPointerException` in `SignInHubActivity.onCreate` that occurred on app launch
+- **Debug Mode Version Display**: Added (debug) suffix to version string for debug builds
+  - Debug builds now show version as 'v1.24.1 (debug)' in Settings screen
+  - Release builds continue to show 'v1.24.1' without suffix
+  - Helps distinguish debug builds during testing
 
 ## [1.24.0] - 2026-01-04
 
@@ -2496,7 +2502,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.1...HEAD
+[1.24.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.0...1.24.1
 [1.24.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.23.0...1.24.0
 [1.23.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.1...1.23.0
 [1.22.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.0...1.22.1
