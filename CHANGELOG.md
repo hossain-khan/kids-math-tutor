@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Visual Hint Dialog Transition**: Fixed issue where text hint dialog wasn't dismissed when showing visual hint
+  - Text hint now properly closes when "Show Visually" button is pressed
+  - Only the visual hint dialog is displayed, improving user experience
+
 ## [1.24.0] - 2026-01-04
 
 ### Added

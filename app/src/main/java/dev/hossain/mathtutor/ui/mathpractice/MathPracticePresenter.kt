@@ -717,6 +717,8 @@ class MathPracticePresenter
                     }
 
                     is MathPracticeScreen.Event.ShowVisualHint -> {
+                        // Close the text hint dialog by clearing the hint text
+                        currentHintText = null
                         showVisualHint = true
 
                         // Analytics: Track visual hint usage
