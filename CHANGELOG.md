@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Grade Selection Screen Text Overflow**: Fixed text clipping on grade cards in tablet portrait mode and with large accessibility text
+  - Grade title and subtitle now wrap properly instead of being cut off
+  - Changed grade cards from fixed height (150dp) to flexible minimum height with `heightIn`
+  - Added `maxLines` parameter to text components (2 lines for titles, 3 lines for descriptions)
+  - Added extra height buffer in LazyVerticalGrid to accommodate text wrapping on different screen sizes
+
 ## [1.24.1] - 2026-01-12
 
 ### Fixed

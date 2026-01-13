@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -90,7 +91,7 @@ import timber.log.Timber
 import java.time.Instant
 
 private val MIN_GRADE_CARD_WIDTH: Dp = 200.dp
-private val GRADE_CARD_HEIGHT: Dp = 150.dp
+private val MIN_GRADE_CARD_HEIGHT: Dp = 150.dp
 private val GRADE_CARD_VERTICAL_PADDING: Dp = 8.dp
 
 /**
@@ -465,9 +466,12 @@ fun GradeSelectionUi(
                         // Calculate grid height based on number of rows needed
                         // LazyVerticalGrid requires height constraint when inside scrollable parent
                         val numRows = (state.availableGrades.size + numColumns - 1) / numColumns // Ceiling division
-                        val cardHeightWithPadding = GRADE_CARD_HEIGHT + (GRADE_CARD_VERTICAL_PADDING * 2)
+                        val cardHeightWithPadding = MIN_GRADE_CARD_HEIGHT + (GRADE_CARD_VERTICAL_PADDING * 2)
                         val verticalSpacing = 4.dp
-                        val gridHeight = (cardHeightWithPadding * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0))
+                        // Add extra height buffer for text wrapping in adaptive layouts
+                        val extraHeightForWrapping = if (screenWidth >= MEDIUM_WIDTH_BREAKPOINT) 80.dp else 100.dp
+                        val gridHeight =
+                            (cardHeightWithPadding * numRows) + (verticalSpacing * (numRows - 1).coerceAtLeast(0)) + extraHeightForWrapping
 
                         LazyVerticalGrid(
                             columns = gridColumns,
@@ -517,7 +521,7 @@ private fun GradeCard(
             modifier
                 .fillMaxWidth()
                 .padding(vertical = GRADE_CARD_VERTICAL_PADDING)
-                .height(GRADE_CARD_HEIGHT),
+                .heightIn(min = MIN_GRADE_CARD_HEIGHT),
         border =
             if (isSelected) {
                 BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
@@ -536,7 +540,7 @@ private fun GradeCard(
         Column(
             modifier =
                 Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(24.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -546,6 +550,8 @@ private fun GradeCard(
                 style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -555,6 +561,7 @@ private fun GradeCard(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
+                maxLines = 3,
             )
         }
     }
