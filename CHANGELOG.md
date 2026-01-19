@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Renovate Configuration**: Updated renovate.json to use cron syntax for dependency checks
+  - Changed schedule to use cron expression `0 3 1 * *` (runs at 3am on the first day of each month)
+  - Follows Renovate's recommendation to use cron syntax in schedules instead of readable format
+
 ## [1.24.1] - 2026-01-12
 
 ### Fixed
