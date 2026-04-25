@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Renovate Configuration**: Updated renovate.json to use cron syntax for dependency checks
   - Changed schedule to use cron expression `0 3 1 * *` (runs at 3am on the first day of each month)
   - Follows Renovate's recommendation to use cron syntax in schedules instead of readable format
+- **Library Version Updates**: Bumped several dependencies to their latest compatible stable releases
+  - Compose BOM: `2025.12.01` → `2026.04.01`
+  - Firebase BOM: `34.7.0` → `34.12.0`
+  - `androidx.activity:activity-compose`: `1.12.2` → `1.13.0`
+  - `androidx.core:core-ktx`: `1.17.0` → `1.18.0`
+  - Circuit: `0.31.0` → `0.33.1` (compatible — `SaveableBackStack` now extends the new `NavStack`)
+  - Metro: `0.9.4` → `0.11.0` (latest stable that still supports the project's JDK 17 toolchain; `0.12+` requires JDK 21)
+  - Robolectric: `4.16` → `4.16.1`
+- **Metro Gradle DSL**: Removed `shrinkUnusedBindings` and `chunkFieldInits` options from the `metro { ... }` block in `app/build.gradle.kts` — both are enabled by default in Metro 0.11+ and the explicit setters were removed/marked as delicate APIs
 
 ## [1.24.1] - 2026-01-12
 
