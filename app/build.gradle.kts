@@ -199,12 +199,4 @@ metro {
     // When enabled, Metro will emit detailed debug information about the dependency graph
     // See https://zacsweers.github.io/metro/latest/
     debug.set(true)
-
-    // Shrink unused bindings to reduce generated code size (enabled by default)
-    // See https://zacsweers.github.io/metro/latest/dependency-graphs/
-    shrinkUnusedBindings.set(true)
-
-    // Enable chunking of field initializers for better performance in large graphs (enabled by default)
-    // See https://zacsweers.github.io/metro/latest/dependency-graphs/
-    chunkFieldInits.set(true)
 }
