@@ -204,15 +204,12 @@ class FakeCustomChallengeService : CustomChallengeService {
         challenges.addAll(challengeList)
     }
 
-    override suspend fun createChallengeFromSpec(spec: dev.hossain.mathtutor.domain.model.ChallengeImportSpec): Result<CustomChallenge> {
-        TODO("Not needed for tests")
-    }
+    override suspend fun createChallengeFromSpec(spec: dev.hossain.mathtutor.domain.model.ChallengeImportSpec): Result<CustomChallenge> =
+        Result.failure(UnsupportedOperationException("createChallengeFromSpec not used in these tests"))
 
     override suspend fun generatePreview(
         spec: dev.hossain.mathtutor.domain.model.ChallengeImportSpec,
-    ): dev.hossain.mathtutor.domain.model.PreviewData {
-        TODO("Not needed for tests")
-    }
+    ): dev.hossain.mathtutor.domain.model.PreviewData = throw UnsupportedOperationException("generatePreview not used in these tests")
 
     override suspend fun getAllChallenges(): List<CustomChallenge> = challenges
 
@@ -239,9 +236,7 @@ class FakeCustomChallengeService : CustomChallengeService {
     override suspend fun recordPracticeSession(
         challengeId: String,
         session: dev.hossain.mathtutor.domain.model.ChallengePracticeSession,
-    ) {
-        TODO("Not needed for tests")
-    }
+    ) = throw UnsupportedOperationException("recordPracticeSession not used in these tests")
 
     override fun observeActiveChallenges(): Flow<List<CustomChallenge>> = flowOf(challenges.filter { !it.isArchived })
 

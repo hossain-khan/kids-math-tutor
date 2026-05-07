@@ -36,22 +36,22 @@ class GradeAwareProblemGeneratorTest {
     // ==================== Kindergarten Addition Tests ====================
 
     @Test
-    fun `Kindergarten addition uses numbers 1-10`() {
+    fun `Kindergarten addition uses numbers 1-9`() {
         val problems = generator.generateProblems(100, MathOperation.ADDITION, GradeLevel.KINDERGARTEN)
 
         problems.forEach { problem ->
-            assertThat(problem.num1 in 1..10).isTrue()
-            assertThat(problem.num2 in 1..10).isTrue()
+            assertThat(problem.num1 in 1..9).isTrue()
+            assertThat(problem.num2 in 1..9).isTrue()
         }
     }
 
     @Test
-    fun `Kindergarten addition results are 2-18`() {
+    fun `Kindergarten addition results are 2-10`() {
         val problems = generator.generateProblems(100, MathOperation.ADDITION, GradeLevel.KINDERGARTEN)
 
         problems.forEach { problem ->
             assertThat(
-                problem.correctAnswer in 2..18,
+                problem.correctAnswer in 2..10,
             ).isTrue()
         }
     }
@@ -69,22 +69,22 @@ class GradeAwareProblemGeneratorTest {
     // ==================== Kindergarten Subtraction Tests ====================
 
     @Test
-    fun `Kindergarten subtraction uses numbers 1-10`() {
+    fun `Kindergarten subtraction uses numbers 1-9`() {
         val problems = generator.generateProblems(100, MathOperation.SUBTRACTION, GradeLevel.KINDERGARTEN)
 
         problems.forEach { problem ->
-            assertThat(problem.num1 in 1..10).isTrue()
-            assertThat(problem.num2 in 1..10).isTrue()
+            assertThat(problem.num1 in 1..9).isTrue()
+            assertThat(problem.num2 in 1..9).isTrue()
         }
     }
 
     @Test
-    fun `Kindergarten subtraction results are 0-9`() {
+    fun `Kindergarten subtraction results are 0-8`() {
         val problems = generator.generateProblems(100, MathOperation.SUBTRACTION, GradeLevel.KINDERGARTEN)
 
         problems.forEach { problem ->
             assertThat(
-                problem.correctAnswer in 0..9,
+                problem.correctAnswer in 0..8,
             ).isTrue()
         }
     }
@@ -122,8 +122,8 @@ class GradeAwareProblemGeneratorTest {
         problems.forEach { problem ->
             // Should be addition problems with K ranges
             assertThat(MathOperation.ADDITION).isEqualTo(problem.operation)
-            assertThat(problem.num1 in 1..10).isTrue()
-            assertThat(problem.num2 in 1..10).isTrue()
+            assertThat(problem.num1 in 1..9).isTrue()
+            assertThat(problem.num2 in 1..9).isTrue()
             assertThat(problem.num1 + problem.num2).isEqualTo(problem.correctAnswer)
         }
     }
@@ -135,8 +135,8 @@ class GradeAwareProblemGeneratorTest {
         problems.forEach { problem ->
             // Should be subtraction problems with K ranges
             assertThat(MathOperation.SUBTRACTION).isEqualTo(problem.operation)
-            assertThat(problem.num1 in 1..10).isTrue()
-            assertThat(problem.num2 in 1..10).isTrue()
+            assertThat(problem.num1 in 1..9).isTrue()
+            assertThat(problem.num2 in 1..9).isTrue()
             assertThat(problem.correctAnswer >= 0).isTrue()
         }
     }
