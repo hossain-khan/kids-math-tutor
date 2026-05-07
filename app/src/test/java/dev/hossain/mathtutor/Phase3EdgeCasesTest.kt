@@ -349,7 +349,8 @@ class Phase3EdgeCasesTest {
                 BadgeRequirement.DailyStreak(7),
             )
 
-        // Verify all 15 requirements are unique types
+        // Verify all 15 badge requirements are listed (note: some use the same requirement type
+        // with different thresholds, e.g. multiple ProblemCount and SessionAccuracy entries)
         assertThat(allBadgeRequirements.size).isEqualTo(15)
     }
 
