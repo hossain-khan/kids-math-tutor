@@ -139,6 +139,9 @@ dependencies {
     // Timber logging library
     implementation(libs.timber)
 
+    // JSON Syntax Highlighting
+    implementation(libs.compose.highlight)
+
     // Kotlinx Serialization JSON for JSON parsing
     implementation(libs.kotlinx.serialization.json)
 

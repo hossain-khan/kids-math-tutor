@@ -8,10 +8,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +27,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ExpandLess
@@ -51,16 +54,26 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.highlight.ui.ExperimentalHighlightApi
+import dev.hossain.highlight.ui.HighlightThemeProvider
+import dev.hossain.highlight.ui.SyntaxHighlightedTextEditor
+import dev.hossain.highlight.ui.rememberTomorrowNightTheme
+import dev.hossain.highlight.ui.rememberTomorrowTheme
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PreviewData
@@ -208,6 +221,7 @@ private fun JsonInputSection(
     onClear: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    var editorValue by remember { mutableStateOf(TextFieldValue(jsonInput)) }
     val sampleJson =
         """
         {
@@ -239,21 +253,24 @@ private fun JsonInputSection(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = jsonInput,
-                onValueChange = onJsonChanged,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 200.dp, max = 300.dp),
-                placeholder = {
-                    Text(
-                        text = "Paste your JSON here...",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                },
-                textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-            )
+            @OptIn(ExperimentalHighlightApi::class)
+            HighlightThemeProvider(
+                lightHighlightTheme = rememberTomorrowTheme(),
+                darkHighlightTheme = rememberTomorrowNightTheme(),
+            ) {
+                SyntaxHighlightedTextEditor(
+                    value = editorValue,
+                    onValueChange = { editorValue = it },
+                    language = "json",
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
+                            .heightIn(min = 200.dp, max = 300.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(12.dp),
+                )
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
