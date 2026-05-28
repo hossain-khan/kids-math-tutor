@@ -1,7 +1,7 @@
 [versions]
 activityCompose = "1.13.0"
 # https://developer.android.com/build/releases/gradle-plugin
-agp = "8.13.2"
+agp = "9.2.1"
 circuit = "0.33.1"
 composeBom = "2026.05.01"
 coreKtx = "1.18.0"
@@ -31,7 +31,7 @@ ksp = "2.3.9"
 # Kotlin linter with built-in formatter
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
-kotlinter = "5.3.0"
+kotlinter = "5.5.0"
 lifecycleRuntimeKtx = "2.10.0"
 metro = "1.1.1"
 # Timber - A logger with a small, extensible API which provides utility on top of Android's normal Log class
@@ -172,7 +172,6 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 # Google Services plugin for Firebase
 # https://developers.google.com/android/guides/google-services-plugin
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 

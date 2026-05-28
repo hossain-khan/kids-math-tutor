@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **AGP 9 Built-in Kotlin Migration**: Removed `org.jetbrains.kotlin.android` plugin now that AGP 9.0 provides built-in Kotlin support, and updated related build tooling
+  - Upgraded Android Gradle Plugin (AGP) to `9.2.1`
+  - Upgraded Gradle wrapper to `9.4.1`
+  - Removed `alias(libs.plugins.kotlin.android)` from `app/build.gradle.kts` and root `build.gradle.kts`
+  - Removed `kotlin-android` plugin entry from `gradle/libs.versions.toml`
+
 ## [1.25.0] - 2026-05-28
 
 ### Added
