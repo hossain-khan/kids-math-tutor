@@ -82,7 +82,7 @@ if [ "$RUN_ANDROID" = true ]; then
   fi
 
   echo -e "${YELLOW}[2/5] Linting Android code...${NC}"
-  if ./gradlew lintKotlin > /dev/null 2>&1; then
+  if ./gradlew lintDebug > /dev/null 2>&1; then
       echo -e "${GREEN}✓ Android linting passed${NC}\n"
   else
       echo -e "${RED}✗ Android linting failed${NC}\n"

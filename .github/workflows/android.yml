@@ -35,4 +35,4 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Test, build, and lint
-        run: ./gradlew testDebugUnitTest assembleDebug :app:lintKotlin --parallel --daemon
+        run: ./gradlew testDebugUnitTest assembleDebug lintDebug --parallel --daemon
