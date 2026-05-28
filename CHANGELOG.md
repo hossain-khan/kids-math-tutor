@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.25.0] - 2026-05-28
+
 ### Added
 - **Compose Highlight for JSON Import Flow**: Added compose preview highlighting for JSON import functionality
   - Enhances debugging and development experience when working with JSON import features
@@ -37,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Firebase BOM: `34.7.0` → `34.12.0`
   - `androidx.activity:activity-compose`: `1.12.2` → `1.13.0`
   - `androidx.core:core-ktx`: `1.17.0` → `1.18.0`
-  - Circuit: `0.31.0` → `0.33.1` (compatible — `SaveableBackStack` now extends the new `NavStack`)
+  - Circuit: `0.31.0` → `0.33.1` (compatible - `SaveableBackStack` now extends the new `NavStack`)
   - Metro: `0.9.4` → `0.11.0` (latest stable that still supports the project's JDK 17 toolchain; `0.12+` requires JDK 21)
   - Robolectric: `4.16` → `4.16.1`
 - **Metro Gradle DSL**: Removed `shrinkUnusedBindings` and `chunkFieldInits` options from the `metro { ... }` block in `app/build.gradle.kts` — both are enabled by default in Metro 0.11+ and the explicit setters were removed/marked as delicate APIs
@@ -2537,7 +2539,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.1...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.25.0...HEAD
+[1.25.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.1...1.25.0
 [1.24.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.0...1.24.1
 [1.24.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.23.0...1.24.0
 [1.23.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.1...1.23.0
