@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **GitHub Workflows**: Re-enabled `android-lint.yml` and `android.yml` workflows for public repository
   - `android-lint.yml` (Post Merge Check) — runs post-merge linting and builds on the main branch using ubuntu-slim for cost efficiency
   - `android.yml` (Android CI) — runs tests, builds, and linting on push/pull-request and can be manually triggered
+- **GitHub Workflows JDK Version**: Updated `test-keystore-apk-signing.yml` workflow to use JDK 21 (from 17) for Metro gradle plugin compatibility
+  - Metro 0.11.0+ requires JDK 21 runtime minimum
+  - All GitHub workflows now consistently use JDK 21 or newer
 - **Renovate Configuration**: Updated renovate.json to use cron syntax for dependency checks
   - Changed schedule to use cron expression `0 3 1 * *` (runs at 3am on the first day of each month)
   - Follows Renovate's recommendation to use cron syntax in schedules instead of readable format
