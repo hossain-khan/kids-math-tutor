@@ -3,7 +3,7 @@ activityCompose = "1.13.0"
 # https://developer.android.com/build/releases/gradle-plugin
 agp = "8.13.2"
 circuit = "0.33.1"
-composeBom = "2026.05.00"
+composeBom = "2026.05.01"
 coreKtx = "1.18.0"
 espressoCore = "3.7.0"
 # Firebase BoM (Bill of Materials) - manages all Firebase library versions
@@ -15,9 +15,11 @@ firebaseCrashlytics = "3.0.7"
 # Google Services plugin for processing google-services.json
 # https://developers.google.com/android/guides/google-services-plugin
 googleServices = "4.4.4"
-googleFonts = "1.10.0"
+googleFonts = "1.11.2"
 junit = "4.13.2"
 junitVersion = "1.3.0"
+
+browserVersion = "1.10.0"
 
 # https://kotlinlang.org/docs/releases.html
 kotlin = "2.3.21"
@@ -35,12 +37,12 @@ metro = "1.1.1"
 # Timber - A logger with a small, extensible API which provides utility on top of Android's normal Log class
 # https://github.com/JakeWharton/timber
 timber = "5.0.1"
-androidxWork = "2.11.0"
-datastorePreferences = "1.2.0"
+androidxWork = "2.11.2"
+datastorePreferences = "1.2.1"
 # Room Database - https://developer.android.com/jetpack/androidx/releases/room
 room = "2.8.4"
 # Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
-coroutines = "1.10.2"
+coroutines = "1.11.0"
 # Robolectric for Android unit tests - https://robolectric.org/
 robolectric = "4.16.1"
 # Media3 ExoPlayer - https://developer.android.com/media/media3
@@ -136,6 +138,8 @@ androidx-test-core = { group = "androidx.test", name = "core", version = "1.7.0"
 # Media3 ExoPlayer - https://developer.android.com/media/media3
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3" }
+
+androidx-browser = {group = "androidx.browser", name="browser", version.ref = "browserVersion"}
 
 # Google Truth - Fluent testing library
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }

@@ -146,7 +146,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // AndroidX Browser (Custom Tabs) for opening external links
-    implementation("androidx.browser:browser:1.9.0")
+    implementation(libs.androidx.browser)
 
     // Room Database
     implementation(libs.androidx.room.runtime)
