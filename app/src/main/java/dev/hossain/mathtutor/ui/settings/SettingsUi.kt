@@ -3,6 +3,7 @@ package dev.hossain.mathtutor.ui.settings
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -509,7 +510,11 @@ private fun openExternalUrl(
     try {
         val uri = url.toUri()
         val builder = CustomTabsIntent.Builder().setShowTitle(true)
-        toolbarColor?.let { builder.setToolbarColor(it) }
+        toolbarColor?.let {
+            val colorSchemeParams = CustomTabColorSchemeParams.Builder().setToolbarColor(it).build()
+            builder.setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_LIGHT, colorSchemeParams)
+            builder.setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, colorSchemeParams)
+        }
         val customTabsIntent = builder.build()
 
         customTabsIntent.launchUrl(context, uri)

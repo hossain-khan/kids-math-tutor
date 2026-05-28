@@ -33,8 +33,8 @@ interface SessionSeeder {
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
+@Inject
 class SessionSeederImpl
-    @Inject
     constructor(
         private val problemGenerator: ProblemGenerator,
         private val sessionRepository: SessionRepository,

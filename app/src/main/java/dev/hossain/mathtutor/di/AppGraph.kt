@@ -8,7 +8,6 @@ import dev.hossain.mathtutor.domain.repository.BadgeRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Multibinds
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import kotlin.reflect.KClass
@@ -43,7 +42,7 @@ interface AppGraph {
      * See https://zacsweers.github.io/metro/latest/bindings/#multibindings
      */
     @Multibinds
-    val activityProviders: Map<KClass<out Activity>, Provider<Activity>>
+    val activityProviders: Map<KClass<out Activity>, () -> Activity>
 
     /**
      * Circuit instance for handling UI presentation and state management.
