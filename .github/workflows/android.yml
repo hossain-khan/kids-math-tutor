@@ -19,9 +19,6 @@ on:
 
 jobs:
   android-build:
-    # TEMPORARILY DISABLED for now to save costs
-    # Will re-enable when new month allowance starts
-    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
