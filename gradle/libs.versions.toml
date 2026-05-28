@@ -59,6 +59,10 @@ androidxWindow = "1.5.1"
 # https://github.com/Kotlin/kotlinx.serialization
 kotlinxSerialization = "1.11.0"
 
+# Compose Highlight - syntax highlighting library for Jetpack Compose
+# https://github.com/hossain-khan/android-compose-highlight
+composeHighlightVersion = "0.24.0"
+
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -111,6 +115,10 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 # Timber - A logger with a small, extensible API
 # https://github.com/JakeWharton/timber
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# Compose Highlight for syntax highlighting in Compose
+# https://github.com/hossain-khan/android-compose-highlight
+compose-highlight = { group = "dev.hossain", name = "compose-highlight", version.ref = "composeHighlightVersion"  }
 
 # Room Database - https://developer.android.com/training/data-storage/room
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
