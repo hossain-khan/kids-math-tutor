@@ -7,12 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Compose Highlight for JSON Import Flow**: Added compose preview highlighting for JSON import functionality
+  - Enhances debugging and development experience when working with JSON import features
+- **IntelliJ IDEA Project Icon**: Added proper project icon for IntelliJ IDEA recognition
+  - Improves IDE project identification and visual consistency
+
 ### Fixed
 - **Test Accuracy**: Corrected inaccurate test assertions in `GradeAwareProblemGeneratorTest` where Kindergarten number ranges were documented and tested as `1-10` instead of the actual `1-9`, addition results as `2-18` instead of `2-10`, and subtraction results as `0-9` instead of `0-8`
 - **Test Comments**: Updated misleading comment in `Phase3EdgeCasesTest` that claimed to "verify all 15 requirements are unique types" when the assertion only checks the count
 - **Test Stubs**: Replaced `TODO("Not needed for tests")` placeholders in `FakeCustomChallengeService` with `UnsupportedOperationException` to give a clear, actionable error if accidentally called
 
 ### Changed
+- **GitHub Workflows**: Re-enabled `android-lint.yml` and `android.yml` workflows for public repository
+  - `android-lint.yml` (Post Merge Check) — runs post-merge linting and builds on the main branch using ubuntu-slim for cost efficiency
+  - `android.yml` (Android CI) — runs tests, builds, and linting on push/pull-request and can be manually triggered
 - **Renovate Configuration**: Updated renovate.json to use cron syntax for dependency checks
   - Changed schedule to use cron expression `0 3 1 * *` (runs at 3am on the first day of each month)
   - Follows Renovate's recommendation to use cron syntax in schedules instead of readable format
