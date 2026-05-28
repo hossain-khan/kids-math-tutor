@@ -866,10 +866,10 @@ private fun QuickStartStep(
                     Icon(
                         imageVector = Icons.Outlined.OpenInBrowser,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(18.dp),
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(buttonLabel, style = MaterialTheme.typography.labelSmall)
+                    Text(buttonLabel, style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

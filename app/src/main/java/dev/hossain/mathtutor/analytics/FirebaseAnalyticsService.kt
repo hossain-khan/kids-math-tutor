@@ -34,7 +34,7 @@ import timber.log.Timber
 @Inject
 class FirebaseAnalyticsService
     constructor(
-        @ApplicationContext private val context: Context,
+        @param:ApplicationContext private val context: Context,
         private val userPreferencesRepository: UserPreferencesRepository,
     ) : AnalyticsService {
         private val firebaseAnalytics: FirebaseAnalytics by lazy {

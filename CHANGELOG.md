@@ -14,7 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improves IDE project identification and visual consistency
 
 ### Fixed
-- **Test Accuracy**: Corrected inaccurate test assertions in `GradeAwareProblemGeneratorTest` where Kindergarten number ranges were documented and tested as `1-10` instead of the actual `1-9`, addition results as `2-18` instead of `2-10`, and subtraction results as `0-9` instead of `0-8`
+- **Compiler Warnings**: Resolved four Kotlin compiler warnings in the codebase
+  - `FirebaseAnalyticsService`: Added `@param:` target to `@ApplicationContext` annotation to suppress future annotation target ambiguity warning (KT-73255)
+  - `SessionSeeder`: Moved `@Inject` annotation from constructor to class level as recommended when there is only one inject-annotated constructor
+  - `AppGraph`/`ComposeAppComponentFactory`: Replaced deprecated `Provider<T>` type with the idiomatic `() -> T` function syntax form as recommended by Metro
+  - `SettingsUi`: Replaced deprecated `setToolbarColor()` with `CustomTabColorSchemeParams` and `setColorSchemeParams()` for Custom Tabs toolbar theming
 - **Test Comments**: Updated misleading comment in `Phase3EdgeCasesTest` that claimed to "verify all 15 requirements are unique types" when the assertion only checks the count
 - **Test Stubs**: Replaced `TODO("Not needed for tests")` placeholders in `FakeCustomChallengeService` with `UnsupportedOperationException` to give a clear, actionable error if accidentally called
 
