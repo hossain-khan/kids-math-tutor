@@ -16,7 +16,7 @@ plugins {
 
 android {
     namespace = "dev.hossain.mathtutor"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "dev.hossain.mathtutor"
