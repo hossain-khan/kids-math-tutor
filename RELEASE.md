@@ -164,7 +164,7 @@ Add these three secrets (one at a time):
 ### 6.1 Create a Test Release
 
 1. Go to: `https://github.com/[YOUR-USERNAME]/[YOUR-REPO]/releases/new`
-2. Create a new tag (e.g., `v1.0.0-test`)
+2. Create a new tag (e.g., `1.0.0-test`)
 3. Add a release title and description
 4. Click "Publish release"
 
@@ -178,7 +178,7 @@ Add these three secrets (one at a time):
 ### 6.3 Clean Up Test Release (Optional)
 
 - [ ] Delete the test release if desired
-- [ ] Delete the test tag: `git push --delete origin v1.0.0-test`
+- [ ] Delete the test tag: `git push --delete origin 1.0.0-test`
 
 ## Ongoing Usage
 
@@ -186,7 +186,6 @@ Add these three secrets (one at a time):
 
 The `android-release.yml` workflow automatically runs on:
 
-- **Every push to main branch**: Creates a snapshot build (artifact available for 30 days)
 - **Manual trigger**: Run the workflow manually from the Actions tab
 - **GitHub release**: Publishes APK and AAB and attaches them to the release
 
@@ -197,8 +196,8 @@ The `android-release.yml` workflow automatically runs on:
    versionCode = 2  // Increment
    versionName = "1.1.0"  // Update
    ```
-2. Commit and push to main branch
-3. Create a GitHub release with tag matching the version (e.g., `v1.1.0`)
+2. Commit and push the change through the normal pull request flow, then merge to `main`
+3. Create a GitHub release with tag matching the version (e.g., `1.1.0`)
 4. The workflow automatically builds and attaches the signed APK and AAB
 
 ### Troubleshooting
