@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.26.0] - 2026-06-15
+
 ### Changed
 - **AGP 9 Built-in Kotlin Migration**: Removed `org.jetbrains.kotlin.android` plugin now that AGP 9.0 provides built-in Kotlin support, and updated related build tooling
   - Upgraded Android Gradle Plugin (AGP) to `9.2.1`
@@ -2546,8 +2548,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.25.0...HEAD
-[1.25.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.1...1.25.0
+[unreleased]: https://github.com/hossain-khan/kids-math-tutor/compare/1.26.0...HEAD
+[1.26.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.25.0...1.26.0
+[1.25.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.24.1...1.25.0
 [1.24.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.0...1.24.1
 [1.24.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.23.0...1.24.0
 [1.23.0]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.22.1...1.23.0
