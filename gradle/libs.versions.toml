@@ -8,7 +8,7 @@ coreKtx = "1.18.0"
 espressoCore = "3.7.0"
 # Firebase BoM (Bill of Materials) - manages all Firebase library versions
 # https://firebase.google.com/docs/android/setup#available-libraries
-firebaseBom = "34.13.0"
+firebaseBom = "34.14.1"
 # Firebase Crashlytics Gradle plugin
 # https://firebase.google.com/docs/crashlytics/get-started?platform=android
 firebaseCrashlytics = "3.0.7"
@@ -196,4 +196,3 @@ kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 # Kotlin Serialization plugin
 # https://kotlinlang.org/docs/serialization.html
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
