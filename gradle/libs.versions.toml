@@ -63,7 +63,7 @@ kotlinxSerialization = "1.11.0"
 
 # Compose Highlight - syntax highlighting library for Jetpack Compose
 # https://github.com/hossain-khan/android-compose-highlight
-composeHighlightVersion = "0.24.0"
+composeHighlightVersion = "0.31.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -196,5 +196,4 @@ kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 # Kotlin Serialization plugin
 # https://kotlinlang.org/docs/serialization.html
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
 
