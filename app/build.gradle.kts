@@ -21,7 +21,7 @@ android {
     defaultConfig {
         applicationId = "dev.hossain.mathtutor"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 31
         versionName = "1.26.0"
 

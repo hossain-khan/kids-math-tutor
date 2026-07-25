@@ -171,7 +171,7 @@ Build Tests: Release build successful, no errors
 - **Compose BOM**: 2025.12.00 ✅
 - **Room**: 2.7.1 ✅ (Kotlin 2.2 compatible)
 - **Firebase BOM**: 34.7.0 ✅
-- **Android SDK**: Target 36, Min 28 ✅
+- **Android SDK**: Target 37, Min 28 ✅
 
 ### Gradle Configuration
 - ✅ Gradle 9.2.1
@@ -237,7 +237,7 @@ release {
 - ✅ Release notes prepared
 
 ### Android Specifics
-- ✅ Target SDK: 36 (latest)
+- ✅ Target SDK: 37 (latest)
 - ✅ Min SDK: 28 (Android 9.0)
 - ✅ App permissions: Appropriate for age group
 - ✅ COPPA compliance: Ready for kids

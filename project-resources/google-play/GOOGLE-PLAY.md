@@ -215,8 +215,8 @@ Consider applying for Google Play's Teacher Approved badge:
 
 ### Compatibility
 - **Minimum SDK**: 28 (Android 9.0 Pie)
-- **Target SDK**: 36 (Android 15)
-- **Compiled SDK**: 36
+- **Target SDK**: 37 (Android 17)
+- **Compiled SDK**: 37
 - **Supported Devices**: Phones, Tablets
 - **Supported Architectures**: arm64-v8a, armeabi-v7a, x86_64
 
