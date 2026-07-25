@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.27.0] - 2026-07-25
+
 ### Changed
 - **Target SDK Upgrade**: Updated `targetSdk` to `37` (Android 17) in `app/build.gradle.kts`
 
@@ -2551,7 +2553,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-tutor/compare/1.26.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-tutor/compare/1.27.0...HEAD
+[1.27.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.26.0...1.27.0
 [1.26.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.25.0...1.26.0
 [1.25.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.24.1...1.25.0
 [1.24.1]: https://github.com/hossain-khan/kids-math-pup-tutor/compare/1.24.0...1.24.1
