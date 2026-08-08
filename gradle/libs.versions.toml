@@ -26,7 +26,7 @@ kotlin = "2.3.21"
 # KSP (Kotlin Symbol Processing) plugin - with KSP2 enabled (ksp.useKSP2=true in gradle.properties),
 # the version uses a simplified format: {kotlin-major.minor}-{ksp-patch} e.g. 2.3.9 for Kotlin 2.3.x
 # https://github.com/google/ksp/releases
-ksp = "2.3.9"
+ksp = "2.3.11"
 
 # Kotlin linter with built-in formatter
 # https://github.com/jeremymailen/kotlinter-gradle
