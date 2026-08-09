@@ -72,8 +72,8 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.highlight.ui.ExperimentalHighlightApi
 import dev.hossain.highlight.ui.HighlightThemeProvider
 import dev.hossain.highlight.ui.SyntaxHighlightedTextEditor
+import dev.hossain.highlight.ui.rememberTomorrowLightTheme
 import dev.hossain.highlight.ui.rememberTomorrowNightTheme
-import dev.hossain.highlight.ui.rememberTomorrowTheme
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.domain.model.PreviewData
@@ -255,7 +255,7 @@ private fun JsonInputSection(
 
             @OptIn(ExperimentalHighlightApi::class)
             HighlightThemeProvider(
-                lightHighlightTheme = rememberTomorrowTheme(),
+                lightHighlightTheme = rememberTomorrowLightTheme(),
                 darkHighlightTheme = rememberTomorrowNightTheme(),
             ) {
                 SyntaxHighlightedTextEditor(
