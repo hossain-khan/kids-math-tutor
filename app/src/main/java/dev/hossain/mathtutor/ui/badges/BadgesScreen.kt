@@ -1,9 +1,9 @@
 package dev.hossain.mathtutor.ui.badges
 
-import com.slack.circuit.serialization.CircuitSerializable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.repository.BadgeProgress

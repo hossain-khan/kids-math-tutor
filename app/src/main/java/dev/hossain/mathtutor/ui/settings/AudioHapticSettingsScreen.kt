@@ -3,21 +3,9 @@ package dev.hossain.mathtutor.ui.settings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import kotlinx.parcelize.Parcelize
-
-/**
- * Circuit screen for audio and haptic feedback settings.
- *
- * Allows users to:
- * - Enable/disable sound effects
- * - Enable/disable background music
- * - Adjust audio volume
- * - Enable/disable haptic feedback
- * - Enable/disable high contrast mode
- * - Enable/disable large text mode
- */
 import com.slack.circuit.serialization.CircuitSerializable
 import dev.zacsweers.metro.AppScope
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @CircuitSerializable(AppScope::class)

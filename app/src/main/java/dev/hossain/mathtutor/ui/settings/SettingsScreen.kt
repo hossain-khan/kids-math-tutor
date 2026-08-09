@@ -3,21 +3,11 @@ package dev.hossain.mathtutor.ui.settings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.UserProfile
-import kotlinx.parcelize.Parcelize
-
-/**
- * Circuit screen for user settings and profile management.
- *
- * Allows users to:
- * - View and edit their name
- * - Change their grade level
- * - Toggle adaptive difficulty
- * - Access About, Privacy, and Help information
- */
-import com.slack.circuit.serialization.CircuitSerializable
 import dev.zacsweers.metro.AppScope
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @CircuitSerializable(AppScope::class)

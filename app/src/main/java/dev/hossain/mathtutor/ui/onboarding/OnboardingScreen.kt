@@ -53,6 +53,7 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
@@ -69,8 +70,6 @@ import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
-
-import com.slack.circuit.serialization.CircuitSerializable
 
 @Parcelize
 @CircuitSerializable(AppScope::class)
