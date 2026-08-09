@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
@@ -97,24 +98,24 @@ class NumberSequencePresenter
             val coroutineScope = rememberCoroutineScope()
 
             // Game state
-            var gameState by remember {
+            var gameState by rememberRetained {
                 mutableStateOf<NumberSequenceScreen.GameState>(NumberSequenceScreen.GameState.NotStarted)
             }
-            var currentSequence by remember { mutableStateOf<SequenceQuestion?>(null) }
-            var currentAnswer by remember { mutableStateOf("") }
-            var score by remember { mutableIntStateOf(0) }
-            var timeRemaining by remember { mutableIntStateOf(GAME_DURATION_SECONDS) }
-            var personalBest by remember { mutableIntStateOf(0) }
-            var totalAttempts by remember { mutableIntStateOf(0) }
-            var correctAnswers by remember { mutableIntStateOf(0) }
-            var lastAnswerCorrect by remember { mutableStateOf<Boolean?>(null) }
-            var userName by remember { mutableStateOf<String?>(null) }
-            var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
+            var currentSequence by rememberRetained { mutableStateOf<SequenceQuestion?>(null) }
+            var currentAnswer by rememberRetained { mutableStateOf("") }
+            var score by rememberRetained { mutableIntStateOf(0) }
+            var timeRemaining by rememberRetained { mutableIntStateOf(GAME_DURATION_SECONDS) }
+            var personalBest by rememberRetained { mutableIntStateOf(0) }
+            var totalAttempts by rememberRetained { mutableIntStateOf(0) }
+            var correctAnswers by rememberRetained { mutableIntStateOf(0) }
+            var lastAnswerCorrect by rememberRetained { mutableStateOf<Boolean?>(null) }
+            var userName by rememberRetained { mutableStateOf<String?>(null) }
+            var unlockedBadges by rememberRetained { mutableStateOf<List<Badge>>(emptyList()) }
 
             // Internal state for game logic
-            var gradeLevel by remember { mutableStateOf(GradeLevel.GRADE_1) }
-            var gameStartTime by remember { mutableStateOf<Instant?>(null) }
-            var warningPlayed by remember { mutableStateOf(false) }
+            var gradeLevel by rememberRetained { mutableStateOf(GradeLevel.GRADE_1) }
+            var gameStartTime by rememberRetained { mutableStateOf<Instant?>(null) }
+            var warningPlayed by rememberRetained { mutableStateOf(false) }
 
             // Load user profile and personal best
             LaunchedEffect(Unit) {
