@@ -3,17 +3,10 @@ package dev.hossain.mathtutor.ui.stats.accuracydetails
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import dev.hossain.mathtutor.domain.model.DailyAccuracy
-import kotlinx.parcelize.Parcelize
-
-/**
- * Circuit screen for displaying daily accuracy details.
- *
- * Shows a list of daily accuracy data based on practice sessions completed.
- * Each day shows the date, number of sessions, total problems, and accuracy percentage.
- */
 import com.slack.circuit.serialization.CircuitSerializable
+import dev.hossain.mathtutor.domain.model.DailyAccuracy
 import dev.zacsweers.metro.AppScope
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @CircuitSerializable(AppScope::class)

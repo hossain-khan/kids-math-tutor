@@ -3,11 +3,11 @@ package dev.hossain.mathtutor.ui.mathrace
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
-import kotlinx.parcelize.Parcelize
-import com.slack.circuit.serialization.CircuitSerializable
 import dev.zacsweers.metro.AppScope
+import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for the Math Race game.

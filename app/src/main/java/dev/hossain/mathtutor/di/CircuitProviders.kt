@@ -62,9 +62,7 @@ interface CircuitProviders {
      * Provides the CircuitSaver configured with all registered kotlinx serializers.
      */
     @Provides
-    fun provideCircuitSaver(
-        registrations: Set<CircuitSerializerRegistration>,
-    ): CircuitSaver = SerializableCircuitSaver(registrations)
+    fun provideCircuitSaver(registrations: Set<CircuitSerializerRegistration>): CircuitSaver = SerializableCircuitSaver(registrations)
 
     /**
      * Provides a singleton instance of Circuit with presenter, UI factories, and CircuitSaver configured.

@@ -3,16 +3,15 @@ package dev.hossain.mathtutor.ui.mathpractice
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DifficultyAdjustment
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
-import kotlinx.parcelize.Parcelize
-
-import com.slack.circuit.serialization.CircuitSerializable
 import dev.zacsweers.metro.AppScope
+import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for math practice session.

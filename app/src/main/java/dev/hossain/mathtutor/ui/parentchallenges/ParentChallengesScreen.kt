@@ -3,10 +3,10 @@ package dev.hossain.mathtutor.ui.parentchallenges
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import dev.hossain.mathtutor.domain.model.CustomChallenge
-import kotlinx.parcelize.Parcelize
 import com.slack.circuit.serialization.CircuitSerializable
+import dev.hossain.mathtutor.domain.model.CustomChallenge
 import dev.zacsweers.metro.AppScope
+import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for managing parent-created custom challenges.
