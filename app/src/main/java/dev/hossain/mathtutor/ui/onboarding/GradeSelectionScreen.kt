@@ -67,6 +67,7 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import com.slack.circuitx.effects.LaunchedImpressionEffect
 import dev.hossain.mathtutor.R
 import dev.hossain.mathtutor.analytics.AnalyticsEvent
@@ -94,15 +95,16 @@ private val GRADE_CARD_HEIGHT: Dp = 150.dp
 private val GRADE_CARD_VERTICAL_PADDING: Dp = 8.dp
 
 /**
- * Circuit screen for grade selection during onboarding or from settings.
+ * Screen for selecting student grade level during onboarding or from settings.
  *
- * Allows users to select their grade level (K, 1, or 2) which determines
+ * Displays selectable grade options from Pre-K to Grade 5, explaining how each grade affects
  * the difficulty and number ranges for math problems.
  *
  * @property isFromSettings When true, saves grade and navigates back instead of going to name entry.
  *                          Used when accessing from Settings screen to change grade level.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data class GradeSelectionScreen(
     val isFromSettings: Boolean = false,
 ) : Screen {

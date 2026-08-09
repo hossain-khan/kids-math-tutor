@@ -6,12 +6,14 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
 import kotlinx.parcelize.Parcelize
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 
 /**
- * Circuit screen for Math Race game.
+ * Circuit screen for the Math Race game.
  *
- * Math Race is a timed game where players solve as many math problems
- * as possible in 60 seconds. Features include:
+ * A fast-paced 60-second challenge where users solve as many math problems as possible.
+ * Features:
  * - 3-2-1 countdown before game starts
  * - 60-second timer with 10-second warning
  * - Instant feedback on answers
@@ -21,6 +23,7 @@ import kotlinx.parcelize.Parcelize
  *                       When true, no badges will be awarded and progress may not be saved.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data class MathRaceScreen(
     val isTrialMode: Boolean = false,
 ) : Screen {

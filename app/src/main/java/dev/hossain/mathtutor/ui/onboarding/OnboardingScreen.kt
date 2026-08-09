@@ -70,7 +70,10 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
+import com.slack.circuit.serialization.CircuitSerializable
+
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object OnboardingScreen : Screen {
     data class State(
         val currentPage: Int,

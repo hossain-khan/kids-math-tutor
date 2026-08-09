@@ -3,20 +3,18 @@ package dev.hossain.mathtutor.ui.numbersequence
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 import dev.hossain.mathtutor.domain.generator.SequenceQuestion
 import dev.hossain.mathtutor.domain.model.Badge
 import kotlinx.parcelize.Parcelize
 
 /**
- * Circuit screen for the Number Sequence game.
+ * Circuit screen for Number Sequence game.
  *
- * Number Sequence is a pattern recognition game where players must identify
- * the missing number in a mathematical sequence (e.g., 2, 4, __, 8).
- * The game helps children develop pattern recognition skills essential for
- * mathematical thinking.
- *
- * Game mechanics:
- * - 90 seconds to solve as many sequences as possible
+ * A pattern recognition game where players identify missing numbers in a sequence.
+ * Features:
+ * - 10 rounds per game
  * - Grade-appropriate sequence patterns (+1, +2, doubles, etc.)
  * - Score 1 point for each correct answer
  * - Personal best tracking
@@ -26,6 +24,7 @@ import kotlinx.parcelize.Parcelize
  *                       When true, no badges will be awarded and progress may not be saved.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data class NumberSequenceScreen(
     val isTrialMode: Boolean = false,
 ) : Screen {

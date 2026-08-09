@@ -128,6 +128,7 @@ dependencies {
     implementation(libs.circuitx.effects)
     implementation(libs.circuitx.gestureNav)
     implementation(libs.circuitx.overlays)
+    implementation(libs.circuit.serialization)
     ksp(libs.circuit.codegen)
 
     implementation(libs.javax.inject)

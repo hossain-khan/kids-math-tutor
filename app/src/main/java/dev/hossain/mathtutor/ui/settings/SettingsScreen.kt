@@ -16,7 +16,11 @@ import kotlinx.parcelize.Parcelize
  * - Toggle adaptive difficulty
  * - Access About, Privacy, and Help information
  */
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
+
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object SettingsScreen : Screen {
     /**
      * State for [SettingsScreen].

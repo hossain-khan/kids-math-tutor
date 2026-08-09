@@ -12,7 +12,11 @@ import kotlinx.parcelize.Parcelize
  * Shows a list of daily accuracy data based on practice sessions completed.
  * Each day shows the date, number of sessions, total problems, and accuracy percentage.
  */
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
+
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object AccuracyDetailsScreen : Screen {
     /**
      * State for [AccuracyDetailsScreen].

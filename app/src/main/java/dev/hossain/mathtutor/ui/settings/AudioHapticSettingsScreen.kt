@@ -16,7 +16,11 @@ import kotlinx.parcelize.Parcelize
  * - Enable/disable high contrast mode
  * - Enable/disable large text mode
  */
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
+
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object AudioHapticSettingsScreen : Screen {
     /**
      * State for [AudioHapticSettingsScreen].

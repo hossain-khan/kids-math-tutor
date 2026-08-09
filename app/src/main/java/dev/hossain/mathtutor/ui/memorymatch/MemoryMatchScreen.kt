@@ -3,8 +3,10 @@ package dev.hossain.mathtutor.ui.memorymatch
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
+import dev.zacsweers.metro.AppScope
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -21,6 +23,7 @@ import kotlinx.parcelize.Parcelize
  *                       When true, no badges will be awarded and progress may not be saved.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data class MemoryMatchScreen(
     val isTrialMode: Boolean = false,
 ) : Screen {

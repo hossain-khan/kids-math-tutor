@@ -3,10 +3,12 @@ package dev.hossain.mathtutor.ui.devportal
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
+import dev.zacsweers.metro.AppScope
 import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 
@@ -14,6 +16,7 @@ import java.time.LocalDate
  * Debug-only Developer Portal screen. Exposes developer tools and helpers for testing.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object DeveloperPortalScreen : Screen {
     data class State(
         val showSeedSection: Boolean = true,

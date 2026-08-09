@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -18,6 +20,7 @@ import kotlinx.parcelize.Parcelize
  * This is a debug-only screen accessible from the Developer Portal.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object ColorPaletteViewerScreen : Screen {
     /**
      * Represents a single color entry with metadata.
