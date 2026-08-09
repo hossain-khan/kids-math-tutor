@@ -14,8 +14,8 @@ if (typeof global !== "undefined") {
   global.URL.revokeObjectURL = vi.fn();
 }
 
-// Mock sessionStorage
-const sessionStorageMock = (() => {
+// Mock storage (sessionStorage and localStorage)
+const createStorageMock = () => {
   let store: Record<string, string> = {};
 
   return {
@@ -30,8 +30,14 @@ const sessionStorageMock = (() => {
       store = {};
     },
   };
-})();
+};
 
 Object.defineProperty(window, "sessionStorage", {
-  value: sessionStorageMock,
+  value: createStorageMock(),
+  writable: true,
+});
+
+Object.defineProperty(window, "localStorage", {
+  value: createStorageMock(),
+  writable: true,
 });
