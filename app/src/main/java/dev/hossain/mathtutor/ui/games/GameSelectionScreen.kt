@@ -3,7 +3,9 @@ package dev.hossain.mathtutor.ui.games
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Game
+import dev.zacsweers.metro.AppScope
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -13,6 +15,7 @@ import kotlinx.parcelize.Parcelize
  * and provides navigation to launch games.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object GameSelectionScreen : Screen {
     /**
      * Information about a game's unlock status and statistics.

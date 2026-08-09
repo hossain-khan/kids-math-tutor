@@ -3,6 +3,8 @@ package dev.hossain.mathtutor.ui.parentsettings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import kotlinx.parcelize.Parcelize
 
@@ -22,6 +24,7 @@ import kotlinx.parcelize.Parcelize
  * @see dev.hossain.mathtutor.ui.settings.SettingsScreen for child-accessible app settings
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object ParentSettingsScreen : Screen {
     /**
      * State for [ParentSettingsScreen].

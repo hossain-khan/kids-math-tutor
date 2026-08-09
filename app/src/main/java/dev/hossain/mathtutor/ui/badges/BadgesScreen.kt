@@ -1,11 +1,13 @@
 package dev.hossain.mathtutor.ui.badges
 
+import com.slack.circuit.serialization.CircuitSerializable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
+import dev.zacsweers.metro.AppScope
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -16,6 +18,7 @@ import kotlinx.parcelize.Parcelize
  * see which badges are unlocked/locked, and tap badges to see details.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object BadgesScreen : Screen {
     /**
      * State for [BadgesScreen].

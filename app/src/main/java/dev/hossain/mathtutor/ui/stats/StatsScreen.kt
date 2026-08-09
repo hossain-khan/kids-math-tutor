@@ -13,7 +13,11 @@ import kotlinx.parcelize.Parcelize
  *
  * Shows overall statistics, per-operation breakdown, and recent session history.
  */
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
+
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object StatsScreen : Screen {
     /**
      * State for [StatsScreen].

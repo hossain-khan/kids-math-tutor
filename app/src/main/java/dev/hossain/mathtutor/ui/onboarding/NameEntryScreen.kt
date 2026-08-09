@@ -76,6 +76,8 @@ import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.time.Instant
 
+import com.slack.circuit.serialization.CircuitSerializable
+
 /**
  * Circuit screen for optional name entry during onboarding.
  *
@@ -83,6 +85,7 @@ import java.time.Instant
  * Users can skip this step and go directly to the home screen.
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data class NameEntryScreen(
     val gradeLevel: GradeLevel,
 ) : Screen {

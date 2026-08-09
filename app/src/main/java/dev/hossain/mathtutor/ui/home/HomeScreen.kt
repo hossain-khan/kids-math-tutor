@@ -1,5 +1,6 @@
 package dev.hossain.mathtutor.ui.home
 
+import com.slack.circuit.serialization.CircuitSerializable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
@@ -7,6 +8,7 @@ import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.SessionStats
+import dev.zacsweers.metro.AppScope
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -20,6 +22,7 @@ import kotlinx.parcelize.Parcelize
  * - Primary action button to start practice
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object HomeScreen : Screen {
     /**
      * State for [HomeScreen].

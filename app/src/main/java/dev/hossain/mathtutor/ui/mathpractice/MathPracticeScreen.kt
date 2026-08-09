@@ -11,6 +11,9 @@ import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.hossain.mathtutor.ui.component.WorkBreakdownStep
 import kotlinx.parcelize.Parcelize
 
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
+
 /**
  * Circuit screen for math practice session.
  *
@@ -22,6 +25,7 @@ import kotlinx.parcelize.Parcelize
  * @param customChallengeId Optional ID of custom challenge for parent-created challenges
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data class MathPracticeScreen(
     val operation: MathOperation = MathOperation.ADDITION,
     val problemCount: Int = 10,

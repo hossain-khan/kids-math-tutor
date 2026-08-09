@@ -2,7 +2,7 @@
 activityCompose = "1.13.0"
 # https://developer.android.com/build/releases/gradle-plugin
 agp = "9.3.0"
-circuit = "0.33.1"
+circuit = "0.36.0"
 composeBom = "2026.05.01"
 coreKtx = "1.18.0"
 espressoCore = "3.7.0"
@@ -33,7 +33,7 @@ ksp = "2.3.11"
 # https://github.com/pinterest/ktlint
 kotlinter = "5.5.0"
 lifecycleRuntimeKtx = "2.10.0"
-metro = "1.1.1"
+metro = "1.4.1"
 # Timber - A logger with a small, extensible API which provides utility on top of Android's normal Log class
 # https://github.com/JakeWharton/timber
 timber = "5.0.1"
@@ -101,6 +101,7 @@ circuitx-android = { group = "com.slack.circuit", name = "circuitx-android", ver
 circuitx-effects = { group = "com.slack.circuit", name = "circuitx-effects", version.ref = "circuit" }
 circuitx-gestureNav = { group = "com.slack.circuit", name = "circuitx-gesture-navigation", version.ref = "circuit" }
 circuitx-overlays = { group = "com.slack.circuit", name = "circuitx-overlays", version.ref = "circuit" }
+circuit-serialization = { group = "com.slack.circuit", name = "circuit-serialization", version.ref = "circuit" }
 
 javax-inject = { group = "javax.inject", name = "javax.inject", version = "1" }
 

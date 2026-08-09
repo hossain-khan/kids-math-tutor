@@ -5,13 +5,14 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.CustomChallenge
 import kotlinx.parcelize.Parcelize
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 
 /**
- * Circuit screen for managing parent custom challenges.
+ * Circuit screen for managing parent-created custom challenges.
  *
- * This screen displays all custom challenges (active and archived),
- * allows parents to manage them (archive/delete), and navigate to
- * import new challenges or start practice sessions.
+ * Displays a list of custom challenges created by parents/teachers,
+ * allowing them to view, manage, filter, and launch practice sessions.
  *
  * Parents can create custom challenges using the Math Pup Worksheet Creator web app:
  * `https://math-worksheet.gohk.xyz/`
@@ -20,6 +21,7 @@ import kotlinx.parcelize.Parcelize
  * @see CustomChallenge for the challenge data model
  */
 @Parcelize
+@CircuitSerializable(AppScope::class)
 data object ParentChallengesScreen : Screen {
     /**
      * State for [ParentChallengesScreen].
