@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.28.0] - 2026-08-08
+
 ### Fixed
 - **Practice & Game State Retention on Screen Rotation**: Fixed an issue where device orientation change during math practice or mini-games (Math Race, Memory Match, Number Sequence) would reset presenter state and restart the session from the beginning
   - Updated presenters to use Circuit's `rememberRetained` for state management across configuration changes
