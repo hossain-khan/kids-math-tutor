@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Practice & Game State Retention on Screen Rotation**: Fixed an issue where device orientation change during math practice or mini-games (Math Race, Memory Match, Number Sequence) would reset presenter state and restart the session from the beginning
+  - Updated presenters to use Circuit's `rememberRetained` for state management across configuration changes
+  - Added checks to prevent unnecessary problem regeneration when retained state is present
+
+### Changed
+- **Circuit 0.36.0 & Metro 1.4.1 Adoption**: Adopted Circuit 0.36's `@CircuitSerializable` annotation and `SerializableCircuitSaver` with Metro DI multibindings (`@Multibinds`)
+- **Dependency Upgrades**:
+  - Upgraded Android Gradle Plugin (AGP) to `9.3.1`
+  - Upgraded Kotlin to `2.4.10`
+  - Upgraded Compose BoM to `2026.06.01`
+  - Upgraded Firebase BoM to `34.17.0`
+  - Upgraded LeakCanary to `3.0-alpha-9`
+  - Upgraded Media3 to `1.11.0`
+  - Upgraded `android-compose-highlight` to `0.32.0` (migrated theme call to `rememberTomorrowLightTheme()`)
+
 ## [1.27.0] - 2026-07-25
 
 ### Changed
