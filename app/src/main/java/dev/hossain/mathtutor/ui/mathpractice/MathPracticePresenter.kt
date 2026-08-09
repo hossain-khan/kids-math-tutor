@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
@@ -97,43 +98,43 @@ class MathPracticePresenter
             }
 
             // Track session start time
-            val sessionStartTime = remember { Instant.now() }
+            val sessionStartTime = rememberRetained { Instant.now() }
             // Use lifecycle-aware coroutine scope
             val coroutineScope = rememberCoroutineScope()
 
-            var problems by remember { mutableStateOf<List<MathProblem>>(emptyList()) }
-            var isLoading by remember { mutableStateOf(true) }
-            var currentProblemIndex by remember { mutableStateOf(0) }
-            var currentAnswer by remember { mutableStateOf("") }
-            var isCorrect by remember { mutableStateOf<Boolean?>(null) }
-            var userAnswers by remember { mutableStateOf<List<Int?>>(emptyList()) }
-            var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
-            var showBadgeUnlock by remember { mutableStateOf(false) }
-            var currentBadgeIndex by remember { mutableStateOf(0) }
-            var difficultyAdjustment by remember { mutableStateOf<DifficultyAdjustment?>(null) }
-            var actualGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
-            var showDifficultyChangeNotice by remember { mutableStateOf(false) }
-            var problemStartTime by remember { mutableStateOf(Instant.now()) }
-            var currentGradeLevel by remember { mutableStateOf<GradeLevel?>(null) }
-            var isAdaptiveEnabled by remember { mutableStateOf(false) }
-            var userName by remember { mutableStateOf<String?>(null) }
-            var customChallengeTitle by remember { mutableStateOf<String?>(null) }
-            var wrongAttempts by remember { mutableStateOf(0) }
-            var showHintButton by remember { mutableStateOf(false) }
-            var isHintSystemEnabled by remember { mutableStateOf(true) }
-            var currentHintText by remember { mutableStateOf<String?>(null) }
-            var hintButtonClicked by remember { mutableStateOf(false) }
-            var showVisualHint by remember { mutableStateOf(false) }
-            var showWorkBreakdown by remember { mutableStateOf(false) }
-            var workBreakdownSteps by remember {
+            var problems by rememberRetained { mutableStateOf<List<MathProblem>>(emptyList()) }
+            var isLoading by rememberRetained { mutableStateOf(true) }
+            var currentProblemIndex by rememberRetained { mutableStateOf(0) }
+            var currentAnswer by rememberRetained { mutableStateOf("") }
+            var isCorrect by rememberRetained { mutableStateOf<Boolean?>(null) }
+            var userAnswers by rememberRetained { mutableStateOf<List<Int?>>(emptyList()) }
+            var unlockedBadges by rememberRetained { mutableStateOf<List<Badge>>(emptyList()) }
+            var showBadgeUnlock by rememberRetained { mutableStateOf(false) }
+            var currentBadgeIndex by rememberRetained { mutableStateOf(0) }
+            var difficultyAdjustment by rememberRetained { mutableStateOf<DifficultyAdjustment?>(null) }
+            var actualGradeLevel by rememberRetained { mutableStateOf<GradeLevel?>(null) }
+            var showDifficultyChangeNotice by rememberRetained { mutableStateOf(false) }
+            var problemStartTime by rememberRetained { mutableStateOf(Instant.now()) }
+            var currentGradeLevel by rememberRetained { mutableStateOf<GradeLevel?>(null) }
+            var isAdaptiveEnabled by rememberRetained { mutableStateOf(false) }
+            var userName by rememberRetained { mutableStateOf<String?>(null) }
+            var customChallengeTitle by rememberRetained { mutableStateOf<String?>(null) }
+            var wrongAttempts by rememberRetained { mutableStateOf(0) }
+            var showHintButton by rememberRetained { mutableStateOf(false) }
+            var isHintSystemEnabled by rememberRetained { mutableStateOf(true) }
+            var currentHintText by rememberRetained { mutableStateOf<String?>(null) }
+            var hintButtonClicked by rememberRetained { mutableStateOf(false) }
+            var showVisualHint by rememberRetained { mutableStateOf(false) }
+            var showWorkBreakdown by rememberRetained { mutableStateOf(false) }
+            var workBreakdownSteps by rememberRetained {
                 mutableStateOf<List<WorkBreakdownStep>>(
                     emptyList(),
                 )
             }
 
             // Memoization cache for hints to avoid regeneration on recomposition
-            val hintCache = remember { mutableMapOf<String, String>() }
-            val workBreakdownCache = remember { mutableMapOf<String, List<WorkBreakdownStep>>() }
+            val hintCache = rememberRetained { mutableMapOf<String, String>() }
+            val workBreakdownCache = rememberRetained { mutableMapOf<String, List<WorkBreakdownStep>>() }
 
             fun getCacheKey(problem: MathProblem): String = "${problem.operation}_${problem.num1}_${problem.num2}"
 
@@ -247,6 +248,11 @@ class MathPracticePresenter
 
             // Fetch user profile and generate problems in a single LaunchedEffect
             LaunchedEffect(Unit) {
+                if (problems.isNotEmpty()) {
+                    Timber.d("Problems already retained (${problems.size} problems), skipping regeneration on rotation.")
+                    isLoading = false
+                    return@LaunchedEffect
+                }
                 Timber.d("Starting problem generation for operation ${screen.operation}")
                 val profile = userProfileRepository.getProfile().firstOrNull()
                 val grade = profile?.gradeLevel ?: GradeLevel.GRADE_1

@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuitx.effects.LaunchedImpressionEffect
@@ -97,23 +98,23 @@ class MemoryMatchPresenter
             val coroutineScope = rememberCoroutineScope()
 
             // Game state
-            var gameState by remember {
+            var gameState by rememberRetained {
                 mutableStateOf<MemoryMatchScreen.GameState>(MemoryMatchScreen.GameState.NotStarted)
             }
-            var cards by remember { mutableStateOf<List<MemoryMatchScreen.Card>>(emptyList()) }
-            var moves by remember { mutableIntStateOf(0) }
-            var timeElapsed by remember { mutableIntStateOf(0) }
-            var matchesFound by remember { mutableIntStateOf(0) }
-            var personalBestTime by remember { mutableIntStateOf(0) }
-            var firstFlippedCard by remember { mutableStateOf<MemoryMatchScreen.Card?>(null) }
-            var secondFlippedCard by remember { mutableStateOf<MemoryMatchScreen.Card?>(null) }
-            var userName by remember { mutableStateOf<String?>(null) }
-            var unlockedBadges by remember { mutableStateOf<List<Badge>>(emptyList()) }
+            var cards by rememberRetained { mutableStateOf<List<MemoryMatchScreen.Card>>(emptyList()) }
+            var moves by rememberRetained { mutableIntStateOf(0) }
+            var timeElapsed by rememberRetained { mutableIntStateOf(0) }
+            var matchesFound by rememberRetained { mutableIntStateOf(0) }
+            var personalBestTime by rememberRetained { mutableIntStateOf(0) }
+            var firstFlippedCard by rememberRetained { mutableStateOf<MemoryMatchScreen.Card?>(null) }
+            var secondFlippedCard by rememberRetained { mutableStateOf<MemoryMatchScreen.Card?>(null) }
+            var userName by rememberRetained { mutableStateOf<String?>(null) }
+            var unlockedBadges by rememberRetained { mutableStateOf<List<Badge>>(emptyList()) }
 
             // Internal state for game logic
-            var gradeLevel by remember { mutableStateOf(GradeLevel.GRADE_1) }
-            var gameStartTime by remember { mutableStateOf<Instant?>(null) }
-            var isProcessingFlip by remember { mutableStateOf(false) }
+            var gradeLevel by rememberRetained { mutableStateOf(GradeLevel.GRADE_1) }
+            var gameStartTime by rememberRetained { mutableStateOf<Instant?>(null) }
+            var isProcessingFlip by rememberRetained { mutableStateOf(false) }
 
             // Load user profile and personal best
             LaunchedEffect(Unit) {
