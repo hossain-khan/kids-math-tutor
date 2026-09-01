@@ -11,7 +11,7 @@ espressoCore = "3.7.0"
 firebaseBom = "34.17.0"
 # Firebase Crashlytics Gradle plugin
 # https://firebase.google.com/docs/crashlytics/get-started?platform=android
-firebaseCrashlytics = "3.0.7"
+firebaseCrashlytics = "3.0.8"
 # Google Services plugin for processing google-services.json
 # https://developers.google.com/android/guides/google-services-plugin
 googleServices = "4.5.0"
