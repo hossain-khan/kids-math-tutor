@@ -33,7 +33,7 @@ ksp = "2.3.11"
 # https://github.com/pinterest/ktlint
 kotlinter = "5.6.0"
 lifecycleRuntimeKtx = "2.11.0"
-metro = "1.4.1"
+metro = "1.4.5"
 # Timber - A logger with a small, extensible API which provides utility on top of Android's normal Log class
 # https://github.com/JakeWharton/timber
 timber = "5.0.1"
