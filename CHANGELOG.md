@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **CI Post-Merge Check Runner**: Switched `Post Merge Check` workflow runner from `ubuntu-slim` to standard `ubuntu-latest`, eliminating runner setup failure caused by `setup-android` attempting to install the deprecated `tools` package
+
 ## [1.29.0] - 2026-11-10
 
 ### Changed
