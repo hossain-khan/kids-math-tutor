@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Circuit BackStack Saver Crash**: Fixed `IllegalStateException: No CircuitSaver provided` crash on app launch by wrapping `rememberSaveableBackStack` inside `CircuitCompositionLocals(circuit)`
 - **Compiler Warnings**: Resolved unused expression warning in `MathPracticeUi` hint dialog `dismissButton` lambda
+- **Metro Compiler Warnings**: Suppressed `CONTRIBUTES_TO_COULD_BE_BINDING_CONTAINER` diagnostic on `DatabaseModule` and removed redundant `@JvmSuppressWildcards` annotations from `CircuitProviders`
 
 ## [1.28.0] - 2026-08-08
 
