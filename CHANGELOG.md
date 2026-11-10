@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.29.0] - 2026-11-10
+
 ### Changed
 - **Circuit 0.39.0 Migration**: Removed legacy `@Parcelize` annotations and `kotlinx.parcelize.Parcelize` imports from all Circuit `Screen` and `PopResult` declarations following Circuit's removal of the `Parcelable` supertype in 0.38+ for Compose Multiplatform (KMP) support, relying fully on `@CircuitSerializable` and `SerializableCircuitSaver`
 - **Material 3 Adaptive API Migration**: Migrated `currentWindowAdaptiveInfo()` to `currentWindowAdaptiveInfoV2()` in `AdaptiveNavigationWrapper` to support L and XL window size classes
@@ -17,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Upgraded Kotlin to `2.4.21`
   - Upgraded KSP to `2.3.13`
   - Upgraded Circuit to `0.39.0`
-  - Upgraded Metro to `1.5.2`
+  - Upgraded Metro to `1.5.1` (1.5.2 has a known Kotlin IR `prepareHintFile` issue with AGP Android test linting)
   - Upgraded Compose BoM to `2026.09.00`
   - Upgraded Firebase BoM to `35.1.0`
   - Upgraded Kotlinter to `5.7.0`
@@ -2600,7 +2602,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied proper system bars insets for edge-to-edge display on onboarding screen
 - Fixed onboarding navigation to properly navigate to MathPracticeScreen after completion
 
-[unreleased]: https://github.com/hossain-khan/kids-math-tutor/compare/1.27.0...HEAD
+[unreleased]: https://github.com/hossain-khan/kids-math-tutor/compare/1.29.0...HEAD
+[1.29.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.28.0...1.29.0
+[1.28.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.27.0...1.28.0
 [1.27.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.26.0...1.27.0
 [1.26.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.25.0...1.26.0
 [1.25.0]: https://github.com/hossain-khan/kids-math-tutor/compare/1.24.1...1.25.0
