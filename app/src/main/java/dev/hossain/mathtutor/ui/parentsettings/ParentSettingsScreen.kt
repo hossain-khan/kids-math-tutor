@@ -6,7 +6,6 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for parent-specific settings and controls.
@@ -23,7 +22,6 @@ import kotlinx.parcelize.Parcelize
  *
  * @see dev.hossain.mathtutor.ui.settings.SettingsScreen for child-accessible app settings
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object ParentSettingsScreen : Screen {
     /**

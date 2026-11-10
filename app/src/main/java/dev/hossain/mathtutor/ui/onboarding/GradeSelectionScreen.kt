@@ -86,7 +86,6 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.time.Instant
 
@@ -103,7 +102,6 @@ private val GRADE_CARD_VERTICAL_PADDING: Dp = 8.dp
  * @property isFromSettings When true, saves grade and navigates back instead of going to name entry.
  *                          Used when accessing from Settings screen to change grade level.
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data class GradeSelectionScreen(
     val isFromSettings: Boolean = false,

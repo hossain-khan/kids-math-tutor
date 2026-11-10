@@ -68,10 +68,8 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object OnboardingScreen : Screen {
     data class State(

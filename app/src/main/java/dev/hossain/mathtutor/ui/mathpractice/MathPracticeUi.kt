@@ -228,21 +228,22 @@ internal fun MathPracticeUi(
                     }
                 }
             },
-            dismissButton = {
+            dismissButton =
                 if (state.isVisualHintFeasible) {
-                    TextButton(
-                        onClick = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
-                        modifier =
-                            Modifier.semantics {
-                                contentDescription = "Close this hint"
-                            },
-                    ) {
-                        Text("Got it")
+                    {
+                        TextButton(
+                            onClick = { state.eventSink(MathPracticeScreen.Event.DismissHint) },
+                            modifier =
+                                Modifier.semantics {
+                                    contentDescription = "Close this hint"
+                                },
+                        ) {
+                            Text("Got it")
+                        }
                     }
                 } else {
                     null
-                }
-            },
+                },
         )
     }
 

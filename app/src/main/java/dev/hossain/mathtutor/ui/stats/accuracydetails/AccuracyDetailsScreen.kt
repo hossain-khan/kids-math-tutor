@@ -6,9 +6,7 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.DailyAccuracy
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object AccuracyDetailsScreen : Screen {
     /**

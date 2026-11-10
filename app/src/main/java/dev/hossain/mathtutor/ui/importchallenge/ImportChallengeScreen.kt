@@ -7,7 +7,6 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.PreviewData
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for importing custom challenges.
@@ -21,7 +20,6 @@ import kotlinx.parcelize.Parcelize
  * @property prefilledJson Optional JSON content shared from another app
  * @see ChallengeJsonParser for JSON parsing and validation
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data class ImportChallengeScreen(
     val prefilledJson: String? = null,
@@ -89,7 +87,6 @@ data class ImportChallengeScreen(
      *
      * @property challengeTitle The title of the imported challenge
      */
-    @Parcelize
     @CircuitSerializable(AppScope::class)
     data class ImportResult(
         val challengeTitle: String,

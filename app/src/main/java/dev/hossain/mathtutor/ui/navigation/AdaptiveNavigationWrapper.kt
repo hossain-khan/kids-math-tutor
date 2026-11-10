@@ -26,7 +26,7 @@ import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -54,7 +54,7 @@ fun AdaptiveNavigationWrapper(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val adaptiveInfo = currentWindowAdaptiveInfo()
+    val adaptiveInfo = currentWindowAdaptiveInfoV2()
     val windowSizeClass = adaptiveInfo.windowSizeClass
 
     // Use breakpoint checks instead of deprecated WindowWidthSizeClass

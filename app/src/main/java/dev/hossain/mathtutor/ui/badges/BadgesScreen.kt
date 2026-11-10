@@ -8,7 +8,6 @@ import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.BadgeCategory
 import dev.hossain.mathtutor.domain.repository.BadgeProgress
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for displaying all badges organized by category.
@@ -17,7 +16,6 @@ import kotlinx.parcelize.Parcelize
  * Operation Mastery, Speed & Accuracy, and Streak). Users can view their progress,
  * see which badges are unlocked/locked, and tap badges to see details.
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object BadgesScreen : Screen {
     /**

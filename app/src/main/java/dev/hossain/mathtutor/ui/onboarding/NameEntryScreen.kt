@@ -73,7 +73,6 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import java.time.Instant
 
@@ -83,7 +82,6 @@ import java.time.Instant
  * Allows users to optionally enter their name for personalized greetings.
  * Users can skip this step and go directly to the home screen.
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data class NameEntryScreen(
     val gradeLevel: GradeLevel,

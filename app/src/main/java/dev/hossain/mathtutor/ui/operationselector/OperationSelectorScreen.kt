@@ -7,7 +7,6 @@ import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for operation selection.
@@ -19,7 +18,6 @@ import kotlinx.parcelize.Parcelize
  *
  * Also provides access to stats screen when session history exists.
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object OperationSelectorScreen : Screen {
     /**
