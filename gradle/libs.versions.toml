@@ -1,52 +1,52 @@
 [versions]
 activityCompose = "1.13.0"
 # https://developer.android.com/build/releases/gradle-plugin
-agp = "9.3.1"
-circuit = "0.36.0"
-composeBom = "2026.06.01"
-coreKtx = "1.19.0"
+agp = "9.5.1"
+circuit = "0.39.0"
+composeBom = "2026.09.00"
+coreKtx = "1.19.1"
 espressoCore = "3.7.0"
 # Firebase BoM (Bill of Materials) - manages all Firebase library versions
 # https://firebase.google.com/docs/android/setup#available-libraries
-firebaseBom = "34.17.0"
+firebaseBom = "35.1.0"
 # Firebase Crashlytics Gradle plugin
 # https://firebase.google.com/docs/crashlytics/get-started?platform=android
 firebaseCrashlytics = "3.0.8"
 # Google Services plugin for processing google-services.json
 # https://developers.google.com/android/guides/google-services-plugin
 googleServices = "4.5.0"
-googleFonts = "1.11.4"
+googleFonts = "1.12.1"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 
 browserVersion = "1.10.0"
 
 # https://kotlinlang.org/docs/releases.html
-kotlin = "2.4.10"
+kotlin = "2.4.21"
 # KSP (Kotlin Symbol Processing) plugin - with KSP2 enabled (ksp.useKSP2=true in gradle.properties),
 # the version uses a simplified format: {kotlin-major.minor}-{ksp-patch} e.g. 2.3.9 for Kotlin 2.3.x
 # https://github.com/google/ksp/releases
-ksp = "2.3.12"
+ksp = "2.3.13"
 
 # Kotlin linter with built-in formatter
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
-kotlinter = "5.6.0"
+kotlinter = "5.7.0"
 lifecycleRuntimeKtx = "2.11.0"
-metro = "1.4.5"
+metro = "1.5.1"
 # Timber - A logger with a small, extensible API which provides utility on top of Android's normal Log class
 # https://github.com/JakeWharton/timber
 timber = "5.0.1"
-androidxWork = "2.11.2"
-datastorePreferences = "1.2.1"
+androidxWork = "2.12.0"
+datastorePreferences = "1.3.0"
 # Room Database - https://developer.android.com/jetpack/androidx/releases/room
-room = "2.8.4"
+room = "2.8.5"
 # Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
 coroutines = "1.11.0"
 # Robolectric for Android unit tests - https://robolectric.org/
-robolectric = "4.16.1"
+robolectric = "4.17"
 # Media3 ExoPlayer - https://developer.android.com/media/media3
-media3 = "1.11.0"
+media3 = "1.11.1"
 # Google Truth - Fluent assertions for Java and Android
 # https://truth.dev/
 # https://github.com/google/truth/releases
@@ -59,11 +59,11 @@ leakcanary = "3.0-alpha-9"
 androidxWindow = "1.5.1"
 # Kotlinx Serialization - JSON serialization library
 # https://github.com/Kotlin/kotlinx.serialization
-kotlinxSerialization = "1.11.0"
+kotlinxSerialization = "1.12.0"
 
 # Compose Highlight - syntax highlighting library for Jetpack Compose
 # https://github.com/hossain-khan/android-compose-highlight
-composeHighlightVersion = "0.32.0"
+composeHighlightVersion = "0.41.1"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

@@ -8,9 +8,7 @@ import dev.hossain.mathtutor.data.local.entity.PracticeSessionEntity
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object StatsScreen : Screen {
     /**

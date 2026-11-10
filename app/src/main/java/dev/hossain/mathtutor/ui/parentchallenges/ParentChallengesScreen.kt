@@ -6,7 +6,6 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.CustomChallenge
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for managing parent-created custom challenges.
@@ -20,7 +19,6 @@ import kotlinx.parcelize.Parcelize
  * @see ImportChallengeScreen for importing challenges
  * @see CustomChallenge for the challenge data model
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object ParentChallengesScreen : Screen {
     /**

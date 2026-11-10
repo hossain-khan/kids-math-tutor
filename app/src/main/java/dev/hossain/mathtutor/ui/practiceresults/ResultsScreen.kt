@@ -5,14 +5,12 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for displaying practice session results.
  *
  * Shows summary statistics, problem list with user answers, and navigation options.
  */
-@Parcelize
 data class ResultsScreen(
     val problems: List<MathProblem>,
     val userAnswers: List<Int?>,

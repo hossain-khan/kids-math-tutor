@@ -2,7 +2,7 @@ package dev.hossain.mathtutor.ui.component
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dev.hossain.mathtutor.ui.theme.KidsMathTutorAppTheme
 import org.junit.Rule

@@ -9,7 +9,6 @@ import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.SessionStats
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for the home dashboard.
@@ -21,7 +20,6 @@ import kotlinx.parcelize.Parcelize
  * - Recently unlocked badges
  * - Primary action button to start practice
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object HomeScreen : Screen {
     /**

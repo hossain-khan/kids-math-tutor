@@ -7,7 +7,6 @@ import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Badge
 import dev.hossain.mathtutor.domain.model.MathProblem
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for Memory Match game.
@@ -22,7 +21,6 @@ import kotlinx.parcelize.Parcelize
  * @property isTrialMode Whether this game is being played in trial mode (locked game).
  *                       When true, no badges will be awarded and progress may not be saved.
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data class MemoryMatchScreen(
     val isTrialMode: Boolean = false,

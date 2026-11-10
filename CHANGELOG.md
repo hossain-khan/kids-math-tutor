@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Circuit 0.39.0 Migration**: Removed legacy `@Parcelize` annotations and `kotlinx.parcelize.Parcelize` imports from all Circuit `Screen` and `PopResult` declarations following Circuit's removal of the `Parcelable` supertype in 0.38+ for Compose Multiplatform (KMP) support, relying fully on `@CircuitSerializable` and `SerializableCircuitSaver`
+- **Material 3 Adaptive API Migration**: Migrated `currentWindowAdaptiveInfo()` to `currentWindowAdaptiveInfoV2()` in `AdaptiveNavigationWrapper` to support L and XL window size classes
+- **Compose UI Test Migration**: Updated instrumented UI tests (`AnswerFieldTest`, `NumberPadTest`) to use `androidx.compose.ui.test.junit4.v2.createComposeRule`
+- **Dependency Upgrades**:
+  - Upgraded Android Gradle Plugin (AGP) to `9.5.1`
+  - Upgraded Gradle Wrapper to `9.6.0`
+  - Upgraded Kotlin to `2.4.21`
+  - Upgraded KSP to `2.3.13`
+  - Upgraded Circuit to `0.39.0`
+  - Upgraded Metro to `1.5.1`
+  - Upgraded Compose BoM to `2026.09.00`
+  - Upgraded Firebase BoM to `35.1.0`
+  - Upgraded Kotlinter to `5.7.0`
+  - Upgraded AndroidX WorkManager to `2.12.0`
+  - Upgraded AndroidX DataStore Preferences to `1.3.0`
+  - Upgraded AndroidX Room to `2.8.5`
+  - Upgraded AndroidX Core KTX to `1.19.1`
+  - Upgraded AndroidX Compose Google Fonts to `1.12.1`
+  - Upgraded AndroidX Media3 to `1.11.1`
+  - Upgraded Kotlinx Serialization to `1.12.0`
+  - Upgraded Robolectric to `4.17`
+  - Upgraded Compose Highlight to `0.41.1`
+
+### Fixed
+- **Circuit BackStack Saver Crash**: Fixed `IllegalStateException: No CircuitSaver provided` crash on app launch by wrapping `rememberSaveableBackStack` inside `CircuitCompositionLocals(circuit)`
+- **Compiler Warnings**: Resolved unused expression warning in `MathPracticeUi` hint dialog `dismissButton` lambda
+
 ## [1.28.0] - 2026-08-08
 
 ### Fixed

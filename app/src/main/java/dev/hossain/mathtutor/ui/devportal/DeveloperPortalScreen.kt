@@ -9,13 +9,11 @@ import dev.hossain.mathtutor.domain.model.DailyStreak
 import dev.hossain.mathtutor.domain.model.GradeLevel
 import dev.hossain.mathtutor.domain.model.MathOperation
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 
 /**
  * Debug-only Developer Portal screen. Exposes developer tools and helpers for testing.
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object DeveloperPortalScreen : Screen {
     data class State(

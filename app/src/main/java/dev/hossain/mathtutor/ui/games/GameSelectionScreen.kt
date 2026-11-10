@@ -6,7 +6,6 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.mathtutor.domain.model.Game
 import dev.zacsweers.metro.AppScope
-import kotlinx.parcelize.Parcelize
 
 /**
  * Circuit screen for the Game Selection Hub.
@@ -14,7 +13,6 @@ import kotlinx.parcelize.Parcelize
  * Displays available mini-games with their unlock status, personal bests,
  * and provides navigation to launch games.
  */
-@Parcelize
 @CircuitSerializable(AppScope::class)
 data object GameSelectionScreen : Screen {
     /**
