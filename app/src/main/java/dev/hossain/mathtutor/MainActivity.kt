@@ -131,36 +131,36 @@ class MainActivity
                     highContrast = highContrastEnabled,
                     largeText = largeTextEnabled,
                 ) {
-                    val isOnboardingCompleted by userPreferencesRepository.isOnboardingCompleted.collectAsState(
-                        initial = null,
-                    )
-
-                    // Wait for onboarding status to load before rendering navigation
-                    // This prevents showing the onboarding screen briefly on cold boot
-                    if (isOnboardingCompleted == null) {
-                        // Still loading preferences - show nothing or a blank screen
-                        return@KidsMathTutorAppTheme
-                    }
-
-                    val initialScreen =
-                        if (prefilledJson != null) {
-                            // Deeplink or share intent detected - go directly to import screen with prefilled JSON
-                            ImportChallengeScreen(prefilledJson = prefilledJson)
-                        } else if (isOnboardingCompleted == true) {
-                            HomeScreen
-                        } else {
-                            OnboardingScreen
-                        }
-
-                    // See https://slackhq.github.io/circuit/navigation/
-                    val backStack = rememberSaveableBackStack(root = initialScreen)
-                    val navigator = rememberCircuitNavigator(backStack)
-
-                    // Get the current screen for adaptive navigation highlighting
-                    val currentScreen = backStack.topRecord?.screen
-
                     // See https://slackhq.github.io/circuit/circuit-content/
                     CircuitCompositionLocals(circuit) {
+                        val isOnboardingCompleted by userPreferencesRepository.isOnboardingCompleted.collectAsState(
+                            initial = null,
+                        )
+
+                        // Wait for onboarding status to load before rendering navigation
+                        // This prevents showing the onboarding screen briefly on cold boot
+                        if (isOnboardingCompleted == null) {
+                            // Still loading preferences - show nothing or a blank screen
+                            return@CircuitCompositionLocals
+                        }
+
+                        val initialScreen =
+                            if (prefilledJson != null) {
+                                // Deeplink or share intent detected - go directly to import screen with prefilled JSON
+                                ImportChallengeScreen(prefilledJson = prefilledJson)
+                            } else if (isOnboardingCompleted == true) {
+                                HomeScreen
+                            } else {
+                                OnboardingScreen
+                            }
+
+                        // See https://slackhq.github.io/circuit/navigation/
+                        val backStack = rememberSaveableBackStack(root = initialScreen)
+                        val navigator = rememberCircuitNavigator(backStack)
+
+                        // Get the current screen for adaptive navigation highlighting
+                        val currentScreen = backStack.topRecord?.screen
+
                         // See https://slackhq.github.io/circuit/shared-elements/
                         SharedElementTransitionLayout {
                             // See https://slackhq.github.io/circuit/overlays/

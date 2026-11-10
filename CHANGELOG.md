@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Upgraded Compose Highlight to `0.41.1`
 
 ### Fixed
+- **Circuit BackStack Saver Crash**: Fixed `IllegalStateException: No CircuitSaver provided` crash on app launch by wrapping `rememberSaveableBackStack` inside `CircuitCompositionLocals(circuit)`
 - **Compiler Warnings**: Resolved unused expression warning in `MathPracticeUi` hint dialog `dismissButton` lambda
 
 ## [1.28.0] - 2026-08-08
