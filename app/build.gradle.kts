@@ -129,7 +129,6 @@ dependencies {
     implementation(libs.circuitx.gestureNav)
     implementation(libs.circuitx.overlays)
     implementation(libs.circuit.serialization)
-    ksp(libs.circuit.codegen)
 
     implementation(libs.javax.inject)
 
@@ -188,10 +187,6 @@ dependencies {
 }
 
 ksp {
-    // Circuit-KSP configuration for Metro DI integration
-    // See https://slackhq.github.io/circuit/code-gen/
-    arg("circuit.codegen.mode", "metro")
-    
     // Room schema export location for database migrations
     // See https://developer.android.com/training/data-storage/room/migrating-db-versions
     arg("room.schemaLocation", "$projectDir/schemas")
@@ -202,4 +197,11 @@ metro {
     // When enabled, Metro will emit detailed debug information about the dependency graph
     // See https://zacsweers.github.io/metro/latest/
     debug.set(true)
+
+    // Enable Metro's built-in Circuit codegen support.
+    // This replaces the circuit-codegen KSP processor and generates Presenter.Factory and
+    // Ui.Factory implementations directly in FIR/IR.
+    // See https://zacsweers.github.io/metro/latest/circuit/
+    @OptIn(dev.zacsweers.metro.gradle.ExperimentalMetroGradleApi::class)
+    enableCircuitCodegen.set(true)
 }
