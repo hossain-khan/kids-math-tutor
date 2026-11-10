@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Upgraded Kotlin to `2.4.21`
   - Upgraded KSP to `2.3.13`
   - Upgraded Circuit to `0.39.0`
-  - Upgraded Metro to `1.5.1`
+  - Upgraded Metro to `1.5.2`
   - Upgraded Compose BoM to `2026.09.00`
   - Upgraded Firebase BoM to `35.1.0`
   - Upgraded Kotlinter to `5.7.0`
@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Circuit BackStack Saver Crash**: Fixed `IllegalStateException: No CircuitSaver provided` crash on app launch by wrapping `rememberSaveableBackStack` inside `CircuitCompositionLocals(circuit)`
 - **Compiler Warnings**: Resolved unused expression warning in `MathPracticeUi` hint dialog `dismissButton` lambda
+- **Metro Compiler Warnings**: Suppressed `CONTRIBUTES_TO_COULD_BE_BINDING_CONTAINER` diagnostic on `DatabaseModule` and removed redundant `@JvmSuppressWildcards` annotations from `CircuitProviders`
 
 ## [1.28.0] - 2026-08-08
 

@@ -18,6 +18,7 @@ import dev.zacsweers.metro.SingleIn
  *
  * This interface uses [ContributesTo] which automatically contributes bindings to the [AppScope].
  */
+@Suppress("CONTRIBUTES_TO_COULD_BE_BINDING_CONTAINER")
 @ContributesTo(AppScope::class)
 interface DatabaseModule {
     @Provides
